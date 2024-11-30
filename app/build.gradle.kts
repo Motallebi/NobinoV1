@@ -61,6 +61,15 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.intercepter)
 
+    //ButtomNavigation
+
+    implementation(libs.androidx.navigation.compose)
+    
+
+
+
+
+
    // Hilt Di
 
     implementation(libs.dagger.hilt)
