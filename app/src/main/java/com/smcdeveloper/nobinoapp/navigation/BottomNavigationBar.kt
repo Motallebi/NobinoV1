@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,7 +33,7 @@ fun BottomNavigationBar(
 ) {
     val items = listOf(
         BottomNavItem(
-            name = "home",
+            name = stringResource(R.string.home),
             route = Screen.Home.route,
             selectedIcon = painterResource(R.drawable.bottom_nav_home_selected),
             deSelectedIcon = painterResource(R.drawable.bottom_nav_home_not_selected),
@@ -40,7 +41,7 @@ fun BottomNavigationBar(
 
             ),
         BottomNavItem(
-            name = "profile",
+            name = stringResource(R.string.user_profile),
             route = Screen.Profile.route,
             selectedIcon = painterResource(R.drawable.bottom_nav_user_selected),
             deSelectedIcon = painterResource(R.drawable.bottom_nav_user_not_selected),
@@ -49,7 +50,7 @@ fun BottomNavigationBar(
             ),
 
         BottomNavItem(
-            name = "category",
+            name = stringResource(R.string.categories),
             route = Screen.Categories.route,
             selectedIcon = painterResource(R.drawable.bottom_nav_category_selected),
             deSelectedIcon = painterResource(R.drawable.bottom_nav_category_not_selected),
@@ -57,7 +58,7 @@ fun BottomNavigationBar(
 
             ),
         BottomNavItem(
-            name = "search",
+            name = stringResource(R.string.serach),
             route = Screen.Search.route,
             selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
             deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),

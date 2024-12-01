@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.ui.screens.home
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -20,10 +21,35 @@ fun Home(navController: NavHostController)
 
  )
  {
+     Button(onClick = {}
+     , modifier = Modifier.fillMaxWidth()
 
-    NobinoButton("دریافت کد از طریق پیامک")
+
+
+     ) {
+         Text("Click me")
+
+
+
+
+     }
+
+
+
+
+
+
+     }
+
+
+
+
+
+
+
+  //  NobinoButton("دریافت کد از طریق پیامک")
     // Text("hi.......")
-    NobinoOutlineButton()
+   // NobinoOutlineButton()
 
 
 
@@ -33,4 +59,3 @@ fun Home(navController: NavHostController)
 
 
 
-}
