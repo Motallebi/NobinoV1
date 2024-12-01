@@ -1,6 +1,6 @@
 [versions]
 agp = "8.7.1"
-kotlin = "2.0.0"
+kotlin = "2.0.21"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -10,15 +10,24 @@ activityCompose = "1.9.3"
 composeBom = "2024.04.01"
 retrofit_ver="2.9.0"
 intercepter_ver="4.10.0"
-hilt_ver="2.48.1"
-hilt_navigation_compose_ver="1.1.0"
+hilt_ver="2.51.1"
+hilt_navigation_compose_ver="1.2.0"
 atastore_version="1.0.0"
-ksp_ver="2.48.1"
+ksp_ver="2.0.21-1.0.27"
 androidx_Navigation_ver="2.8.4"
 androidx_Compose_Material3_ver="1.3.1"
 
 
 [libraries]
+
+
+hilt-android = { group = "com.google.dagger", name = "hilt-android" , version.ref = "hilt_ver"}
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler" , version.ref = "hilt_ver"}
+
+
+
+
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -51,9 +60,9 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit" ,version.ref = 
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson" ,version.ref = "retrofit_ver" }
 intercepter= { group = "com.squareup.okhttp3", name = "logging-interceptor" ,version.ref = "intercepter_ver" }
 
-dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt_ver" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler",version.ref="hilt_ver" }
-dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt_ver" }
+
+
+
 hilt-navcompose= { group ="androidx.hilt", name = "hilt-navigation-compose" ,version.ref = "hilt_navigation_compose_ver" }
 
 data-store={ group ="androidx.datastore", name = "datastore-preferences" ,version.ref = "atastore_version" }
@@ -70,5 +79,9 @@ data-store={ group ="androidx.datastore", name = "datastore-preferences" ,versio
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-mksp = { id = "com.google.devtools.ksp", version.ref = "ksp_ver" }
-hilt={ id = "com.google.dagger.hilt.android", version.ref = "hilt_ver" }
+kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref ="ksp_ver" }
+hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref ="hilt_ver" }
+
+
+
+

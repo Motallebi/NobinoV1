@@ -3,7 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlinAndroidKsp)
+    alias(libs.plugins.hiltAndroid)
+
 
 }
 
@@ -72,9 +74,11 @@ dependencies {
 
    // Hilt Di
 
-    implementation(libs.dagger.hilt)
-    implementation(libs.hilt.navcompose)
+    implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+
+
 
 
 
