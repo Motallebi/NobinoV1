@@ -1,19 +1,26 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
+import android.util.Log
 import com.smcdeveloper.nobinoapp.data.model.ResponseResult
+import com.smcdeveloper.nobinoapp.data.model.bb.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.testrest.PostResponseModel
+import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
-
 abstract class BaseApiResponse {
-    suspend fun <T> safeApiCall(apiCall: suspend () -> Response<ResponseResult<T>>): NetworkResult<T> =
+    suspend fun  safeApiCall(apiCall: suspend () -> Response<List<PostResponseModel>>):NetworkResult  =
         withContext(Dispatchers.IO) {
             try {
                 val response = apiCall()
                 if (response.isSuccessful) {
                     val body = response.body()
+                   // Log.d(LOG_TAG,"SafeApiCall:"+body.toString())
+
                     body?.let {
-                        return@withContext NetworkResult.Success(body.userMessage, body.data)
+                       // Log.d(LOG_TAG, "SafeApiCall...:$body")
+                        return@withContext NetworkResult.Success("",body)
+
                     }
                 }
                 return@withContext error("code : ${response.code()} , message : ${response.message()}")
@@ -23,7 +30,7 @@ abstract class BaseApiResponse {
         }
 
 
-    private fun <T> error(errorMessage: String): NetworkResult<T> =
+    private fun  error(errorMessage: String): NetworkResult =
         NetworkResult.Error("Api call failed : $errorMessage")
 
 

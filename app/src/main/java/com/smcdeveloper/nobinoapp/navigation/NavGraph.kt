@@ -10,6 +10,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
 import com.smcdeveloper.nobinoapp.ui.screens.favorit.Favorit
 import com.smcdeveloper.nobinoapp.ui.screens.home.Home
+import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
 import com.smcdeveloper.nobinoapp.ui.screens.login.Login
 import com.smcdeveloper.nobinoapp.ui.screens.profile.Profile
 import com.smcdeveloper.nobinoapp.ui.screens.search.Search
@@ -75,7 +76,7 @@ fun SetupNavGraph(navController: NavHostController) {
         }
 
         composable(route = Screen.Home.route) {
-            Home(navController = navController)
+            HomeScreen(navController = navController)
 
 
         }

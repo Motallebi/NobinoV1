@@ -21,7 +21,9 @@ import com.smcdeveloper.nobinoapp.ui.theme.NobinoAppTheme
 import com.smcdeveloper.nobinoapp.util.Constants.ENGLISH_LANG
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LANGUAGE
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
 

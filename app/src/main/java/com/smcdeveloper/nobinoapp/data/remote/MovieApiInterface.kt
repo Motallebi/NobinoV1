@@ -8,14 +8,14 @@ import retrofit2.http.Query
 
 interface MovieApiInterface {
 
-    @GET("/products")
+   /* @GET("/products")
     suspend fun getMovieList(
         @Query("token") token: String
     ): Response<ResponseResult<List<MovieData>>>
 
 
 
-
+*/
 
 
 
