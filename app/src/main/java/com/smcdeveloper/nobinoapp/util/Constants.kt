@@ -6,8 +6,8 @@ object Constants {
     const val LOG_TAG = "NobinoApp"
     const val PERSIAN_LANG = "fa"
     const val DATASTORE_NAME = "DIGIKALA_DATA_STORE"
-    //const val BASE_URL = "https://stg.nobino.ir/"
-    const val BASE_URL = "https://jsonplaceholder.typicode.com/"
+    const val BASE_URL = "https://stg.nobino.ir/"
+    //const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
     const val PURCHASE_URL = "https://api.zarinpal.com/pg/v4/payment/"
     const val ZARINPAL_PAYMENT_URL = "https://www.zarinpal.com/pg/StartPay/"

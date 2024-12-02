@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 abstract class BaseApiResponse {
-    suspend fun  safeApiCall(apiCall: suspend () -> Response<List<PostResponseModel>>):NetworkResult  =
+    suspend fun  safeApiCall(apiCall: suspend () -> Response<MovieResult>):NetworkResult  =
         withContext(Dispatchers.IO) {
             try {
                 val response = apiCall()

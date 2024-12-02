@@ -12,8 +12,8 @@ import retrofit2.http.GET
 
 interface HomeApiInterface {
 
-    @GET("posts")
-    suspend fun getMovies() : Response<List<PostResponseModel>>
+    @GET("api/products")
+    suspend fun getMovies() : Response<MovieResult>
 
 
 
