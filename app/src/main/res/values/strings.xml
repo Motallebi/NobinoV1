@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">NobinoApp</string>
+    <string name="home">خانه</string>
+    <string name="serach">جستجو</string>
+    <string name="categories">دسته‌بندی</string>
+    <string name="favorits">لیست من</string>
+    <string name="user_profile">حساب کاربری</string>
 </resources>

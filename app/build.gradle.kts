@@ -3,7 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlinAndroidKsp)
+    alias(libs.plugins.hiltAndroid)
+
 
 }
 
@@ -61,11 +63,24 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.intercepter)
 
+    //ButtomNavigation
+
+    implementation(libs.androidx.navigation.compose)
+
+    
+
+
+
+
+
    // Hilt Di
 
-    implementation(libs.dagger.hilt)
-    implementation(libs.hilt.navcompose)
+    implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navcompose)
+
+
+
 
 
 
