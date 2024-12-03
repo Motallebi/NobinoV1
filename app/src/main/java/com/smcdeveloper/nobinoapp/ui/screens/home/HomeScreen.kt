@@ -78,7 +78,7 @@ fun Home(
 
      {
          Text("Click me")
-         getAllMovies()
+
 
 
 
@@ -86,7 +86,7 @@ fun Home(
 
          }
 
-
+     getAllMovies()
 
 
      }
