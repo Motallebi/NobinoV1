@@ -53,6 +53,7 @@ fun Home(
      Button(onClick = {
 
          Log.d("nobino","Click on ME!!!")
+         Log.d("nobino","Click on ME!!!")
 
 
 

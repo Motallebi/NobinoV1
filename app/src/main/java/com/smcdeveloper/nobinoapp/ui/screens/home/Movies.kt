@@ -37,6 +37,7 @@ fun getAllMovies(viewModel: HomeViewModel = hiltViewModel())
                     Log.d(LOG_TAG,"---8877------"+result.message.toString())
                     Log.d(LOG_TAG,"---887888------"+result.message.toString())
 
+
                     Log.d(LOG_TAG,"success result"+result.data.toString())
 
                     Log.d(LOG_TAG,result.data.toString())
