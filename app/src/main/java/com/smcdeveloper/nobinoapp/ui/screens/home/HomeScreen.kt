@@ -86,7 +86,7 @@ fun Home(
 
          }
 
-     getAllMovies()
+                  getAllMovies()
 
 
      }
@@ -100,7 +100,10 @@ fun Home(
 
 
 private suspend fun refreshDataFromServer(viewModel: HomeViewModel) {
-    viewModel.getProduct()
+   viewModel.getProduct()
+    viewModel.getProductBySize()
+
+   //viewModel.productsListBySize()
 }
 
 

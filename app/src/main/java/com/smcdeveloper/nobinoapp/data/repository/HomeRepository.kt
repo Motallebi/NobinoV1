@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.repository
 
+import com.smcdeveloper.nobinoapp.data.model.Category
 import com.smcdeveloper.nobinoapp.data.model.bb.MovieInfoData
 import com.smcdeveloper.nobinoapp.data.model.bb.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.nn.Item
@@ -22,6 +23,22 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
 
         }
+
+
+
+
+
+    suspend fun getMoveListBySize():NetworkResult =
+
+        safeApiCall {
+
+            val category=Category.SERIES
+            api.getMoviesBySize(size = "15", category =category.displayName )
+
+
+        }
+
+
 
 
 

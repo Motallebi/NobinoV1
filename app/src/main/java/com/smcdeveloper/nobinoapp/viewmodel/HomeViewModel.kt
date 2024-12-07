@@ -19,20 +19,53 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val repository: HomeRepository):ViewModel() {
 
     val products = MutableStateFlow<NetworkResult>(NetworkResult.Loading())
+    val productsListBySize = MutableStateFlow<NetworkResult>(NetworkResult.Loading())
 
-             fun getProduct() {
+    fun getProduct() {
 
-               viewModelScope.launch {
-                   products.emit(repository.getProducts())
-
-
-               }
+        viewModelScope.launch {
+            products.emit(repository.getProducts())
 
 
+        }
+
+
+    }
 
 
 
-           }
+
+
+
+    fun getProductBySize() {
+
+        viewModelScope.launch {
+            productsListBySize.emit(repository.getMoveListBySize())
+
+
+        }
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

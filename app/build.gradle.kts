@@ -90,6 +90,12 @@ dependencies {
     // Data Store
     implementation(libs.data.store)
 
+    // Coil Image Library
+   // implementation(libs.coile.image)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.compose)
+
+
 
    
 
