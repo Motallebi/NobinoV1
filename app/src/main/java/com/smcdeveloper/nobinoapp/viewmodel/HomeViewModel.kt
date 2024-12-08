@@ -21,12 +21,16 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
     private val _movieDetails =
         MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
-       val movieDetails: StateFlow<NetworkResult<MovieResult>> get() = _movieDetails.asStateFlow()
+    val movieDetails: StateFlow<NetworkResult<MovieResult>> get() = _movieDetails.asStateFlow()
 
 
     val products = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
     val productsListBySize = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
-    val slider = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
+
+
+    private val _sliders = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
+    val slider: StateFlow<NetworkResult<Slider>> get() = _sliders.asStateFlow()
+    // val slider = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
 
 
     fun getProductBySize() {
@@ -39,7 +43,6 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     }
 
 
-
     fun getProduct() {
 
 
@@ -50,40 +53,35 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-        fun fetchMovieDetails(id: Int) {
-            viewModelScope.launch {
-                _movieDetails.value = NetworkResult.Loading()
-                val result = repository.getMovieDetails(id)
-                _movieDetails.value = result
-            }
-
-
-        }
-
-
-            fun getProductBySize() {
-
-                viewModelScope.launch {
-                    productsListBySize.emit(repository.getMoveListBySize())
-
-
-                }
-
-
-            }
-        }
     }
+
+
+    fun fetchMovieDetails(id: Int) {
+        viewModelScope.launch {
+            _movieDetails.value = NetworkResult.Loading()
+            val result = repository.getMovieDetails(id)
+            _movieDetails.value = result
+        }
+
+
+    }
+
+
+    fun getSlider() {
+
+        viewModelScope.launch {
+            _sliders.value = NetworkResult.Loading()
+            val result = repository.getSlider()
+            _sliders.value = result
+
+
+        }
+
+
+    }
+}
+
+
 
 
 

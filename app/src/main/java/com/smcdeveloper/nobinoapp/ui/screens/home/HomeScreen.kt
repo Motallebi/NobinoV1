@@ -86,7 +86,11 @@ fun Home(
 
          }
 
-                  getAllMovies()
+              //   getAllMovies()
+              getSlider()
+
+
+
 
 
      }

@@ -20,7 +20,7 @@ interface HomeApiInterface {
         @Query("category") category: String
     ):Response<MovieResult>
 
-    @GET("settings/mainPage/sliders")
+    @GET("api/settings/mainPage/sliders")
     suspend fun getSlider():Response<Slider>
 
 
