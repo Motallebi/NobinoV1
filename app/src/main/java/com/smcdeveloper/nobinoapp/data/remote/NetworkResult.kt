@@ -2,12 +2,13 @@ package com.smcdeveloper.nobinoapp.data.remote
 
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 
-sealed class  NetworkResult(
-    val message: String? = null,
-    val data: MovieResult? = null
+sealed class NetworkResult<T>(
+    val data: T? = null,
+    val message: String? = null
 ) {
-    class Success(message: String, data:MovieResult) : NetworkResult(message,data)
-    class Error(message: String, data: MovieResult? = null) : NetworkResult(message, data)
-    class Loading : NetworkResult()
+    class Success<T>(data: T, message: String = "") : NetworkResult<T>(data, message)
+    class Error<T>(message: String) : NetworkResult<T>(null, message)
+    class Loading<T> : NetworkResult<T>()
 }
+
 

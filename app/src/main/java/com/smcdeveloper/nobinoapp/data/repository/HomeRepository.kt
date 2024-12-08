@@ -1,15 +1,16 @@
 package com.smcdeveloper.nobinoapp.data.repository
 
 import com.smcdeveloper.nobinoapp.data.model.Category
-import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
+import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.HomeApiInterface
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import javax.inject.Inject
 
-class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseApiResponse()
-{
+class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseApiResponse2() {
 
-    suspend fun getProducts():NetworkResult =
+    suspend fun getProducts(): NetworkResult<MovieResult> =
 
         safeApiCall {
 
@@ -19,7 +20,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         }
 
 
-    suspend fun getSlider():NetworkResult =
+    suspend fun getSlider(): NetworkResult<Slider> =
 
         safeApiCall {
 
@@ -29,26 +30,23 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         }
 
 
-
-
-
-
-
-    suspend fun getMoveListBySize():NetworkResult =
+    suspend fun getMoveListBySize(): NetworkResult<MovieResult> =
 
         safeApiCall {
 
-            val category=Category.SERIES
-            api.getMoviesBySize(size = "15", category =category.displayName )
+            val category = Category.SERIES
+            api.getMoviesBySize(size = "15", category = category.displayName)
 
 
         }
 
-
-
-
-
-
-
-
+    suspend fun getMovieDetails(id: Int): NetworkResult<MovieResult> =
+       safeApiCall {
+           api.fetchMovieDetails(id)
+       }
 }
+
+
+
+
+
