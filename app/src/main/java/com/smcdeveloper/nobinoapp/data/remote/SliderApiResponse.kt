@@ -1,11 +1,11 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
-import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
-abstract class BaseApiResponse {
-    suspend fun  safeApiCall(apiCall: suspend () -> Response<MovieResult>):NetworkResult  =
+abstract class SliderApiResponse {
+    suspend fun  safeApiCall(apiCall: suspend () -> Response<Slider>):NetworkResult  =
         withContext(Dispatchers.IO) {
             try {
                 val response = apiCall()

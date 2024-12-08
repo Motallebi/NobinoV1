@@ -1,4 +1,4 @@
-package com.smcdeveloper.nobinoapp.data.model.bb
+package com.smcdeveloper.nobinoapp.data.model.prducts
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,7 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.home
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +18,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,10 +36,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import com.smcdeveloper.nobinoapp.data.model.bb.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
-import com.smcdeveloper.nobinoapp.ui.component.FilmBox
-import com.smcdeveloper.nobinoapp.ui.component.FilmBox2
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
 import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG_IMAGES

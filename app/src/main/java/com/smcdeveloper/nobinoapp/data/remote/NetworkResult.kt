@@ -1,8 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
-import com.smcdeveloper.nobinoapp.data.model.bb.MovieResult
-import com.smcdeveloper.nobinoapp.data.model.nn.MoviesData
-import com.smcdeveloper.nobinoapp.data.model.testrest.PostResponseModel
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 
 sealed class  NetworkResult(
     val message: String? = null,
