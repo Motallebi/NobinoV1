@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 abstract class SliderApiResponse {
-    suspend fun  safeApiCall(apiCall: suspend () -> Response<Slider>):NetworkResult  =
+    suspend fun  safeApiCall(apiCall: suspend () -> Response<Slider>):SlidderResualt  =
         withContext(Dispatchers.IO) {
             try {
                 val response = apiCall()
@@ -15,7 +15,7 @@ abstract class SliderApiResponse {
 
                     body?.let {
                        // Log.d(LOG_TAG, "SafeApiCall...:$body")
-                        return@withContext NetworkResult.Success("",body)
+                        return@withContext SlidderResualt.Success("",body)
 
                     }
                 }
@@ -26,8 +26,8 @@ abstract class SliderApiResponse {
         }
 
 
-    private fun  error(errorMessage: String): NetworkResult =
-        NetworkResult.Error("Api call failed : $errorMessage")
+    private fun  error(errorMessage: String): SlidderResualt =
+        SlidderResualt.Error("Api call failed : $errorMessage")
 
 
 

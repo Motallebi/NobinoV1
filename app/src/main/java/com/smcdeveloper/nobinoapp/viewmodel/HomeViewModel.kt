@@ -19,17 +19,28 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     private val _movies = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
     val movies: StateFlow<NetworkResult<MovieResult>> get() = _movies.asStateFlow()
 
-   private val _movieDetails = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
-    val movieDetails: StateFlow<NetworkResult<MovieResult>> get() = _movieDetails.asStateFlow()
-
+    private val _movieDetails =
+        MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
+       val movieDetails: StateFlow<NetworkResult<MovieResult>> get() = _movieDetails.asStateFlow()
 
 
     val products = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
-   val productsListBySize = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
-    val slider=MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
+    val productsListBySize = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
+    val slider = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
+
+
+    fun getProductBySize() {
+
+        viewModelScope.launch {
+            productsListBySize.emit(repository.getMoveListBySize())
+
+
+        }
+    }
+
+
 
     fun getProduct() {
-
 
 
         viewModelScope.launch {
@@ -39,15 +50,6 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
         }
 
 
-    }
-
-
-    fun fetchMovieDetails(id: Int) {
-        viewModelScope.launch {
-            _movieDetails.value = NetworkResult.Loading()
-            val result = repository.getMovieDetails(id)
-            _movieDetails.value = result
-        }
 
 
 
@@ -59,17 +61,30 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
-
-        fun getProductBySize() {
-
+        fun fetchMovieDetails(id: Int) {
             viewModelScope.launch {
-                productsListBySize.emit(repository.getMoveListBySize())
-
-
+                _movieDetails.value = NetworkResult.Loading()
+                val result = repository.getMovieDetails(id)
+                _movieDetails.value = result
             }
 
 
         }
 
 
-    }}
+            fun getProductBySize() {
+
+                viewModelScope.launch {
+                    productsListBySize.emit(repository.getMoveListBySize())
+
+
+                }
+
+
+            }
+        }
+    }
+
+
+
+

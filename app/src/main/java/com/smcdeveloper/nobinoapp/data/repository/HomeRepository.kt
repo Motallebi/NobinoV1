@@ -20,6 +20,9 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         }
 
 
+
+
+
     suspend fun getSlider(): NetworkResult<Slider> =
 
         safeApiCall {
