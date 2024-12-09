@@ -86,8 +86,8 @@ fun Home(
 
          }
 
-              //   getAllMovies()
-              getSlider()
+                getAllMovies()
+                 getSlider()
 
 
 

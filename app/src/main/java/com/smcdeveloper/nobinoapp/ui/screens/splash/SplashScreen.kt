@@ -15,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.R
-import com.smcdeveloper.nobinoapp.ui.theme.splashBg
+
 
 @Composable
 fun SplashScreen(navController: NavHostController)
@@ -27,7 +27,7 @@ fun SplashScreen(navController: NavHostController)
 
         modifier =
         Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.splashBg),
+            .background(MaterialTheme.colorScheme.onBackground),
         contentAlignment = Alignment.Center
 
 

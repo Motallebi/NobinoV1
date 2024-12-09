@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.ui.screens.search
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,20 +14,16 @@ import com.smcdeveloper.nobinoapp.ui.theme.extraBoldNumber
 fun Search(navController: NavHostController)
 {
     Box(
-        contentAlignment = Alignment.CenterStart
+        contentAlignment = Alignment.Center
 
 
     )
     {
 
-        Text("SERACH"
-        ,
-            style = MaterialTheme.typography.extraBoldNumber,
-            color = Color.Red
+       Text("ggg",
+          color =MaterialTheme.colorScheme.onBackground
 
-
-
-        )
+           )
 
 
 

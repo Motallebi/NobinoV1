@@ -15,7 +15,7 @@ import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.ui.component.NobinoButton
 import com.smcdeveloper.nobinoapp.ui.component.NobinoOutlineButton
 import com.smcdeveloper.nobinoapp.ui.component.NobinoText
-import com.smcdeveloper.nobinoapp.ui.theme.mianAppBackGround
+
 
 @Composable
 fun BoxScreen(navController : NavHostController)
@@ -23,7 +23,7 @@ fun BoxScreen(navController : NavHostController)
 
     Box(
         modifier = Modifier.fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.mianAppBackGround)
+            .background(color = MaterialTheme.colorScheme.onBackground)
             .padding(top = 100.dp, start = 30.dp, end = 30.dp),
         contentAlignment = Alignment.Center
 

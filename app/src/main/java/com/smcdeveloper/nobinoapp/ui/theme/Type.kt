@@ -65,7 +65,7 @@ val Typography.nobinoMedium: TextStyle
 
 
 // Set of Material typography styles to start with
-val Typography = Typography(
+val AppTypography = Typography(
     bodyLarge = TextStyle(
         fontFamily = font_bold,
         fontWeight = FontWeight.Normal,

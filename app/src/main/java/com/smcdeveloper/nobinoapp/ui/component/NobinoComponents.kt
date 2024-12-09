@@ -40,9 +40,7 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.size.Scale
 import com.smcdeveloper.nobinoapp.R
-import com.smcdeveloper.nobinoapp.ui.theme.Purple80
-import com.smcdeveloper.nobinoapp.ui.theme.RedPrimary
-import com.smcdeveloper.nobinoapp.ui.theme.mianAppTextInput
+
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 
 
@@ -72,7 +70,7 @@ fun NobinoText()
             )
         },
         colors = TextFieldDefaults.colors(
-            focusedTextColor = MaterialTheme.colorScheme.mianAppTextInput,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
             unfocusedTextColor = Color.Black,
             unfocusedLabelColor = Color.Blue,
 
@@ -104,8 +102,8 @@ fun NobinoButton(text:String)
           //  .background(Color.Green)
         ,
         colors = ButtonDefaults.buttonColors(
-            contentColor = Purple80,
-            containerColor = RedPrimary
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            containerColor = MaterialTheme.colorScheme.onBackground
 
 
 
@@ -148,7 +146,7 @@ fun NobinoOutlineButton()
         //  .background(Color.Green)
         ,
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = Purple80,
+            contentColor = MaterialTheme.colorScheme.onBackground,
 
 
 

@@ -25,7 +25,7 @@ import com.smcdeveloper.nobinoapp.ui.component.NobinoButton
 import com.smcdeveloper.nobinoapp.ui.component.NobinoOutlineButton
 import com.smcdeveloper.nobinoapp.ui.component.NobinoText
 import com.smcdeveloper.nobinoapp.ui.theme.extraBoldNumber
-import com.smcdeveloper.nobinoapp.ui.theme.mianAppBackGround
+
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 
@@ -35,7 +35,7 @@ fun Login(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.mianAppBackGround)
+            .background(color = MaterialTheme.colorScheme.onBackground)
             .padding(top = 40.dp, start = 30.dp, end = 30.dp),
         contentAlignment = Alignment.Center
 

@@ -19,7 +19,7 @@ import com.smcdeveloper.nobinoapp.navigation.BottomNavigationBar
 import com.smcdeveloper.nobinoapp.navigation.SetupNavGraph
 import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoTop
 import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoTopBar
-import com.smcdeveloper.nobinoapp.ui.theme.NobinoAppTheme
+import com.smcdeveloper.nobinoapp.ui.theme.AppTheme
 import com.smcdeveloper.nobinoapp.util.Constants.ENGLISH_LANG
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LANGUAGE
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
@@ -28,8 +28,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
-
-
 
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -55,70 +53,43 @@ class MainActivity : ComponentActivity() {
 
 
 
-            NobinoAppTheme {
+            AppTheme {
 
 
-                CompositionLocalProvider(LocalLayoutDirection provides direction)
-                {
+                CompositionLocalProvider(LocalLayoutDirection provides direction) {
                     Scaffold(
 
 
-                        bottomBar ={
-                            BottomNavigationBar(
-                                navController,
-                                onItemClick = {
-                                    navController.navigate(it.route)
+                        bottomBar = {
+                            BottomNavigationBar(navController, onItemClick = {
+                                navController.navigate(it.route)
 
-                                }
+                            }
 
                             )
 
 
-
-
-
-
-
-
-                        } ,
+                        },
 
                         topBar = {
 
-                            NobinoTop(navController)
-
+                               NobinoTop(navController)
 
 
                         }
 
 
-                        )
+                    )
+
                     {
 
                         SetupNavGraph(navController = navController)
 
 
-
-
-
-
-
                     }
 
 
-
-
-
-
-
                 }
-
-
-
-
-
-
-
-
 
 
             }
