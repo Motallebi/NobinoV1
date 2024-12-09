@@ -16,19 +16,19 @@ import com.smcdeveloper.nobinoapp.R
   //Adding Custom Fonts To the Nobino App
 
 
-val font_medium= FontFamily(
+val nobino_fonts= FontFamily(
 
-    Font(R.font.iranyekanmedium)
+    Font(R.font.iransans_mobile)
 
 
 )
 
 
 val font_bold = FontFamily(
-    Font(R.font.iranyekanbold)
+    Font(R.font.iransans_bold)
 )
 val font_standard = FontFamily(
-    Font(R.font.iranyekan)
+    Font(R.font.iransans_medium)
 )
 
 
@@ -36,7 +36,7 @@ val font_standard = FontFamily(
 val Typography.extraBoldNumber : TextStyle
     @Composable
     get() = TextStyle(
-        fontFamily = font_bold,
+        fontFamily = nobino_fonts,
         fontWeight = FontWeight.Bold,
         fontSize = 56.sp,
     )
@@ -44,7 +44,7 @@ val Typography.extraBoldNumber : TextStyle
 val Typography.nobinoLarge : TextStyle
     @Composable
     get() = TextStyle(
-        fontFamily = font_bold,
+        fontFamily = nobino_fonts,
         fontWeight = FontWeight.Bold,
         fontSize = 48.sp,
         color = Color.White
@@ -53,7 +53,7 @@ val Typography.nobinoLarge : TextStyle
 val Typography.nobinoMedium: TextStyle
     @Composable
     get() = TextStyle(
-        fontFamily = font_bold,
+        fontFamily = nobino_fonts,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         color = Color.White,

@@ -17,6 +17,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.smcdeveloper.nobinoapp.navigation.BottomNavigationBar
 import com.smcdeveloper.nobinoapp.navigation.SetupNavGraph
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoTop
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoTopBar
 import com.smcdeveloper.nobinoapp.ui.theme.NobinoAppTheme
 import com.smcdeveloper.nobinoapp.util.Constants.ENGLISH_LANG
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LANGUAGE
@@ -79,6 +81,14 @@ class MainActivity : ComponentActivity() {
 
 
                         } ,
+
+                        topBar = {
+
+                            NobinoTop(navController)
+
+
+
+                        }
 
 
                         )
