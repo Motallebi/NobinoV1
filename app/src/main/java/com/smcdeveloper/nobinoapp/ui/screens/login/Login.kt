@@ -127,7 +127,7 @@ fun Login(navController: NavHostController) {
                     horizontalArrangement = Arrangement.Center
                 )
                 {
-                    NobinoButton("")
+                    NobinoButton("", modifier = Modifier)
 
                 }
 

@@ -29,6 +29,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
+import com.smcdeveloper.nobinoapp.ui.component.MovieCard
+import com.smcdeveloper.nobinoapp.ui.component.MovieCard1
+import com.smcdeveloper.nobinoapp.ui.component.MovieCardtest
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
@@ -78,40 +81,124 @@ fun SliderList(sliderInfoList: List<Slider.Sliderinfo?>) {
         items(sliderInfoList.size) { index ->
             val sliderInfo = sliderInfoList[index]
             Log.d(LOG_TAG,"Slider PAth${sliderInfo?.imageHorizontalPath}")
-            SliderItem(sliderInfo)
+            SliderItem1(sliderInfo)
         }
     }
 }
 
 @Composable
 fun SliderItem(sliderInfo: Slider.Sliderinfo?) {
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        modifier = Modifier
-            .width(200.dp)
-            .height(300.dp)
-    ) {
-        Column {
-            val imagePath = "https://vod.nobino.ir/vod/"+sliderInfo?.imageHorizontalPath.orEmpty()
-            Log.d(LOG_TAG,"Slider PAth-->:${imagePath}")
 
-            AsyncImage(
-                model = imagePath,
-                contentDescription = null,
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+
+
+
+
+
+    )
+    {
+        Box()
+        {
+
+
+
+            Card(
+                shape = RoundedCornerShape(8.dp),
+                elevation = CardDefaults.cardElevation(4.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                contentScale = ContentScale.Crop
+                    .width(200.dp)
+                    .height(300.dp)
             )
-            Text(
-                text = sliderInfo?.product?.name.orEmpty(),
-                style = MaterialTheme.typography.nobinoMedium,
-                modifier = Modifier.padding(8.dp)
-            )
+            {
+                Column {
+                    val imagePath = "https://vod.nobino.ir/vod/"+sliderInfo?.imageHorizontalPath.orEmpty()
+                    Log.d(LOG_TAG,"Slider PAth-->:${imagePath}")
+
+                    AsyncImage(
+                        model = imagePath,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(
+                        text = sliderInfo?.product?.name.orEmpty(),
+                        style = MaterialTheme.typography.nobinoMedium,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+@Composable
+fun SliderItem1(sliderInfo: Slider.Sliderinfo?) {
+
+    MovieCardtest(sliderInfo)
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

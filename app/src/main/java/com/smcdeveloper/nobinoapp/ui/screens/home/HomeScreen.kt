@@ -1,20 +1,16 @@
 package com.smcdeveloper.nobinoapp.ui.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
-import kotlinx.coroutines.flow.collectLatest
+import com.smcdeveloper.nobinoapp.ui.component.NobinoGradientCard
+import com.smcdeveloper.nobinoapp.util.Constants
+import com.smcdeveloper.nobinoapp.util.LocalelUtils
 
 @Composable
 fun HomeScreen(navController: NavHostController)
@@ -23,18 +19,16 @@ fun HomeScreen(navController: NavHostController)
     Home(navController=navController)
 
 }
+
 @Composable
 fun Home(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
-
-
-
-
 )
 {
-    LaunchedEffect(true) {
+    LocalelUtils.setLocale(LocalContext.current, Constants.USER_LANGUAGE)
 
+    LaunchedEffect(true) {
 
         refreshDataFromServer(viewModel)
     }
@@ -44,68 +38,32 @@ fun Home(
 
 
 
- Column(
-    modifier = Modifier.padding(top = 30.dp)
+    Column(
+     //   modifier = Modifier.padding(top = 30.dp)
 
 
- )
- {
-     Button(onClick = {
+    )
+    {
 
-         Log.d("nobino","Click on ME!!!")
-         Log.d("nobino","Click on ME!!!")
-
-
+        Text("NOBINO--------NONINO")
+        NobinoGradientCard("Nobino")
 
 
 
 
 
+        // getAllMovies()
+           getSlider()
 
 
+    }
 
-
-
-
-
-
-     }
-     , modifier = Modifier.fillMaxWidth()
-
-
-
-     )
-
-     {
-         Text("Click me")
-
-
-
-
-
-
-         }
-
-                getAllMovies()
-                 getSlider()
-
-
-
-
-
-     }
-
-
-
-
-
-
-     }
-
+}
 
 private suspend fun refreshDataFromServer(viewModel: HomeViewModel) {
    viewModel.getProduct()
     viewModel.getProductBySize()
+    viewModel.getSlider()
 
    //viewModel.productsListBySize()
 }

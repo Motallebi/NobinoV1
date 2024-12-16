@@ -51,7 +51,7 @@ fun BoxScreen(navController : NavHostController)
             Column() {
 
                 NobinoText()
-                NobinoButton("")
+                NobinoButton("", modifier = Modifier)
                 NobinoOutlineButton()
 
 
