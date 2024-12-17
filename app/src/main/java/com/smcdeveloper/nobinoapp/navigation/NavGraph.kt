@@ -14,6 +14,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
 import com.smcdeveloper.nobinoapp.ui.screens.login.Login
 import com.smcdeveloper.nobinoapp.ui.screens.profile.Profile
 import com.smcdeveloper.nobinoapp.ui.screens.search.Search
+import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
 import com.smcdeveloper.nobinoapp.ui.screens.signup.SignUp
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
 
@@ -81,6 +82,13 @@ fun SetupNavGraph(navController: NavHostController) {
 
         }
 
+
+
+        composable(route = Screen.Series.route) {
+            SeriesScreen(navController = navController)
+
+
+        }
 
 
 

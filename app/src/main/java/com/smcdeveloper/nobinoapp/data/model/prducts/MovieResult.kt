@@ -30,7 +30,9 @@ data class MovieResult(
         val size: Int?=0,
         @SerializedName("total")
         val total: Int?=0
-    ) {
+    )
+
+    {
         data class Item(
             @SerializedName("actors")
             val actors: List<Actor?>?= emptyList(),

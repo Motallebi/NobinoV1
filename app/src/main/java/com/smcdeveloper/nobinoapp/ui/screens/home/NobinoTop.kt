@@ -52,7 +52,7 @@ fun NobinoTop(navController: NavHostController) {
                                 when (tab) {
                                     "نوینو" ->Screen.Home.route
                                     "فیلم" -> Screen.Home.route
-                                    "سریال" -> Screen.Home.route
+                                    "سریال" -> Screen.Series.route
                                     "آموزش" -> Screen.Home.route
                                     "کودک" -> Screen.Home.route
                                     else -> Screen.Home.route

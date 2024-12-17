@@ -53,7 +53,9 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.size.Scale
 import com.smcdeveloper.nobinoapp.R
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
+import com.smcdeveloper.nobinoapp.data.repository.SeriesRepository
 import com.smcdeveloper.nobinoapp.ui.theme.extraBoldNumber
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 
@@ -780,6 +782,14 @@ fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {
             )
 
             {
+
+                Row()
+                {
+
+
+                }
+
+
                 Row()
                 {
                     sliderInfo?.product?.screeningState?.let {
@@ -895,4 +905,232 @@ fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {
 
 
 
+@Composable
+fun SeriesCardtest(item: MovieResult.DataMovie.Item) {
+   // val items = seriesInfo.items?: emptyList()
+
+
+
+
+
+
+
+
+
+           //MovieResult.DataMovie
+
+    Box(
+
+        modifier = Modifier
+            .width(300.dp)
+            .height(400.dp)
+            // .padding(50.dp)
+            //  .wrapContentSize()
+
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.Green)
+            .border(8.dp, Color(0xFF6200EE), RoundedCornerShape(12.dp)),
+
+        //  contentAlignment = Alignment.Center
+
+    )
+
+    {
+        // Background image
+
+
+
+        if (!item.images.isNullOrEmpty() && item.images[0]?.src != null)
+            {
+                val imagePath = "https://vod.nobino.ir/vod/" + item.images[0]?.src
+
+                AsyncImage(
+                    model = imagePath,
+                    contentDescription = "Movie Poster",
+                    modifier = Modifier
+                        // .fillMaxSize(),
+                        .width(300.dp)
+                        .height(400.dp),
+
+
+                    contentScale = ContentScale.Crop,
+                    //   clipToBounds = true
+
+                )
+
+
+
+            }
+
+
+
+
+
+
+        /* Image(
+            painter = painterResource(R.drawable.m1),
+            contentDescription = "Movie Poster",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+        )*/
+
+        // Gradient overlay
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, Color.Black),
+                        startY = 100f
+                    )
+                ),
+            contentAlignment = Alignment.BottomStart
+
+
+        )
+
+        {
+
+            Column(
+                modifier = Modifier
+                    // .fillMaxWidth()
+                    .padding(start = 15.dp)
+                //   .background(Color.LightGray),
+                //  horizontalAlignment = Alignment.End
+
+                //  verticalArrangement = Arrangement.Bottom
+
+
+            )
+
+            {
+                Row()
+                {
+                    item.category?.let {
+                        Text(it,
+                            style = MaterialTheme.typography.nobinoMedium
+
+
+                            )
+
+                    }
+
+                }
+
+
+
+                Row()
+                {
+                    item.name?.let {
+                        Text(
+                            "----${it}----",
+                            style = MaterialTheme.typography.nobinoMedium
+
+
+                        )
+
+
+                    }
+                }
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                    //  .background(Color.Cyan),
+                    //  horizontalArrangement = Arrangement.SpaceAround
+
+
+                    //horizontalArrangement = Arrangement.SpaceAround
+
+
+                )
+
+                {
+                    item.name?.let {
+                        Text(
+                            it,
+
+
+                            style = MaterialTheme.typography.nobinoMedium,
+                            // textAlign = TextAlign.Start
+                            //  fontSize = 16.sp,
+                            //   color = Color.White,
+                            //  fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+
+                //   NobinoGradientCard("movieName") { }
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+
+
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment =Alignment.CenterVertically
+
+
+
+
+                )
+
+
+                {
+
+                    item.name.let {
+                        NobinoGradientCard("IMDB $it")
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        Text(
+                            "icon1",
+                            color = Color.Red,
+                            fontSize = 13.sp
+
+
+                        )
+
+
+                        //  Text("MivieName")
+                        //  Text("IMDB")
+
+
+                        Text(
+                            "icon1",
+                            color = Color.Red,
+                            fontSize = 13.sp
+
+
+                        )
+
+
+                    }
+
+
+                    // Movie details
+
+
+                }
+
+
+            }
+        }
+    }
+}
 
