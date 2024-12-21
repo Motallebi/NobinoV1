@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import retrofit2.Response
@@ -14,10 +15,10 @@ interface HomeApiInterface {
 
 
     @GET("api/products")
-
-    suspend fun getMoviesBySize(
-        @Query("size") size: String,
-        @Query("category") category: String
+    suspend fun getMoviesByQueryParams(
+        @Query("size") size: String="10",
+        @Query("category") category: String="MOVIES",
+        @Query("tags") tags: String = "",
     ):Response<MovieResult>
 
     @GET("api/settings/mainPage/sliders")
@@ -29,7 +30,21 @@ interface HomeApiInterface {
     suspend fun fetchMovieDetails(
         @Path("id") id: Int
     ): Response<MovieResult>
+
+    @GET("api/settings/mainPage/queries/{id}")
+    suspend fun fetchMovieTags(
+        @Path("id") id: Int
+    ): Response<MovieCat>
+
+
+
+
+
+
+
+
 }
+
 
 
 

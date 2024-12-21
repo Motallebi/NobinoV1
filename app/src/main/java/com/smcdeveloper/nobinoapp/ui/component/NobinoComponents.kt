@@ -904,6 +904,244 @@ fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {
 
 
 
+@Composable
+fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
+
+
+    Box(
+
+        modifier = Modifier
+            .width(300.dp)
+            .height(400.dp)
+            // .padding(50.dp)
+            //  .wrapContentSize()
+
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color.Green)
+            .border(8.dp, Color(0xFF6200EE), RoundedCornerShape(12.dp)),
+
+        //  contentAlignment = Alignment.Center
+
+    )
+
+    {
+        if (!movieInfo.images.isNullOrEmpty() && movieInfo.images[0]?.src != null) {
+            val imagePath = "https://vod.nobino.ir/vod/" + movieInfo.images[0]?.src
+
+            AsyncImage(
+                model = imagePath,
+                contentDescription = "Movie Poster",
+                modifier = Modifier
+                    // .fillMaxSize(),
+                    .width(300.dp)
+                    .height(400.dp),
+
+
+                contentScale = ContentScale.Crop,
+                //   clipToBounds = true
+
+            )
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /* Image(
+            painter = painterResource(R.drawable.m1),
+            contentDescription = "Movie Poster",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+        )*/
+
+            // Gradient overlay
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black),
+                            startY = 100f
+                        )
+                    ),
+                contentAlignment = Alignment.BottomStart
+
+
+            )
+
+            {
+
+                Column(
+                    modifier = Modifier
+                        // .fillMaxWidth()
+                        .padding(start = 15.dp)
+                    //   .background(Color.LightGray),
+                    //  horizontalAlignment = Alignment.End
+
+                    //  verticalArrangement = Arrangement.Bottom
+
+
+                )
+
+                {
+
+                    Row()
+                    {
+
+
+                    }
+
+
+                    Row()
+                    {
+                        movieInfo?.name?.let {
+                            Text(
+                                it,
+                                style = MaterialTheme.typography.nobinoMedium
+
+
+                            )
+
+
+                        }
+                    }
+
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                        //  .background(Color.Cyan),
+                        //  horizontalArrangement = Arrangement.SpaceAround
+
+
+                        //horizontalArrangement = Arrangement.SpaceAround
+
+
+                    )
+
+                    {
+                        movieInfo?.name?.let {
+                            Text(
+                                it,
+
+
+                                style = MaterialTheme.typography.nobinoMedium,
+                                // textAlign = TextAlign.Start
+                                //  fontSize = 16.sp,
+                                //   color = Color.White,
+                                //  fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+
+                    //   NobinoGradientCard("movieName") { }
+
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+
+
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+
+
+                    )
+
+
+                    {
+
+                        movieInfo?.imdbCode?.let {
+                            NobinoGradientCard("IMDB $it")
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            Text(
+                                "icon1",
+                                color = Color.Red,
+                                fontSize = 13.sp
+
+
+                            )
+
+
+                            //  Text("MivieName")
+                            //  Text("IMDB")
+
+
+                            Text(
+                                "icon1",
+                                color = Color.Red,
+                                fontSize = 13.sp
+
+
+                            )
+
+
+                        }
+
+
+                        // Movie details
+
+
+                    }
+
+
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
 @Composable
 fun SeriesCardtest(item: MovieResult.DataMovie.Item) {

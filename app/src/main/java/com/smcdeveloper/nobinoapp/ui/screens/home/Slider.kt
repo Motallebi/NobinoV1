@@ -27,11 +27,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.MovieCard
 import com.smcdeveloper.nobinoapp.ui.component.MovieCard1
 import com.smcdeveloper.nobinoapp.ui.component.MovieCardtest
+import com.smcdeveloper.nobinoapp.ui.component.MovieCardtestByTag
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
@@ -72,6 +74,11 @@ fun getSlider(viewModel: HomeViewModel = hiltViewModel())
 }
 
 
+
+
+
+
+
 @Composable
 fun SliderList(sliderInfoList: List<Slider.Sliderinfo?>) {
     LazyRow(
@@ -85,6 +92,25 @@ fun SliderList(sliderInfoList: List<Slider.Sliderinfo?>) {
         }
     }
 }
+
+
+@Composable
+fun SliderByMoveTag(items: List<MovieResult.DataMovie.Item>) {
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(items.size) { index ->
+            val movieInfo = items[index]
+           // Log.d(LOG_TAG,"Slider PAth${sliderInfo?.imageHorizontalPath}")
+            SliderItemByTags(movieInfo)
+        }
+    }
+}
+
+
+
+
 
 @Composable
 fun SliderItem(sliderInfo: Slider.Sliderinfo?) {
@@ -176,6 +202,95 @@ fun SliderItem1(sliderInfo: Slider.Sliderinfo?) {
 
     }
 
+@Composable
+fun SliderItemByTags(movieInfo: MovieResult.DataMovie.Item) {
+
+    MovieCardtestByTag(movieInfo)
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+@Composable
+fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel())
+{
+
+    val movieState by viewModel.moviesByTags.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getMoviesByTags()
+    }
+
+    when (movieState) {
+        is NetworkResult.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        is NetworkResult.Error -> {
+            val errorMessage = (movieState as NetworkResult.Error).message
+            Text(
+                text = "Error: $errorMessage",
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.fillMaxSize(),
+                style = MaterialTheme.typography.nobinoMedium
+            )
+        }
+        is NetworkResult.Success -> {
+            val movieInfo = (movieState as NetworkResult.Success<List<MovieResult.DataMovie.Item>>).data
+            Log.d(LOG_TAG,"networkcall.......")
+
+
+           // SliderItemByTags(MovieResult.DataMovie?.Item: emptyList())
+
+
+            movieInfo?.let {
+                SliderByMoveTag(it)
+
+            }
+
+           /* if (movieInfo != null) {
+                SliderItemByTags(movieInfo.get(0))
+            }*/
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 
 
