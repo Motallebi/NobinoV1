@@ -71,24 +71,25 @@ data class Slider(
             @SerializedName("translatedName")
             val translatedName: String?,
             @SerializedName("updatedAt")
-            val updatedAt: Long?
-        ) {
+            val updatedAt: Double?
+        )
+        {
             data class Country(
                 @SerializedName("code")
                 val code: String?,
                 @SerializedName("createdAt")
-                val createdAt: Long?,
+                val createdAt: Double?,
                 @SerializedName("id")
                 val id: Int?,
                 @SerializedName("name")
                 val name: String?,
                 @SerializedName("updatedAt")
-                val updatedAt: Long?
+                val updatedAt: Double?
             )
 
             data class Image(
                 @SerializedName("createdAt")
-                val createdAt: Long?,
+                val createdAt: Double?,
                 @SerializedName("id")
                 val id: Int?,
                 @SerializedName("imageType")
@@ -99,7 +100,7 @@ data class Slider(
 
             data class Owner(
                 @SerializedName("createdAt")
-                val createdAt: Long?,
+                val createdAt: Double?,
                 @SerializedName("description")
                 val description: String?,
                 @SerializedName("id")
@@ -111,7 +112,7 @@ data class Slider(
                 @SerializedName("translatedName")
                 val translatedName: String?,
                 @SerializedName("updatedAt")
-                val updatedAt: Long?
+                val updatedAt: Double?
             )
 
             data class Tag(
