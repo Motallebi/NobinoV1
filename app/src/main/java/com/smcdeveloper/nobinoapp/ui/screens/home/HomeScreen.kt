@@ -53,8 +53,9 @@ fun Home(
 
 
        //  getAllMovies()
-           getSlider()
+        //   getSlider()
            GetSliderByTag()
+
 
 
 
@@ -68,9 +69,14 @@ fun Home(
 private suspend fun refreshDataFromServer(viewModel: HomeViewModel) {
 
    //viewModel.getProduct()
-   // viewModel.getProductBySize()
-      viewModel.getSlider()
-      viewModel.getMoviesByTags()
+  // viewModel.getProductBySize()
+   //viewModel.getSlider()
+  // viewModel.fetchMovies()
+
+     viewModel.getMoviesByTags()
+
+
+
 
    //viewModel.productsListBySize()
 }

@@ -16,7 +16,7 @@ class SeriesRepository @Inject constructor(private val api:SeriesInterface):Base
         safeApiCall {
 
             val category = Category.SERIES
-            api.getSeriseBySize(size = "10", category = category.displayName)
+            api.getSeriseBySize(size = "3", category = category.displayName)
 
 
 

@@ -1038,6 +1038,34 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
                     }
 
 
+
+                    Row()
+                    {
+                        movieInfo?.name?.let {
+                            Text(
+                                it,
+                                style = MaterialTheme.typography.nobinoMedium
+
+
+                            )
+
+
+                        }
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

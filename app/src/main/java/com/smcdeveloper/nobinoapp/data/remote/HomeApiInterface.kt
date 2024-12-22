@@ -17,9 +17,24 @@ interface HomeApiInterface {
     @GET("api/products")
     suspend fun getMoviesByQueryParams(
         @Query("size") size: String="10",
-        @Query("category") category: String="MOVIES",
+        @Query("category") category: String="SERIES",
         @Query("tags") tags: String = "",
     ):Response<MovieResult>
+
+
+    @GET("api/products")
+    suspend fun getMovieTest(
+        @Query("size") size: String="3",
+        @Query("category") category: String="SERIES",
+       @Query("tags") tags: String = "",
+    ):Response<MovieResult>
+
+
+
+
+
+
+
 
     @GET("api/settings/mainPage/sliders")
     suspend fun getSlider():Response<Slider>

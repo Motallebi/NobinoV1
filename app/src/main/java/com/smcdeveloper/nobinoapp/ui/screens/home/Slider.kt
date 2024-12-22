@@ -95,7 +95,24 @@ fun SliderList(sliderInfoList: List<Slider.Sliderinfo?>) {
 
 
 @Composable
+fun ShowSpecialCat(specialCat:String)
+{
+    Text(specialCat,
+        style = MaterialTheme.typography.nobinoMedium
+
+
+
+
+    )
+
+}
+
+
+
+@Composable
 fun SliderByMoveTag(items: List<MovieResult.DataMovie.Item>) {
+
+
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -225,14 +242,20 @@ fun SliderItemByTags(movieInfo: MovieResult.DataMovie.Item) {
 fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel())
 {
 
-    val movieState by viewModel.moviesByTags.collectAsState()
+    val movieState by viewModel.movieState.collectAsState()
+    val tagState by viewModel.moviesByTags.collectAsState()
+
+
 
     LaunchedEffect(Unit) {
-        viewModel.getMoviesByTags()
+        viewModel.fetchMovies()
+
     }
 
     when (movieState) {
         is NetworkResult.Loading -> {
+            Log.d(LOG_TAG,"Loading......")
+
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -252,12 +275,18 @@ fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel())
         is NetworkResult.Success -> {
             val movieInfo = (movieState as NetworkResult.Success<List<MovieResult.DataMovie.Item>>).data
             Log.d(LOG_TAG,"networkcall.......")
+          //  Log.d(LOG_TAG,"networkcall......."+movieInfo.)
+
 
 
            // SliderItemByTags(MovieResult.DataMovie?.Item: emptyList())
 
 
             movieInfo?.let {
+                ShowSpecialCat(tagState.data?.movieCatData?.title.toString())
+                ShowSpecialCat("..test..")
+
+
                 SliderByMoveTag(it)
 
             }

@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
@@ -7,6 +8,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.HomeRepository
+import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,18 +38,6 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     val movieState: StateFlow<NetworkResult<List<MovieResult.DataMovie.Item>>> = _movieState
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     private val _movieDetails =
         MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
     val movieDetails: StateFlow<NetworkResult<MovieResult>> get() = _movieDetails.asStateFlow()
@@ -61,12 +51,6 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     val slider: StateFlow<NetworkResult<Slider>> get() = _sliders.asStateFlow()
     // val slider = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
 
-
-    private fun fetchMovies() {
-        repository.fetchMovies()
-            .onEach { result -> _movieState.value = result }
-            .launchIn(viewModelScope)
-    }
 
 
 
@@ -142,23 +126,30 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     fun getMoviesByTags()
     {
 
+
+
         viewModelScope.launch {
 
 
                 flow {
                     // First API call
                     val firstResponse = repository.getMoviesTag(1)
+                    _tags.value=firstResponse
                     emit(firstResponse)
                 }
                     .map { firstData ->
                         // Extract parameters from the first API response
                         val paramA = firstData.data?.movieCatData?.tags?.get(0).toString()
+                        val title=firstData.data?.movieCatData?.title
+
+
                        // val paramB = firstData.paramB
 
                         // Second API call using extracted parameters
                         repository.getMoveListBySize(paramA)
                     }
                     .catch { error ->
+                        Log.d(LOG_TAG,"We have Error.......")
                         // Handle any errors
                         _moviesByTags.value = NetworkResult.Loading()
                     }
@@ -166,6 +157,8 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
+
+
                     }
 
 
@@ -185,6 +178,25 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
+    }
+
+
+
+
+    fun fetchMovies() {
+
+
+        repository.fetchMovies()
+            .onEach {
+                result ->
+
+                    _movieState.value = result
+
+                    Log.d(LOG_TAG,".......FETCH......")
+
+
+            }
+            .launchIn(viewModelScope)
     }
 
 

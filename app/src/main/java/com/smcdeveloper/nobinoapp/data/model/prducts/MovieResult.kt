@@ -43,7 +43,7 @@ data class MovieResult(
             @SerializedName("countries")
             val countries: List<Country?>?= emptyList(),
             @SerializedName("createdAt")
-            val createdAt: Long?=0,
+            val createdAt: Double?=0.0,
             @SerializedName("directors")
             val directors: List<Director?>?= emptyList(),
             @SerializedName("id")
@@ -89,13 +89,13 @@ data class MovieResult(
             @SerializedName("translatedName")
             val translatedName: String?=null,
             @SerializedName("updatedAt")
-            val updatedAt: Long?=0,
+            val updatedAt: Double?=0.0,
             @SerializedName("videos")
             val videos: List<Video?>?=null
         ) {
             data class Actor(
                 @SerializedName("createdAt")
-                val createdAt: Long?=0,
+                val createdAt: Double?=0.0,
                 @SerializedName("description")
                 val description: String?=null,
                 @SerializedName("gender")
@@ -113,25 +113,25 @@ data class MovieResult(
                 @SerializedName("translatedName")
                 val translatedName: String?=null,
                 @SerializedName("updatedAt")
-                val updatedAt: Long?=0
+                val updatedAt: Double?=0.0
             )
 
             data class Country(
                 @SerializedName("code")
                 val code: String?=null,
                 @SerializedName("createdAt")
-                val createdAt: Long?=0,
+                val createdAt: Double?=0.0,
                 @SerializedName("id")
                 val id: Int?=0,
                 @SerializedName("name")
                 val name: String?,
                 @SerializedName("updatedAt")
-                val updatedAt: Long?
+                val updatedAt: Double?
             )
 
             data class Director(
                 @SerializedName("createdAt")
-                val createdAt: Long?=0,
+                val createdAt: Double?=0.0,
                 @SerializedName("description")
                 val description: String?=null,
                 @SerializedName("gender")
@@ -149,12 +149,12 @@ data class MovieResult(
                 @SerializedName("translatedName")
                 val translatedName: String?=null,
                 @SerializedName("updatedAt")
-                val updatedAt: Long?=0
+                val updatedAt: Double?=0.0
             )
 
             data class Image(
                 @SerializedName("createdAt")
-                val createdAt: Long?=0,
+                val createdAt: Double?=0.0,
                 @SerializedName("id")
                 val id: Int?=0,
                 @SerializedName("imageType")
@@ -165,7 +165,7 @@ data class MovieResult(
 
             data class Owner(
                 @SerializedName("createdAt")
-                val createdAt: Long?=0,
+                val createdAt: Double?=0.0,
                 @SerializedName("description")
                 val description: String?=null,
                 @SerializedName("id")
@@ -177,12 +177,12 @@ data class MovieResult(
                 @SerializedName("translatedName")
                 val translatedName: String?=null,
                 @SerializedName("updatedAt")
-                val updatedAt: Long?=0
+                val updatedAt: Double?=0.0
             )
 
             data class Sound(
                 @SerializedName("createdAt")
-                val createdAt: Long?=0,
+                val createdAt: Double?=0.0,
                 @SerializedName("defaulted")
                 val defaulted: Boolean?=null,
                 @SerializedName("id")
@@ -192,12 +192,12 @@ data class MovieResult(
                 @SerializedName("src")
                 val src: String?=null,
                 @SerializedName("updatedAt")
-                val updatedAt: Long?=0
+                val updatedAt: Double?=0.0
             )
 
             data class Subtitle(
                 @SerializedName("createdAt")
-                val createdAt: Long?=0,
+                val createdAt: Double?=0.0,
                 @SerializedName("defaulted")
                 val defaulted: Boolean?=null,
                 @SerializedName("id")
@@ -207,7 +207,7 @@ data class MovieResult(
                 @SerializedName("src")
                 val src: String?=null,
                 @SerializedName("updatedAt")
-                val updatedAt: Long?=0
+                val updatedAt: Double?=0.0
             )
 
             data class Tag(
@@ -227,7 +227,7 @@ data class MovieResult(
 
             data class Video(
                 @SerializedName("createdAt")
-                val createdAt: Long?=null,
+                val createdAt: Double?=null,
                 @SerializedName("duration")
                 val duration: Int?=0,
                 @SerializedName("id")
