@@ -9,8 +9,12 @@ import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.HomeApiInterface
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.toList
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseApiResponse2() {
@@ -61,39 +65,99 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
         }
 
+    //todo this function should complete
 
+   /* @OptIn(ExperimentalCoroutinesApi::class)
     fun fetchMovies(): Flow<NetworkResult<List<MovieResult.DataMovie.Item>>> = flow {
         emit(NetworkResult.Loading())
 
         // First API Call: Fetch Movie Categories
-        val categoryResult = safeApiCall { api.fetchMovieTags(10) }
+        val movieResult = safeApiCall { api.fetchMovieTags(10) }
         Log.d(LOG_TAG,"CategoryResult....")
 
-        when (categoryResult) {
+        when (movieResult) {
             is NetworkResult.Loading->
         {
 
             }
 
             is NetworkResult.Success -> {
-                val tags = categoryResult.data?.movieCatData?.tags?.filterNotNull()
+                val tags = movieResult.data?.movieCatData?.tags?.filterNotNull()
 
                 Log.d(LOG_TAG,"------TAGS-------"+tags?.get(0).toString())
 
 
                 val firstTag = tags?.firstOrNull()
-                Log.d(LOG_TAG, "-----FirstTag-------$firstTag")
+
+               // Log.d(LOG_TAG, "-----FirstTag-------$firstTag")
 
 
-                if (!firstTag.isNullOrEmpty()) {
+                if (!tags.isNullOrEmpty()) {
+
+                    val tagMovieMap = tags.asFlow()
+                        .flatMapConcat { tag->
+                            flow {
+
+                                val movieResult = safeApiCall {
+
+                                    api.getMovieTest(
+
+                                    size = "10",
+                                    category ="SERIES" ,
+
+                                    tags = firstTag.toString()
+                                )
+
+
+
+
+
+                            }
+
+
+                                val movies = if (movieResult is NetworkResult.Success) {
+                                    movieResult.data?.movieInfo?.items
+                                        ?.filterNotNull()
+                                        ?: emptyList()
+                                } else emptyList()
+
+                                emit(tag to movies)
+
+
+                                  //  movieResult.data?.movieInfo?.items?.firstOrNull()
+
+
+
+
+
+
+                                }
+
+
+
+
+
+
+
+
+                        }
+                        .toList()
+                        .toMap()
+
+
+
+
+
+
+
+
+
+
+
+
                     // Second API Call: Fetch Movies By Tag
-                    val movieResult = safeApiCall { api.getMovieTest(
 
-                        size = "10",
-                        category ="SERIES" ,
-
-                        tags = firstTag
-                    ) }
+                    }
                     Log.d(LOG_TAG,"-----movieResult-------"+movieResult.data.toString())
 
 
@@ -115,8 +179,9 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
                 }
             }
             is NetworkResult.Error -> emit(NetworkResult.Error(categoryResult.message.toString()))
+
         }
-    }
+    }*/
 
 
 

@@ -248,7 +248,7 @@ fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel())
 
 
     LaunchedEffect(Unit) {
-        viewModel.fetchMovies()
+      //  viewModel.fetchMovies()
 
     }
 

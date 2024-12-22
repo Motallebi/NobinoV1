@@ -96,8 +96,11 @@ dependencies {
     implementation(libs.coil.compose)
 
 
+// Slider With View Pager
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
 
-   
+
 
 
 

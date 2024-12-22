@@ -1,4 +1,5 @@
 [versions]
+accompanistPager = "0.30.1"
 agp = "8.7.1"
 coilCompose = "3.0.4"
 coilNetworkOkhttp = "3.0.4"
@@ -26,6 +27,8 @@ coil_ver="3.0.4"
 
 
 
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
+accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPager" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android" , version.ref = "hilt_ver"}
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler" , version.ref = "hilt_ver"}
 

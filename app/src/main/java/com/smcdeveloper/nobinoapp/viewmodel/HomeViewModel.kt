@@ -182,8 +182,8 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
-
-    fun fetchMovies() {
+//todo it should be completed
+   /* fun fetchMovies() {
 
 
         repository.fetchMovies()
@@ -197,7 +197,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
             }
             .launchIn(viewModelScope)
-    }
+    }*/
 
 
 
