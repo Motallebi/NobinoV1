@@ -24,7 +24,7 @@ interface HomeApiInterface {
 
     @GET("api/products")
     suspend fun getMovieTest(
-        @Query("size") size: String="3",
+        @Query("size") size: String="10",
         @Query("category") category: String="SERIES",
        @Query("tags") tags: String = "",
     ):Response<MovieResult>

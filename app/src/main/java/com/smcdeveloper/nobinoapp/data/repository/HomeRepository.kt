@@ -29,9 +29,6 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         }
 
 
-
-
-
     suspend fun getSlider(): NetworkResult<Slider> =
 
         safeApiCall {
@@ -39,11 +36,10 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
             api.getSlider()
 
 
-
         }
 
 
-    suspend fun getMoveListBySize(tag:String): NetworkResult<MovieResult> =
+    suspend fun getMoveListBySize(tag: String): NetworkResult<MovieResult> =
 
         safeApiCall {
 
@@ -54,11 +50,11 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         }
 
     suspend fun getMovieDetails(id: Int): NetworkResult<MovieResult> =
-       safeApiCall {
-           api.fetchMovieDetails(id)
-       }
+        safeApiCall {
+            api.fetchMovieDetails(id)
+        }
 
-    suspend fun getMoviesTag(id:Int): NetworkResult<MovieCat> =
+    suspend fun getMoviesTag(id: Int): NetworkResult<MovieCat> =
         safeApiCall {
             api.fetchMovieTags(id)
 
@@ -67,52 +63,48 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
     //todo this function should complete
 
-   /* @OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun fetchMovies(): Flow<NetworkResult<List<MovieResult.DataMovie.Item>>> = flow {
         emit(NetworkResult.Loading())
 
         // First API Call: Fetch Movie Categories
         val movieResult = safeApiCall { api.fetchMovieTags(10) }
-        Log.d(LOG_TAG,"CategoryResult....")
+        Log.d(LOG_TAG, "CategoryResult....")
 
         when (movieResult) {
-            is NetworkResult.Loading->
-        {
+            is NetworkResult.Loading -> {
 
             }
 
             is NetworkResult.Success -> {
                 val tags = movieResult.data?.movieCatData?.tags?.filterNotNull()
 
-                Log.d(LOG_TAG,"------TAGS-------"+tags?.get(0).toString())
+                Log.d(LOG_TAG, "------TAGS-------" + tags?.get(0).toString())
 
 
                 val firstTag = tags?.firstOrNull()
 
-               // Log.d(LOG_TAG, "-----FirstTag-------$firstTag")
+                // Log.d(LOG_TAG, "-----FirstTag-------$firstTag")
 
 
                 if (!tags.isNullOrEmpty()) {
 
                     val tagMovieMap = tags.asFlow()
-                        .flatMapConcat { tag->
+                        .flatMapConcat { tag ->
                             flow {
 
                                 val movieResult = safeApiCall {
 
                                     api.getMovieTest(
 
-                                    size = "10",
-                                    category ="SERIES" ,
+                                        size = "10",
+                                        category = "SERIES",
 
-                                    tags = firstTag.toString()
-                                )
-
-
+                                        tags = firstTag.toString()
+                                    )
 
 
-
-                            }
+                                }
 
 
                                 val movies = if (movieResult is NetworkResult.Success) {
@@ -124,20 +116,10 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
                                 emit(tag to movies)
 
 
-                                  //  movieResult.data?.movieInfo?.items?.firstOrNull()
+                                //  movieResult.data?.movieInfo?.items?.firstOrNull()
 
 
-
-
-
-
-                                }
-
-
-
-
-
-
+                            }
 
 
                         }
@@ -145,25 +127,13 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
                         .toMap()
 
 
-
-
-
-
-
-
-
-
-
-
                     // Second API Call: Fetch Movies By Tag
 
-                    }
-                    Log.d(LOG_TAG,"-----movieResult-------"+movieResult.data.toString())
+                }
+                Log.d(LOG_TAG, "-----movieResult-------" + movieResult.data.toString())
 
 
-
-
-                    when (movieResult) {
+                /* when (movieResult) {
                         is NetworkResult.Loading->
                         {
 
@@ -173,44 +143,178 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
                             emit(NetworkResult.Success(movieResult.data?.movieInfo?.items?.filterNotNull() ?: emptyList()))
                         }
                         is NetworkResult.Error -> emit(NetworkResult.Error(movieResult.message.toString()))
-                    }
-                } else {
-                    emit(NetworkResult.Error("No tags found"))
-                }
+                    }*/
+
+                //emit(NetworkResult.Success(movieResult.data?.?.items?.filterNotNull() ?: emptyList()))
             }
-            is NetworkResult.Error -> emit(NetworkResult.Error(categoryResult.message.toString()))
 
+            is NetworkResult.Error -> emit(NetworkResult.Error(movieResult.message.toString()))
+
+
+            /*else {
+                    emit(NetworkResult.Error("No tags found"))
+                }*/
         }
-    }*/
+        //
+
+    }
+
+    fun fetchMoviesByCategory(tagId: Int): Flow<NetworkResult<List<MovieResult.DataMovie.Item>>> =
+        flow {
+            emit(NetworkResult.Loading())
+
+            // First API Call: Fetch Category Tag
+            val categoryResult = safeApiCall { api.fetchMovieTags(tagId) }
 
 
 
+            when (categoryResult) {
+                is NetworkResult.Success -> {
+                    val firstTag =
+                        categoryResult.data?.movieCatData?.tags?.filterNotNull()?.firstOrNull()
+
+                    Log.d(LOG_TAG, "tag is$firstTag")
+
+
+                    if (!firstTag.isNullOrEmpty()) {
+                        // Second API Call: Fetch Movies By Tag
+                        val movieResult = safeApiCall {
+                            api.getMovieTest(
+
+                                size = "4",
+                                category = "SERIES",
+                                tags = firstTag
+
+
+                            )
+                        }
+                        when (movieResult) {
+                            is NetworkResult.Success -> {
+                                emit(
+                                    NetworkResult.Success(
+                                        movieResult.data?.movieInfo?.items?.filterNotNull()
+                                            ?: emptyList()
+                                    )
+                                )
+                            }
+
+                            is NetworkResult.Error -> emit(NetworkResult.Error(movieResult.message.toString()))
+                            is NetworkResult.Loading -> {}
+
+                        }
+                    } else {
+                        emit(NetworkResult.Error("No valid tags found in the category response"))
+                    }
+                }
+
+                is NetworkResult.Error -> emit(NetworkResult.Error(categoryResult.message.toString()))
+                is NetworkResult.Loading -> {
+
+                }
+
+
+            }
+        }
 
 
 
+    // Fetch the tag by ID
+    fun fetchTagById(tagId: Int): Flow<NetworkResult<MovieCat>> = flow {
+        emit(NetworkResult.Loading())
+        val result = safeApiCall { api.fetchMovieTags(tagId) }
 
 
 
+        emit(
+            when (result) {
+                is NetworkResult.Success -> NetworkResult.Success(result.data)
+                is NetworkResult.Error -> NetworkResult.Error(result.message.toString())
+                is NetworkResult.Loading -> TODO()
+            }
+        )
+    }
+
+
+    // Fetch movies by tag
+    fun fetchMoviesByTag(tag:String): Flow<NetworkResult<List<MovieResult.DataMovie.Item>>> = flow {
+        emit(NetworkResult.Loading())
+        val result = safeApiCall { api.getMovieTest(
+            size = "10",
+            category = "SERIES",
+            tags = tag
+
+
+           ) }
+        Log.d(LOG_TAG,"fetchMoviesByTag${result.message.toString()}")
+
+
+        emit(
+            when (result) {
+                is NetworkResult.Success -> {
+                    NetworkResult.Success(result.data?.movieInfo?.items?.filterNotNull() ?: emptyList())
 
 
 
+                }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                is NetworkResult.Error -> NetworkResult.Error(result.message.toString())
+                is NetworkResult.Loading ->NetworkResult.Loading()
+            }
+        )
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
