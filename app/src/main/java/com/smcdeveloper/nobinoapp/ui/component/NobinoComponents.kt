@@ -1,8 +1,10 @@
 package com.smcdeveloper.nobinoapp.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,14 +50,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.size.Scale
 import com.smcdeveloper.nobinoapp.R
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.repository.SeriesRepository
+import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.theme.extraBoldNumber
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 
@@ -1399,4 +1404,37 @@ fun SeriesCardtest(item: MovieResult.DataMovie.Item) {
         }
     }
 }
+//navController.navigate(Screen.Product.withArgs(tag.tags?.get(0).toString()))
+@Composable
+fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: MovieCat.MovieCatData)
+{
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .padding(top = 10.dp)
+            .background(MaterialTheme.colorScheme.background),
+        horizontalArrangement = Arrangement.SpaceAround
 
+
+
+    )
+    {
+
+        Text(title)
+        Text("ShhowMore",
+            modifier = Modifier.clickable {
+                Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+
+                navController.navigate(Screen.Product.withArgs(movieCat.tags?.get(0).toString()))
+
+
+            }
+
+
+
+        )
+
+
+
+    }
+
+}

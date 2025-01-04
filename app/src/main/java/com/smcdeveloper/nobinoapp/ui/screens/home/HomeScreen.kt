@@ -1,17 +1,16 @@
 package com.smcdeveloper.nobinoapp.ui.screens.home
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smcdeveloper.nobinoapp.ui.component.NobinoGradientCard
+import com.smcdeveloper.nobinoapp.ui.screens.Product.MovieScreen
+import com.smcdeveloper.nobinoapp.ui.screens.Product.MovieScreen1
 import com.smcdeveloper.nobinoapp.util.Constants
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
-import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(navController: NavHostController)
@@ -26,15 +25,18 @@ fun Home(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel()
 )
+
+
 {
     LocalelUtils.setLocale(LocalContext.current, Constants.USER_LANGUAGE)
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit ){
 
         refreshDataFromServer(viewModel)
     }
 
-
+    val preferredOrder = listOf(1,2,3,4,5,6,7,8,9,10)
+    MovieScreen1( viewModel,preferredOrder,navController)
 
 
 
@@ -46,9 +48,8 @@ fun Home(
     )
     {
 
-        Text("NOBINO--------NONINO")
-        NobinoGradientCard("Nobino")
-
+      //  Text("NOBINO--------NONINO")
+        //NobinoGradientCard("Nobino")
 
 
 
@@ -56,11 +57,14 @@ fun Home(
        //  getAllMovies()
         //   getSlider()
 
-        ImageSlider()
+      //  ImageSlider()
         //--------------
      //   GetSliderBy
 
-        GetSliderByTag5()
+     //   GetSliderByTag5(navController = navController)
+      //  GetSlider6(navController = navController)
+       // MovieTagProcessor(navController = navController)
+
        // GetSliderByTag2()
     //   GetSliderByTag2()
 
@@ -85,10 +89,24 @@ private suspend fun refreshDataFromServer(viewModel: HomeViewModel) {
     }*/
 
 
-    val preferredOrder = listOf(3, 1, 5, 2, 4, 6, 8, 7, 10, 9) // Your custom order
-    preferredOrder.forEach { tagId ->
+    val tags = listOf("[action]", "[comedy]", "[drama]", "[thriller]") // Replace with your actual tags
+
+
+
+
+
+
+    val preferredOrder = listOf(1,2,3,4,5,6,7,8,9,10) // Your custom order
+   /* preferredOrder.forEach { tagId ->
         viewModel.fetchMoviesForTagGroup1(tagId)
-    }
+    }*/
+    //viewModel.fetchMoviesByTags(preferredOrder)
+    //viewModel.fetchMoviesForTags(tags)
+   // viewModel.fetchMoviesForTagIds(preferredOrder)
+
+
+
+
 
 
 
@@ -96,7 +114,7 @@ private suspend fun refreshDataFromServer(viewModel: HomeViewModel) {
 
    //viewModel.getProduct()
   // viewModel.getProductBySize()
-  viewModel.getSlider()
+  //viewModel.getSlider()
    //viewModel.fetchMoviesByTag(1)
    //delay(1000)
   // viewModel.fetchMoviesByTag(2)

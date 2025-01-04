@@ -4,8 +4,12 @@ package com.smcdeveloper.nobinoapp.navigation
 import androidx.compose.runtime.Composable
 
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.smcdeveloper.nobinoapp.ui.screens.Product.Product
+import com.smcdeveloper.nobinoapp.ui.screens.Product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
 import com.smcdeveloper.nobinoapp.ui.screens.favorit.Favorit
@@ -55,23 +59,23 @@ fun SetupNavGraph(navController: NavHostController) {
         }
 
         composable(route = Screen.Search.route) {
-          Search(navController = navController)
+            Search(navController = navController)
 
 
         }
         composable(route = Screen.Profile.route) {
-          Profile(navController = navController)
+            Profile(navController = navController)
 
 
         }
-          composable(route = Screen.Favorit.route) {
-          Favorit(navController = navController)
+        composable(route = Screen.Favorit.route) {
+            Favorit(navController = navController)
 
 
         }
 
         composable(route = Screen.Categories.route) {
-           Categories(navController = navController)
+            Categories(navController = navController)
 
 
         }
@@ -93,9 +97,67 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
+      /*  composable(route = Screen.Product.route + "{/tags}",
+
+            arguments = listOf(
+                navArgument("tags") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                    nullable = true
+                }
+            )
+        )
+
+        {
+
+            it.arguments!!.getString("tag")?.let { tag ->
+                ProductScreen(
+                    navController = navController,
+                    tag = tag
+                )
+            }
+
+
+
+
+
+        }*/
+
+
+        composable(route = Screen.Product.route+"/{tags}",
+            arguments = listOf(navArgument("tags"){
+                type=NavType.StringType
+
+
+            }
+
+
+                )
+
+
+        )
+
+
+        {
+            val tag = it.arguments?.getString("tags")
+
+            ProductScreen(
+                navController = navController, tag = tag.toString()
+
+
+            )
+
+
+        }
+
+
+
 
 
     }
+
+
+
 }
 
 

@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -99,7 +101,8 @@ class MainActivity : ComponentActivity() {
                                .padding(it))
                                {
                                  //  ShowContent1()
-                                     ShowLAzy(navController)
+                                    // ShowLAzy(navController)
+                               ShowItems(navController)
 
                                }
 
@@ -146,6 +149,28 @@ class MainActivity : ComponentActivity() {
 
 
 }
+
+
+@Composable
+fun ShowItems(navController:NavHostController)
+{
+    Column(
+
+       /* modifier = Modifier.verticalScroll(rememberScrollState())
+            .fillMaxSize()*/
+
+
+    ) {
+        SetupNavGraph(navController = navController)
+
+    }
+
+}
+
+
+
+
+
 
 @Composable
 fun ShowLAzy(navController:NavHostController)

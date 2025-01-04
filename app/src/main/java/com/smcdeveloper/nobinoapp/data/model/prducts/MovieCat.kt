@@ -17,11 +17,11 @@ data class MovieCat(
 ) {
     data class MovieCatData(
         @SerializedName("count")
-        val count: Int?,
+        val count: Int?=0,
         @SerializedName("id")
-        val id: Int?,
+        val id: Int?=0,
         @SerializedName("tags")
-        val tags: List<String?>?,
+        val tags: List<String?>?= emptyList(),
         @SerializedName("title")
         val title: String?
     )

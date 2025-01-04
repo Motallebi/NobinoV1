@@ -64,7 +64,28 @@ fun BottomNavigationBar(
             deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 
 
+
+
+
+
+
+            ),
+        BottomNavItem(
+            name = "test",
+            route = Screen.Product.withArgs(""),
+            selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
+            deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
+
+
+
+
+
+
+
             )
+
+
+
 
 
 

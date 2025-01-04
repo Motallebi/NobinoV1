@@ -77,6 +77,7 @@ dependencies {
    // Hilt Di
 
     implementation(libs.hilt.android)
+    implementation(libs.androidx.paging.common.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navcompose)
 
@@ -100,7 +101,9 @@ dependencies {
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
 
+// Pagination 3
 
+    implementation (libs.androidx.paging.compose)
 
 
 

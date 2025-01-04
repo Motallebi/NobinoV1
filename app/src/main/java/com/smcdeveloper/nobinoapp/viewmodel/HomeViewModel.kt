@@ -1,21 +1,34 @@
 package com.smcdeveloper.nobinoapp.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.HomeRepository
+import com.smcdeveloper.nobinoapp.data.source.ProductBySpecialCategoryDataSource
 import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
+import com.smcdeveloper.nobinoapp.util.MovieDisplayData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
@@ -69,6 +82,26 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     private val _tagsAndMovies = MutableStateFlow<Map<MovieCat.MovieCatData, NetworkResult<List<MovieResult.DataMovie.Item>>>>(emptyMap())
     val tagsAndMovies: StateFlow<Map<MovieCat.MovieCatData, NetworkResult<List<MovieResult.DataMovie.Item>>>> = _tagsAndMovies
 
+  //  private val _tagsAndMovies = MutableStateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>>(emptyMap())
+  // val tagsAndMovies: StateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>> = _tagsAndMovies
+
+
+    private val _moviesState = MutableStateFlow<List<NetworkResult<MovieResult>>>(emptyList())
+    val moviesState: StateFlow<List<NetworkResult<MovieResult>>> = _moviesState
+
+    private val _movieResults = MutableStateFlow<List<NetworkResult<MovieResult>>>(emptyList())
+    val movieResults: StateFlow<List<NetworkResult<MovieResult>>> = _movieResults
+
+
+   // private val _movieDisplayData = MutableStateFlow<List<MovieDisplayData>>(emptyList())
+   // val movieDisplayData: StateFlow<List<MovieDisplayData>> = _movieDisplayData
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+
+    private val _movieDisplayData = MutableStateFlow<List<MovieDisplayData>?>(null)
+    val movieDisplayData: StateFlow<List<MovieDisplayData>?> = _movieDisplayData
 
 
 
@@ -78,6 +111,73 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
+    var productByCategoryList: Flow<PagingData<MovieResult>> = flow { emit(PagingData.empty()) }
+    // StateFlow to dynamically change the categoryId
+    private val currentCategoryId = MutableStateFlow<String?>(null)
+
+    private val processedTags = mutableSetOf<MovieCat.MovieCatData>()
+
+
+    // Expose the Flow of PagingData
+    val moviesFlow: Flow<PagingData<MovieResult.DataMovie.Item>> = currentCategoryId
+        .flatMapLatest { categoryId ->
+            if (categoryId != null) {
+                Pager(
+                    config = PagingConfig(
+                        pageSize = 20,
+                        enablePlaceholders = false
+                    ),
+                    pagingSourceFactory = { ProductBySpecialCategoryDataSource(repository, categoryId) }
+                ).flow.cachedIn(viewModelScope)
+            } else {
+                // Return an empty flow if no category is selected
+                kotlinx.coroutines.flow.emptyFlow()
+            }
+        }
+
+
+
+
+    fun fetchMovieDisplayData(tagIds: List<Int>) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val data = repository.fetchMovieDisplayData(tagIds)
+            _movieDisplayData.value = data
+            _isLoading.value = false
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Function to update the categoryId
+    fun setCategoryId(categoryId: String) {
+        currentCategoryId.value = categoryId
+    }
+
+
+    fun fetchMoviesForTags(tags: List<String>) {
+        viewModelScope.launch {
+            val results = repository.fetchAllMoviesResults(tags)
+            _moviesState.value = results
+        }
+    }
+
+    fun fetchMoviesForTagIds(tagIds: List<Int>) {
+        viewModelScope.launch {
+            _movieResults.value = repository.fetchMoviesForTags(tagIds)
+        }
+    }
 
 
 
@@ -171,12 +271,34 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
+                               /* val nonNullId = tagResult.data?.movieCatData?.id ?: -1 // Provide a default value for null IDs
+                                if (!_tagsAndMovies.value.containsKey(nonNullId)) {
+
+                                    Log.d(LOG_TAG, "State updated with tag: $tag")
+                                }
+
+                                else {
+                                    Log.d(LOG_TAG, "Tag already exists: $tag")
+
+                                }
+*/
+
+
+
+
+
 
 
 
 
                                 _tagsAndMovies.value = _tagsAndMovies.value + (movieCatData to result)
+
                             }
+
+
+
+
+
                         }
 
 
@@ -412,20 +534,26 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
     // Fetch tag and its corresponding movies
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun fetchMoviesForTagGroup1(tagId: Int) {
-        repository.fetchTagById(tagId)
-            .flatMapConcat { tagResult ->
-                if (tagResult is NetworkResult.Success) {
-                    val tag = MovieCat.MovieCatData(
+                        repository.fetchTagById(tagId)
+
+                            .flatMapConcat { tagResult ->
+                                if (tagResult is NetworkResult.Success) {
+                                    Log.d(LOG_TAG,"fetch by tagGroup Success-----")
+
+                                    val tag = MovieCat.MovieCatData(
                         title = tagResult.data?.movieCatData?.title,
-                        tags = listOf(tagResult.data?.movieCatData?.title),
+                        tags = listOf(tagResult.data?.movieCatData?.tags.toString()),
                         count = 0,
                         id = tagId
                     )
                     repository.fetchMoviesByTag(tagResult.data?.movieCatData?.tags?.get(0) ?: "").map { moviesResult ->
                         tag to moviesResult
                     }
-                } else {
+                }
+                else {
+                    Log.d(LOG_TAG,"fetch by tagGroup Error-----")
                     flowOf(
                         MovieCat.MovieCatData(
                             title = "Unknown",
@@ -437,7 +565,291 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                 }
             }
             .onEach { (tag, result) ->
+
+
+
+             //   _tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
+            }
+            .launchIn(viewModelScope)
+    }
+
+
+
+    fun getMoviesByCategory(tag: String): Flow<PagingData<MovieResult.DataMovie.Item>> {
+        Log.d(LOG_TAG,"getmovie......")
+        Log.d(LOG_TAG, "tag is......${tag.toString()}")
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20, // Page size
+                enablePlaceholders = false
+            ),
+
+
+            pagingSourceFactory = {
+
+                Log.d(LOG_TAG, "Creating new MoviePagingSource with categoryId: ${tag.toString()}")
+
+                ProductBySpecialCategoryDataSource(repository, tag)
+
+
+            }
+        ).flow.cachedIn(viewModelScope)
+    }
+
+
+
+    fun fetchMoviesByTags(tagIds: List<Int>) {
+        tagIds
+            .asFlow() // Convert list of tag IDs to a flow
+            .flatMapConcat { tagId ->
+                repository.fetchTagById(tagId)
+                .flatMapConcat { tagResult ->
+                    if (tagResult is NetworkResult.Success) {
+                        Log.d(LOG_TAG, "fetch by tagGroup Success-----")
+
+                        val tag = MovieCat.MovieCatData(
+                            title = tagResult.data?.movieCatData?.title,
+                            tags = listOf(tagResult.data?.movieCatData?.tags.toString()),
+                            count = 0,
+                            id = tagId
+                        )
+
+                        repository.fetchMoviesByTag(tagResult.data?.movieCatData?.tags?.get(0) ?: "")
+                            .map { moviesResult ->
+                                tag to moviesResult
+                            }
+                    } else {
+                        Log.d(LOG_TAG, "fetch by tagGroup Error-----")
+                        flowOf(
+                            MovieCat.MovieCatData(
+                                title = "Unknown",
+                                tags = listOf(),
+                                count = 0,
+                                id = tagId
+                            ) to tagResult as NetworkResult<List<MovieResult.DataMovie.Item>>
+                        )
+                    }
+                }
+            }
+            .onEach { (tag, result) ->
+
+
+                /*val nonNullId = tag.id ?: -1 // Provide a default value for null IDs
+                if (!_tagsAndMovies.value.containsKey(nonNullId)) {
+                    _tagsAndMovies.value = _tagsAndMovies.value + (nonNullId to result)
+                    Log.d(LOG_TAG, "State updated with tag: $tag")
+                }
+
+                else {
+                    Log.d(LOG_TAG, "Tag already exists: $tag")
+
+                }*/
+
+
+
+
+
+
+
                 _tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
+            }
+            .catch { e ->
+                Log.e(LOG_TAG, "Error fetching movies: ${e.message}")
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun processTagsAndMovies(tagsAndMoviesState: Map<MovieCat.MovieCatData, NetworkResult<List<MovieResult.DataMovie.Item>>>) {
+        Log.d(LOG_TAG,"----processTagsAndMovies----")
+        tagsAndMoviesState.forEach { (tag, result) ->
+            // Only process if the tag hasn't been processed yet
+            if (tag !in processedTags) {
+                processedTags.add(tag) // Mark the tag as processed
+
+                // Process the tag and its result
+                when (result) {
+                    is NetworkResult.Success -> {
+                        // Handle success case
+                        Log.d(LOG_TAG, "Processing tag: ${tag.title}, movies: ${result.data}")
+                    }
+                    is NetworkResult.Error -> {
+                        // Handle error case
+                        Log.e(LOG_TAG, "Error processing tag: ${tag.title}, error: ${result.message}")
+                    }
+                    is NetworkResult.Loading -> {
+                        Log.d(LOG_TAG,"----processTagsAndMovies----Loading")
+                        // Handle loading state if necessary
+                        Log.d(LOG_TAG, "Loading movies for tag: ${tag.title}")
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    private val processedTagIds = mutableSetOf<Int>()
+
+    fun fetchMoviesByTags1(tagIds: List<Int>) {
+        tagIds
+            .asFlow()
+            .filter { tagId -> // Skip already processed tags
+
+                val shouldProcess = !processedTagIds.contains(tagId)
+                Log.d(LOG_TAG, "Tag ID: $tagId, Should Process: $shouldProcess")
+                if (shouldProcess) processedTagIds.add(tagId)
+                shouldProcess
+
+
+
+
+
+
+
+                if (processedTagIds.contains(tagId)) {
+                    Log.d(LOG_TAG, "Skipping already processed tagId: $tagId")
+                    false
+                } else {
+                    processedTagIds.add(tagId)
+                    true
+                }
+            }
+
+
+
+            .flatMapConcat { tagId ->
+                repository.fetchTagById(tagId)
+                    .flatMapConcat { tagResult ->
+                        if (tagResult is NetworkResult.Success) {
+                            val tag = MovieCat.MovieCatData(
+                                title = tagResult.data?.movieCatData?.title ?: "Unknown",
+                                tags = tagResult.data?.movieCatData?.tags?.mapNotNull { it } ?: emptyList(),
+                                count = tagResult.data?.movieCatData?.count ?: 0,
+                                id = tagId
+                            )
+                            val firstTag = tagResult.data?.movieCatData?.tags?.getOrNull(0)
+                            Log.d(LOG_TAG,"tags new..${firstTag}")
+                            if (!firstTag.isNullOrEmpty()) {
+                                repository.fetchMoviesByTag(firstTag)
+                                    .map { moviesResult ->
+                                        tag to moviesResult
+                                    }
+                            } else {
+
+                                flowOf(tag to NetworkResult.Error<List<MovieResult.DataMovie.Item>>(
+                                    Exception("No valid tag").toString()
+                                )
+                                )
+                            }
+                        } else {
+                            flowOf(
+                                MovieCat.MovieCatData(
+                                    title = "Unknown",
+                                    tags = emptyList(),
+                                    count = 0,
+                                    id = tagId
+                                )
+                                        to tagResult as NetworkResult<List<MovieResult.DataMovie.Item>>
+
+                            )
+
+                        }
+                    }
+            }
+            .onEach { (tag, result) ->
+                Log.d(LOG_TAG,"888888888"+tag.title.toString())
+
+                /*val nonNullId = tag.id ?: -1 // Provide a default value for null IDs
+                if (!_tagsAndMovies.value.containsKey(nonNullId)) {
+                    _tagsAndMovies.value = _tagsAndMovies.value + (nonNullId to result)
+                    Log.d(LOG_TAG, "State updated with tag: $tag")
+                }
+
+                else {
+                    Log.d(LOG_TAG, "Tag already exists: $tag")
+
+                }*/
+
+
+
+
+
+
+                _tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
+
+
+              /*  if (!_tagsAndMovies.value.containsKey(tag)) {
+                  //  Log.d(LOG_TAG,"999999999"+tag.title.toString())
+                    Log.d(LOG_TAG, "Updating state for tag: ${tag.title}, result: $result")
+                    _tagsAndMovies.value = _tagsAndMovies.value + (tag to result)*/
+
+
+
+
+                }
+
+            .catch { e ->
+                Log.e(LOG_TAG, "Error fetching movies: ${e.message}")
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun fetchMoviesByTags2(tagIds: List<Int>) {
+        tagIds
+            .asFlow()
+            .filter { tagId ->
+                val shouldProcess = !processedTagIds.contains(tagId)
+                if (shouldProcess) processedTagIds.add(tagId)
+                Log.d(LOG_TAG, "Tag ID: $tagId, Should Process: $shouldProcess")
+                shouldProcess
+            }
+            .flatMapConcat { tagId ->
+                repository.fetchTagById(tagId)
+                    .flatMapConcat { tagResult ->
+                        if (tagResult is NetworkResult.Success) {
+                            val tag = MovieCat.MovieCatData(
+                                title = tagResult.data?.movieCatData?.title ?: "Unknown",
+                                tags = tagResult.data?.movieCatData?.tags?.mapNotNull { it } ?: emptyList(),
+                                count = tagResult.data?.movieCatData?.count ?: 0,
+                                id = tagId
+                            )
+                            val firstTag = tagResult.data?.movieCatData?.tags?.getOrNull(0)
+                            if (!firstTag.isNullOrEmpty()) {
+                                repository.fetchMoviesByTag(firstTag)
+                                    .map { moviesResult ->
+                                        tag to moviesResult
+                                    }
+                            } else {
+                                flowOf(tag to NetworkResult.Error<List<MovieResult.DataMovie.Item>>(
+                                    Exception("No valid tag").toString()
+                                ))
+                            }
+                        } else {
+                            flowOf(
+                                MovieCat.MovieCatData(
+                                    title = "Unknown",
+                                    tags = emptyList(),
+                                    count = 0,
+                                    id = tagId
+                                ) to tagResult as NetworkResult<List<MovieResult.DataMovie.Item>>
+                            )
+                        }
+                    }
+            }
+            .onEach { (tag, result) ->
+                Log.d(LOG_TAG, "Updating state for tag: ${tag.title}, Result: $result")
+                //_tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
+                /* val nonNullId = tag.id ?: -1 // Provide a default value for null IDs
+                if (!_tagsAndMovies.value.containsKey(nonNullId)) {
+                    _tagsAndMovies.value = _tagsAndMovies.value + (nonNullId to result)
+                }
+
+            }*/
+                _tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
+
+            } .catch { e ->
+                Log.e(LOG_TAG, "Error fetching movies: ${e.message}")
             }
             .launchIn(viewModelScope)
     }
@@ -456,12 +868,52 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /*fun getProductsBySpecialTag(tag:String) {
+    Log.e(LOG_TAG,"Route..........")
+
+     productByCategoryList = Pager(
+
+         PagingConfig(pageSize = 10),
+
+
+     )
+
+     {
+         ProductBySpecialCategoryDataSource(repository, tag, 1)
+
+
+     }.flow.cachedIn(viewModelScope)
+
+
+ }*/
+
+
+
+
 
 
 

@@ -16,17 +16,20 @@ interface HomeApiInterface {
 
     @GET("api/products")
     suspend fun getMoviesByQueryParams(
-        @Query("size") size: String="10",
+        @Query("size") size: Int=10,
         @Query("category") category: String="SERIES",
         @Query("tags") tags: String = "",
+        @Query("offset") offset: Int = 0,
+
     ):Response<MovieResult>
 
 
     @GET("api/products")
-    suspend fun getMovieTest(
-        @Query("size") size: String="10",
+       suspend fun getMovieTest(
+        @Query("size") size: String="20",
         @Query("category") category: String="SERIES",
        @Query("tags") tags: String = "",
+        @Query("offset") offset: Int = 0,
     ):Response<MovieResult>
 
 
