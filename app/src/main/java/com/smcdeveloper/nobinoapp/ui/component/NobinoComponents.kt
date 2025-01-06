@@ -1406,8 +1406,11 @@ fun SeriesCardtest(item: MovieResult.DataMovie.Item) {
 }
 //navController.navigate(Screen.Product.withArgs(tag.tags?.get(0).toString()))
 @Composable
-fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: MovieCat.MovieCatData)
+fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: MovieCat.MovieCatData,category:String)
 {
+
+
+
     Row(
         modifier = Modifier.fillMaxWidth()
             .padding(top = 10.dp)
@@ -1420,11 +1423,20 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
     {
 
         Text(title)
-        Text("ShhowMore",
+        Text("ShowMore",
             modifier = Modifier.clickable {
-                Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+                Log.d("category", "Nobino Button Category is${category}")
+                //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
 
-                navController.navigate(Screen.Product.withArgs(movieCat.tags?.get(0).toString()))
+                navController.navigate(Screen.Product.withArgs(movieCat.tags?.get(0).toString(),
+                    category
+
+                    )
+
+
+
+
+                )
 
 
             }

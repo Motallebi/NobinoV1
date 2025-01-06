@@ -272,7 +272,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
             val result = safeApiCall {
                 api.getMovieTest(
                     size = "10",
-                    category = "SERIES",
+                    category = "",
                     tags = tag
 
 
@@ -325,12 +325,16 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         }
 
 
-    suspend fun fetchMovieTest(tag: String): NetworkResult<MovieResult> {
+    suspend fun fetchMovieTest(tag: String,categoty:String): NetworkResult<MovieResult> {
         //val tagstring = tag.substring(1, tag.length - 1)
         val result = safeApiCall {
 
 
-            api.getMovieTest(tags = tag)
+            api.getMovieTest(tags = tag,
+                category = categoty
+
+
+            )
 
 
         }

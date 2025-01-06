@@ -124,12 +124,17 @@ fun SetupNavGraph(navController: NavHostController) {
         }*/
 
 
-        composable(route = Screen.Product.route+"/{tags}",
-            arguments = listOf(navArgument("tags"){
+        composable(route = Screen.Product.route+"/{tags}/{category}",
+            arguments = listOf(
+                navArgument("tags"){
                 type=NavType.StringType
 
 
-            }
+            },
+
+                navArgument("category") {
+                    type = NavType.StringType
+                }
 
 
                 )
@@ -140,9 +145,11 @@ fun SetupNavGraph(navController: NavHostController) {
 
         {
             val tag = it.arguments?.getString("tags")
+            val category =it.arguments?.getString("category")
 
             ProductScreen(
-                navController = navController, tag = tag.toString()
+                navController = navController, tag = tag.toString(),
+                categoryName = category.orEmpty()
 
 
             )

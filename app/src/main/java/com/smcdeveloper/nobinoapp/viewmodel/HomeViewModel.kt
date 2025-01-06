@@ -127,7 +127,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                         pageSize = 20,
                         enablePlaceholders = false
                     ),
-                    pagingSourceFactory = { ProductBySpecialCategoryDataSource(repository, categoryId) }
+                    pagingSourceFactory = { ProductBySpecialCategoryDataSource(repository, categoryId,"") }
                 ).flow.cachedIn(viewModelScope)
             } else {
                 // Return an empty flow if no category is selected
@@ -575,7 +575,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
-    fun getMoviesByCategory(tag: String): Flow<PagingData<MovieResult.DataMovie.Item>> {
+    fun getMoviesByCategory(tag: String,categoryName:String): Flow<PagingData<MovieResult.DataMovie.Item>> {
         Log.d(LOG_TAG,"getmovie......")
         Log.d(LOG_TAG, "tag is......${tag.toString()}")
 
@@ -590,7 +590,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
                 Log.d(LOG_TAG, "Creating new MoviePagingSource with categoryId: ${tag.toString()}")
 
-                ProductBySpecialCategoryDataSource(repository, tag)
+                ProductBySpecialCategoryDataSource(repository, tag,categoryName)
 
 
             }

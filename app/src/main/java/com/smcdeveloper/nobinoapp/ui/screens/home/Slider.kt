@@ -621,7 +621,9 @@ fun GetSliderByTag5(viewModel: HomeViewModel = hiltViewModel(),
                     NobinoSpecialRow(
                         title = tag.title.toString(),
                         navController = navController,
-                        movieCat = tag
+                        movieCat = tag,
+                        category = movies.get(0).category.toString()
+
 
 
 
@@ -930,7 +932,9 @@ fun MovieTagItem(tag: MovieCat.MovieCatData,
                 NobinoSpecialRow(
                     title = tag.title.toString(),
                     navController = navController,
-                    movieCat = tag
+                    movieCat = tag,
+                    category = movies.get(0).category.toString()
+
 
 
                 )

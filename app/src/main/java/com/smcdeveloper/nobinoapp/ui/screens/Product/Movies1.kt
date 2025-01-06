@@ -90,11 +90,17 @@ fun MovieListByTag(movieDisplayData: List<MovieDisplayData>,navController: NavHo
             // Add tag header
             item {
 
-                NobinoSpecialRow(displayData.movieCat.title.toString(), navController =navController,displayData.movieCat )
+                Log.d("category","category is...."+displayData.movieItems.get(0)?.category.toString())
+                NobinoSpecialRow(displayData.movieCat.title.toString(), navController =navController,displayData.movieCat,
+                   // displayData.movieItems.get(0)?.category.toString()
+                    ""
+
+
+                    )
 
                 TagHeader(tag = displayData.movieCat.title ?: "Unknown Category")
             }
-            
+
             item {
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                     items(displayData.movieItems) { datamovie ->

@@ -15,6 +15,9 @@ class ProductBySpecialCategoryDataSource(
 
     private val repository:HomeRepository,
     val tagName:String,
+    val categoryName:String
+
+
   //  val specialId:Int
 
 ) :PagingSource <Int,MovieResult.DataMovie.Item>()
@@ -56,7 +59,7 @@ class ProductBySpecialCategoryDataSource(
                 offset =offset
             )*/
 
-            val response= repository.fetchMovieTest(tagName)
+            val response= repository.fetchMovieTest(tagName,"")
 
 
 
