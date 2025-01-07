@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.navigation
 
 
+import ProductDetailPage
 import androidx.compose.runtime.Composable
 
 import androidx.navigation.NavHostController
@@ -8,18 +9,16 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.smcdeveloper.nobinoapp.ui.screens.Product.Product
-import com.smcdeveloper.nobinoapp.ui.screens.Product.ProductScreen
+import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
 import com.smcdeveloper.nobinoapp.ui.screens.favorit.Favorit
-import com.smcdeveloper.nobinoapp.ui.screens.home.Home
 import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
-import com.smcdeveloper.nobinoapp.ui.screens.login.Login
-import com.smcdeveloper.nobinoapp.ui.screens.profile.Profile
+import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
+import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreen
 import com.smcdeveloper.nobinoapp.ui.screens.search.Search
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
-import com.smcdeveloper.nobinoapp.ui.screens.signup.SignUp
+import com.smcdeveloper.nobinoapp.ui.screens.signup.RegisterScreen
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
 
 
@@ -42,13 +41,13 @@ fun SetupNavGraph(navController: NavHostController) {
 
         }
         composable(route = Screen.Login.route) {
-            Login(navController = navController)
+            LoginScreen(navController = navController)
 
 
         }
         composable(route = Screen.SignUp.route) {
 
-            SignUp(navController = navController)
+            RegisterScreen(navController = navController)
 
 
         }
@@ -64,7 +63,7 @@ fun SetupNavGraph(navController: NavHostController) {
 
         }
         composable(route = Screen.Profile.route) {
-            Profile(navController = navController)
+            ProfileScreen(navController = navController)
 
 
         }
@@ -95,9 +94,7 @@ fun SetupNavGraph(navController: NavHostController) {
         }
 
 
-
-
-      /*  composable(route = Screen.Product.route + "{/tags}",
+        /*  composable(route = Screen.Product.route + "{/tags}",
 
             arguments = listOf(
                 navArgument("tags") {
@@ -124,20 +121,20 @@ fun SetupNavGraph(navController: NavHostController) {
         }*/
 
 
-        composable(route = Screen.Product.route+"/{tags}/{category}",
+        composable(route = Screen.Product.route + "/{tags}/{category}",
             arguments = listOf(
-                navArgument("tags"){
-                type=NavType.StringType
+                navArgument("tags") {
+                    type = NavType.StringType
 
 
-            },
+                },
 
                 navArgument("category") {
                     type = NavType.StringType
                 }
 
 
-                )
+            )
 
 
         )
@@ -145,7 +142,7 @@ fun SetupNavGraph(navController: NavHostController) {
 
         {
             val tag = it.arguments?.getString("tags")
-            val category =it.arguments?.getString("category")
+            val category = it.arguments?.getString("category")
 
             ProductScreen(
                 navController = navController, tag = tag.toString(),
@@ -158,14 +155,51 @@ fun SetupNavGraph(navController: NavHostController) {
         }
 
 
+        composable(route = Screen.ProductDetails.route+"/{productId}",
+            arguments = listOf(
+                navArgument("productId")
+                {
+                    type=NavType.IntType
 
+                }
+
+            )
+        )
+
+
+        {
+            val productId = it.arguments?.getInt("productId")
+            if (productId != null) {
+                ProductDetailPage(navController = navController,
+
+                    productId = productId
+
+
+                    )
+            }
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+        }
 
 
     }
 
 
 
-}
+
+
 
 
 

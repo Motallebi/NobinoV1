@@ -72,7 +72,7 @@ fun BottomNavigationBar(
             ),
         BottomNavItem(
             name = "test",
-            route = Screen.Product.withArgs(""),
+            route = Screen.Profile.route,
             selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
             deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 

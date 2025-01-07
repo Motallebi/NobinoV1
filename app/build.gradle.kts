@@ -68,6 +68,8 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
 
+    implementation (libs.androidx.material.icons.extended)
+
     
 
 
@@ -78,6 +80,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     implementation(libs.androidx.paging.common.android)
+    implementation(libs.androidx.espresso.core)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navcompose)
 

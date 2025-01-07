@@ -7,8 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smcdeveloper.nobinoapp.ui.screens.Product.MovieScreen
-import com.smcdeveloper.nobinoapp.ui.screens.Product.MovieScreen1
+import com.smcdeveloper.nobinoapp.ui.screens.product.MovieScreen1
 import com.smcdeveloper.nobinoapp.util.Constants
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
 

@@ -68,6 +68,7 @@ import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoSmall
 import com.smcdeveloper.nobinoapp.ui.theme.nobino_fonts
 import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
+import com.smcdeveloper.nobinoapp.ui.theme.spacing
 import okhttp3.internal.wait
 
 
@@ -1406,9 +1407,7 @@ fun SeriesCardtest(item: MovieResult.DataMovie.Item) {
 }
 //navController.navigate(Screen.Product.withArgs(tag.tags?.get(0).toString()))
 @Composable
-fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: MovieCat.MovieCatData,category:String)
-{
-
+fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: MovieCat.MovieCatData,category:String) {
 
 
     Row(
@@ -1416,7 +1415,6 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
             .padding(top = 10.dp)
             .background(MaterialTheme.colorScheme.background),
         horizontalArrangement = Arrangement.SpaceAround
-
 
 
     )
@@ -1428,12 +1426,12 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
                 Log.d("category", "Nobino Button Category is${category}")
                 //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
 
-                navController.navigate(Screen.Product.withArgs(movieCat.tags?.get(0).toString(),
-                    category
+                navController.navigate(
+                    Screen.Product.withArgs(
+                        movieCat.tags?.get(0).toString(),
+                        category
 
                     )
-
-
 
 
                 )
@@ -1442,11 +1440,49 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
             }
 
 
-
         )
-
 
 
     }
 
+
+
+
+
 }
+
+@Composable
+fun NobinoDefultButton(
+    text: String,
+    onClick: () -> Unit ) {
+
+
+    Button(
+        onClick = { onClick() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.onBackground
+
+
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(65.dp)
+            .padding(
+                start = androidx.compose.material.MaterialTheme.spacing.semiLarge,
+                end = androidx.compose.material.MaterialTheme.spacing.semiLarge,
+                bottom = androidx.compose.material.MaterialTheme.spacing.medium
+            ),
+        shape = MaterialTheme.roundedShape.small
+    ) {
+        androidx.compose.material.Text(
+            text = text,
+            color = Color.White,
+            style = androidx.compose.material.MaterialTheme.typography.h5
+        )
+
+
+    }
+
+
+}
+

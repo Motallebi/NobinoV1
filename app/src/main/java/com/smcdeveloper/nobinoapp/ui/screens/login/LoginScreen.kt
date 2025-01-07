@@ -19,18 +19,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.ui.component.NobinoButton
 import com.smcdeveloper.nobinoapp.ui.component.NobinoOutlineButton
 import com.smcdeveloper.nobinoapp.ui.component.NobinoText
-import com.smcdeveloper.nobinoapp.ui.theme.extraBoldNumber
 
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
+import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 
 @Composable
-fun Login(navController: NavHostController) {
+fun LoginScreen(
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel= hiltViewModel()
+
+
+
+
+
+) {
 
     Box(
         modifier = Modifier

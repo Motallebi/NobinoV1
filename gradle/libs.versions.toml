@@ -11,6 +11,7 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.04.01"
+materialIconsExtended = "1.7.6"
 pagingCompose = "3.3.5"
 retrofit_ver="2.9.0"
 intercepter_ver="4.10.0"
@@ -31,6 +32,7 @@ pagingCommonAndroid = "3.3.5"
 
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPager" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android" , version.ref = "hilt_ver"}
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler" , version.ref = "hilt_ver"}
