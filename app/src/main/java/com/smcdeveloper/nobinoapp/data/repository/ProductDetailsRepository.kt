@@ -5,6 +5,7 @@ import com.smcdeveloper.nobinoapp.data.model.Category
 import com.smcdeveloper.nobinoapp.data.model.GeneralResponseResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
@@ -32,7 +33,7 @@ import javax.inject.Inject
 class ProductDetailsRepository @Inject constructor(private val api: ProductDetailsApiInterface): BaseApiResponse2() {
 
 
-    suspend fun getProductDetails(productId: Int): NetworkResult<MovieResult> =
+    suspend fun getProductDetails(productId: Int): NetworkResult<ProductModel> =
 
 
         safeApiCall {

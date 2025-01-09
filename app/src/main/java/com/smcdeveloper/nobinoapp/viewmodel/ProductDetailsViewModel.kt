@@ -14,6 +14,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.HomeRepository
@@ -46,8 +47,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(private val repository: ProductDetailsRepository):ViewModel() {
 
-    private val _product = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
-    val product: StateFlow<NetworkResult<MovieResult>> get() = _product.asStateFlow()
+    private val _product = MutableStateFlow<NetworkResult<ProductModel>>(NetworkResult.Loading())
+    val product: StateFlow<NetworkResult<ProductModel>> get() = _product.asStateFlow()
 
 
 
@@ -55,8 +56,11 @@ class ProductDetailsViewModel @Inject constructor(private val repository: Produc
     fun getProductDetails(productId: Int) {
 
         viewModelScope.launch {
+            Log.d("productdatils","product id is:...${productId}")
             val results = repository.getProductDetails(productId)
            _product.value = results
+            Log.d("productdatils","99999999999"+results.data?.data?.name.toString())
+
         }
 
 

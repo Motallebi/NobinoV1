@@ -186,9 +186,10 @@ fun Product(navController: NavHostController,
                 Log.d("category", "Clicked movie: ${movie.name}")
 
                 val movieId= movie.id
+                Log.d("category", "Clicked movie: $movieId")
 
 
-                    navController.navigate(Screen.ProductDetails.withArgs("${movieId}"))
+                    navController.navigate(Screen.ProductDetails.withArgs("$movieId"))
 
 
 

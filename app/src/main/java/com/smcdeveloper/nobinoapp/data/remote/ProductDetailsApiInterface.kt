@@ -2,6 +2,7 @@ package com.smcdeveloper.nobinoapp.data.remote
 
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import retrofit2.Response
 import retrofit2.http.GET
@@ -16,7 +17,7 @@ interface ProductDetailsApiInterface {
 
 
     @GET("api/products/{productId}")
-    suspend fun getProductDetailInfo( @Path("productId") id: Int):Response<MovieResult>
+    suspend fun getProductDetailInfo( @Path("productId") id: Int):Response<ProductModel>
 
 
 
