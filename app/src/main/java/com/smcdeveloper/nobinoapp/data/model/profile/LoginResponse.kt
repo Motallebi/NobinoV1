@@ -6,8 +6,9 @@ data class LoginResponse(
     val grant_type: String,
     val client_secret: String,
     val mobile: String,
-    val ref_number: String,
-    val otp: String,
+    val ref_number: String="",
+    val otp: String="",
+    val access_token:String=""
 
 
 

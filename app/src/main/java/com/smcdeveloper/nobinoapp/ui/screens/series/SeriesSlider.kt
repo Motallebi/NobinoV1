@@ -1,6 +1,5 @@
 package com.smcdeveloper.nobinoapp.ui.screens.series
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,14 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
-import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
-import com.smcdeveloper.nobinoapp.ui.component.MovieCardtest
 import com.smcdeveloper.nobinoapp.ui.component.SeriesCardtest
-import com.smcdeveloper.nobinoapp.ui.screens.home.SliderItem1
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
-import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
-import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.SeriesViewModel
 
 @Composable

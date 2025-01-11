@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.navigation
 
 
+import OtpValidationScreen
 import ProductDetailPage
 import androidx.compose.runtime.Composable
 
@@ -9,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.smcdeveloper.nobinoapp.ui.screens.RegisterScreen
 import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
@@ -18,7 +20,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreen
 import com.smcdeveloper.nobinoapp.ui.screens.search.Search
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
-import com.smcdeveloper.nobinoapp.ui.screens.signup.RegisterScreen
+
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
 
 
@@ -92,6 +94,48 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         }
+
+
+
+        composable(route = Screen.OtpValidation.route,
+            arguments = listOf(navArgument("refNumber")
+            { type = NavType.StringType })
+
+
+
+            )
+
+
+
+
+
+
+
+        {
+
+            backStackEntry ->
+            val refNumber = backStackEntry.arguments?.getString("refNumber") ?: ""
+            OtpValidationScreen(navController = navController, refNumber=refNumber)
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         /*  composable(route = Screen.Product.route + "{/tags}",
@@ -192,6 +236,19 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }

@@ -42,7 +42,7 @@ import com.smcdeveloper.nobinoapp.ui.component.MovieCardtestByTag
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRow
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
-import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
+import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 
 @Composable
@@ -94,7 +94,7 @@ fun SliderList(sliderInfoList: List<Slider.Sliderinfo?>) {
     ) {
         items(sliderInfoList.size) { index ->
             val sliderInfo = sliderInfoList[index]
-            Log.d(LOG_TAG,"Slider PAth${sliderInfo?.imageHorizontalPath}")
+            Log.d(NOBINO_LOG_TAG,"Slider PAth${sliderInfo?.imageHorizontalPath}")
             SliderItem1(sliderInfo)
         }
     }
@@ -166,7 +166,7 @@ fun SliderItem(sliderInfo: Slider.Sliderinfo?) {
             {
                 Column {
                     val imagePath = "https://vod.nobino.ir/vod/"+sliderInfo?.imageHorizontalPath.orEmpty()
-                    Log.d(LOG_TAG,"Slider PAth-->:${imagePath}")
+                    Log.d(NOBINO_LOG_TAG,"Slider PAth-->:${imagePath}")
 
                     AsyncImage(
                         model = imagePath,
@@ -263,7 +263,7 @@ fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel())
 
     when (movieState) {
         is NetworkResult.Loading -> {
-            Log.d(LOG_TAG,"Loading......")
+            Log.d(NOBINO_LOG_TAG,"Loading......")
 
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -283,7 +283,7 @@ fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel())
         }
         is NetworkResult.Success -> {
             val movieInfo = (movieState as NetworkResult.Success<List<MovieResult.DataMovie.Item>>).data
-            Log.d(LOG_TAG,"networkcall.......")
+            Log.d(NOBINO_LOG_TAG,"networkcall.......")
           //  Log.d(LOG_TAG,"networkcall......."+movieInfo.)
 
 
@@ -346,13 +346,13 @@ fun GetSliderByTag2(viewModel: HomeViewModel = hiltViewModel()) {
     }
 
     moviesByTagState.forEach { (tag, result) ->
-        Log.d(LOG_TAG,"movie tag is $tag")
+        Log.d(NOBINO_LOG_TAG,"movie tag is $tag")
 
 
         when (result) {
 
             is NetworkResult.Loading -> {
-                Log.d(LOG_TAG, "Loading......")
+                Log.d(NOBINO_LOG_TAG, "Loading......")
 
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -376,8 +376,8 @@ fun GetSliderByTag2(viewModel: HomeViewModel = hiltViewModel()) {
                 val movieInfo = result.data
 
                 // val movieInfo = (movieState as NetworkResult.Success<List<MovieResult.DataMovie.Item>>).data
-                Log.d(LOG_TAG, "networkcall.......")
-                Log.d(LOG_TAG, "networkcall......."+movieInfo.toString())
+                Log.d(NOBINO_LOG_TAG, "networkcall.......")
+                Log.d(NOBINO_LOG_TAG, "networkcall......."+movieInfo.toString())
                 if (movieInfo != null) {
                     SliderByMoveTag(movieInfo)
                 }
@@ -428,7 +428,7 @@ fun GetSliderByTag3(viewModel: HomeViewModel = hiltViewModel()) {
 
     LazyColumn {
         (1..10).forEach { tag ->
-            Log.d(LOG_TAG, "9999999999999")
+            Log.d(NOBINO_LOG_TAG, "9999999999999")
 
             item {
                 Text("Tag: $tag", style = MaterialTheme.typography.nobinoLarge)
@@ -496,7 +496,7 @@ fun GetSliderByTag4(viewModel: HomeViewModel = hiltViewModel()) {
 
 
         (1..10).forEach { tag ->
-            Log.d(LOG_TAG, "9999999999999")
+            Log.d(NOBINO_LOG_TAG, "9999999999999")
 
 
                 Text("Tag: $tag", style = MaterialTheme.typography.nobinoLarge)
@@ -598,12 +598,12 @@ fun GetSliderByTag5(viewModel: HomeViewModel = hiltViewModel(),
             is NetworkResult.Loading -> {
                 if(loading) {
                     CircularProgressIndicator(modifier = Modifier.padding(8.dp))
-                    Log.d(LOG_TAG, "Loading-------")
+                    Log.d(NOBINO_LOG_TAG, "Loading-------")
                 }
             }
             is NetworkResult.Success -> {
               //  counter++
-                Log.d(LOG_TAG,"Number Of Sucess Load is ${counter}")
+                Log.d(NOBINO_LOG_TAG,"Number Of Sucess Load is ${counter}")
 
                 loading=false
 
@@ -665,7 +665,7 @@ fun GetSliderByTag5(viewModel: HomeViewModel = hiltViewModel(),
 
             is NetworkResult.Error -> {
 
-                Log.d(LOG_TAG,result.message.toString())
+                Log.d(NOBINO_LOG_TAG,result.message.toString())
 
             }
         }

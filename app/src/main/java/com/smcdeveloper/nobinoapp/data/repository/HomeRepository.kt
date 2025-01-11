@@ -8,7 +8,7 @@ import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.HomeApiInterface
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
-import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
+import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.util.MovieDisplayData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -74,7 +74,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
         // First API Call: Fetch Movie Categories
         val movieResult = safeApiCall { api.fetchMovieTags(10) }
-        Log.d(LOG_TAG, "CategoryResult....")
+        Log.d(NOBINO_LOG_TAG, "CategoryResult....")
 
         when (movieResult) {
             is NetworkResult.Loading -> {
@@ -84,7 +84,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
             is NetworkResult.Success -> {
                 val tags = movieResult.data?.movieCatData?.tags?.filterNotNull()
 
-                Log.d(LOG_TAG, "------TAGS-------" + tags?.get(0).toString())
+                Log.d(NOBINO_LOG_TAG, "------TAGS-------" + tags?.get(0).toString())
 
 
                 val firstTag = tags?.firstOrNull()
@@ -135,7 +135,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
                     // Second API Call: Fetch Movies By Tag
 
                 }
-                Log.d(LOG_TAG, "-----movieResult-------" + movieResult.data.toString())
+                Log.d(NOBINO_LOG_TAG, "-----movieResult-------" + movieResult.data.toString())
 
 
                 /* when (movieResult) {
@@ -183,7 +183,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
                     val firstTag =
                         categoryResult.data?.movieCatData?.tags?.filterNotNull()?.firstOrNull()
 
-                    Log.d(LOG_TAG, "tag is$firstTag")
+                    Log.d(NOBINO_LOG_TAG, "tag is$firstTag")
 
 
                     if (!firstTag.isNullOrEmpty()) {
@@ -230,21 +230,21 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
     // Fetch the tag by ID
     fun fetchTagById(tagId: Int): Flow<NetworkResult<MovieCat>> = flow {
-        Log.d(LOG_TAG, "Starting fetch for tagId: $tagId")
+        Log.d(NOBINO_LOG_TAG, "Starting fetch for tagId: $tagId")
         emit(NetworkResult.Loading())
         delay(1000) //
 
         val result = safeApiCall { api.fetchMovieTags(tagId) }
-        Log.d(LOG_TAG, "API result for tagId: $tagId, Result: $result")
-        Log.d(LOG_TAG, "fetchTagByID........  Tag is: ${tagId}")
-        Log.d(LOG_TAG, "fetchTagByID........ Result is: ${result.message}")
+        Log.d(NOBINO_LOG_TAG, "API result for tagId: $tagId, Result: $result")
+        Log.d(NOBINO_LOG_TAG, "fetchTagByID........  Tag is: ${tagId}")
+        Log.d(NOBINO_LOG_TAG, "fetchTagByID........ Result is: ${result.message}")
         // var stat:NetworkResult<MovieCat>? = null
 
 
         emit(
             when (result) {
                 is NetworkResult.Success -> {
-                    Log.d(LOG_TAG, "Tag fetch success for tagId: $tagId, Data: ${result.data}")
+                    Log.d(NOBINO_LOG_TAG, "Tag fetch success for tagId: $tagId, Data: ${result.data}")
                     NetworkResult.Success(result.data)
 
 
@@ -256,7 +256,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
             }
         )
 
-        Log.d(LOG_TAG, "0000---0000" + result.message.toString())
+        Log.d(NOBINO_LOG_TAG, "0000---0000" + result.message.toString())
 
 
     }
@@ -265,7 +265,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
     // Fetch movies by tag
     fun fetchMoviesByTag(tag: String): Flow<NetworkResult<List<MovieResult.DataMovie.Item>>> =
         flow {
-            Log.d(LOG_TAG, "Fetching movies for tag: $tag")
+            Log.d(NOBINO_LOG_TAG, "Fetching movies for tag: $tag")
 
             emit(NetworkResult.Loading())
             delay(1000)
@@ -278,7 +278,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
                 )
             }
-            Log.d(LOG_TAG, "fetchMoviesByTag${result.message.toString()}")
+            Log.d(NOBINO_LOG_TAG, "fetchMoviesByTag${result.message.toString()}")
 
 
             emit(
@@ -338,8 +338,8 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
 
         }
-        Log.d(LOG_TAG, "----fetchMovieTest-----${tag}")
-        Log.d(LOG_TAG, "----fetchMovieTest-----")
+        Log.d(NOBINO_LOG_TAG, "----fetchMovieTest-----${tag}")
+        Log.d(NOBINO_LOG_TAG, "----fetchMovieTest-----")
         return result
 
 
@@ -357,8 +357,8 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
 
         }
-        Log.d(LOG_TAG, "----fetchMovieTest-----${tag}")
-        Log.d(LOG_TAG, "----fetchMovieTest-----")
+        Log.d(NOBINO_LOG_TAG, "----fetchMovieTest-----${tag}")
+        Log.d(NOBINO_LOG_TAG, "----fetchMovieTest-----")
         return result
 
 
@@ -396,7 +396,7 @@ data class MovieParams(
                 val movieCatResult = getMoviesTag(id)
 
                 val tag = (movieCatResult as? NetworkResult.Success)?.data?.movieCatData?.tags.toString()
-                Log.d(LOG_TAG,"fetchMoviesForTags-----$tag")
+                Log.d(NOBINO_LOG_TAG,"fetchMoviesForTags-----$tag")
                 tag.let { fetchMoviesByTag2(it) }
             }
         }
@@ -469,21 +469,21 @@ data class MovieParams(
 
 
     suspend fun fetchMovieDisplayData(tagIds: List<Int>): List<MovieDisplayData> = coroutineScope {
-        Log.d(LOG_TAG, "fetchMovieDisplayData: Started with tagIds: $tagIds")
+        Log.d(NOBINO_LOG_TAG, "fetchMovieDisplayData: Started with tagIds: $tagIds")
 
         tagIds.map { id ->
             async {
-                Log.d(LOG_TAG, "Processing tag ID: $id")
+                Log.d(NOBINO_LOG_TAG, "Processing tag ID: $id")
                 val movieCatResult = getMoviesTag(id)
 
                 if (movieCatResult is NetworkResult.Success) {
-                    Log.d(LOG_TAG, "fetchMovieDisplayData: Success for tag ID: $id")
+                    Log.d(NOBINO_LOG_TAG, "fetchMovieDisplayData: Success for tag ID: $id")
 
                     val movieCatData = movieCatResult.data?.movieCatData
-                    Log.d(LOG_TAG, "MovieCatData for tag ID $id: $movieCatData")
+                    Log.d(NOBINO_LOG_TAG, "MovieCatData for tag ID $id: $movieCatData")
 
                     val tags = movieCatData?.tags ?: emptyList()
-                    Log.d(LOG_TAG, "Tags for tag ID $id: $tags")
+                    Log.d(NOBINO_LOG_TAG, "Tags for tag ID $id: $tags")
 
                     // Fetch the first tag's MovieResult
                     val firstTag = tags.firstOrNull()
@@ -491,13 +491,13 @@ data class MovieParams(
                         val movieResult = fetchMoviesByTag2(firstTag)
 
                         if (movieResult is NetworkResult.Success) {
-                            Log.d(LOG_TAG, "fetchMoviesByTag2: Success for tag: $firstTag")
+                            Log.d(NOBINO_LOG_TAG, "fetchMoviesByTag2: Success for tag: $firstTag")
 
                             val dataMovie = movieResult.data?.movieInfo
                             val movieItems = dataMovie?.items ?: emptyList()
 
                             movieItems.forEach {
-                                Log.d(LOG_TAG, "Movie Item: ${it?.name}")
+                                Log.d(NOBINO_LOG_TAG, "Movie Item: ${it?.name}")
                             }
 
                             if (movieCatData != null && movieResult.data != null) {
@@ -512,15 +512,15 @@ data class MovieParams(
                                 null
                             }
                         } else {
-                            Log.d(LOG_TAG, "fetchMoviesByTag2: Failed for tag: $firstTag")
+                            Log.d(NOBINO_LOG_TAG, "fetchMoviesByTag2: Failed for tag: $firstTag")
                             null
                         }
                     } else {
-                        Log.d(LOG_TAG, "No valid tags found for tag ID: $id")
+                        Log.d(NOBINO_LOG_TAG, "No valid tags found for tag ID: $id")
                         null
                     }
                 } else {
-                    Log.d(LOG_TAG, "fetchMovieDisplayData: Failed for tag ID: $id")
+                    Log.d(NOBINO_LOG_TAG, "fetchMovieDisplayData: Failed for tag ID: $id")
                     null // Handle errors or skip
                 }
             }
@@ -552,7 +552,7 @@ data class MovieParams(
 
     suspend fun fetchMoviesByTag2(tag: String): NetworkResult<MovieResult> {
         val tagString = tag.substring(1, tag.length - 1) // Clean up tag format
-        Log.d(LOG_TAG,"SAFE API CALL----"+tagString)
+        Log.d(NOBINO_LOG_TAG,"SAFE API CALL----"+tagString)
 
 
         val result: NetworkResult<MovieResult>
@@ -561,7 +561,7 @@ data class MovieParams(
 
          result.data?.movieInfo?.items?.forEach {
 
-             Log.d(LOG_TAG,"Movie Name is ${it?.name.toString()}")
+             Log.d(NOBINO_LOG_TAG,"Movie Name is ${it?.name.toString()}")
 
 
 

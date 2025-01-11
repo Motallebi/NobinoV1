@@ -1,7 +1,10 @@
 package com.smcdeveloper.nobinoapp.ui.screens.profile
 
+
+import OtpValidationScreen
 import ProductDetailPage
 import SubscriptionSelectionPage
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,9 +50,10 @@ import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
 
-import com.smcdeveloper.nobinoapp.ui.screens.signup.RegisterScreen
+
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
+import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 
 @Composable
@@ -65,39 +69,23 @@ fun ProfileScreen(
 
 
 
+
+
+
+
 {
 
-    when(profileViewModel.screenState)
+    profileViewModel.updateState(ProfileScreenState.LOGIN_STATE)
+
+
+
+    fun test(): Boolean
     {
-        ProfileScreenState.LOGIN_STATE->
-        {
-            RegisterScreen(navController)
+        return false
 
-
-        }
-
-        ProfileScreenState.PROFILE_STATE ->{
-
-            //ProfilePage()
-           // EditUserInfoPage()
-           //PaymentHistoryPage()
-           // SubscriptionSelectionPage()
-          // SubscriptionConfirmationPage()
-            //PaymentSuccessPage()
-
-           // NewMemberPage()
-
-          //  ProfilePictureSelectionPage()
-         // ProductDetailPage(navController)
-
-
-
-
-
-
-        }
-        ProfileScreenState.SET_PASSWORD_STATE ->{}
     }
+
+
 
 
 

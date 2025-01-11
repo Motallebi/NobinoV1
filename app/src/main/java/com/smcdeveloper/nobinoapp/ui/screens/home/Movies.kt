@@ -39,7 +39,7 @@ import coil3.compose.AsyncImage
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
-import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
+import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG_IMAGES
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -123,7 +123,7 @@ fun getAllMovies(viewModel: HomeViewModel = hiltViewModel())
                     result.data?.movieInfo.let { movieInfo->
 
 
-                        Log.d(LOG_TAG, "Movie List Size ${movieInfo?.items?.size}")
+                        Log.d(NOBINO_LOG_TAG, "Movie List Size ${movieInfo?.items?.size}")
 
                     }
 
@@ -135,17 +135,17 @@ fun getAllMovies(viewModel: HomeViewModel = hiltViewModel())
                     result.data?.movieInfo?.items?.forEach {
 
 
-                        Log.d(LOG_TAG, "Movie Name is${it?.name.toString()}")
+                        Log.d(NOBINO_LOG_TAG, "Movie Name is${it?.name.toString()}")
 
 
 
 
                         Log.d(
-                            LOG_TAG, "Movie Images.....${
+                            NOBINO_LOG_TAG, "Movie Images.....${
                                 it?.images?.forEach {
 
-                                    Log.d(LOG_TAG, "Movie Name is${it?.imageType.toString()}")
-                                    Log.d(LOG_TAG, "Movie Name is${it?.src.toString()}")
+                                    Log.d(NOBINO_LOG_TAG, "Movie Name is${it?.imageType.toString()}")
+                                    Log.d(NOBINO_LOG_TAG, "Movie Name is${it?.src.toString()}")
 
 
                                 }
@@ -158,32 +158,32 @@ fun getAllMovies(viewModel: HomeViewModel = hiltViewModel())
 
                     //MovieResult
 
-                    Log.d(LOG_TAG, "success")
-                    Log.d(LOG_TAG, result.data.toString())
+                    Log.d(NOBINO_LOG_TAG, "success")
+                    Log.d(NOBINO_LOG_TAG, result.data.toString())
 
 
-                    Log.d(LOG_TAG, "---------" + result.message.toString())
-                    Log.d(LOG_TAG, "---88------" + result.message.toString())
-                    Log.d(LOG_TAG, "---8877------" + result.message.toString())
-                    Log.d(LOG_TAG, "---887888------" + result.message.toString())
+                    Log.d(NOBINO_LOG_TAG, "---------" + result.message.toString())
+                    Log.d(NOBINO_LOG_TAG, "---88------" + result.message.toString())
+                    Log.d(NOBINO_LOG_TAG, "---8877------" + result.message.toString())
+                    Log.d(NOBINO_LOG_TAG, "---887888------" + result.message.toString())
 
 
-                    Log.d(LOG_TAG, "success result" + result.data.toString())
+                    Log.d(NOBINO_LOG_TAG, "success result" + result.data.toString())
 
-                    Log.d(LOG_TAG, result.data.toString())
+                    Log.d(NOBINO_LOG_TAG, result.data.toString())
 
 
                 }
 
                 is NetworkResult.Error -> {
-                    Log.d(LOG_TAG, "Error")
-                    Log.d(LOG_TAG, result.message.toString())
+                    Log.d(NOBINO_LOG_TAG, "Error")
+                    Log.d(NOBINO_LOG_TAG, result.message.toString())
 
 
                 }
 
                 is NetworkResult.Loading -> {
-                    Log.d(LOG_TAG, "loading")
+                    Log.d(NOBINO_LOG_TAG, "loading")
 
                 }
 

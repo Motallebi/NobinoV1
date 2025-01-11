@@ -3,7 +3,7 @@ package com.smcdeveloper.nobinoapp.util
 object Constants {
 
     const val ENGLISH_LANG = "en"
-    const val LOG_TAG = "NobinoApp"
+    const val NOBINO_LOG_TAG = "NobinoApp"
     const val LOG_TAG_IMAGES = "NobinoAppImage"
     const val MovieCategory = "MOVIE"
     const val SeriesCategory = "MOVIE"
@@ -15,7 +15,7 @@ object Constants {
 
 
     const val PERSIAN_LANG = "fa"
-    const val DATASTORE_NAME = "DIGIKALA_DATA_STORE"
+    const val DATASTORE_NAME = "NOBINO_DATA_STORE"
    // const val BASE_URL = "https://stg.nobino.ir/"
     const val BASE_URL = "https://nobino.ir/"
     //const val BASE_URL = "https://jsonplaceholder.typicode.com/"

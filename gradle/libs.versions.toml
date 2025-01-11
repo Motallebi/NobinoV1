@@ -17,7 +17,7 @@ retrofit_ver="2.9.0"
 intercepter_ver="4.10.0"
 hilt_ver="2.51.1"
 hilt_navigation_compose_ver="1.2.0"
-atastore_version="1.0.0"
+datastore_version="1.0.0"
 ksp_ver="2.0.21-1.0.27"
 androidx_Navigation_ver="2.8.4"
 androidx_Compose_Material3_ver="1.3.1"
@@ -78,7 +78,7 @@ intercepter= { group = "com.squareup.okhttp3", name = "logging-interceptor" ,ver
 
 hilt-navcompose= { group ="androidx.hilt", name = "hilt-navigation-compose" ,version.ref = "hilt_navigation_compose_ver" }
 
-data-store={ group ="androidx.datastore", name = "datastore-preferences" ,version.ref = "atastore_version" }
+data-store={ group ="androidx.datastore", name = "datastore-preferences" ,version.ref = "datastore_version" }
 
 #Coil Image Library
 #implementation "io.coil-kt:coil-compose:2.0.0-rc01"

@@ -1,8 +1,6 @@
 package com.smcdeveloper.nobinoapp.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -15,7 +13,7 @@ import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.HomeRepository
 import com.smcdeveloper.nobinoapp.data.source.ProductBySpecialCategoryDataSource
-import com.smcdeveloper.nobinoapp.util.Constants.LOG_TAG
+import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.util.MovieDisplayData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +26,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
@@ -251,8 +248,8 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                     val tag = tagResult.data?.movieCatData?.title.toString()
                     val tag2=tagResult.data?.movieCatData?.tags?.get(0).toString()
 
-                    Log.d(LOG_TAG,"fetchMoviesForTagGroup: ${tag}")
-                    Log.d(LOG_TAG,"fetchMoviesForTagGroup: ${tag2}")
+                    Log.d(NOBINO_LOG_TAG,"fetchMoviesForTagGroup: ${tag}")
+                    Log.d(NOBINO_LOG_TAG,"fetchMoviesForTagGroup: ${tag2}")
 
                     // Fetch movies for this tag
                     repository.fetchMoviesByTag(tag2).map { moviesResult ->
@@ -408,7 +405,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                         repository.getMoveListBySize(paramA)
                     }
                     .catch { error ->
-                        Log.d(LOG_TAG,"We have Error.......")
+                        Log.d(NOBINO_LOG_TAG,"We have Error.......")
                         // Handle any errors
                         _moviesByTags.value = NetworkResult.Loading()
                     }
@@ -451,8 +448,8 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
                     _movieState.value = result
 
-                    Log.d(LOG_TAG,".......FETCH......")
-                    Log.d(LOG_TAG,".......FETCH......"+_movieState.value.data.toString())
+                    Log.d(NOBINO_LOG_TAG,".......FETCH......")
+                    Log.d(NOBINO_LOG_TAG,".......FETCH......"+_movieState.value.data.toString())
 
 
 
@@ -469,8 +466,8 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
                 _moviesByTag.value += (tagId to result)
 
-                Log.d(LOG_TAG,".......FETCH......")
-                Log.d(LOG_TAG,".......FETCH......"+_moviesByTag.value.toString())
+                Log.d(NOBINO_LOG_TAG,".......FETCH......")
+                Log.d(NOBINO_LOG_TAG,".......FETCH......"+_moviesByTag.value.toString())
 
 
 
@@ -481,7 +478,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
     fun fetchMoviesForTags() {
         (1..3).forEach { tag ->
-            Log.d(LOG_TAG,"00000000000000000")
+            Log.d(NOBINO_LOG_TAG,"00000000000000000")
             fetchMoviesForTag(tag)
         }
     }
@@ -540,7 +537,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
                             .flatMapConcat { tagResult ->
                                 if (tagResult is NetworkResult.Success) {
-                                    Log.d(LOG_TAG,"fetch by tagGroup Success-----")
+                                    Log.d(NOBINO_LOG_TAG,"fetch by tagGroup Success-----")
 
                                     val tag = MovieCat.MovieCatData(
                         title = tagResult.data?.movieCatData?.title,
@@ -553,7 +550,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                     }
                 }
                 else {
-                    Log.d(LOG_TAG,"fetch by tagGroup Error-----")
+                    Log.d(NOBINO_LOG_TAG,"fetch by tagGroup Error-----")
                     flowOf(
                         MovieCat.MovieCatData(
                             title = "Unknown",
@@ -576,8 +573,8 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
     fun getMoviesByCategory(tag: String,categoryName:String): Flow<PagingData<MovieResult.DataMovie.Item>> {
-        Log.d(LOG_TAG,"getmovie......")
-        Log.d(LOG_TAG, "tag is......${tag.toString()}")
+        Log.d(NOBINO_LOG_TAG,"getmovie......")
+        Log.d(NOBINO_LOG_TAG, "tag is......${tag.toString()}")
 
         return Pager(
             config = PagingConfig(
@@ -588,7 +585,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
             pagingSourceFactory = {
 
-                Log.d(LOG_TAG, "Creating new MoviePagingSource with categoryId: ${tag.toString()}")
+                Log.d(NOBINO_LOG_TAG, "Creating new MoviePagingSource with categoryId: ${tag.toString()}")
 
                 ProductBySpecialCategoryDataSource(repository, tag,categoryName)
 
@@ -606,7 +603,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                 repository.fetchTagById(tagId)
                 .flatMapConcat { tagResult ->
                     if (tagResult is NetworkResult.Success) {
-                        Log.d(LOG_TAG, "fetch by tagGroup Success-----")
+                        Log.d(NOBINO_LOG_TAG, "fetch by tagGroup Success-----")
 
                         val tag = MovieCat.MovieCatData(
                             title = tagResult.data?.movieCatData?.title,
@@ -620,7 +617,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                                 tag to moviesResult
                             }
                     } else {
-                        Log.d(LOG_TAG, "fetch by tagGroup Error-----")
+                        Log.d(NOBINO_LOG_TAG, "fetch by tagGroup Error-----")
                         flowOf(
                             MovieCat.MovieCatData(
                                 title = "Unknown",
@@ -655,13 +652,13 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                 _tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
             }
             .catch { e ->
-                Log.e(LOG_TAG, "Error fetching movies: ${e.message}")
+                Log.e(NOBINO_LOG_TAG, "Error fetching movies: ${e.message}")
             }
             .launchIn(viewModelScope)
     }
 
     fun processTagsAndMovies(tagsAndMoviesState: Map<MovieCat.MovieCatData, NetworkResult<List<MovieResult.DataMovie.Item>>>) {
-        Log.d(LOG_TAG,"----processTagsAndMovies----")
+        Log.d(NOBINO_LOG_TAG,"----processTagsAndMovies----")
         tagsAndMoviesState.forEach { (tag, result) ->
             // Only process if the tag hasn't been processed yet
             if (tag !in processedTags) {
@@ -671,16 +668,16 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                 when (result) {
                     is NetworkResult.Success -> {
                         // Handle success case
-                        Log.d(LOG_TAG, "Processing tag: ${tag.title}, movies: ${result.data}")
+                        Log.d(NOBINO_LOG_TAG, "Processing tag: ${tag.title}, movies: ${result.data}")
                     }
                     is NetworkResult.Error -> {
                         // Handle error case
-                        Log.e(LOG_TAG, "Error processing tag: ${tag.title}, error: ${result.message}")
+                        Log.e(NOBINO_LOG_TAG, "Error processing tag: ${tag.title}, error: ${result.message}")
                     }
                     is NetworkResult.Loading -> {
-                        Log.d(LOG_TAG,"----processTagsAndMovies----Loading")
+                        Log.d(NOBINO_LOG_TAG,"----processTagsAndMovies----Loading")
                         // Handle loading state if necessary
-                        Log.d(LOG_TAG, "Loading movies for tag: ${tag.title}")
+                        Log.d(NOBINO_LOG_TAG, "Loading movies for tag: ${tag.title}")
                     }
                 }
             }
@@ -697,7 +694,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
             .filter { tagId -> // Skip already processed tags
 
                 val shouldProcess = !processedTagIds.contains(tagId)
-                Log.d(LOG_TAG, "Tag ID: $tagId, Should Process: $shouldProcess")
+                Log.d(NOBINO_LOG_TAG, "Tag ID: $tagId, Should Process: $shouldProcess")
                 if (shouldProcess) processedTagIds.add(tagId)
                 shouldProcess
 
@@ -708,7 +705,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
                 if (processedTagIds.contains(tagId)) {
-                    Log.d(LOG_TAG, "Skipping already processed tagId: $tagId")
+                    Log.d(NOBINO_LOG_TAG, "Skipping already processed tagId: $tagId")
                     false
                 } else {
                     processedTagIds.add(tagId)
@@ -729,7 +726,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                                 id = tagId
                             )
                             val firstTag = tagResult.data?.movieCatData?.tags?.getOrNull(0)
-                            Log.d(LOG_TAG,"tags new..${firstTag}")
+                            Log.d(NOBINO_LOG_TAG,"tags new..${firstTag}")
                             if (!firstTag.isNullOrEmpty()) {
                                 repository.fetchMoviesByTag(firstTag)
                                     .map { moviesResult ->
@@ -758,7 +755,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                     }
             }
             .onEach { (tag, result) ->
-                Log.d(LOG_TAG,"888888888"+tag.title.toString())
+                Log.d(NOBINO_LOG_TAG,"888888888"+tag.title.toString())
 
                 /*val nonNullId = tag.id ?: -1 // Provide a default value for null IDs
                 if (!_tagsAndMovies.value.containsKey(nonNullId)) {
@@ -790,7 +787,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                 }
 
             .catch { e ->
-                Log.e(LOG_TAG, "Error fetching movies: ${e.message}")
+                Log.e(NOBINO_LOG_TAG, "Error fetching movies: ${e.message}")
             }
             .launchIn(viewModelScope)
     }
@@ -801,7 +798,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
             .filter { tagId ->
                 val shouldProcess = !processedTagIds.contains(tagId)
                 if (shouldProcess) processedTagIds.add(tagId)
-                Log.d(LOG_TAG, "Tag ID: $tagId, Should Process: $shouldProcess")
+                Log.d(NOBINO_LOG_TAG, "Tag ID: $tagId, Should Process: $shouldProcess")
                 shouldProcess
             }
             .flatMapConcat { tagId ->
@@ -838,7 +835,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                     }
             }
             .onEach { (tag, result) ->
-                Log.d(LOG_TAG, "Updating state for tag: ${tag.title}, Result: $result")
+                Log.d(NOBINO_LOG_TAG, "Updating state for tag: ${tag.title}, Result: $result")
                 //_tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
                 /* val nonNullId = tag.id ?: -1 // Provide a default value for null IDs
                 if (!_tagsAndMovies.value.containsKey(nonNullId)) {
@@ -849,7 +846,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                 _tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
 
             } .catch { e ->
-                Log.e(LOG_TAG, "Error fetching movies: ${e.message}")
+                Log.e(NOBINO_LOG_TAG, "Error fetching movies: ${e.message}")
             }
             .launchIn(viewModelScope)
     }
