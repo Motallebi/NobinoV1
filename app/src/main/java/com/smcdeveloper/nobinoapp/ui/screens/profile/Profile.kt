@@ -73,9 +73,12 @@ fun ProfileScreen(
 
 
 
+
+
 {
 
-    profileViewModel.updateState(ProfileScreenState.LOGIN_STATE)
+    //profileViewModel.updateState(ProfileScreenState.LOGIN_STATE)
+  ///  ProfilePage()
 
 
 
@@ -103,7 +106,7 @@ fun ProfileScreen(
 
 
         Text(
-            "Profile",
+            "user Profile",
             style = MaterialTheme.typography.nobinoLarge,
            // color = Color.Yellow
 

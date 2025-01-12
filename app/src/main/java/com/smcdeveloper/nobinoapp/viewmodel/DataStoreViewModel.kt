@@ -1,3 +1,5 @@
+package com.smcdeveloper.nobinoapp.viewmodel
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smcdeveloper.nobinoapp.data.datastore.DataStoreRepository
@@ -5,13 +7,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class DataStoreViewModel @Inject constructor(
     private val repository: DataStoreRepository
-) :ViewModel()
-{
+
+
+
+):ViewModel() {
+
 
     companion object {
         const val USER_LANGUAGE_KEY = "USER_LANGUAGE_KEY"
@@ -21,7 +27,10 @@ class DataStoreViewModel @Inject constructor(
         const val USER_PASSWORD_KEY = "USER_PASSWORD_KEY"
         const val USER_NAME_KEY = "USER_NAME_KEY"
         const val USER_ADDRESS_KEY = "USER_ADDRESS_KEY"
+
     }
+
+
 
     // StateFlow for observing user data
     private val _userToken = MutableStateFlow<String?>(null)
@@ -50,51 +59,42 @@ class DataStoreViewModel @Inject constructor(
         }
     }
 
-    // Save functions
-    fun saveUserLanguage(value: String) {
-        viewModelScope.launch {
-            repository.putString(USER_LANGUAGE_KEY, value)
-        }
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     fun saveUserToken(value: String) {
         viewModelScope.launch {
             repository.putString(USER_TOKEN_KEY, value)
-            _userToken.value = value
         }
     }
 
-    fun saveUserId(value: String) {
-        viewModelScope.launch {
-            repository.putString(USER_ID_KEY, value)
-            _userId.value = value
-        }
-    }
 
-    fun saveUserPhoneNumber(value: String) {
-        viewModelScope.launch {
-            repository.putString(USER_PHONE_KEY, value)
-            _userPhone.value = value
-        }
-    }
 
-    fun saveUserPassword(value: String) {
-        viewModelScope.launch {
-            repository.putString(USER_PASSWORD_KEY, value)
-        }
-    }
 
-    fun saveUserName(value: String) {
-        viewModelScope.launch {
-            repository.putString(USER_NAME_KEY, value)
-            _userName.value = value
-        }
-    }
 
-    fun saveUserAddressIndex(value: String) {
-        viewModelScope.launch {
-            repository.putString(USER_ADDRESS_KEY, value)
-            _userAddress.value = value
-        }
-    }
+
+
+
+
 }

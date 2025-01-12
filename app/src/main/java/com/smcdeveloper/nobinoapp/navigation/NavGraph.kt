@@ -3,6 +3,7 @@ package com.smcdeveloper.nobinoapp.navigation
 
 import OtpValidationScreen
 import ProductDetailPage
+import RegisterScreen
 import androidx.compose.runtime.Composable
 
 import androidx.navigation.NavHostController
@@ -10,7 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.smcdeveloper.nobinoapp.ui.screens.RegisterScreen
+
 import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
@@ -97,7 +98,7 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
-        composable(route = Screen.OtpValidation.route,
+        composable(route = Screen.OtpValidation.route+ "/{refNumber}",
             arguments = listOf(navArgument("refNumber")
             { type = NavType.StringType })
 

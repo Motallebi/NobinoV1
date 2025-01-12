@@ -101,39 +101,44 @@ class ProfileViewModel @Inject constructor(private val
 
         viewModelScope.launch {
             loadingState = true
+            val result = repository.getOtp(mobile = inputPhoneState)
+            loginResponse.emit(result)
+            if (result is NetworkResult.Success) {
+                inputRefSates = result.data?.refNumber ?: ""
+            }
+
+
+
            // val loginRequest = LoginRequest(client_id = "nobino-direct", mobile = inputPhoneState, grant_type = "password")
-            loginResponse.emit(repository.GetOtp(mobile = inputPhoneState))
+            //loginResponse.emit(repository.getOtp(mobile = inputPhoneState))
+
         }
 
-
+        loadingState = false
 
 
 
 
     }
 
-    fun validateOtp()
-    {
-
+    fun validateOtp() {
         viewModelScope.launch {
             loadingState = true
-           // val loginRequest = LoginRequest(client_id = "nobino-direct", mobile = inputPhoneState, grant_type = "password",)
-            loginResponse.emit(repository.validateOtp(
+            val result = repository.validateOtp(
                 ref_number = inputRefSates,
                 otp = inputOtpState,
                 mobile = inputPhoneState,
                 token = ""
-            ))
+
+            )
+            loginResponse.emit(result)
+
+            if (result is NetworkResult.Success) {
+                val token = result.data?.access_token
+                // Handle token if needed
+            }
+            loadingState = false
         }
-
-
-        loadingState=false
-
-
-
-
-
-
     }
 
 

@@ -23,7 +23,7 @@ fun OtpValidationScreen(
     navController: NavController,
     refNumber: String,
     profileViewModel: ProfileViewModel = hiltViewModel(),
-    dataStoreViewModel: DataStoreViewModel= hiltViewModel()
+   // dataStoreViewModel: DataStoreViewModel= hiltViewModel()
 
 ) {
     var enteredOtp by remember { mutableStateOf("") }
@@ -42,7 +42,7 @@ fun OtpValidationScreen(
                     loginResponse.data?.let { user ->
                         val token =  user.access_token// Assuming token is part of the response
                         if (token.isNotEmpty()) {
-                            dataStoreViewModel.saveUserToken(token) // Save token to DataStore
+                            //dataStoreViewModel.saveUserToken(token) // Save token to DataStore
                             navController.navigate("profile_page_route") // Navigate to Profile screen
                         }
                     }
