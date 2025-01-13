@@ -1,49 +1,75 @@
+import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
+import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
+import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
-
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtpValidationScreen(
     navController: NavController,
     refNumber: String,
     profileViewModel: ProfileViewModel = hiltViewModel(),
-   // dataStoreViewModel: DataStoreViewModel= hiltViewModel()
+    dataStoreViewModel: DataStoreViewModel= hiltViewModel()
 
 ) {
-    var enteredOtp by remember { mutableStateOf("") }
+    val otpLength = 5
+    val otpValues = remember { mutableStateListOf("", "", "", "", "") }
     val context = LocalContext.current
+    var isValid by remember { mutableStateOf(true) }
 
-    // Set the refNumber in the ViewModel
+    // Focus requesters for managing focus between fields
+    val focusRequesters = List(otpLength) { FocusRequester() }
+
+    // Initialize refNumber in ViewModel
     LaunchedEffect(refNumber) {
         profileViewModel.inputRefSates = refNumber
+        dataStoreViewModel.saveUserRefKey(refNumber)
     }
 
-    // Observe loginResponse for validation results
+    // Observe loginResponse
     LaunchedEffect(Unit) {
         profileViewModel.loginResponse.collectLatest { loginResponse ->
             when (loginResponse) {
                 is NetworkResult.Success -> {
                     loginResponse.data?.let { user ->
-                        val token =  user.access_token// Assuming token is part of the response
+                        val token = user.access_token
+                        Log.d(NOBINO_LOG_TAG,"Token is $token" )
+
+
+
                         if (token.isNotEmpty()) {
-                            //dataStoreViewModel.saveUserToken(token) // Save token to DataStore
-                            navController.navigate("profile_page_route") // Navigate to Profile screen
+                            navController.navigate(Screen.Profile.route)
                         }
                     }
                 }
@@ -55,39 +81,183 @@ fun OtpValidationScreen(
                     ).show()
                 }
                 is NetworkResult.Loading -> {
-                    // Show a loading spinner or disable the button
+                    // Show a loading spinner (optional)
                 }
             }
         }
     }
 
-    // OTP Input UI
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        TextField(
-            value = enteredOtp,
-            onValueChange = { enteredOtp = it },
-            label = { Text("Enter OTP") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                // Set the OTP in the ViewModel
-                profileViewModel.inputOtpState = enteredOtp
+    // Functions for onResendOtp and onEditPhoneNumber
+    val onResendOtp = {
+        profileViewModel.requestNewOtp()
+        Toast.makeText(context, "کد تایید جدید ارسال شد", Toast.LENGTH_SHORT).show()
+    }
 
-                // Call the validation function
-                profileViewModel.validateOtp()
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+
+
+
+    val onEditPhoneNumber = {
+        navController.popBackStack()
+    }
+
+    // Force layout to LTR
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Validate OTP", color = Color.White)
+            // Logo
+            Text(
+                text = "نوینو",
+                color = Color.Red,
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 32.dp)
+            )
+
+            // Title
+            Text(
+                text = "کد تایید",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // Instructions
+            Text(
+                text = "لطفاً کد ارسال شده به شماره شما را وارد نمایید",
+                color = Color.Gray,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 32.dp)
+            )
+
+            // OTP Input Fields
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                    //.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                repeat(otpLength) { i ->
+                    OutlinedTextField(
+                        value = otpValues[i],
+                        onValueChange = { value ->
+                            if (value.length <= 1) {
+                                otpValues[i] = value
+
+                                if (value.isNotEmpty() && i < otpLength - 1) {
+                                    // Move focus to the next field
+                                    focusRequesters[i + 1].requestFocus()
+                                } else if (value.isEmpty() && i > 0) {
+                                    // Move focus to the previous field
+                                    focusRequesters[i - 1].requestFocus()
+                                }
+                            }
+                        },
+                        singleLine = true,
+                        modifier = Modifier
+                            .size(70.dp)
+                            .padding(8.dp)
+                            .border(
+                                width = 2.dp,
+                                color = when {
+                                    !isValid -> Color.Red
+                                    otpValues[i].isNotEmpty() -> Color.White
+                                    else -> Color.Gray
+                                },
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .background(Color.Black, shape = RoundedCornerShape(8.dp))
+                            .focusRequester(focusRequesters[i])
+                            .onFocusChanged { focusState ->
+                                if (!focusState.isFocused && otpValues[i].isEmpty()) {
+                                    isValid = true // Reset validation state for empty fields
+                                }
+                            },
+                        textStyle = TextStyle(
+                            color = Color.White,
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Center
+                        ),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        visualTransformation = VisualTransformation.None,
+                        keyboardActions = KeyboardActions {
+                            if (i == otpLength - 1) {
+                                val otp = otpValues.joinToString("")
+                                profileViewModel.inputOtpState = otp
+
+                                profileViewModel.validateOtp(
+                                   refNumber =  dataStoreViewModel.getUserRefKey().toString(),
+                                    otp=profileViewModel.inputOtpState,
+                                    mobile = dataStoreViewModel.getUserPhoneNumber().toString()
+
+
+
+
+
+
+
+                                )
+                            }
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedTextColor = Color.White,
+                            cursorColor = Color.Green,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Validate OTP Button
+            Button(
+                onClick = {
+                    val otp = otpValues.joinToString("")
+                    profileViewModel.inputOtpState = otp
+
+                    profileViewModel.validateOtp(
+                        refNumber =  profileViewModel.inputRefSates,
+                        otp=profileViewModel.inputOtpState,
+                        mobile = dataStoreViewModel.getUserPhoneNumber().toString()
+
+
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+            ) {
+                Text("تایید کد", color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Resend OTP Button
+            Button(
+                onClick = onResendOtp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "دریافت کد از طریق پیامک", color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Edit Phone Number Option
+            TextButton(
+                onClick = {},
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(text = "ویرایش شماره همراه", color = Color.Red)
+            }
         }
     }
 }

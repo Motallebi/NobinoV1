@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -121,16 +122,30 @@ class ProfileViewModel @Inject constructor(private val
 
     }
 
-    fun validateOtp() {
+    fun validateOtp(
+        refNumber:String,
+        otp:String,
+        mobile: String
+        ) {
+
+
+        Log.d("valdiate","ref num is $refNumber otp is $otp mobile is $mobile")
+
+
         viewModelScope.launch {
             loadingState = true
             val result = repository.validateOtp(
-                ref_number = inputRefSates,
-                otp = inputOtpState,
-                mobile = inputPhoneState,
+                ref_number = refNumber,
+                otp = otp,
+                mobile = mobile,
                 token = ""
 
+
+
             )
+
+
+
             loginResponse.emit(result)
 
             if (result is NetworkResult.Success) {
@@ -141,16 +156,12 @@ class ProfileViewModel @Inject constructor(private val
         }
     }
 
+    fun requestNewOtp() {
+        TODO("Not yet implemented")
+    }
 
 
-
-
-
-
-
-
-
- }
+}
 
 
 

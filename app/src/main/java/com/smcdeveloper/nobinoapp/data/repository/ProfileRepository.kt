@@ -5,7 +5,6 @@ import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.remote.ProfileApiInterface
-import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(private val api: ProfileApiInterface): BaseApiResponse2() {
@@ -25,24 +24,34 @@ class ProfileRepository @Inject constructor(private val api: ProfileApiInterface
         }
     }
 
-   suspend fun validateOtp(ref_number:String, otp:String, mobile: String,token:String): NetworkResult<LoginResponse> =
+    suspend fun validateOtp(
+        ref_number: String,
+        otp: String,
+        mobile: String,
+        token: String
+    ): NetworkResult<LoginResponse> {
 
-       safeApiCall {
+        Log.d("Repository", "Request: ref_num=$ref_number")
+        //Log.d("Repository", "Request: ref_num=$ref_number")
 
-           api.validateOtp(ref_number =ref_number , otp = otp, mobile = mobile )
-
-
-       }
-
-
-
-
-
-
-
+        return safeApiCall {
+            val response = api.validateOtp(refNumber = ref_number, otp = otp, mobile = mobile)
+            Log.d("Repository", "Request: ref_num=${response.body().toString()}")
 
 
+
+            response
+
+
+        }
+
+
+    }
 }
+
+
+
+
 
 
 

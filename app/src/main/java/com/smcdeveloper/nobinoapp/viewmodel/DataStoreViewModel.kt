@@ -27,6 +27,7 @@ class DataStoreViewModel @Inject constructor(
         const val USER_PASSWORD_KEY = "USER_PASSWORD_KEY"
         const val USER_NAME_KEY = "USER_NAME_KEY"
         const val USER_ADDRESS_KEY = "USER_ADDRESS_KEY"
+        const val USER_REF_KEY = "USER_REF_KEY"
 
     }
 
@@ -47,6 +48,8 @@ class DataStoreViewModel @Inject constructor(
 
     private val _userAddress = MutableStateFlow<String?>(null)
     val userAddress: StateFlow<String?> get() = _userAddress
+    private val _userRefKey = MutableStateFlow<String?>(null)
+    val userRefKey: StateFlow<String?> get() =  _userRefKey
 
     init {
         // Load initial values
@@ -56,6 +59,8 @@ class DataStoreViewModel @Inject constructor(
             _userPhone.value = repository.getString(USER_PHONE_KEY)
             _userName.value = repository.getString(USER_NAME_KEY)
             _userAddress.value = repository.getString(USER_ADDRESS_KEY)
+            _userRefKey.value = repository.getString(USER_REF_KEY)
+
         }
     }
 
@@ -89,6 +94,26 @@ class DataStoreViewModel @Inject constructor(
         }
     }
 
+    fun saveUserPhone(value: String) {
+        viewModelScope.launch {
+            repository.putString(USER_PHONE_KEY, value)
+        }
+    }
+
+
+    fun getUserPhoneNumber(): String? = runBlocking {
+        repository.getString(USER_PHONE_KEY)
+    }
+
+    fun getUserRefKey(): String? = runBlocking {
+        repository.getString(USER_REF_KEY)
+    }
+
+    fun saveUserRefKey(value: String) {
+        viewModelScope.launch {
+            repository.putString(USER_REF_KEY, value)
+        }
+    }
 
 
 

@@ -30,6 +30,7 @@ import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
+import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import kotlinx.coroutines.Dispatchers
 
 
@@ -37,7 +38,10 @@ import kotlinx.coroutines.Dispatchers
 @Composable
 fun RegisterScreen(
     navController: NavHostController,
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    dataStoreViewModel: DataStoreViewModel= hiltViewModel()
+
+
 ) {
     val context = LocalContext.current
 
@@ -77,7 +81,8 @@ fun RegisterScreen(
 @Composable
 fun LoginScreen(
     profileViewModel: ProfileViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    dataStoreViewModel: DataStoreViewModel= hiltViewModel()
 ) {
     // Main container
     Column(
@@ -114,12 +119,13 @@ fun LoginScreen(
             modifier = Modifier.padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            PhoneInputField(profileViewModel)
+            PhoneInputField(profileViewModel, dataStoreViewModel = dataStoreViewModel)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
+
                     profileViewModel.getOtp() // Trigger OTP retrieval
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -180,10 +186,19 @@ fun TopBar() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PhoneInputField(profileViewModel: ProfileViewModel) {
+fun PhoneInputField(profileViewModel: ProfileViewModel,
+                    dataStoreViewModel: DataStoreViewModel
+) {
     TextField(
         value = profileViewModel.inputPhoneState,
-        onValueChange = { profileViewModel.inputPhoneState = it },
+
+
+        onValueChange = {
+            profileViewModel.inputPhoneState = it
+            dataStoreViewModel.saveUserPhone(it)
+
+                        },
+
         placeholder = { Text(text = "09123456789", color = Color.Gray) },
         modifier = Modifier
             .fillMaxWidth()

@@ -1,6 +1,5 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
-import com.smcdeveloper.nobinoapp.data.model.ResponseResult
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
 import retrofit2.Response
@@ -38,12 +37,12 @@ interface ProfileApiInterface {
         @Field("grant_type") grantType: String="password",
         @Field("client_secret") clientSecret: String="wbUe9HHhsuv0QtPxJxdzGEkOrNG0w6ab",
         @Field("mobile") mobile: String,
-        @Field("ref_number") ref_number: String,
+        @Field("ref_number") refNumber: String,
         @Field("otp") otp: String,
 
 
 
-    ): Response<LoginResponse>
+        ): Response<LoginResponse>
 
 
 

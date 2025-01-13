@@ -78,7 +78,7 @@ fun ProfileScreen(
 {
 
     //profileViewModel.updateState(ProfileScreenState.LOGIN_STATE)
-  ///  ProfilePage()
+    ProfilePage()
 
 
 
