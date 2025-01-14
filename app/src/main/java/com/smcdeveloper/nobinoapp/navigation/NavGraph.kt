@@ -15,6 +15,10 @@ import androidx.navigation.navArgument
 import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
+import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoScreen
+import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoDemo
+import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlayScreen
+import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoScreen
 import com.smcdeveloper.nobinoapp.ui.screens.favorit.Favorit
 import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
 import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
@@ -23,6 +27,8 @@ import com.smcdeveloper.nobinoapp.ui.screens.search.Search
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
 
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 
 @Composable
@@ -98,45 +104,23 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
-        composable(route = Screen.OtpValidation.route+ "/{refNumber}",
+        composable(
+            route = Screen.OtpValidation.route + "/{refNumber}",
             arguments = listOf(navArgument("refNumber")
             { type = NavType.StringType })
 
 
-
-            )
-
-
-
-
-
+        )
 
 
         {
 
-            backStackEntry ->
+                backStackEntry ->
             val refNumber = backStackEntry.arguments?.getString("refNumber") ?: ""
-            OtpValidationScreen(navController = navController, refNumber=refNumber)
-
-
+            OtpValidationScreen(navController = navController, refNumber = refNumber)
 
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         /*  composable(route = Screen.Product.route + "{/tags}",
@@ -200,11 +184,11 @@ fun SetupNavGraph(navController: NavHostController) {
         }
 
 
-        composable(route = Screen.ProductDetails.route+"/{productId}",
+        composable(route = Screen.ProductDetails.route + "/{productId}",
             arguments = listOf(
                 navArgument("productId")
                 {
-                    type=NavType.IntType
+                    type = NavType.IntType
 
                 }
 
@@ -215,12 +199,13 @@ fun SetupNavGraph(navController: NavHostController) {
         {
             val productId = it.arguments?.getInt("productId")
             if (productId != null) {
-                ProductDetailPage(navController = navController,
+                ProductDetailPage(
+                    navController = navController,
 
                     productId = productId
 
 
-                    )
+                )
             }
 
 
@@ -228,12 +213,8 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
-
-
-
-
-
-
+        composable(route = Screen.DemoScreen.route) {
+            DemoScreen(navController = navController)
 
 
         }
@@ -241,18 +222,66 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
+        composable(route = Screen.VideoPlayerScreen.route + "/{videoUrl}",
+            arguments = listOf(
+                navArgument("videoUrl")
+                {
+                    type = NavType.StringType
+
+                }
 
 
+            )
 
 
+        )
+        {
+
+            val videoUrl = it.arguments?.getString("videoUrl").toString()
+            val videoUrlDecode = URLDecoder.decode(videoUrl, StandardCharsets.UTF_8.toString())
+            VideoPlayScreen(
+                navController = navController,
+                videourl = videoUrlDecode
 
 
+            )
 
 
+        }
 
 
+        composable(route = Screen.VideoDemoScreen.route + "/{videoUrl}",
 
+
+            arguments = listOf(
+                navArgument("videoUrl")
+                {
+                    type = NavType.StringType
+
+                }
+
+            )
+        )
+
+
+        {
+            val videoUrl = it.arguments?.getString("videoUrl")
+            val videoUrlDecode = URLDecoder.decode(videoUrl, StandardCharsets.UTF_8.toString())
+            if (videoUrl != null) {
+                VideoDemo(
+                    navController = navController,
+                    videUrl = videoUrlDecode
+
+
+                )
+
+
+            }
+
+
+        }
     }
+}
 
 
 

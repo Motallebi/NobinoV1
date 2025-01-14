@@ -55,6 +55,7 @@ fun OtpValidationScreen(
     LaunchedEffect(refNumber) {
         profileViewModel.inputRefSates = refNumber
         dataStoreViewModel.saveUserRefKey(refNumber)
+
     }
 
     // Observe loginResponse
@@ -68,7 +69,9 @@ fun OtpValidationScreen(
 
 
 
-                        if (token.isNotEmpty()) {
+
+                        if (token.isNotBlank()) {
+                            dataStoreViewModel.saveUserToken(token)
                             navController.navigate(Screen.Profile.route)
                         }
                     }

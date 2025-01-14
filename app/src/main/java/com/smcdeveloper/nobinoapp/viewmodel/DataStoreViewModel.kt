@@ -88,11 +88,6 @@ class DataStoreViewModel @Inject constructor(
 
 
 
-    fun saveUserToken(value: String) {
-        viewModelScope.launch {
-            repository.putString(USER_TOKEN_KEY, value)
-        }
-    }
 
     fun saveUserPhone(value: String) {
         viewModelScope.launch {
@@ -116,6 +111,15 @@ class DataStoreViewModel @Inject constructor(
     }
 
 
+    fun getUserToken(): String? = runBlocking {
+        repository.getString(USER_TOKEN_KEY)
+    }
+
+    fun saveUserToken(value: String) {
+        viewModelScope.launch {
+            repository.putString(USER_TOKEN_KEY, value)
+        }
+    }
 
 
 

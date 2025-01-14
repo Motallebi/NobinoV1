@@ -6,6 +6,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -17,7 +18,13 @@ interface ProductDetailsApiInterface {
 
 
     @GET("api/products/{productId}")
-    suspend fun getProductDetailInfo( @Path("productId") id: Int):Response<ProductModel>
+    suspend fun getProductDetailInfo(
+
+        @Path("productId") id: Int,
+        @Header("Authorization") auth: String =""
+
+
+    ):Response<ProductModel>
 
 
 

@@ -25,7 +25,10 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
+import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun ProductDetailPage(
@@ -38,6 +41,9 @@ fun ProductDetailPage(
     }
 
     val products by productDetailsViewModel.product.collectAsState()
+
+
+
 
     val thumbnails = remember { mutableStateOf(listOf<String>()) }
     val actors = remember { mutableStateOf(listOf<String>()) }
@@ -75,7 +81,11 @@ fun ProductDetailPage(
                     productApproval = 20000,
                     productDuration = "productData.duration",
                     actors = actors.value,
-                    thumbnails = thumbnails.value
+                    thumbnails = thumbnails.value,
+                    videoUrl = productData.videoLink.toString(),
+                    navController = navController
+
+
                 )
             }
         }
@@ -93,7 +103,9 @@ fun ShowProductDetail(
     productApproval: Int,
     productDuration: String,
     actors: List<String>,
-    thumbnails: List<String>
+    thumbnails: List<String>,
+    videoUrl:String,
+    navController: NavHostController
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
 
@@ -180,7 +192,16 @@ fun ShowProductDetail(
 
                         // Play Button
                         Button(
-                            onClick = { /* Play movie functionality */ },
+                            onClick = {
+                                Log.d("VideoUrl",videoUrl)
+                                val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
+                               navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
+                               // navController.navigate(Screen.VideoDemoScreen.withArgs(encodedUrl))
+
+
+
+
+                            /* Play movie functionality */ },
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
                             modifier = Modifier.fillMaxWidth()
                         ) {

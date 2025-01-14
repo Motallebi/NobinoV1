@@ -18,6 +18,9 @@ sealed class Screen (val route:String) {
     data object Product : Screen("Product_Screen")
     data object ProductDetails : Screen("Product_Detail_Screen")
     data object OtpValidation : Screen("Otp_Validation_Screen")
+    data object DemoScreen : Screen("Demo_Screen")
+    data object VideoPlayerScreen : Screen("VideoPlayer_Screen")
+    data object VideoDemoScreen : Screen("VideoDemo_Screen")
 
 
 
