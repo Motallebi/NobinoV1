@@ -196,7 +196,7 @@ fun ShowProductDetail(
                                 Log.d("VideoUrl",videoUrl)
                                 val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
                                navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
-                               // navController.navigate(Screen.VideoDemoScreen.withArgs(encodedUrl))
+                             ///   navController.navigate(Screen.VideoDemoScreen.withArgs(encodedUrl))
 
 
 

@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.paging.common.android)
     implementation(libs.androidx.espresso.core)
+   // implementation(libs.androidx.media3.common.ktx)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navcompose)
 
@@ -122,5 +123,8 @@ dependencies {
 
 
     // ExoPlayer
-    implementation (libs.exoplayer)
+
+    implementation("androidx.media3:media3-exoplayer:1.0.0")
+    implementation("androidx.media3:media3-ui:1.0.0")
+
 }
