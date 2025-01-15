@@ -31,10 +31,15 @@ fun DemoScreen(
 {
 
     Text("DEMO SCEREEN")
-    HLSPlayerComposable(LocalContext.current,
-        "https://vod.nobino.ir/content/vod/FOMtvjsOeOIwfPXsta1st5UpuGDrYoYEHSywZdRbpfX90BecIhLRypvVuTt71uaFnhQZwZmrPFy2ibzCWql0GHOe7_hpzTpmScxSBdBdtbXulu8Jz5j37OI2cZ2i_BtrFKm6qCtnX7IdytEyNDQVUg_RghY8gxMUulDR5vP8_iT7kWFet7bEgnn7TcKO64HFWEdvJIn8Ke3kacGresswi6t61Kx4y-6iCh7w6cHpUh_CkFKBgmNz6ZNZleiazgBk_IiYPpOCOKxqyr6KI4YAE2K6XOyDu9-3Y2QpJC9-E26tx704hz0AIDRIbEypkLalyGBwWKO15yWvGdSlk1QN7eU8JUBSTPagxUNI6wfe80Ld-cF33WxORlbzi1a4UnTissmc29U1tVbW8uXmy0twqDzP0T-5p_OCDuXJtvylKlVPtFOQvPHBHZGhKh0CDNOs9L7UJ3qiCV-Xj7PeIpirw1cCKgCR0Z01CCXjK5_Xb02R6L5NS0MuNQynbC6GeTRNhu0Scg8aRN2LXglTSe9h1R3_K28SORO9Fbm93_qpzYT0UuJD39e_2CapIkFj2WihgdSgc40RCDnLnITItOk96vxcxUwlayqElN_Gp6PfjHHd9NOchCVLegXhE5hfTQlkELtIDvP_EM9CsEfLDJ4IEDd65qVewFHz_5qj9f-3KH5hf2V23eRbAk-NYPf7cg5arRZvqdTQIMOr5tBAiUJLHlF3WvYXHnLfolCMlZSlg71pR7ynifkImkzlpujjZe49/master.m3u8?x=dKMZV1t0dtoqIXFS1_Dr8g&e=1737004991800"
+
+    val hlsUrl = "https://vod.nobino.ir/content/vod/FOMtvjsOeOIwfPXsta1st5UpuGDrYoYEHSywZdRbpfX90BecIhLRypvVuTt71uaFnhQZwZmrPFy2ibzCWql0GHOe7_hpzTpmScxSBdBdtbXulu8Jz5j37OI2cZ2i_BtrFKm6qCtnX7IdytEyNDQVUg_RghY8gxMUulDR5vP8_iT7kWFet7bEgnn7TcKO64HFWEdvJIn8Ke3kacGresswi6t61Kx4y-6iCh7w6cHpUh_CkFKBgmNz6ZNZleiazgBk_IiYPpOCOKxqyr6KI4YAE2K6XOyDu9-3Y2QpJC9-E26tx704hz0AIDRIbEypkLalyGBwWKO15yWvGdSlk1QN7eU8JUBSTPagxUNI6wfe80Ld-cF33WxORlbzi1a4UnTissmc29U1tVbW8uXmy0twqDzP0T-5p_OCDuXJtvylKlVPtFOQvPHBHZGhKh0CDNOs9L7UJ3qiCV-Xj7PeIpirw1cCKgCR0Z01CCXjK5_Xb02R6L5NS0MuNQynbC6GeTRNhu0Scg8aRN2LXglTSe9h1R3_K28SORO9Fbm93_qpzYT0UuJD39e_2CapIkFj2WihgdSgc40RCDnLnITItOk96vxcxUwlayqElN_Gp6PfjHHd9NOchCVLegXhE5hfTQlkELtIDvP_EM9CsEfLDJ4IEDd65qVewFHz_5qj9f-3KH5hf2V23eRbAk-NYPf7cg5arRZvqdTQIMOr5tBAiUJLHlF3WvYXHnLfolCMlZSlg71pR7ynifkImkzlpujjZe49/master.m3u8?x=dKMZV1t0dtoqIXFS1_Dr8g&e=1737004991800"
 
 
+
+
+    HlsPlayer2(
+
+       hlsUrl = hlsUrl
     )
 
 
@@ -51,6 +56,35 @@ fun DemoScreen(
 
 
 }
+
+
+fun createHlsExoPlayer(context: Context, hlsUrl: String): ExoPlayer {
+    return ExoPlayer.Builder(context).build().apply {
+        val mediaItem = MediaItem.fromUri(hlsUrl)
+        setMediaItem(mediaItem) // Automatically determines the correct media source (HLS in this case)
+        prepare()
+        playWhenReady = true
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @Composable
@@ -173,6 +207,46 @@ private fun rememberExoPlayer(context: Context, hlsUrl: String): ExoPlayer {
 
 
 
+@Composable
+fun HlsPlayer2(hlsUrl: String) {
+    val context = LocalContext.current
+
+    // Create ExoPlayer instance
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            val mediaItem = MediaItem.fromUri(Uri.parse(hlsUrl))
+            setMediaItem(mediaItem)
+            prepare()
+            playWhenReady = true
+        }
+    }
+
+    // Dispose ExoPlayer when not needed
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+
+    // Show the PlayerView in Jetpack Compose
+    AndroidView(factory = {
+        PlayerView(it).apply {
+            player = exoPlayer
+        }
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -188,9 +262,9 @@ private fun rememberExoPlayer(context: Context, hlsUrl: String): ExoPlayer {
 fun VideoScreen(videourl:String) {
 
     if(videourl.isNotBlank())
-   HLSPlayerComposable(
+   HlsPlayer2(
 
-        context = LocalContext.current,
+       // context = LocalContext.current,
         hlsUrl = videourl,
 
     )

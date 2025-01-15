@@ -124,7 +124,8 @@ dependencies {
 
     // ExoPlayer
 
-    implementation("androidx.media3:media3-exoplayer:1.0.0")
-    implementation("androidx.media3:media3-ui:1.0.0")
+    implementation("androidx.media3:media3-exoplayer:1.1.0-beta01")
+    implementation("androidx.media3:media3-ui:1.1.0-beta01")
+    implementation("androidx.media3:media3-exoplayer-hls:1.1.0-beta01")
 
 }
