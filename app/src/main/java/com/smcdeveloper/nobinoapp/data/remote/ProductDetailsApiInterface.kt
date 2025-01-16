@@ -1,5 +1,7 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
+import com.smcdeveloper.nobinoapp.data.model.ResponseResultWithList
+import com.smcdeveloper.nobinoapp.data.model.ResponseResultWithSingleObject
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
@@ -24,7 +26,18 @@ interface ProductDetailsApiInterface {
         @Header("Authorization") auth: String =""
 
 
-    ):Response<ProductModel>
+    ):Response<ResponseResultWithSingleObject<ProductModel>>
+
+
+    @GET("api/products/{productId}")
+    suspend fun getRelatedProducts(
+
+        @Path("productId") id: Int,
+        @Query("tags") tags :String="",
+        @Header("Authorization") auth: String =""
+
+
+    ):Response<ResponseResultWithSingleObject<MovieResult>>
 
 
 

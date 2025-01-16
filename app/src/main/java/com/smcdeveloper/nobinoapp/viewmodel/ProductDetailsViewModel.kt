@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smcdeveloper.nobinoapp.data.datastore.DataStoreRepository
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.ProductCategories
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.ProductDetailsRepository
@@ -34,6 +36,10 @@ class ProductDetailsViewModel @Inject constructor(
     private val _product = MutableStateFlow<NetworkResult<ProductModel>>(NetworkResult.Loading())
     val product: StateFlow<NetworkResult<ProductModel>> get() = _product.asStateFlow()
 
+    private val _relatedMovies = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
+    val relatedMovies: StateFlow<NetworkResult<MovieResult>> get() = _relatedMovies.asStateFlow()
+
+
 
 
 
@@ -60,10 +66,34 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
 
+    fun getRelatedMovies(productId: Int,tags:String) {
+        viewModelScope.launch {
+            _relatedMovies.value = NetworkResult.Loading()
+            try {
+                val response = repository.fetchRelatedMovies(productId,tags) // Fetch data from API
+                _relatedMovies.value = NetworkResult.Success(response.data)
+            } catch (e: Exception) {
+                _relatedMovies.value = NetworkResult.Error(e.localizedMessage ?: "Failed to load related movies.")
+            }
+        }
+    }
 
 
 
- }
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 
 

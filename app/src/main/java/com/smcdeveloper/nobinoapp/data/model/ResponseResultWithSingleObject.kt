@@ -1,6 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.model
 
-data class GeneralResponseResult<T>
+data class ResponseResultWithSingleObject<T>
     (
     val message : String ,
     val data : T ,

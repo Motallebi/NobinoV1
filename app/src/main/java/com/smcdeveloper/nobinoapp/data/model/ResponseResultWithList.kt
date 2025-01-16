@@ -1,6 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.model
 
-data class ResponseResult<T>
+data class ResponseResultWithList<T>
     (
 
    val userMessage : String ,

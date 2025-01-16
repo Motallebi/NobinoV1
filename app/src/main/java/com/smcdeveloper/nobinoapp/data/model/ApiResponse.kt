@@ -1,4 +1,4 @@
-package com.smcdeveloper.nobinoapp.data.remote
+package com.smcdeveloper.nobinoapp.data.model
 
 import com.google.gson.annotations.SerializedName
 

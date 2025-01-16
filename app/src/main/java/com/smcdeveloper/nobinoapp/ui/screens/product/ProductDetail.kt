@@ -1,9 +1,13 @@
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.smcdeveloper.nobinoapp.R
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
@@ -36,11 +41,17 @@ fun ProductDetailPage(
     productDetailsViewModel: ProductDetailsViewModel = hiltViewModel(),
     productId: Int
 ) {
+    var selectedTabIndex by remember { mutableStateOf(0) }
+
     LaunchedEffect(productId) {
         productDetailsViewModel.getProductDetails(productId)
     }
 
+
+
+
     val products by productDetailsViewModel.product.collectAsState()
+    val relatedMovies by productDetailsViewModel.relatedMovies.collectAsState()
 
 
 
@@ -83,7 +94,13 @@ fun ProductDetailPage(
                     actors = actors.value,
                     thumbnails = thumbnails.value,
                     videoUrl = productData.videoLink.toString(),
-                    navController = navController
+                    navController = navController,
+                    productDetailsViewModel=productDetailsViewModel,
+                    productId=productId,
+                    onTabSelected = { index -> selectedTabIndex = index },
+                    relatedMovies = relatedMovies,
+                    selectedTabIndex=0
+
 
 
                 )
@@ -105,9 +122,22 @@ fun ShowProductDetail(
     actors: List<String>,
     thumbnails: List<String>,
     videoUrl:String,
-    navController: NavHostController
+    navController: NavHostController,
+    productDetailsViewModel:ProductDetailsViewModel,
+    productId:Int,
+    onTabSelected: (Int) -> Unit,
+    relatedMovies: NetworkResult<MovieResult>,
+    selectedTabIndex:Int
+
+
+
 ) {
-    var selectedTabIndex by remember { mutableStateOf(0) }
+    // var selectedTabIndex by remember { mutableStateOf(0) }
+    LaunchedEffect(selectedTabIndex) {
+        if (selectedTabIndex == 1) { // Check if the "Related" tab is selected
+            productDetailsViewModel.getRelatedMovies(productId,"")
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -195,13 +225,13 @@ fun ShowProductDetail(
                             onClick = {
                                 Log.d("VideoUrl",videoUrl)
                                 val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
-                               navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
-                             ///   navController.navigate(Screen.VideoDemoScreen.withArgs(encodedUrl))
+                                navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
+                                ///   navController.navigate(Screen.VideoDemoScreen.withArgs(encodedUrl))
 
 
 
 
-                            /* Play movie functionality */ },
+                                /* Play movie functionality */ },
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red),
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -225,7 +255,9 @@ fun ShowProductDetail(
                     tabTitles.forEachIndexed { index, title ->
                         Tab(
                             selected = selectedTabIndex == index,
-                            onClick = { selectedTabIndex = index },
+                            onClick = {
+                                //selectedTabIndex = index
+                                      },
                             text = {
                                 Text(
                                     text = title,
@@ -246,7 +278,7 @@ fun ShowProductDetail(
                         actors = actors,
                         thumbnails = thumbnails
                     )
-                    1 -> RelatedTab()
+                    1 -> RelatedTab(relatedMovies = relatedMovies)
                 }
             }
         }
@@ -341,7 +373,7 @@ fun ProductDescription(
 }
 
 @Composable
-fun RelatedTab() {
+fun RelatedTab1() {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = "Related Movies:",
@@ -370,3 +402,70 @@ fun Chip(text: String) {
         overflow = TextOverflow.Ellipsis
     )
 }
+
+
+@Composable
+fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
+
+
+    when (relatedMovies) {
+        is NetworkResult.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        is NetworkResult.Error -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "Error: ${relatedMovies.message}")
+            }
+        }
+        is NetworkResult.Success -> {
+            val movies = relatedMovies.data?.movieInfo?.items.orEmpty().filterNotNull()  // Access the movie list inside `MovieResult`
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(movies) { movie ->
+                    RelatedMovieItem(movie)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .background(Color.LightGray, RoundedCornerShape(8.dp))
+            .clickable { /* Handle click */ },
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Movie Image
+        AsyncImage(
+            model = "https://vod.nobino.ir/vod"+movie.images?.firstOrNull()?.src, // Use the first image if available
+            contentDescription = movie.name,
+            modifier = Modifier
+                .size(120.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Movie Name
+        Text(
+            text = movie.name ?: "Unknown Movie",
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
