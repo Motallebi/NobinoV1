@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.repository
 
+import android.util.Log
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
@@ -16,25 +17,108 @@ class ProductDetailsRepository @Inject constructor(
 
 
 
-): GeneralBaseApiResponse() {
+
+): BaseApiResponse2() {
 
 
-    suspend fun getProductDetails(productId: Int, auth: String): NetworkResult<ProductModel> {
-        return safeApiCall(
+  /*  suspend fun getProductDetails(productId: Int, auth: String): NetworkResult<ProductModel> {
+        val result= safeApiCall(
             apiCall = { api.getProductDetailInfo(productId, auth) },
             parseResponse = { it?.data }
         )
+
+
+
+        return result
+    }*/
+
+
+    suspend fun getProductDetails(productId: Int, auth: String): NetworkResult<ProductModel> {
+        Log.d("getProductDetails", "Fetching product details for productId: $productId, auth: $auth")
+
+        val result = safeApiCall(
+            apiCall = { api.getProductDetailInfo(productId, auth) },
+          //  parseResponse = { it?.data }
+        )
+
+        // Log the result state
+        when (result) {
+            is NetworkResult.Loading -> {
+                Log.d("getProductDetails", "API call is in Loading state.")
+            }
+            is NetworkResult.Success -> {
+                Log.d("getProductDetails", "API call succeeded. Data: ${result.data}")
+            }
+            is NetworkResult.Error -> {
+                Log.e("getProductDetails", "API call failed. Error: ${result.message}")
+            }
+        }
+
+        return result
     }
 
 
-    suspend fun fetchRelatedMovies(productId: Int, tags: String): NetworkResult<MovieResult> {
+
+
+
+
+
+
+
+
+
+   /* suspend fun fetchRelatedMovies(productId: Int, tags: String): NetworkResult<MovieResult> {
         return safeApiCall(
             apiCall = { api.getRelatedProducts(productId, tags) },
-            parseResponse = { it?.data }
+          //  parseResponse = { it?.data }
 
         )
 
+    }*/
+
+
+    suspend fun fetchRelatedMovies(productId: Int, tags: String): NetworkResult<MovieResult> {
+        Log.d("fetchRelatedMovies", "Initiating API call for related movies. Product ID: $productId, Tags: $tags")
+
+        val result = safeApiCall(
+            apiCall = {
+                val response = api.getRelatedProducts()
+                Log.d("fetchRelatedMovies", "Raw API response received: $response")
+                response
+            },
+           /* parseResponse = { parsedResponse ->
+                Log.d("fetchRelatedMovies", "Parsed response: $parsedResponse")
+                parsedResponse?.data // Extract the `data` field from the response
+            }*/
+        )
+
+        // Log the result based on the state of `NetworkResult`
+        when (result) {
+            is NetworkResult.Loading -> {
+                Log.d("fetchRelatedMovies", "API call is in Loading state.")
+            }
+            is NetworkResult.Success -> {
+                Log.d("fetchRelatedMovies", "API call succeeded. Related movies: ${result.data}")
+            }
+            is NetworkResult.Error -> {
+                Log.e("fetchRelatedMovies", "API call failed. Error: ${result.message}")
+            }
+        }
+
+        return result
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

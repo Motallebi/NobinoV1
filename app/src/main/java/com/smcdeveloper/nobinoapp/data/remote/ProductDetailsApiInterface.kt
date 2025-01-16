@@ -26,18 +26,18 @@ interface ProductDetailsApiInterface {
         @Header("Authorization") auth: String =""
 
 
-    ):Response<ResponseResultWithSingleObject<ProductModel>>
+    ):Response<ProductModel>
 
 
-    @GET("api/products/{productId}")
+    @GET("api/products")
     suspend fun getRelatedProducts(
 
-        @Path("productId") id: Int,
-        @Query("tags") tags :String="",
-        @Header("Authorization") auth: String =""
+       // @Path("productId") id: Int,
+        @Query("tags") tags :String="68d60211-f167-4eb7-9e27-67acaea0b4bf",
+        //@Header("Authorization") auth: String =""
 
 
-    ):Response<ResponseResultWithSingleObject<MovieResult>>
+    ):Response<MovieResult>
 
 
 
