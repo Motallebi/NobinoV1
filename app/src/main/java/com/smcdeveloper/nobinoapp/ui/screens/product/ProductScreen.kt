@@ -108,6 +108,7 @@ fun Product(navController: NavHostController,
 
         //  viewModel.getProductsBySpecialTag(tag)
         viewModel.setCategoryId(tag)
+
         Log.d("NobinoApp","ProductScreenIslunched..")
 
 
@@ -118,6 +119,7 @@ fun Product(navController: NavHostController,
     }
 
     val products = viewModel.getMoviesByCategory(tag,categoryName).collectAsLazyPagingItems()
+
 
 
   //  val movies = viewModel.getMoviesByCategory(tag).collectAsLazyPagingItems()
@@ -188,8 +190,25 @@ fun Product(navController: NavHostController,
                 val movieId= movie.id
                 Log.d("category", "Clicked movie: $movieId")
 
+                     if(movie.category.toString() == "SERIES")
+                     {
+                         Log.d("Catis","cat is .... ${movie.category.toString()}")
 
-                    navController.navigate(Screen.ProductDetails.withArgs("$movieId"))
+
+
+
+                         navController.navigate(Screen.SeriesDetailScreen.withArgs("$movieId"))
+                     }
+                     else
+                     {
+                         Log.d("Catis","cat is .... ${movie.category.toString()}")
+                         navController.navigate(Screen.ProductDetails.withArgs("$movieId"))
+
+
+                     }
+
+
+
 
 
 
@@ -414,6 +433,11 @@ fun MovieCard(movie: MovieResult.DataMovie.Item, onClick: () -> Unit) {
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
+        Text("Nobino"+movie.id.toString(),
+            style = MaterialTheme.typography.nobinoSmall
+
+
+        )
 
     }
 }
@@ -456,6 +480,11 @@ fun InfoCard(info: MovieResult.DataMovie.Item, onClick: () -> Unit) {
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
+        Text("SERIES",
+
+            style = MaterialTheme.typography.bodyMedium
+
+            )
 
 
 

@@ -33,7 +33,7 @@ interface ProductDetailsApiInterface {
     suspend fun getRelatedProducts(
 
        // @Path("productId") id: Int,
-        @Query("tags") tags :String="68d60211-f167-4eb7-9e27-67acaea0b4bf",
+        @Query("tags") tags :String="",
         //@Header("Authorization") auth: String =""
 
 
@@ -90,6 +90,9 @@ interface ProductDetailsApiInterface {
 
 
 
+    @GET("api/products/relatedProducts/{id}")
+    suspend fun getSeriesEpisodes(
+        @Path("id") id: Int) :Response<MovieResult>
 
 
 

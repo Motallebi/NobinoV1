@@ -24,6 +24,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
 import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreen
 import com.smcdeveloper.nobinoapp.ui.screens.search.Search
+import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesDetailPage
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
 
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
@@ -210,6 +211,53 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         }
+
+
+        composable(route = Screen.SeriesDetailScreen.route + "/{productId}",
+            arguments = listOf(
+                navArgument("productId")
+                {
+                    type = NavType.IntType
+
+                }
+
+            )
+        )
+
+
+        {
+            val productId = it.arguments?.getInt("productId")
+            if (productId != null) {
+               SeriesDetailPage(
+                    navController = navController,
+
+                    productId = productId
+
+
+                )
+            }
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

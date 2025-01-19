@@ -25,8 +25,8 @@ interface HomeApiInterface {
 
 
     @GET("api/products")
-       suspend fun getMovieTest(
-        @Query("size") size: String="20",
+       suspend fun getMoviesWithPages(
+        @Query("size") size: Int=20,
         @Query("category") category: String="",
        @Query("tags") tags: String = "",
         @Query("offset") offset: Int = 0,

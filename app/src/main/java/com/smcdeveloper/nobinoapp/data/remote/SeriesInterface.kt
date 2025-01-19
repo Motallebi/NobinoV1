@@ -1,7 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
-import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -19,10 +18,14 @@ interface SeriesInterface {
     ): Response<MovieResult>
 
 
-    @GET("movies/{id}")
+    @GET("products/{id}")
     suspend fun fetchSeriesDetails(
         @Path("id") id: Int
     ): Response<MovieResult>
+
+    @GET("products/relatedProducts/{id}")
+    suspend fun getSeriesEpisodes(
+        @Path("id") id: Int) :Response<MovieResult>
 
 
 

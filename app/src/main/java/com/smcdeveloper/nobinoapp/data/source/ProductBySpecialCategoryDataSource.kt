@@ -39,17 +39,73 @@ class ProductBySpecialCategoryDataSource(
         }
 
 
-
-
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
-
-
-        val offset = params.key ?: 0 // Start from offset 0 if no key is provided
-        val limit = params.loadSize  // Size of each page to load
-
+        val offset = params.key ?: 0 // Default to 0 if no key provided
+        val limit = params.loadSize // The number of items to load per page
 
         return try {
-           /* val response1 = repository.fetchAllProductsByTag(
+            // Make the API call with the correct parameters
+            val response = repository.fetchMovieTest(
+                size = limit,
+                tag = tagName,
+                categoty = "",
+                offset = offset
+            )
+
+            // Extract the data from the response
+            val dataMovie = response.data?.movieInfo
+
+            if (response.data?.success == true && dataMovie != null) {
+                // Log successful responses for debugging purposes
+                Log.d("NobinoApp", "PAGING3 Success: ${dataMovie.items}")
+
+                // Return a successful LoadResult.Page
+                LoadResult.Page(
+                    data = dataMovie.items?.filterNotNull() ?: emptyList(),
+                    prevKey = if (offset == 0) null else offset - limit,
+                    nextKey = if ((offset + limit) >= (dataMovie.total ?: 0)) null else offset + limit
+                )
+            } else {
+                // Log user-friendly error messages
+                Log.e("NobinoApp", "Error: ${response.data?.userMessage ?: "Unknown error"}")
+                LoadResult.Error(Exception(response.data?.userMessage ?: "Unknown error"))
+            }
+        } catch (exception: IOException) {
+            Log.e("NobinoApp", "Network error: ${exception.message}", exception)
+            LoadResult.Error(exception)
+        } catch (exception: HttpException) {
+            Log.e("NobinoApp", "HTTP error: ${exception.message}", exception)
+            LoadResult.Error(exception)
+        } catch (exception: Exception) {
+            Log.e("NobinoApp", "Unexpected error: ${exception.message}", exception)
+            LoadResult.Error(exception)
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
+
+
+         val offset = params.key ?: 0 // Start from offset 0 if no key is provided
+         val limit = params.loadSize  // Size of each page to load
+
+
+         return try {
+            *//* val response1 = repository.fetchAllProductsByTag(
 
              size = 10,
             // tags =tagName.substring(1, tagName.length - 1),
@@ -57,7 +113,7 @@ class ProductBySpecialCategoryDataSource(
 
                 category = "SERIES",
                 offset =offset
-            )*/
+            )*//*
 
             val response= repository.fetchMovieTest(tagName,"")
 
@@ -107,7 +163,7 @@ class ProductBySpecialCategoryDataSource(
 
 
 
-        }
+        }*/
 
 
 

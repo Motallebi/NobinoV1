@@ -77,12 +77,12 @@ class ProductDetailsRepository @Inject constructor(
     }*/
 
 
-    suspend fun fetchRelatedMovies(productId: Int, tags: String): NetworkResult<MovieResult> {
-        Log.d("fetchRelatedMovies", "Initiating API call for related movies. Product ID: $productId, Tags: $tags")
+    suspend fun fetchRelatedMovies(tags: String): NetworkResult<MovieResult> {
+        Log.d("fetchRelatedMovies", "Initiating API call for related movies. Product ID:  Tags: $tags")
 
         val result = safeApiCall(
             apiCall = {
-                val response = api.getRelatedProducts()
+                val response = api.getRelatedProducts(tags = tags)
                 Log.d("fetchRelatedMovies", "Raw API response received: $response")
                 response
             },
@@ -107,6 +107,13 @@ class ProductDetailsRepository @Inject constructor(
 
         return result
     }
+
+
+
+    suspend fun getSeriesEpisodes(id: Int): NetworkResult<MovieResult> =
+        safeApiCall {
+            api.getSeriesEpisodes(id)
+        }
 
 
 

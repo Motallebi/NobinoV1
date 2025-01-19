@@ -100,10 +100,10 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
                                 val movieResult = safeApiCall {
 
-                                    api.getMovieTest(
+                                    api.getMoviesWithPages(
 
-                                        size = "10",
-                                        category = "SERIES",
+                                        size = 10,
+                                        category = "",
 
                                         tags = firstTag.toString()
                                     )
@@ -270,8 +270,8 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
             emit(NetworkResult.Loading())
             delay(1000)
             val result = safeApiCall {
-                api.getMovieTest(
-                    size = "10",
+                api.getMoviesWithPages(
+                    size = 10,
                     category = "",
                     tags = tag
 
@@ -325,13 +325,17 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         }
 
 
-    suspend fun fetchMovieTest(tag: String,categoty:String): NetworkResult<MovieResult> {
+    suspend fun fetchMovieTest(tag: String,categoty:String, size: Int,offset: Int
+
+
+
+    ): NetworkResult<MovieResult> {
         //val tagstring = tag.substring(1, tag.length - 1)
         val result = safeApiCall {
 
 
-            api.getMovieTest(tags = tag,
-                category = categoty
+            api.getMoviesWithPages(tags = tag,
+                category = categoty, size = size, offset = offset
 
 
             )
@@ -353,7 +357,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         val result = safeApiCall {
 
 
-            api.getMovieTest(tags = tagstring)
+            api.getMoviesWithPages(tags = tagstring)
 
 
         }
@@ -557,7 +561,7 @@ data class MovieParams(
 
         val result: NetworkResult<MovieResult>
 
-        result = safeApiCall { api.getMovieTest(tags = tag)}
+        result = safeApiCall { api.getMoviesWithPages(tags = tag)}
 
          result.data?.movieInfo?.items?.forEach {
 

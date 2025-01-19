@@ -1,3 +1,5 @@
+package com.smcdeveloper.nobinoapp.ui.screens.series
+
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -27,11 +29,11 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
+import com.smcdeveloper.nobinoapp.viewmodel.SeriesViewModel
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
-
 @Composable
-fun ProductDetailPage(
+fun SeriesDetailPage(
     navController: NavHostController,
     productDetailsViewModel: ProductDetailsViewModel = hiltViewModel(),
     productId: Int
@@ -49,13 +51,15 @@ fun ProductDetailPage(
     // Observe states
     val products by productDetailsViewModel.product.collectAsState()
 
+
+
     LaunchedEffect(selectedTabIndex) {
         if (selectedTabIndex == 1) {
             val tag = products.data?.data?.tags?.get(0)?.id
             Log.d("ProductDetailPage", "Fetching related movies for ID: $productId")
             Log.d("ProductDetailPage", "Fetching related movies for tag : $tag")
 
-            productDetailsViewModel.getRelatedMovies(tags = tag.toString())
+            productDetailsViewModel.getSeriesEpisodes(productId)
 
         }
     }
@@ -63,7 +67,7 @@ fun ProductDetailPage(
 
 
 
-    val relatedMovies by productDetailsViewModel.relatedMovies.collectAsState()
+    val relatedMovies by productDetailsViewModel.relatedSeries.collectAsState()
 
     Scaffold(
         topBar = {
@@ -157,7 +161,7 @@ fun ShowProductDetailWithTabs(
         }
 
         // Tabs
-        val tabTitles = listOf("Description", "Related Movies")
+        val tabTitles = listOf("Description", "Episodes","RelatedMovies")
         TabRow(selectedTabIndex = selectedTabIndex) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
@@ -171,7 +175,8 @@ fun ShowProductDetailWithTabs(
         // Tab Content
         when (selectedTabIndex) {
             0 -> ProductDescription(description = productDescription)
-            1 -> RelatedTab(relatedMovies = relatedMovies)
+            1 -> Episodes(relatedMovies = relatedMovies)
+            3-> RelatedMovies()
         }
     }
 }
@@ -252,7 +257,7 @@ fun ProductDescription(description: String) {
 }
 
 @Composable
-fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
+fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
     when (relatedMovies) {
         is NetworkResult.Loading -> {
             Log.d("RelatedTab", "Loading related movies...")
@@ -291,7 +296,7 @@ fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
 @Composable
 fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
 
-      val imageUrl="https://vod.nobino.ir/vod/${movie.images?.firstOrNull()?.src}"
+    val imageUrl="https://vod.nobino.ir/vod/${movie.images?.firstOrNull()?.src}"
     Log.d("related","image url is"+imageUrl)
 
     movie.images?.firstOrNull()?.src.toString()
@@ -325,5 +330,12 @@ fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
         )
         Log.d("RelatedMovieItem", "Displayed movie: ${movie.name}")
     }
+
+}
+
+
+@Composable
+fun RelatedMovies()
+{
 
 }

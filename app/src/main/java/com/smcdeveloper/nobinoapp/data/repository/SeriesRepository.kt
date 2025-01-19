@@ -2,9 +2,7 @@ package com.smcdeveloper.nobinoapp.data.repository
 
 import com.smcdeveloper.nobinoapp.data.model.Category
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
-import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
-import com.smcdeveloper.nobinoapp.data.remote.HomeApiInterface
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.remote.SeriesInterface
 import javax.inject.Inject
