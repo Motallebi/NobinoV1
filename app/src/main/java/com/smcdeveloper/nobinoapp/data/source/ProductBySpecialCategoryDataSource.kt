@@ -48,7 +48,7 @@ class ProductBySpecialCategoryDataSource(
             val response = repository.fetchMovieTest(
                 size = limit,
                 tag = tagName,
-                categoty = "",
+                categoty = categoryName,
                 offset = offset
             )
 

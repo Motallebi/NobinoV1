@@ -2,10 +2,13 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -14,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,6 +30,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.screens.series.ProductBanner
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -45,25 +50,16 @@ fun ProductDetailPage(
     }
 
     // Fetch related movies when "Related Movies" tab is selected
-
-    // Observe states
     val products by productDetailsViewModel.product.collectAsState()
+    val relatedMovies by productDetailsViewModel.relatedMovies.collectAsState()
 
     LaunchedEffect(selectedTabIndex) {
         if (selectedTabIndex == 1) {
             val tag = products.data?.data?.tags?.get(0)?.id
-            Log.d("ProductDetailPage", "Fetching related movies for ID: $productId")
-            Log.d("ProductDetailPage", "Fetching related movies for tag : $tag")
-
+            Log.d("ProductDetailPage", "Fetching related movies for tag: $tag")
             productDetailsViewModel.getRelatedMovies(tags = tag.toString())
-
         }
     }
-
-
-
-
-    val relatedMovies by productDetailsViewModel.relatedMovies.collectAsState()
 
     Scaffold(
         topBar = {
@@ -76,44 +72,36 @@ fun ProductDetailPage(
         Box(modifier = Modifier.padding(paddingValues)) {
             when (products) {
                 is NetworkResult.Loading -> {
-                    Log.d("ProductDetailPage", "Loading product details...")
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         CircularProgressIndicator()
                     }
                 }
                 is NetworkResult.Error -> {
-                    Log.e(
-                        "ProductDetailPage",
-                        "Error loading product details: ${(products as NetworkResult.Error).message}"
-                    )
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(text = "Error: ${(products as NetworkResult.Error).message}")
                     }
                 }
                 is NetworkResult.Success -> {
-                    Log.d("ProductDetailPage", "Product details loaded successfully.")
-                    Log.d("ProductDetailPage", products.data?.data.toString())
-                    Log.d("ProductDetailPage","video link......"+ products.data?.data?.videoLink.toString())
-
-
-                    products.data?.data?.let { productData ->
-
-
-
+                    val productData = (products as NetworkResult.Success<ProductModel>).data?.data
+                    productData?.let { product ->
                         ShowProductDetailWithTabs(
-                            productTitle = productData.name,
-                            productEnglishTitle = productData.translatedName,
-                            productImage = productData.images.firstOrNull()?.src.orEmpty(),
-                            productDescription = productData.longDescription,
+                            productTitle = product.name,
+                            productEnglishTitle = product.translatedName,
+                            productImage = product.images.firstOrNull()?.src.orEmpty(),
+                            productDescription = product.longDescription,
                             productApproval = 200,
-                            videoUrl = productData.videoLink,
+                            videoUrl = product.videoLink,
                             navController = navController,
                             selectedTabIndex = selectedTabIndex,
-                            onTabSelected = { index ->
-                                Log.d("ProductDetailPage", "Tab selected: $index")
-                                selectedTabIndex = index
-                            },
-                            relatedMovies = relatedMovies
+                            onTabSelected = { index -> selectedTabIndex = index },
+                            relatedMovies = relatedMovies,
+                            product = product // Pass the entire ProductModel object
                         )
                     }
                 }
@@ -133,8 +121,10 @@ fun ShowProductDetailWithTabs(
     navController: NavHostController,
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit,
-    relatedMovies: NetworkResult<MovieResult>
-) {
+    relatedMovies: NetworkResult<MovieResult>,
+    product: ProductModel.MovieInfo
+)
+{
     Column {
         ProductBanner(
             productImage = productImage,
@@ -170,98 +160,176 @@ fun ShowProductDetailWithTabs(
 
         // Tab Content
         when (selectedTabIndex) {
-            0 -> ProductDescription(description = productDescription)
+            2 -> ProductDescription(description = productDescription)
             1 -> RelatedTab(relatedMovies = relatedMovies)
+           0 -> ProductDescriptionWithExtras( product = product
+
+
+            )
+
+
+
+
+        }
+    }
+}
+
+@Composable
+fun ProductDescription(description: String) {
+    LazyColumn(modifier = Modifier.padding(16.dp)) {
+        item {
+            Text(
+                text = "Description",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+        item {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.body1,
+                textAlign = TextAlign.Start
+            )
         }
     }
 }
 
 
+
 @Composable
-fun ProductBanner(
-    productImage: String,
-    productTitle: String,
-    productEnglishTitle: String,
-    productApproval: Int,
-    videoUrl: String?,
-    navController: NavHostController
+fun ProductDescriptionWithExtras(
+    product:ProductModel.MovieInfo,
+   // description: String,
+   // List of (Label, IconResId)
+    //screenshots: List<String>, // List of screenshot URLs
+   // circularImages: List<Pair<String, String>> // List of (Actor Name, Image URL)
 ) {
-    val isVideoAvailable = !videoUrl.isNullOrEmpty()
-
-    Box(
+    LazyColumn(
         modifier = Modifier
+            .padding(16.dp)
             .fillMaxWidth()
-            .height(400.dp)
     ) {
-        AsyncImage(
-            model = "https://vod.nobino.ir/vod/$productImage",
-            contentDescription = productTitle,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Bottom
-        ) {
+        // Description Text
+        item {
             Text(
-                text = "$productTitle ($productEnglishTitle)",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                text = product.longDescription,
+                style = MaterialTheme.typography.body1,
+                textAlign = TextAlign.Start
             )
+        }
 
-            Spacer(modifier = Modifier.height(8.dp))
+        // Spacer
+        item { Spacer(modifier = Modifier.height(16.dp)) }
 
-            Button(
-                onClick = {
-                    if (isVideoAvailable) {
-                        val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
-                        Log.d("ProductBanner", "Navigating to video player with URL: $encodedUrl")
-                        navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
-                    }
-                },
-                enabled = isVideoAvailable,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (isVideoAvailable) Color.Red else Color.Gray
-                )
+        // Row with icons and labels
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = if (isVideoAvailable) "Play Movie" else "Video Not Available",
-                    color = Color.White
-                )
+                product.actors.forEach { actor ->
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = actor.name,
+                            style = MaterialTheme.typography.caption,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+
+        // Spacer
+        item { Spacer(modifier = Modifier.height(16.dp)) }
+
+        // Screenshots (LazyRow)
+        item {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp)
+            ) {
+                items(product.images) { screenshot ->
+                    AsyncImage(
+                        model ="https://vod.nobino.ir/vod/${screenshot.src}",
+                        contentDescription = "Screenshot",
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+        }
+
+        // Spacer
+        item { Spacer(modifier = Modifier.height(16.dp)) }
+
+        // Circular Images with Labels (LazyRow or LazyGrid)
+        item {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp)
+            ) {
+                items(product.actors) { actor ->
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        AsyncImage(
+                            model = "https://vod.nobino.ir/vod/${actor.imagePath}",
+                            contentDescription = actor.name,
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(CircleShape)
+                                .background(Color.LightGray),
+                            contentScale = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = actor.name,
+                            style = MaterialTheme.typography.caption,
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
             }
         }
     }
 }
 
 
-@Composable
-fun ProductDescription(description: String) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = description,
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Start
-        )
-        Log.d("ProductDescription", "Displayed product description.")
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @Composable
 fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
     when (relatedMovies) {
         is NetworkResult.Loading -> {
-            Log.d("RelatedTab", "Loading related movies...")
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
         is NetworkResult.Error -> {
-            Log.e("RelatedTab", "Error loading related movies: ${relatedMovies.message}")
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(text = "Error: ${relatedMovies.message}")
             }
@@ -269,12 +337,10 @@ fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
         is NetworkResult.Success -> {
             val movies = relatedMovies.data?.movieInfo?.items.orEmpty().filterNotNull()
             if (movies.isEmpty()) {
-                Log.d("RelatedTab", "No related movies found.")
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(text = "No related movies available.")
                 }
             } else {
-                Log.d("RelatedTab", "Related movies loaded successfully.")
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(8.dp)
@@ -290,13 +356,6 @@ fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
 
 @Composable
 fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
-
-      val imageUrl="https://vod.nobino.ir/vod/${movie.images?.firstOrNull()?.src}"
-    Log.d("related","image url is"+imageUrl)
-
-    movie.images?.firstOrNull()?.src.toString()
-
-
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -323,7 +382,5 @@ fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center
         )
-        Log.d("RelatedMovieItem", "Displayed movie: ${movie.name}")
     }
-
 }

@@ -7,7 +7,7 @@ data class
 
 MovieTag(
     @SerializedName("data")
-    val `data`: Data?,
+    val tagData: SectionData?,
     @SerializedName("message")
     val message: String?,
     @SerializedName("status")
@@ -17,7 +17,7 @@ MovieTag(
     @SerializedName("timestamp")
     val timestamp: Long?
 ) {
-    data class Data(
+    data class SectionData(
         @SerializedName("count")
         val count: Int?,
         @SerializedName("id")

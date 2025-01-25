@@ -14,15 +14,15 @@ import com.smcdeveloper.nobinoapp.util.LocalelUtils
 import com.smcdeveloper.nobinoapp.viewmodel.SeriesViewModel
 
 @Composable
-fun SeriesScreen(navController: NavHostController)
+fun SeriesScreen1(navController: NavHostController)
 
 {
-    Series(navController=navController)
+    Series1(navController=navController)
 
 }
 
 @Composable
-fun Series(
+fun Series1(
     navController: NavHostController,
     viewModel: SeriesViewModel = hiltViewModel()
 )

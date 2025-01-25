@@ -2,6 +2,7 @@ package com.smcdeveloper.nobinoapp.ui.screens.series
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -117,7 +118,9 @@ fun SeriesDetailPage(
                                 Log.d("ProductDetailPage", "Tab selected: $index")
                                 selectedTabIndex = index
                             },
-                            relatedMovies = relatedMovies
+                            relatedMovies = relatedMovies,
+                            productDetailsViewModel=productDetailsViewModel,
+                            productId=productId
                         )
                     }
                 }
@@ -137,7 +140,10 @@ fun ShowProductDetailWithTabs(
     navController: NavHostController,
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit,
-    relatedMovies: NetworkResult<MovieResult>
+    relatedMovies: NetworkResult<MovieResult>,
+    productDetailsViewModel: ProductDetailsViewModel,
+    productId:Int
+
 ) {
     Column {
         ProductBanner(
@@ -175,7 +181,14 @@ fun ShowProductDetailWithTabs(
         // Tab Content
         when (selectedTabIndex) {
             0 -> ProductDescription(description = productDescription)
-            1 -> Episodes(relatedMovies = relatedMovies)
+            1 -> Episodes(
+                relatedMovies = relatedMovies,
+                onSessionSelected = { sessionIndex  ->
+
+                    productDetailsViewModel.getSeriesEpisodes2(productId,sessionIndex)
+
+                }
+            )
             3-> RelatedMovies()
         }
     }
@@ -256,7 +269,7 @@ fun ProductDescription(description: String) {
     }
 }
 
-@Composable
+/*@Composable
 fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
     when (relatedMovies) {
         is NetworkResult.Loading -> {
@@ -291,7 +304,7 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
             }
         }
     }
-}
+}*/
 
 @Composable
 fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
@@ -339,3 +352,330 @@ fun RelatedMovies()
 {
 
 }
+
+
+
+/*
+@Composable
+fun Episodes(
+    relatedMovies: NetworkResult<MovieResult>,
+    onSessionSelected: (Int) -> Unit // Callback for fetching new session data
+
+) {
+    when (relatedMovies) {
+        is NetworkResult.Loading -> {
+            Log.d("EpisodesTab", "Loading episodes...")
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        is NetworkResult.Error -> {
+            Log.e("EpisodesTab", "Error loading episodes: ${relatedMovies.message}")
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "Error: ${relatedMovies.message}")
+            }
+        }
+        is NetworkResult.Success -> {
+            val sessions = relatedMovies.data?.movieInfo?.items.orEmpty().filterNotNull()
+            if (sessions.isEmpty()) {
+                Log.d("EpisodesTab", "No sessions found.")
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "No sessions available.")
+                }
+            } else
+            {
+                EpisodesWithDropdown(sessions = sessions, onSessionSelected = onSessionSelected)
+            }
+        }
+    }
+}
+*/
+
+
+
+@Composable
+fun Episodes(
+    relatedMovies: NetworkResult<MovieResult>, // Current state of episodes/movies
+    onSessionSelected: (Int) -> Unit // Callback when a session is selected
+) {
+    when (relatedMovies) {
+        is NetworkResult.Loading -> {
+            // Show a loading indicator while data is being fetched
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is NetworkResult.Error -> {
+            // Display an error message if there is an error
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Error: ${relatedMovies.message}")
+            }
+        }
+
+        is NetworkResult.Success -> {
+            // Process and display the list of sessions and episodes
+            val sessions = relatedMovies.data?.movieInfo?.items.orEmpty().filterNotNull()
+
+            if (sessions.isEmpty()) {
+                // Show a message if no sessions are found
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "No sessions available.")
+                }
+            } else {
+                // Display sessions with a dropdown and list of episodes
+                EpisodesWithDropdown(
+                    sessions = sessions,
+                    onSessionSelected = onSessionSelected
+                )
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun EpisodesWithDropdown(
+    sessions: List<MovieResult.DataMovie.Item>, // List of sessions
+    onSessionSelected: (Int) -> Unit // Callback when a session is selected
+) {
+    var selectedSessionIndex by remember { mutableStateOf(0) } // Tracks the selected session index
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Dropdown for selecting sessions
+        SessionDropdownMenu(
+            sessions = sessions,
+            selectedSession = selectedSessionIndex,
+            onSessionSelected = { index ->
+                selectedSessionIndex = index // Update the selected session index
+                onSessionSelected(index) // Notify the parent with the selected index
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // LazyColumn for displaying episodes of the selected session
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            //
+            // val selectedSession = sessions[selectedSessionIndex]
+            sessions.forEach { episode ->
+                item {
+                    EpisodeItem(episode) // Display each episode
+                }
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun SessionDropdownMenu(
+    sessions: List<MovieResult.DataMovie.Item>, // List of all sessions
+    selectedSession: Int, // Currently selected session index
+    onSessionSelected: (Int) -> Unit // Callback to notify the selected session index
+) {
+    var expanded by remember { mutableStateOf(false) } // Tracks dropdown expanded state
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Red, shape = RoundedCornerShape(8.dp))
+            .clickable { expanded = true }
+            .padding(12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        // Display the name of the selected session
+        Text(
+            text = sessions.getOrNull(selectedSession)?.name ?: "Select a Session",
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+
+        // Dropdown menu items
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            sessions.forEachIndexed { index, session ->
+                DropdownMenuItem(
+
+                    onClick = {
+                        expanded = false // Close the dropdown
+                        onSessionSelected(index) // Pass the selected index
+                    },
+                   content = {
+                       Text(session.name ?: "Session ${index + 1}")
+
+
+
+                   }
+
+                )
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+@Composable
+fun EpisodesWithDropdown(
+    sessions: List<MovieResult.DataMovie.Item>, // List of all sessions
+    selectedSession: Int, // Currently selected session index
+    onSessionSelected: (Int) -> Unit
+) {
+    var selectedSession by remember { mutableStateOf(sessions.firstOrNull()) } // Selected session state
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Dropdown Menu for selecting sessions
+        SessionDropdownMenu(
+            sessions = sessions,
+            selectedSession = selectedSession,
+            onSessionSelected = { session ->
+
+                onSessionSelected(session?: return@SessionDropdownMenu)
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // LazyColumn for displaying episodes of the selected session
+        selectedSession?.let { session ->
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+
+                sessions.forEach { episode ->
+                    item {
+                        EpisodeItem(episode)
+                    }
+                }
+            }
+        }
+    }
+}
+*/
+
+
+
+/*
+@Composable
+fun SessionDropdownMenu(
+    sessions: List<MovieResult.DataMovie.Item>,
+    selectedSession: MovieResult.DataMovie.Item?,
+   // onSessionSelected: (MovieResult.DataMovie.Item) -> Unit
+    onSessionSelected: (Int) -> Unit // Pass the index of the selected session
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Red, shape = RoundedCornerShape(8.dp))
+            .clickable { expanded = true }
+            .padding(12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = selectedSession?.name ?: "Select Session",
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            sessions.forEachIndexed { index,session ->
+                DropdownMenuItem(
+
+                    onClick = {
+                        expanded = false
+                        onSessionSelected(index)
+                    },
+                    content = {
+                         Text(session.name ?: "Session ${session.id}")
+
+
+                    },
+                )
+            }
+        }
+    }
+}*/
+
+@Composable
+fun EpisodeItem(episode: MovieResult.DataMovie.Item) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AsyncImage(
+            model = "https://vod.nobino.ir/vod/${episode.images?.firstOrNull()?.src}",
+            contentDescription = episode.name,
+            modifier = Modifier
+                .size(64.dp)
+                .clip(RoundedCornerShape(8.dp))
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = episode.name ?: "Untitled Episode",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = episode.shortDescription ?: "No description available",
+                fontSize = 12.sp,
+                color = Color.Gray,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        Text(
+            text = "${episode.ages} mins",
+            fontSize = 12.sp,
+            color = Color.Gray
+        )
+    }
+}
+
+

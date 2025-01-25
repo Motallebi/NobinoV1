@@ -129,7 +129,7 @@ class ProductDetailsViewModel @Inject constructor(
 
 
 
-    fun getSeriesEpisodes2(seriesId: Int) {
+    fun getSeriesEpisodes2(seriesId: Int,seriesNum:Int) {
         viewModelScope.launch {
             try {
                 Log.d("series", "Product ID is $seriesId")
@@ -140,7 +140,7 @@ class ProductDetailsViewModel @Inject constructor(
                 Log.d("series", "Total episodes: ${result.data?.movieInfo?.total}")
 
                 // Extract the ID from the first result
-                val firstItemId = result.data?.movieInfo?.items?.firstOrNull()?.id
+                val firstItemId = result.data?.movieInfo?.items?.get(seriesNum)?.id
                 if (firstItemId == null) {
                     Log.e("series", "No items found in series")
                     _relatedSeries.value = NetworkResult.Error("No items found in series")

@@ -79,7 +79,7 @@ fun MovieScreen1(viewModel: HomeViewModel = hiltViewModel(), tagIds: List<Int>,
 
 
 @Composable
-fun MovieListByTag(movieDisplayData: List<MovieDisplayData>,navController: NavHostController) {
+fun  MovieListByTag(movieDisplayData: List<MovieDisplayData>,navController: NavHostController) {
     LazyColumn  (modifier = Modifier.fillMaxSize()) {
         movieDisplayData.forEach { displayData ->
             // Add tag header

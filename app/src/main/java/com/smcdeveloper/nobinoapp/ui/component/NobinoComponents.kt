@@ -58,6 +58,7 @@ import coil3.size.Scale
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.Section
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.repository.SeriesRepository
 import com.smcdeveloper.nobinoapp.navigation.Screen
@@ -1450,6 +1451,157 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
 
 
 }
+
+
+
+
+@Composable
+fun NobinoSpecialRowBySection(title:String,navController: NavHostController,Section: Section.Data,category:String) {
+
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .padding(top = 10.dp)
+            .background(MaterialTheme.colorScheme.background),
+        horizontalArrangement = Arrangement.SpaceAround
+
+
+    )
+    {
+
+        Text(title)
+        Text("ShowMore",
+            modifier = Modifier.clickable {
+                Log.d("category", "Nobino Button Category is${category}")
+                //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+
+                navController.navigate(
+                    Screen.Product.withArgs(
+                        Section.tags[0].toString(),
+                        category
+
+                    )
+
+
+                )
+
+
+            }
+
+
+        )
+
+
+    }
+
+
+
+
+
+}
+
+@Composable
+fun NobinoSpecialRowBySection1(title:String,navController: NavHostController,section: MovieResult.DataMovie.Item,category:String) {
+
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .padding(top = 10.dp)
+            .background(MaterialTheme.colorScheme.background),
+        horizontalArrangement = Arrangement.SpaceAround
+
+
+    )
+    {
+
+        Text(title)
+        Text("ShowMore",
+            modifier = Modifier.clickable {
+                Log.d("category", "Nobino Button Category is${category}")
+                //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+
+                navController.navigate(
+                    Screen.Product.withArgs(
+
+
+                        //section.tags?.get(0).toString(),
+                        category
+
+
+                    )
+                )
+
+
+            }
+
+
+        )
+
+
+    }
+
+
+}
+
+
+
+@Composable
+fun NobinoSpecialRowBySection2(title:String,navController: NavHostController,section: MovieResult.DataMovie.Item,category:String) {
+
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .padding(top = 10.dp)
+            .background(MaterialTheme.colorScheme.background),
+        horizontalArrangement = Arrangement.SpaceAround
+
+
+    )
+    {
+
+        Text(title)
+        Text("ShowMore",
+            modifier = Modifier.clickable {
+                Log.d("category", "Nobino Button Category is${category}")
+                //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+
+                navController.navigate(
+
+                        Screen.Product.withArgs(
+
+
+                            section.tags?.get(0)?.id.toString(),
+                            category
+
+
+                        )
+
+                )
+
+
+            }
+
+
+        )
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @Composable
 fun NobinoDefultButton(

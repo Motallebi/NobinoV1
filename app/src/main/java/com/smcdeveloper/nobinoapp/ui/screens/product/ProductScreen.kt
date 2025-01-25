@@ -56,6 +56,8 @@ fun ProductScreen(
 
 
 {
+    Log.d("ProductScreen","tag is $tag" )
+
     Product(navController,viewModel,tag,categoryName)
 
 

@@ -4,6 +4,7 @@ import com.smcdeveloper.nobinoapp.data.model.ResponseResultWithList
 import com.smcdeveloper.nobinoapp.data.model.ResponseResultWithSingleObject
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.MovieTag
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import retrofit2.Response
@@ -21,6 +22,7 @@ interface SeriesApiInterface {
     suspend fun fetchMovieDetails(
         @Path("id") id: Int
     ): Response<MovieResult>
+
 
 
 
