@@ -51,9 +51,9 @@ fun NobinoTop(navController: NavHostController) {
                             navController.navigate(
                                 when (tab) {
                                     "نوینو" ->Screen.Home.route
-                                    "فیلم" -> Screen.Home.route
+                                    "فیلم" -> Screen.Movies.route
                                     "سریال" -> Screen.Series.route
-                                    "آموزش" -> Screen.Home.route
+                                    "آموزش" -> Screen.Training.route
                                     "کودک" -> Screen.Home.route
                                     else -> Screen.Home.route
                                 }

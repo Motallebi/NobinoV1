@@ -1548,6 +1548,7 @@ fun NobinoSpecialRowBySection1(title:String,navController: NavHostController,sec
 @Composable
 fun NobinoSpecialRowBySection2(title:String,navController: NavHostController,section: MovieResult.DataMovie.Item,category:String) {
 
+    Log.d("categoty","category is $category")
 
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -1564,6 +1565,8 @@ fun NobinoSpecialRowBySection2(title:String,navController: NavHostController,sec
             modifier = Modifier.clickable {
                 Log.d("category", "Nobino Button Category is${category}")
                 //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+
+                Log.d("category", "Nobino Button tag is${ section.tags?.get(0)?.id.toString()}")
 
                 navController.navigate(
 

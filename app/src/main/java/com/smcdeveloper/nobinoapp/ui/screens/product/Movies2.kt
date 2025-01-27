@@ -18,10 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 
+
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 
 @Composable
-fun MovieScreen(viewModel: HomeViewModel = hiltViewModel(), tagIds: List<Int>) {
+fun MovieScreen2(viewModel: HomeViewModel = hiltViewModel(), tagIds: List<Int>) {
 
     // val movieResults by viewModel.movieResults.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -60,7 +61,7 @@ fun MovieScreen(viewModel: HomeViewModel = hiltViewModel(), tagIds: List<Int>) {
 
 
           //  Log.d("test1",data1.toString())
-            MovieItemsLazyColumn(data1)
+
         }
     }
 
@@ -345,19 +346,19 @@ fun MovieScreen(viewModel: HomeViewModel = hiltViewModel(), tagIds: List<Int>) {
 
 
     @Composable
-    fun test(viewModel: HomeViewModel = hiltViewModel()) {
+    fun test2(viewModel: HomeViewModel = hiltViewModel()) {
 
 
     }
 
 
     @Composable
-    fun MovieItem(test: String) {
+    fun MovieItem2(test: String) {
         Text(test)
     }
 
 @Composable
-fun MovieItemsLazyColumn(data1: List<MovieResult.DataMovie.Item?>) {
+fun MovieItemsLazyColumn2(data1: List<MovieResult.DataMovie.Item?>) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         Log.d("test1","size"+data1.size)
 

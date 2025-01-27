@@ -22,12 +22,14 @@ import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoScreen
 import com.smcdeveloper.nobinoapp.ui.screens.favorit.Favorit
 import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
 import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
+import com.smcdeveloper.nobinoapp.ui.screens.movie.MovieScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreen
 import com.smcdeveloper.nobinoapp.ui.screens.search.Search
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesDetailPage
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
 
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
+import com.smcdeveloper.nobinoapp.ui.screens.training.TrainingScreen
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -328,6 +330,25 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         }
+
+
+
+
+        /////
+        composable(route = Screen.Movies.route) {
+            MovieScreen(navController = navController)
+
+
+        }
+
+        composable(route = Screen.Training.route) {
+            TrainingScreen(navController = navController)
+
+
+        }
+
+
+
     }
 }
 

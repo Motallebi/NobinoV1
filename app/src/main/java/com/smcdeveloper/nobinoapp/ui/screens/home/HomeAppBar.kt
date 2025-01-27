@@ -19,7 +19,7 @@ fun NobinoTopBar(navController: NavHostController) {
     TopAppBar(
         title = { Text("My App") },
         actions = {
-            AppBarItem("Movies") { navController.navigate(Screen.Home.route) }
+            AppBarItem("Movies") { navController.navigate(Screen.Movies.route) }
             AppBarItem("Series") { navController.navigate(Screen.Series.route) }
             AppBarItem("Kids") { navController.navigate(Screen.Login.route) }
             AppBarItem("Learn") { navController.navigate(Screen.Profile.route) }

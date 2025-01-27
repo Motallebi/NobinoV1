@@ -7,8 +7,10 @@ sealed class Screen (val route:String) {
     data object Profile : Screen("profile_screen")
     data object Categories : Screen("categories_screen")
     data object Series : Screen("series_screen")
+    data object Movies : Screen("movies_screen")
 
     data object Favorit : Screen("favorit_screen")
+    data object Training : Screen("training_screen")
 
 
     data object Login : Screen("login_screen")

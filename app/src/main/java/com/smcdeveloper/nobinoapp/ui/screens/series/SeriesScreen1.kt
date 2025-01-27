@@ -35,12 +35,9 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.Section
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.MovieCardtestByTag
 import com.smcdeveloper.nobinoapp.ui.component.NobinoGradientCard
-import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRow
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection
-import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection1
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection2
-import com.smcdeveloper.nobinoapp.ui.screens.product.MovieItem
-import com.smcdeveloper.nobinoapp.ui.screens.product.MovieListByTag
+
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.util.Constants
@@ -258,7 +255,7 @@ fun SectionItemWithMovies1(
         LazyRow {
             movies?.let {
                 items(it) { movie ->
-                    MovieItem(movie = movie, onClick = {})
+                   // MovieItem(movie = movie, onClick = {})
                     SliderItemByTags(movie)
 
                 }
