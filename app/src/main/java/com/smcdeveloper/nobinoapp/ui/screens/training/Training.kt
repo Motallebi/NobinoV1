@@ -117,7 +117,7 @@ fun SectionListScreen(
                     Log.d("SectionListScreen", "Displaying section: $sectionTitle with ${movies.size} movies")
 
 
-                    NobinoSpecialRowBySection2(sectionTitle,navController,movies[index],"COURSE")
+                   // NobinoSpecialRowBySection2(sectionTitle,navController,movies[index],"COURSE")
 
 
                     SectionItemWithMovies(

@@ -11,6 +11,7 @@ import retrofit2.http.Query
 interface SeriesInterface {
 
 
+
     @GET("api/products")
     suspend fun getSeries(
         @Query("size") size: String= "10",

@@ -28,11 +28,17 @@ interface HomeApiInterface {
        suspend fun getMoviesWithPages(
         @Query("size") size: Int=20,
         @Query("category") category: String="",
-       @Query("tags") tags: String = "",
+        @Query("tags") tags: String = "",
         @Query("offset") offset: Int = 0,
     ):Response<MovieResult>
 
-
+    @GET("api/products")
+    suspend fun getMoviesWithPagesTest(
+        @Query("size") size: Int=20,
+        @Query("category") category: String="",
+        @Query("tags") tags: List<String> = emptyList(),
+        @Query("offset") offset: Int = 0,
+    ):Response<MovieResult>
 
 
 

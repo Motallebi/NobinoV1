@@ -113,6 +113,9 @@ class SeriesRepository @Inject constructor(private val api:SeriesInterface):Base
         val result = safeApiCall {
             Log.d("FETCH_MOVIES_TAG", "Making API call with tags: $tags")
             val tag1="32dcb9a6-0b99-42c1-a2a0-f2dd20dbc7fa"
+            val tags3= listOf("30980d7f-1a0c-4d23-a465-2a9c59b8bd6b",
+            "8b6b91ff-046b-40f6-b834-e5bbe175ec65")
+
             api.getSeries(tags =tags)
         }
 

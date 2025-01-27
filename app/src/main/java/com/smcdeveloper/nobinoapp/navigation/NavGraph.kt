@@ -4,6 +4,7 @@ package com.smcdeveloper.nobinoapp.navigation
 import OtpValidationScreen
 import ProductDetailPage
 import RegisterScreen
+import android.util.Log
 import androidx.compose.runtime.Composable
 
 import androidx.navigation.NavHostController
@@ -11,6 +12,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
@@ -154,6 +157,10 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         composable(route = Screen.Product.route + "/{tags}/{category}",
+
+
+
+
             arguments = listOf(
                 navArgument("tags") {
                     type = NavType.StringType
@@ -173,15 +180,29 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         {
+
+
+            val tagsJson = it.arguments?.getString("tags")
+          //  val tagsList: List<String> = Gson().fromJson(tagsJson, object : TypeToken<List<String>>() {}.type)
+
+
+
             val tag = it.arguments?.getString("tags")
             val category = it.arguments?.getString("category")
+            Log.d("navg","tags is" +tag.toString())
+            Log.d("navg","category is" +category.toString())
+            //Log.d("navg","category is" +tagsList.toString())
 
-            ProductScreen(
-                navController = navController, tag = tag.toString(),
-                categoryName = category.orEmpty()
+            val tag2 = listOf(tag).filterNotNull()
+
+            if (tag != null) {
+                ProductScreen(
+                    navController = navController, tag = tag,
+                    categoryName = category.orEmpty()
 
 
-            )
+                )
+            }
 
 
         }

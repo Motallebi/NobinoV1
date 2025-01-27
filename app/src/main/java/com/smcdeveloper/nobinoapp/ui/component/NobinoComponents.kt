@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.component
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,6 +57,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.size.Scale
+import com.google.gson.Gson
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
@@ -1546,9 +1549,12 @@ fun NobinoSpecialRowBySection1(title:String,navController: NavHostController,sec
 
 
 @Composable
-fun NobinoSpecialRowBySection2(title:String,navController: NavHostController,section: MovieResult.DataMovie.Item,category:String) {
+fun NobinoSpecialRowBySection2(title:String,navController: NavHostController,tags:List<String>,category:String) {
 
     Log.d("categoty","category is $category")
+    Log.d("categoty","title is $title tags is $tags")
+
+   // Log.d("categoty","tags are ${section.tags.toString()}")
 
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -1561,19 +1567,29 @@ fun NobinoSpecialRowBySection2(title:String,navController: NavHostController,sec
     {
 
         Text(title)
-        Text("ShowMore",
+        Text("ShowMoreSeries...",
             modifier = Modifier.clickable {
                 Log.d("category", "Nobino Button Category is${category}")
                 //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
 
-                Log.d("category", "Nobino Button tag is${ section.tags?.get(0)?.id.toString()}")
+              //  Log.d("category", "Nobino Button tag is${ section.tags?.get(0)?.id.toString()}")
+              //  Log.d("category", "Nobino Button tag is${ section.tags.toString()}")
+
+                val tagsList =tags
+                val tags =  tagsList.joinToString(",")
+              //  Log.d("category", "Nobino Button Category is${tagsJson}")
+               // Log.d("category", "Nobino Button Category is${Uri.encode(tagsJson)}")
+
+
+
+               // navController.navigate("section_screen?tags=${Uri.encode(tagsJson)}")
 
                 navController.navigate(
 
-                        Screen.Product.withArgs(
+                        Screen.Product.withArgs2(
 
 
-                            section.tags?.get(0)?.id.toString(),
+                            tags,
                             category
 
 

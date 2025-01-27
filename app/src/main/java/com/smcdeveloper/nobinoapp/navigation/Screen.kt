@@ -1,5 +1,7 @@
 package com.smcdeveloper.nobinoapp.navigation
 
+import android.util.Log
+
 sealed class Screen (val route:String) {
 
     data object Splash : Screen("splash_screen")
@@ -40,5 +42,44 @@ sealed class Screen (val route:String) {
         }
 
 
+
+
     }
+
+
+    fun withArgs2(vararg args: Any): String {
+        val result= buildString {
+            append(route)
+            args.forEach {
+                append("/$it")
+            }
+
+
+        }
+
+        Log.d("args","arg param is ${result}")
+        return result
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

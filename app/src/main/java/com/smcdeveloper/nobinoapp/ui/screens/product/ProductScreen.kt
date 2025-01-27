@@ -40,6 +40,7 @@ import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 fun ProductScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel(),
+  //  tag1:List<String>,
     tag:String,
     categoryName:String
 
@@ -57,6 +58,7 @@ fun ProductScreen(
 
 {
     Log.d("ProductScreen","tag is $tag" )
+
 
     Product(navController,viewModel,tag,categoryName)
 

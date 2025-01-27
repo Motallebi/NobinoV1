@@ -344,6 +344,8 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         }
         Log.d(NOBINO_LOG_TAG, "----fetchMovieTest-----${tag}")
         Log.d(NOBINO_LOG_TAG, "----fetchMovieTest-----")
+        Log.d("fetchMovieTest", "----fetchMovieTest-----${tag}")
+
         return result
 
 

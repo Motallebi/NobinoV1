@@ -445,6 +445,7 @@ fun SectionListScreen(
 {
     val sectionsResult by viewModel.sections.collectAsState()
     val moviesByTagsResult by viewModel.moviesByTags.collectAsState()
+    val sectionTagsMap = mutableMapOf<String, List<String>>() // Map to hold section id and its tags
 
     // Log the state of sectionsResult and moviesByTagsResult
     Log.d("SectionListScreen", "sectionsResult: $sectionsResult")
@@ -463,7 +464,23 @@ fun SectionListScreen(
     // Fetch all movies once sections are loaded
     if (sectionsResult is NetworkResult.Success) {
         val sections = (sectionsResult as NetworkResult.Success).data.orEmpty()
+
+
         Log.d("SectionListScreen", "Sections fetched successfully: ${sections.size} sections")
+
+
+        sections.forEach {section->
+
+            Log.d("SectionListScreen", "Section data is : tags are: ${section.tags}  id is:  ${section.id} title is: ${section.title}")
+            sectionTagsMap[section.title] = section.tags // Assuming `section.id` uniquely identifies a section
+
+
+
+
+        }
+
+
+
         LaunchedEffect(sections) {
             Log.d("SectionListScreen", "Fetching movies for all sections...")
             viewModel.fetchAllMovies(sections) // Fetch movies for all sections
@@ -493,6 +510,7 @@ fun SectionListScreen(
         }
         sectionsResult is NetworkResult.Success && moviesByTagsResult is NetworkResult.Success -> {
             val moviesBySection = (moviesByTagsResult as NetworkResult.Success).data.orEmpty()
+
             Log.d("SectionListScreen", "Movies fetched successfully for all sections")
 
             LazyColumn {
@@ -500,10 +518,13 @@ fun SectionListScreen(
                 itemsIndexed (moviesBySection.entries.toList()) { index,entry ->
                     val sectionTitle = entry.key // The section title (key of the map)
                     val movies = entry.value.orEmpty().filterNotNull()
+                    val sectionTags = sectionTagsMap[sectionTitle].orEmpty() // Retrieve tags for this section
                     Log.d("SectionListScreen", "Displaying section: $sectionTitle with ${movies.size} movies")
+                    Log.d("SectionListScreen", "Displaying section tags for title ${sectionTitle} : ${sectionTags} ")
 
 
-                    NobinoSpecialRowBySection2(sectionTitle,navController,movies[index],"SERIES")
+
+                    NobinoSpecialRowBySection2(sectionTitle,navController,sectionTags,"SERIES")
 
 
                     SectionItemWithMovies(
