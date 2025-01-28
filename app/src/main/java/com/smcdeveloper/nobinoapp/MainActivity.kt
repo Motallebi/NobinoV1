@@ -85,6 +85,7 @@ class MainActivity : ComponentActivity() {
 
                         },
 
+
                         topBar = {
 
                                NobinoTop(navController)

@@ -18,7 +18,9 @@ import com.google.gson.reflect.TypeToken
 import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
+import com.smcdeveloper.nobinoapp.ui.screens.demo.BasicSearchScreen
 import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoScreen
+import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoSearch
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoDemo
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlayScreen
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoScreen
@@ -107,6 +109,17 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         }
+
+
+        composable(route = Screen.DemoScreen.route) {
+            DemoSearch(navHostController = navController)
+
+
+        }
+
+
+
+
 
 
 
@@ -284,11 +297,7 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
-        composable(route = Screen.DemoScreen.route) {
-            DemoScreen(navController = navController)
 
-
-        }
 
 
 

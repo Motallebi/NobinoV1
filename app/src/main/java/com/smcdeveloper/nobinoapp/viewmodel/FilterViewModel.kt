@@ -34,6 +34,17 @@ class FilterViewModel @Inject constructor():ViewModel()
         filterCriteria.value = filterCriteria.value.copy(selectedYears = years)
     }
 
+    // Reset all filters
+    fun resetFilters() {
+        filterCriteria.value = FilterCriteria() // Reset to default empty state
+    }
+
+    // Get total filter count
+    fun getFilterCount(): Int {
+        return filterCriteria.value.run {
+            selectedGenres.size + selectedCountries.size + selectedYears.size
+        }
+    }
 
 
 
