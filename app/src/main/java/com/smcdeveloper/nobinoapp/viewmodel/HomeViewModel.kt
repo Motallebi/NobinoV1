@@ -9,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.HomeRepository
@@ -39,6 +40,20 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
     private val _movies = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
     val movies: StateFlow<NetworkResult<MovieResult>> get() = _movies.asStateFlow()
+
+
+
+    private val _countries = MutableStateFlow<NetworkResult<Countries>>(NetworkResult.Loading())
+    val contries: StateFlow<NetworkResult<Countries>> get() = _countries.asStateFlow()
+
+
+
+
+
+
+
+
+
 
     private val _moviesByTags = MutableStateFlow<NetworkResult<MovieCat>>(NetworkResult.Loading())
     val moviesByTags: StateFlow<NetworkResult<MovieCat>> get() = _moviesByTags.asStateFlow()
@@ -143,6 +158,31 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
             _isLoading.value = false
         }
     }
+
+
+    fun fetchCountries() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val data = repository.getCountries()
+            _countries.value = data
+            _isLoading.value = false
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -572,7 +612,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
-    fun getMoviesByCategory(tag: String,categoryName:String): Flow<PagingData<MovieResult.DataMovie.Item>> {
+    fun getMoviesByCategory(tag: String,categoryName:String,countries:String,name:String,size:Int): Flow<PagingData<MovieResult.DataMovie.Item>> {
         Log.d(NOBINO_LOG_TAG,"getmovie......")
         Log.d(NOBINO_LOG_TAG, "tag is......${tag.toString()}")
 
@@ -587,7 +627,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
                 Log.d(NOBINO_LOG_TAG, "Creating new MoviePagingSource with categoryId: ${tag.toString()}")
 
-                ProductBySpecialCategoryDataSource(repository, tag,categoryName)
+                ProductBySpecialCategoryDataSource(repository, tagName =tag,categoryName= categoryName, countries =countries, name = name, size = size )
 
 
             }

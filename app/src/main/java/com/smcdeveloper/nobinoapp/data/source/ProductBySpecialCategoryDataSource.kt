@@ -15,7 +15,11 @@ class ProductBySpecialCategoryDataSource(
 
     private val repository:HomeRepository,
     val tagName:String,
-    val categoryName:String
+    val categoryName:String="",
+    val countries:String="",
+    val name: String="",
+    var offset :Int=0,
+    var size: Int =20
 
 
   //  val specialId:Int
@@ -40,16 +44,19 @@ class ProductBySpecialCategoryDataSource(
 
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
-        val offset = params.key ?: 0 // Default to 0 if no key provided
-        val limit = params.loadSize // The number of items to load per page
+        offset = params.key ?: 0 // Default to 0 if no key provided
+        size = params.loadSize // The number of items to load per page
 
         return try {
             // Make the API call with the correct parameters
             val response = repository.fetchMovieTest(
-                size = limit,
+                size = size,
                 tag = tagName,
                 categoty = categoryName,
-                offset = offset
+                offset = offset,
+                countries = countries,
+                name = name
+
 
             )
 
@@ -63,8 +70,8 @@ class ProductBySpecialCategoryDataSource(
                 // Return a successful LoadResult.Page
                 LoadResult.Page(
                     data = dataMovie.items?.filterNotNull() ?: emptyList(),
-                    prevKey = if (offset == 0) null else offset - limit,
-                    nextKey = if ((offset + limit) >= (dataMovie.total ?: 0)) null else offset + limit
+                    prevKey = if (offset == 0) null else offset - size,
+                    nextKey = if ((offset + size) >= (dataMovie.total ?: 0)) null else offset + size
                 )
             } else {
                 // Log user-friendly error messages

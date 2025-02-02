@@ -50,7 +50,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.filled.BrokenImage
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Public
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -58,7 +62,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.hilt.navigation.compose.hiltViewModel
-
+import com.smcdeveloper.nobinoapp.ui.screens.demo.FilterListItem
 
 
 import kotlinx.coroutines.launch
@@ -381,39 +385,48 @@ fun ParentModalDemo() {
         }
     }
 }
-
 @Composable
-fun ParentModalContent(onClose: () -> Unit) {
+fun ParentModalContent(onClose: () -> Unit, onOpenChild: (FilterType) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(
-            text = "This is the Parent Modal",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Tap outside to close or use the button below.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 🔴 Close Button
-        Button(
-            onClick = onClose, // 🔴 Closes the modal when clicked
-            modifier = Modifier.fillMaxWidth()
+        // 🔴 Header with Title & Close Button
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Close Modal")
+            Text("فیلتر", style = MaterialTheme.typography.titleLarge) // "Filter"
+            IconButton(onClick = onClose) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // 🔴 List of Filter Options
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            val filterOptions = listOf(
+                FilterType.GENRE to Icons.Default.Folder,
+                FilterType.COUNTRY to Icons.Default.Public,
+                FilterType.YEAR to Icons.Default.DateRange,
+              //  FilterType.ACTOR to Icons.Default.Person,
+              //  FilterType.SORT to Icons.Default.Sort,
+              //  FilterType.AUDIO to Icons.Default.VolumeUp,
+              //  FilterType.SUBTITLE to Icons.Default.Subtitles
+            )
+
+            items(filterOptions) { (filterType, icon) ->
+                FilterListItem(filterType, icon, onOpenChild)
+            }
         }
     }
 }
+
 
 
 

@@ -4,6 +4,7 @@ import android.util.Log
 import com.smcdeveloper.nobinoapp.data.model.Category
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.HomeApiInterface
@@ -325,7 +326,7 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         }
 
 
-    suspend fun fetchMovieTest(tag: String,categoty:String, size: Int,offset: Int
+    suspend fun fetchMovieTest(tag: String,categoty:String, size: Int,offset: Int,countries:String,name:String
 
 
 
@@ -335,7 +336,8 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
 
             api.getMoviesWithPages(tags = tag,
-                category = categoty, size = size, offset = offset
+                category = categoty, size = size, offset = offset, countries = countries,
+                name = name
 
 
             )
@@ -369,6 +371,25 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
 
     }
+
+
+
+    suspend fun getCountries():NetworkResult<Countries> =
+
+        safeApiCall {
+
+            api.fetchContries()
+
+
+        }
+
+
+
+
+
+
+
+
 
 
 

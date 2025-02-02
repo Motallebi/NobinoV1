@@ -46,6 +46,9 @@ class ProductDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             Log.d("productdatils", "product id is:...${productId}")
             val token = dataStoreRepository.getString(USER_TOKEN_KEY).toString()
+
+
+
             //val results = repository.getProductDetails(productId,"Bearer "+token)
             Log.d("productdatils", "product id is:...${productId}")
             Log.d("Token", "product id is:...${token}")
@@ -53,7 +56,8 @@ class ProductDetailsViewModel @Inject constructor(
 
 
             _product.value = NetworkResult.Loading()
-            _product.value = repository.getProductDetails(productId, auth = "Bearer " + token)
+            //_product.value = repository.getProductDetails(productId, auth = "Bearer " + token)
+            _product.value = repository.getProductDetails(productId, auth = "")
         }
     }
 

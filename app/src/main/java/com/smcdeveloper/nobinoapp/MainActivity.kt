@@ -99,7 +99,13 @@ class MainActivity : ComponentActivity() {
 
                            Box( modifier = Modifier
                                .fillMaxSize()
-                               .padding(it))
+                               .padding(it)
+                              // .background(Color.Green)
+
+                           )
+
+
+
                                {
                                  //  ShowContent1()
                                     // ShowLAzy(navController)

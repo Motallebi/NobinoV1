@@ -122,7 +122,7 @@ fun Product(navController: NavHostController,
 
     }
 
-    val products = viewModel.getMoviesByCategory(tag,categoryName).collectAsLazyPagingItems()
+    val products = viewModel.getMoviesByCategory(tag=tag,categoryName=categoryName, countries = "", name = "", size = 20).collectAsLazyPagingItems()
 
 
 

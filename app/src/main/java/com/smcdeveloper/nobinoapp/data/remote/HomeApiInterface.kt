@@ -2,6 +2,10 @@ package com.smcdeveloper.nobinoapp.data.remote
 
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.search.Countries
+import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
+import com.smcdeveloper.nobinoapp.data.model.search.Person
+import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import retrofit2.Response
 import retrofit2.http.GET
@@ -29,7 +33,10 @@ interface HomeApiInterface {
         @Query("size") size: Int=20,
         @Query("category") category: String="",
         @Query("tags") tags: String = "",
-        @Query("offset") offset: Int = 0,
+        @Query("offset") offset: Int = 18,
+        @Query("countries") countries: String="",
+        @Query("name") name: String=""
+
     ):Response<MovieResult>
 
     @GET("api/products")
@@ -61,6 +68,26 @@ interface HomeApiInterface {
     ): Response<MovieCat>
 
 
+
+    @GET("/api/v2/persons")
+    suspend fun fetchActors(
+        @Path("id") id: Int
+    ): Response<Person>
+
+    @GET("/api/v2/persons/{id}")
+    suspend fun fetchActor(
+        @Path("id") id: Int
+    ): Response<PersonInfo>
+
+    @GET("/api/countries")
+    suspend fun fetchContries(
+
+    ): Response<Countries>
+
+    @GET("/api/countries/{id}")
+    suspend fun fetchContry(
+        @Path("id") id: Int
+    ): Response<CountryInfo>
 
 
 
