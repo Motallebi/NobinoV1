@@ -2,6 +2,7 @@ package com.smcdeveloper.nobinoapp
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.LayoutDirection
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -37,6 +39,8 @@ import com.smcdeveloper.nobinoapp.util.Constants.ENGLISH_LANG
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LANGUAGE
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.layout.BeyondBoundsLayout
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -69,7 +73,10 @@ class MainActivity : ComponentActivity() {
             AppTheme {
 
 
-                CompositionLocalProvider(LocalLayoutDirection provides direction) {
+               // CompositionLocalProvider(LocalLayoutDirection provides direction)
+                CompositionLocalProvider(LocalLayoutDirection provides androidx.compose.ui.unit.LayoutDirection.Rtl)
+
+                {
 
                     Scaffold(
 
@@ -86,12 +93,12 @@ class MainActivity : ComponentActivity() {
                         },
 
 
-                        topBar = {
+                       /* topBar = {
 
                                NobinoTop(navController)
 
 
-                        },
+                        },*/
 
 
 
@@ -109,7 +116,9 @@ class MainActivity : ComponentActivity() {
                                {
                                  //  ShowContent1()
                                     // ShowLAzy(navController)
-                               ShowItems(navController)
+                               //ShowItems(navController)
+                               SetupNavGraph(navController)
+
 
                                }
 

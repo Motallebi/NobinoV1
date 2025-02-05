@@ -1,14 +1,36 @@
 package com.smcdeveloper.nobinoapp.util
 
+import com.smcdeveloper.nobinoapp.data.model.AudioSubtitle
+
 object Constants {
 
     const val ENGLISH_LANG = "en"
     const val NOBINO_LOG_TAG = "NobinoApp"
+    const val NOBINO_LOG_TAG1 = "NobinoApp1"
     const val LOG_TAG_IMAGES = "NobinoAppImage"
     const val MovieCategory = "MOVIE"
     const val SeriesCategory = "MOVIE"
     const val SeasonCategory = "MOVIE"
     const val MovieCategory1 = "MOVIE"
+
+
+
+
+
+    // Create a constant list of AudioSubtitle items
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

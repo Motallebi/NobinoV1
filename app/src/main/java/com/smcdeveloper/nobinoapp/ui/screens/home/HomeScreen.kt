@@ -1,8 +1,13 @@
 package com.smcdeveloper.nobinoapp.ui.screens.home
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
@@ -35,7 +40,39 @@ fun Home(
     }
 
     val preferredOrder = listOf(1,2,3,4,5,6,7,8,9,10)
-    MovieScreen1( viewModel,preferredOrder,navController)
+
+      Scaffold(
+
+          topBar ={ NobinoTop(navController)}
+
+
+
+      ) { PaddingValues->
+
+              Column(Modifier.padding(PaddingValues)) {
+
+                  MovieScreen1( viewModel,preferredOrder,navController)
+
+
+              }
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
 
 
 

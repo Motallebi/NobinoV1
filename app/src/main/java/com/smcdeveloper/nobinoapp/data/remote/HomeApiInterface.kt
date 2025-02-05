@@ -4,6 +4,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
+import com.smcdeveloper.nobinoapp.data.model.search.Genre
 import com.smcdeveloper.nobinoapp.data.model.search.Person
 import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
@@ -15,46 +16,41 @@ import retrofit2.http.Query
 interface HomeApiInterface {
 
     @GET("api/products")
-    suspend fun getMovies() : Response<MovieResult>
+    suspend fun getMovies(): Response<MovieResult>
 
 
     @GET("api/products")
     suspend fun getMoviesByQueryParams(
-        @Query("size") size: Int=10,
-        @Query("category") category: String="SERIES",
+        @Query("size") size: Int = 10,
+        @Query("category") category: String = "SERIES",
         @Query("tags") tags: String = "",
         @Query("offset") offset: Int = 0,
 
-    ):Response<MovieResult>
+        ): Response<MovieResult>
 
 
     @GET("api/products")
-       suspend fun getMoviesWithPages(
-        @Query("size") size: Int=20,
-        @Query("category") category: String="",
+    suspend fun getMoviesWithPages(
+        @Query("size") size: Int = 20,
+        @Query("category") category: String = "",
         @Query("tags") tags: String = "",
         @Query("offset") offset: Int = 18,
-        @Query("countries") countries: String="",
-        @Query("name") name: String=""
+        @Query("countries") countries: String = "",
+        @Query("name") name: String = ""
 
-    ):Response<MovieResult>
+    ): Response<MovieResult>
 
     @GET("api/products")
     suspend fun getMoviesWithPagesTest(
-        @Query("size") size: Int=20,
-        @Query("category") category: String="",
+        @Query("size") size: Int = 20,
+        @Query("category") category: String = "",
         @Query("tags") tags: List<String> = emptyList(),
         @Query("offset") offset: Int = 0,
-    ):Response<MovieResult>
-
-
-
-
+    ): Response<MovieResult>
 
 
     @GET("api/settings/mainPage/sliders")
-    suspend fun getSlider():Response<Slider>
-
+    suspend fun getSlider(): Response<Slider>
 
 
     @GET("movies/{id}")
@@ -68,10 +64,9 @@ interface HomeApiInterface {
     ): Response<MovieCat>
 
 
-
     @GET("/api/v2/persons")
     suspend fun fetchActors(
-        @Path("id") id: Int
+        @Query("name") name: String = ""
     ): Response<Person>
 
     @GET("/api/v2/persons/{id}")
@@ -90,11 +85,14 @@ interface HomeApiInterface {
     ): Response<CountryInfo>
 
 
-
-
+    @GET("/api/tags")
+    suspend fun gerGenres(): Response<Genre>
 
 
 }
+
+
+
 
 
 

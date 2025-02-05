@@ -15,15 +15,18 @@ import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.HomeRepository
 import com.smcdeveloper.nobinoapp.data.source.ProductBySpecialCategoryDataSource
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
+import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG1
 import com.smcdeveloper.nobinoapp.util.MovieDisplayData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
@@ -32,6 +35,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,17 +46,8 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     val movies: StateFlow<NetworkResult<MovieResult>> get() = _movies.asStateFlow()
 
 
-
     private val _countries = MutableStateFlow<NetworkResult<Countries>>(NetworkResult.Loading())
     val contries: StateFlow<NetworkResult<Countries>> get() = _countries.asStateFlow()
-
-
-
-
-
-
-
-
 
 
     private val _moviesByTags = MutableStateFlow<NetworkResult<MovieCat>>(NetworkResult.Loading())
@@ -62,17 +57,18 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     val Tags: StateFlow<NetworkResult<MovieCat>> get() = _tags.asStateFlow()
 
 
-    private val _movieState = MutableStateFlow<NetworkResult<List<MovieResult.DataMovie.Item>>>(NetworkResult.Loading())
+    private val _movieState =
+        MutableStateFlow<NetworkResult<List<MovieResult.DataMovie.Item>>>(NetworkResult.Loading())
     val movieState: StateFlow<NetworkResult<List<MovieResult.DataMovie.Item>>> = _movieState
 
-    private val _moviesByTag = MutableStateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>>(emptyMap())
-    val moviesByTag: StateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>> = _moviesByTag
+    private val _moviesByTag =
+        MutableStateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>>(emptyMap())
+    val moviesByTag: StateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>> =
+        _moviesByTag
 
     private val _tagsState = MutableStateFlow<NetworkResult<List<Int>>>(NetworkResult.Loading())
     val tagsState: StateFlow<NetworkResult<List<Int>>> = _tagsState
-   // val moviesByTag: StateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>> = _moviesByTag
-
-
+    // val moviesByTag: StateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>> = _moviesByTag
 
 
     private val _movieDetails =
@@ -88,14 +84,20 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     val slider: StateFlow<NetworkResult<Slider>> get() = _sliders.asStateFlow()
     // val slider = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
 
-    private val _moviesByParameter = MutableStateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>>(emptyMap())
-    val moviesByParameter: StateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>> = _moviesByParameter
+    private val _moviesByParameter =
+        MutableStateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>>(emptyMap())
+    val moviesByParameter: StateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>> =
+        _moviesByParameter
 
-    private val _tagsAndMovies = MutableStateFlow<Map<MovieCat.MovieCatData, NetworkResult<List<MovieResult.DataMovie.Item>>>>(emptyMap())
-    val tagsAndMovies: StateFlow<Map<MovieCat.MovieCatData, NetworkResult<List<MovieResult.DataMovie.Item>>>> = _tagsAndMovies
+    private val _tagsAndMovies =
+        MutableStateFlow<Map<MovieCat.MovieCatData, NetworkResult<List<MovieResult.DataMovie.Item>>>>(
+            emptyMap()
+        )
+    val tagsAndMovies: StateFlow<Map<MovieCat.MovieCatData, NetworkResult<List<MovieResult.DataMovie.Item>>>> =
+        _tagsAndMovies
 
-  //  private val _tagsAndMovies = MutableStateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>>(emptyMap())
-  // val tagsAndMovies: StateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>> = _tagsAndMovies
+    //  private val _tagsAndMovies = MutableStateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>>(emptyMap())
+    // val tagsAndMovies: StateFlow<Map<Int, NetworkResult<List<MovieResult.DataMovie.Item>>>> = _tagsAndMovies
 
 
     private val _moviesState = MutableStateFlow<List<NetworkResult<MovieResult>>>(emptyList())
@@ -105,8 +107,8 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     val movieResults: StateFlow<List<NetworkResult<MovieResult>>> = _movieResults
 
 
-   // private val _movieDisplayData = MutableStateFlow<List<MovieDisplayData>>(emptyList())
-   // val movieDisplayData: StateFlow<List<MovieDisplayData>> = _movieDisplayData
+    // private val _movieDisplayData = MutableStateFlow<List<MovieDisplayData>>(emptyList())
+    // val movieDisplayData: StateFlow<List<MovieDisplayData>> = _movieDisplayData
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -116,18 +118,21 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     val movieDisplayData: StateFlow<List<MovieDisplayData>?> = _movieDisplayData
 
 
-
-
-
-
-
+    private val _isLoading1 = MutableStateFlow(false) // 🔴 Loading state
+    val isLoading1: StateFlow<Boolean> = _isLoading1.asStateFlow()
 
 
     var productByCategoryList: Flow<PagingData<MovieResult>> = flow { emit(PagingData.empty()) }
+
     // StateFlow to dynamically change the categoryId
     private val currentCategoryId = MutableStateFlow<String?>(null)
 
     private val processedTags = mutableSetOf<MovieCat.MovieCatData>()
+
+
+    private val _moviesFlow1 =
+        MutableStateFlow<PagingData<MovieResult.DataMovie.Item>>(PagingData.empty())
+    val moviesFlow1: StateFlow<PagingData<MovieResult.DataMovie.Item>> = _moviesFlow1.asStateFlow()
 
 
     // Expose the Flow of PagingData
@@ -139,15 +144,19 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                         pageSize = 20,
                         enablePlaceholders = false
                     ),
-                    pagingSourceFactory = { ProductBySpecialCategoryDataSource(repository, categoryId,"") }
+                    pagingSourceFactory = {
+                        ProductBySpecialCategoryDataSource(
+                            repository,
+                            categoryId,
+                            ""
+                        )
+                    }
                 ).flow.cachedIn(viewModelScope)
             } else {
                 // Return an empty flow if no category is selected
                 kotlinx.coroutines.flow.emptyFlow()
             }
         }
-
-
 
 
     fun fetchMovieDisplayData(tagIds: List<Int>) {
@@ -170,33 +179,6 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Function to update the categoryId
     fun setCategoryId(categoryId: String) {
         currentCategoryId.value = categoryId
@@ -217,28 +199,6 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     fun getProductBySize() {
 
         viewModelScope.launch {
@@ -247,34 +207,6 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // Fetch tag and its corresponding movies
@@ -286,10 +218,10 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                 if (tagResult is NetworkResult.Success) {
 
                     val tag = tagResult.data?.movieCatData?.title.toString()
-                    val tag2=tagResult.data?.movieCatData?.tags?.get(0).toString()
+                    val tag2 = tagResult.data?.movieCatData?.tags?.get(0).toString()
 
-                    Log.d(NOBINO_LOG_TAG,"fetchMoviesForTagGroup: ${tag}")
-                    Log.d(NOBINO_LOG_TAG,"fetchMoviesForTagGroup: ${tag2}")
+                    Log.d(NOBINO_LOG_TAG, "fetchMoviesForTagGroup: ${tag}")
+                    Log.d(NOBINO_LOG_TAG, "fetchMoviesForTagGroup: ${tag2}")
 
                     // Fetch movies for this tag
                     repository.fetchMoviesByTag(tag2).map { moviesResult ->
@@ -297,7 +229,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                     }
                         .onEach { (tag, result) ->
 
-                            if(!tag.isNullOrEmpty()) {
+                            if (!tag.isNullOrEmpty()) {
 
                                 val movieCatData: MovieCat.MovieCatData = MovieCat.MovieCatData(
                                     title = tagResult.data?.movieCatData?.title.toString(), // Assuming `tite` is the field you want to populate with the tag name
@@ -307,8 +239,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                                 )
 
 
-
-                               /* val nonNullId = tagResult.data?.movieCatData?.id ?: -1 // Provide a default value for null IDs
+                                /* val nonNullId = tagResult.data?.movieCatData?.id ?: -1 // Provide a default value for null IDs
                                 if (!_tagsAndMovies.value.containsKey(nonNullId)) {
 
                                     Log.d(LOG_TAG, "State updated with tag: $tag")
@@ -328,57 +259,22 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
-                                _tagsAndMovies.value = _tagsAndMovies.value + (movieCatData to result)
+                                _tagsAndMovies.value =
+                                    _tagsAndMovies.value + (movieCatData to result)
 
                             }
-
-
-
 
 
                         }
 
 
-
-
-
-
-
-
-
-                }
-
-
-
-                else {
+                } else {
                     flowOf(tagId.toString() to tagResult as NetworkResult<List<MovieResult.DataMovie.Item>>)
                 }
             }
 
             .launchIn(viewModelScope)
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     fun getProduct() {
@@ -419,96 +315,69 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     }
 
 
-    fun getMoviesByTags()
-    {
-
+    fun getMoviesByTags() {
 
 
         viewModelScope.launch {
 
 
-                flow {
-                    // First API call
-                    val firstResponse = repository.getMoviesTag(1)
-                    _tags.value=firstResponse
-                    emit(firstResponse)
+            flow {
+                // First API call
+                val firstResponse = repository.getMoviesTag(1)
+                _tags.value = firstResponse
+                emit(firstResponse)
+            }
+                .map { firstData ->
+                    // Extract parameters from the first API response
+                    val paramA = firstData.data?.movieCatData?.tags?.get(0).toString()
+                    val title = firstData.data?.movieCatData?.title
+
+
+                    // val paramB = firstData.paramB
+
+                    // Second API call using extracted parameters
+                    repository.getMoveListBySize(paramA)
                 }
-                    .map { firstData ->
-                        // Extract parameters from the first API response
-                        val paramA = firstData.data?.movieCatData?.tags?.get(0).toString()
-                        val title=firstData.data?.movieCatData?.title
+                .catch { error ->
+                    Log.d(NOBINO_LOG_TAG, "We have Error.......")
+                    // Handle any errors
+                    _moviesByTags.value = NetworkResult.Loading()
+                }
 
 
-                       // val paramB = firstData.paramB
-
-                        // Second API call using extracted parameters
-                        repository.getMoveListBySize(paramA)
-                    }
-                    .catch { error ->
-                        Log.d(NOBINO_LOG_TAG,"We have Error.......")
-                        // Handle any errors
-                        _moviesByTags.value = NetworkResult.Loading()
-                    }
-
-
-
-
-
-
-                    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
 
 
     }
 
 
-
-//todo it should be completed
-    fun fetchMovies(tagId:Int) {
+    //todo it should be completed
+    fun fetchMovies(tagId: Int) {
 
 
         repository.fetchMoviesByCategory(tagId)
-            .onEach {
-                result ->
+            .onEach { result ->
 
-                    _movieState.value = result
+                _movieState.value = result
 
-                    Log.d(NOBINO_LOG_TAG,".......FETCH......")
-                    Log.d(NOBINO_LOG_TAG,".......FETCH......"+_movieState.value.data.toString())
-
+                Log.d(NOBINO_LOG_TAG, ".......FETCH......")
+                Log.d(NOBINO_LOG_TAG, ".......FETCH......" + _movieState.value.data.toString())
 
 
             }
             .launchIn(viewModelScope)
     }
 
-    fun fetchMoviesByTag(tagId:Int) {
+    fun fetchMoviesByTag(tagId: Int) {
         _moviesByTag.value += (tagId to NetworkResult.Loading())
 
         repository.fetchMoviesByCategory(tagId)
-            .onEach {
-                    result ->
+            .onEach { result ->
 
                 _moviesByTag.value += (tagId to result)
 
-                Log.d(NOBINO_LOG_TAG,".......FETCH......")
-                Log.d(NOBINO_LOG_TAG,".......FETCH......"+_moviesByTag.value.toString())
-
+                Log.d(NOBINO_LOG_TAG, ".......FETCH......")
+                Log.d(NOBINO_LOG_TAG, ".......FETCH......" + _moviesByTag.value.toString())
 
 
             }
@@ -518,10 +387,11 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
     fun fetchMoviesForTags() {
         (1..3).forEach { tag ->
-            Log.d(NOBINO_LOG_TAG,"00000000000000000")
+            Log.d(NOBINO_LOG_TAG, "00000000000000000")
             fetchMoviesForTag(tag)
         }
     }
+
     private fun fetchMoviesForTag(tag: Int) {
         // Indicate loading for the current tag
         _moviesByTag.value += (tag to NetworkResult.Loading())
@@ -535,19 +405,13 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     }
 
 
-
-
-
-
-  /*  fun fetchTags() {
+    /*  fun fetchTags() {
         repository.fetchTags()
             .onEach { tagsResult ->
                 _tagsState.value = tagsResult
             }
             .launchIn(viewModelScope)
     }*/
-
-
 
 
     fun fetchMoviesForParameters() {
@@ -573,24 +437,24 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     // Fetch tag and its corresponding movies
     @OptIn(ExperimentalCoroutinesApi::class)
     fun fetchMoviesForTagGroup1(tagId: Int) {
-                        repository.fetchTagById(tagId)
+        repository.fetchTagById(tagId)
 
-                            .flatMapConcat { tagResult ->
-                                if (tagResult is NetworkResult.Success) {
-                                    Log.d(NOBINO_LOG_TAG,"fetch by tagGroup Success-----")
+            .flatMapConcat { tagResult ->
+                if (tagResult is NetworkResult.Success) {
+                    Log.d(NOBINO_LOG_TAG, "fetch by tagGroup Success-----")
 
-                                    val tag = MovieCat.MovieCatData(
+                    val tag = MovieCat.MovieCatData(
                         title = tagResult.data?.movieCatData?.title,
                         tags = listOf(tagResult.data?.movieCatData?.tags.toString()),
                         count = 0,
                         id = tagId
                     )
-                    repository.fetchMoviesByTag(tagResult.data?.movieCatData?.tags?.get(0) ?: "").map { moviesResult ->
-                        tag to moviesResult
-                    }
-                }
-                else {
-                    Log.d(NOBINO_LOG_TAG,"fetch by tagGroup Error-----")
+                    repository.fetchMoviesByTag(tagResult.data?.movieCatData?.tags?.get(0) ?: "")
+                        .map { moviesResult ->
+                            tag to moviesResult
+                        }
+                } else {
+                    Log.d(NOBINO_LOG_TAG, "fetch by tagGroup Error-----")
                     flowOf(
                         MovieCat.MovieCatData(
                             title = "Unknown",
@@ -604,35 +468,78 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
             .onEach { (tag, result) ->
 
 
-
-             //   _tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
+                //   _tagsAndMovies.value = _tagsAndMovies.value + (tag to result)
             }
             .launchIn(viewModelScope)
     }
 
 
+    fun getMoviesByCategory1(
+        tag: String,
+        categoryName: String,
+        countries: String,
+        name: String,
+        size: Int
+    ) {
+        Log.d(NOBINO_LOG_TAG, "getMoviesByCategory() called with tag: $tag")
 
-    fun getMoviesByCategory(tag: String,categoryName:String,countries:String,name:String,size:Int): Flow<PagingData<MovieResult.DataMovie.Item>> {
-        Log.d(NOBINO_LOG_TAG,"getmovie......")
-        Log.d(NOBINO_LOG_TAG, "tag is......${tag.toString()}")
+        viewModelScope.launch {
+            _isLoading1.value = true // ✅ Start loading before delay
+            Log.d(NOBINO_LOG_TAG, "Loading started...")
 
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20, // Page size
-                enablePlaceholders = false
-            ),
+            delay(2000) // ⏳ Simulate loading delay
 
-
-            pagingSourceFactory = {
-
-                Log.d(NOBINO_LOG_TAG, "Creating new MoviePagingSource with categoryId: ${tag.toString()}")
-
-                ProductBySpecialCategoryDataSource(repository, tagName =tag,categoryName= categoryName, countries =countries, name = name, size = size )
-
-
-            }
-        ).flow.cachedIn(viewModelScope)
+            Pager(
+                config = PagingConfig(
+                    pageSize = 20,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = {
+                    Log.d(NOBINO_LOG_TAG, "Creating new MoviePagingSource with tag: $tag")
+                    ProductBySpecialCategoryDataSource(repository, tag, categoryName, countries, name, size)
+                }
+            ).flow
+                .cachedIn(viewModelScope)
+                .collectLatest { pagingData ->
+                    _moviesFlow1.value = pagingData // ✅ Emit data to UI
+                    _isLoading1.value = false // ✅ Stop loading when data is received
+                    Log.d(NOBINO_LOG_TAG, "Data loaded successfully.")
+                }
+        }
     }
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
