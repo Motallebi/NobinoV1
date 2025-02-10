@@ -56,8 +56,8 @@ class ProductDetailsViewModel @Inject constructor(
 
 
             _product.value = NetworkResult.Loading()
-            //_product.value = repository.getProductDetails(productId, auth = "Bearer " + token)
-            _product.value = repository.getProductDetails(productId, auth = "")
+            _product.value = repository.getProductDetails(productId, auth = "Bearer " + token)
+            //_product.value = repository.getProductDetails(productId, auth = "")
         }
     }
 

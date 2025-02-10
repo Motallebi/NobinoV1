@@ -59,8 +59,11 @@ class MainActivity : ComponentActivity() {
             val direction = if (USER_LANGUAGE == ENGLISH_LANG) {
                 androidx.compose.ui.unit.LayoutDirection.Ltr
             } else {
+
+
                 androidx.compose.ui.unit.LayoutDirection.Rtl
             }
+
 
 
 
@@ -93,12 +96,12 @@ class MainActivity : ComponentActivity() {
                         },
 
 
-                       /* topBar = {
+                        topBar = {
 
                                NobinoTop(navController)
 
 
-                        },*/
+                        },
 
 
 
@@ -114,10 +117,10 @@ class MainActivity : ComponentActivity() {
 
 
                                {
+                                   SetupNavGraph(navController)
                                  //  ShowContent1()
                                     // ShowLAzy(navController)
                                //ShowItems(navController)
-                               SetupNavGraph(navController)
 
 
                                }

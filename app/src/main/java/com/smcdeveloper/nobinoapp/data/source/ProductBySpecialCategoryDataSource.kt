@@ -22,7 +22,7 @@ class ProductBySpecialCategoryDataSource(
     var size: Int =20
 
 
-  //  val specialId:Int
+    //  val specialId:Int
 
 ) :PagingSource <Int,MovieResult.DataMovie.Item>()
 
@@ -40,15 +40,28 @@ class ProductBySpecialCategoryDataSource(
         }
 
 
-        }
+    }
 
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
-        offset = params.key ?: 0 // Default to 0 if no key provided
-        size = params.loadSize // The number of items to load per page
+     suspend fun load1(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
+        val offset = params.key ?: 0 // Default to 0 if no key provided
+        var size =20
+
+
+        size = if(params.loadSize==60) {
+            20
+        } else
+            params.loadSize // The number of items to load per page
+
+        //size1=20
+        Log.d("page" ,"offset is:${offset} size is: ${size}")
+
 
         return try {
             // Make the API call with the correct parameters
+            Log.d("page" ,"current offset is:${offset} size is: ${size}")
+
+
             val response = repository.fetchMovieTest(
                 size = size,
                 tag = tagName,
@@ -68,10 +81,15 @@ class ProductBySpecialCategoryDataSource(
                 Log.d("NobinoApp", "PAGING3 Success: ${dataMovie.items}")
 
                 // Return a successful LoadResult.Page
+                val nextOffset = if (response.data.movieInfo.size!! < size ) null else offset + size
                 LoadResult.Page(
                     data = dataMovie.items?.filterNotNull() ?: emptyList(),
+
                     prevKey = if (offset == 0) null else offset - size,
-                    nextKey = if ((offset + size) >= (dataMovie.total ?: 0)) null else offset + size
+
+
+                 //   nextKey = if ((offset + size) >= (dataMovie.total ?: 0)) null else offset + size
+                    nextKey = nextOffset
                 )
             } else {
                 // Log user-friendly error messages
@@ -90,6 +108,48 @@ class ProductBySpecialCategoryDataSource(
         }
     }
 
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
+        val offset = params.key ?: 0
+        val limit = params.loadSize
+
+        Log.d("PagingSource", "🚀 Loading movies from offset=$offset, limit=$limit")
+
+        return try {
+            val response = repository.fetchMovieTest(
+
+                size = limit,
+                tag = tagName,
+                categoty = categoryName,
+                offset = offset,
+                countries = countries,
+                name = name
+
+            )
+            Log.d("PagingSource", "✅ Received ${response.data?.movieInfo!!.size} items from API")
+
+            // ❗ Ensure API returns expected data
+            if (response.data.movieInfo.items.isNullOrEmpty()) {
+                Log.d("PagingSource", "⛔ No more data available, stopping pagination.")
+                return LoadResult.Page(emptyList(), prevKey = null, nextKey = null) // Stop pagination
+            }
+
+            val nextOffset = if (response.data.movieInfo.items.size < limit) {
+                Log.d("PagingSource", "🚨 API returned less than requested, setting nextKey=null")
+                null
+            } else {
+                offset + limit
+            }
+
+            LoadResult.Page(
+                data = response.data.movieInfo.items.filterNotNull() ?: emptyList(),
+                prevKey = if (offset == 0) null else offset - limit,
+                nextKey = nextOffset
+            )
+        } catch (e: Exception) {
+            Log.e("PagingSource", "❌ Error loading movies at offset=$offset: ${e.message}", e)
+            LoadResult.Error(e)
+        }
+    }
 
 
 
@@ -175,7 +235,7 @@ class ProductBySpecialCategoryDataSource(
 
 
 
-    }
+}
 
 
 

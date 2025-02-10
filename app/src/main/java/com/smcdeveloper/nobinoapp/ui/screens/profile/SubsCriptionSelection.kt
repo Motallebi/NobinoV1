@@ -14,9 +14,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavHostController
 
 @Composable
-fun SubscriptionSelectionPage() {
+fun SubscriptionSelectionPage(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()

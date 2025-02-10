@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.navigation
 
 import android.graphics.drawable.Icon
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -95,7 +96,7 @@ fun BottomNavigationBar(
 
 
 
-        )
+        ),
 
 
 
@@ -113,9 +114,50 @@ fun BottomNavigationBar(
 
 
     val backStackEntry = navController.currentBackStackEntryAsState()
-    val showBottomBar = backStackEntry.value?.destination?.route in items.map { it.route }
 
-    if (showBottomBar) {
+
+    var showBottomBar = backStackEntry.value?.destination?.route in items.map { it.route }
+
+    val bottomBarRoutes = setOf(
+        Screen.ContactUs.route,Screen.EditProfile.route,Screen.PaymentHistory.route,Screen.BuySubscription.route,
+        Screen.Product.route,Screen.Movies.route
+
+
+    )
+
+
+    val currentRoute =backStackEntry.value?.destination?.route
+
+    Log.d("nav","Show Bottom Bar: ${showBottomBar}")
+    Log.d("nav","Current Rout is: $currentRoute")
+
+
+    val hiddenBottomNavRoutes = setOf(
+        Screen.Login.route,
+        Screen.Splash.route,
+        Screen.SignUp.route
+      //  Screen.FullScreenVideo.route
+    )
+
+
+    val showBottomBar1 = currentRoute !in hiddenBottomNavRoutes
+
+
+
+
+
+    if (currentRoute in bottomBarRoutes || currentRoute?.startsWith(Screen.Product.route) == true
+
+        || currentRoute?.startsWith(Screen.Series.route) == true
+
+        )
+    {
+      showBottomBar =true
+
+    }
+
+
+    if (showBottomBar1) {
         NavigationBar()
         {
 

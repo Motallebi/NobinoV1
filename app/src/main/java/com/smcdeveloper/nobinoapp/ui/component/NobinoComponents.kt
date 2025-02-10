@@ -1441,6 +1441,10 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
                 )
 
 
+              //  navController.navigate(Screen.DemoScreen.route)
+
+
+
             }
 
 

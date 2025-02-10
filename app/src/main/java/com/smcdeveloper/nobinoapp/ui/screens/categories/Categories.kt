@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,6 +44,7 @@ import coil3.compose.AsyncImage
 
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductCategories
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
+import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.viewmodel.ProductCategoriesViewModel
 
@@ -51,7 +53,7 @@ import com.smcdeveloper.nobinoapp.viewmodel.ProductCategoriesViewModel
 fun Categories(navController: NavHostController) {
 
     Log.d(NOBINO_LOG_TAG,"we arte in Categories Page")
-    CategoryScreen(onCategoryClick = {})
+    CategoryScreen(onCategoryClick = {} , navController = navController )
 
 
 }
@@ -61,7 +63,9 @@ fun Categories(navController: NavHostController) {
 @Composable
 fun CategoryScreen(
     viewModel: ProductCategoriesViewModel = hiltViewModel(),
-    onCategoryClick: (ProductCategories.ProductCategoryData) -> Unit
+    onCategoryClick: (ProductCategories.ProductCategoryData) -> Unit,
+    navController: NavHostController
+
 )
 {
     LaunchedEffect(Unit){
@@ -106,9 +110,23 @@ fun CategoryScreen(
                         items(categories)
 
                         { category->
-                            CategoryItem(category = category, onClick = {
+                            CategoryItemCard (category = category, onClick = {
                                 onCategoryClick(category)
                                     Log.d("category","categoryname is....."+category.name)
+
+
+                                navController.navigate(
+                                    Screen.Product.withArgs(
+                                        category.tags.get(0).toString(),
+                                       ""
+
+                                    ))
+
+
+
+
+
+
 
 
                             })
@@ -182,4 +200,37 @@ fun CategoryItem(
 }
 
 
+@Composable
+fun CategoryItemCard(category: ProductCategories.ProductCategoryData, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable { onClick() } // Click Listener
+            .clip(RoundedCornerShape(10.dp))
+            .background(Color.LightGray)
+            .size(180.dp, 100.dp)
+    ) {
+
+        AsyncImage(
+            model = "https://vod.nobino.ir/vod/"+category.image, // Load image from URL
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                //.clip()
+                .background(MaterialTheme.colorScheme.surface)
+        )
+
+
+
+
+        Text(
+            text = category.name.toString(),
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(8.dp)
+        )
+    }
+}
 

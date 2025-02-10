@@ -25,9 +25,15 @@ class DataStoreViewModel @Inject constructor(
         const val USER_ID_KEY = "USER_ID_KEY"
         const val USER_PHONE_KEY = "USER_PHONE_KEY"
         const val USER_PASSWORD_KEY = "USER_PASSWORD_KEY"
-        const val USER_NAME_KEY = "USER_NAME_KEY"
+        const val USER_FIRST_NAME_KEY = "USER_FIRST_NAME_KEY"
+        const val USER_LAST_NAME_KEY = "USER_LAST_NAME_KEY"
+
         const val USER_ADDRESS_KEY = "USER_ADDRESS_KEY"
         const val USER_REF_KEY = "USER_REF_KEY"
+        const val USER_EMAIL_KEY = "USER_EMAIL_KEY"
+        const val USER_BD_KEY = "USER_BD_KEY"
+
+
 
     }
 
@@ -43,13 +49,34 @@ class DataStoreViewModel @Inject constructor(
     private val _userPhone = MutableStateFlow<String?>(null)
     val userPhone: StateFlow<String?> get() = _userPhone
 
-    private val _userName = MutableStateFlow<String?>(null)
-    val userName: StateFlow<String?> get() = _userName
+    private val _userFirstName = MutableStateFlow<String?>(null)
+    val userFirstName: StateFlow<String?> get() = _userFirstName
+
+    private val _userLastName = MutableStateFlow<String?>(null)
+    val userLastName: StateFlow<String?> get() = _userLastName
+
+
 
     private val _userAddress = MutableStateFlow<String?>(null)
     val userAddress: StateFlow<String?> get() = _userAddress
+
     private val _userRefKey = MutableStateFlow<String?>(null)
     val userRefKey: StateFlow<String?> get() =  _userRefKey
+
+    private val _userEmailKey = MutableStateFlow<String?>(null)
+    val userEmailKey: StateFlow<String?> get() =  _userEmailKey
+
+    private val _userBdateKey = MutableStateFlow<String?>(null)
+    val userBdateKey: StateFlow<String?> get() =  _userBdateKey
+
+
+
+
+
+
+
+
+
 
     init {
         // Load initial values
@@ -57,9 +84,13 @@ class DataStoreViewModel @Inject constructor(
             _userToken.value = repository.getString(USER_TOKEN_KEY)
             _userId.value = repository.getString(USER_ID_KEY)
             _userPhone.value = repository.getString(USER_PHONE_KEY)
-            _userName.value = repository.getString(USER_NAME_KEY)
+            _userFirstName.value = repository.getString(USER_FIRST_NAME_KEY)
+            _userLastName.value = repository.getString(USER_LAST_NAME_KEY)
+
             _userAddress.value = repository.getString(USER_ADDRESS_KEY)
             _userRefKey.value = repository.getString(USER_REF_KEY)
+            _userEmailKey.value=repository.getString(USER_EMAIL_KEY)
+            _userBdateKey.value=repository.getString(USER_BD_KEY)
 
         }
     }
@@ -115,9 +146,60 @@ class DataStoreViewModel @Inject constructor(
         repository.getString(USER_TOKEN_KEY)
     }
 
+
+
+
+
+    fun getUserId(): String? = runBlocking {
+        repository.getString(USER_ID_KEY)
+    }
+
+    fun getUserFirstName(): String? = runBlocking {
+        repository.getString(USER_FIRST_NAME_KEY)
+    }
+
+
+
+    fun saveUserFirstName(value: String) {
+        viewModelScope.launch {
+            repository.putString(USER_FIRST_NAME_KEY, value)
+        }
+    }
+
+
+
+
+
+
+
+
+    fun getUserLastName(): String? = runBlocking {
+        repository.getString(USER_LAST_NAME_KEY)
+    }
+
+
+    fun saveUserLastName(value: String) {
+        viewModelScope.launch {
+            repository.putString(USER_LAST_NAME_KEY, value)
+        }
+    }
+
+
+
+
+
+
     fun saveUserToken(value: String) {
         viewModelScope.launch {
             repository.putString(USER_TOKEN_KEY, value)
+        }
+    }
+
+
+
+    fun saveUserBirthDay(value: String) {
+        viewModelScope.launch {
+            repository.putString(USER_BD_KEY, value)
         }
     }
 

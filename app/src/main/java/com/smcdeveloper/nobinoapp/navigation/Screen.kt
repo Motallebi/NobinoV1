@@ -28,6 +28,23 @@ sealed class Screen (val route:String) {
     data object SeriesDetailScreen : Screen("SeriesDetail_Screen")
 
 
+    data object EditProfile : Screen("edit_profile_screen")
+    data object BuySubscription : Screen("buy_subscription_screen")
+    data object PaymentHistory : Screen("payment_history_screen")
+    data object FAQ : Screen("faq_screen")
+    data object TermsAndConditions : Screen("terms_conditions")
+    data object ContactUs : Screen("contact_us")
+    data object Logout : Screen("logout")
+
+
+
+
+
+
+
+
+
+
 
 
 

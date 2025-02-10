@@ -2,6 +2,8 @@ package com.smcdeveloper.nobinoapp.data.repository
 
 import android.util.Log
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
+import com.smcdeveloper.nobinoapp.data.model.profile.UpdateUserProfileRequest
+import com.smcdeveloper.nobinoapp.data.model.profile.UserInfo
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.remote.ProfileApiInterface
@@ -47,6 +49,45 @@ class ProfileRepository @Inject constructor(private val api: ProfileApiInterface
 
 
     }
+
+
+
+
+
+suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
+
+    val result = safeApiCall {
+
+
+        api.getUserInfo(auth)
+
+
+    }
+
+    Log.d("user","Api call")
+
+    return result
+}
+
+
+    suspend fun UpdateUserProfile(userid:String,updateRequest:UpdateUserProfileRequest): NetworkResult<UserInfo> =
+
+        safeApiCall {
+
+            api.updateUserInfo(userid,updateRequest)
+
+
+        }
+
+
+
+
+
+
+
+
+
+
 }
 
 

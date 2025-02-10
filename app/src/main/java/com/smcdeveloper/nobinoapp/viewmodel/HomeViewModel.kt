@@ -19,6 +19,7 @@ import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG1
 import com.smcdeveloper.nobinoapp.util.MovieDisplayData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +42,47 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: HomeRepository):ViewModel() {
+
+    private var moviePager: Flow<PagingData<MovieResult.DataMovie.Item>>? = null // ✅ Cache the Flow, not the PagingData
+
+    val slider1 = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
+    val movieDisplayData1 = MutableStateFlow<NetworkResult<List<MovieDisplayData>?>>(NetworkResult.Loading())
+
+
+
+    ////////////
+
+    private val _slider2 = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
+    val slider2: StateFlow<NetworkResult<Slider>> get() = _slider2.asStateFlow()
+
+    private val _movieDisplayData2 = MutableStateFlow<NetworkResult<List<MovieDisplayData>?>>(NetworkResult.Loading())
+    val movieDisplayData2: StateFlow<NetworkResult<List<MovieDisplayData>?>> get() = _movieDisplayData2.asStateFlow()
+
+
+
+
+
+
+    /////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private val _movies = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
     val movies: StateFlow<NetworkResult<MovieResult>> get() = _movies.asStateFlow()
@@ -307,12 +349,131 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
             _sliders.value = NetworkResult.Loading()
             val result = repository.getSlider()
             _sliders.value = result
+            _isLoading.value=false
 
 
         }
 
 
     }
+
+
+  fun getAllDataFromServer(tagIds: List<Int>)
+  {
+
+      viewModelScope.launch {
+
+          val sliderFlow = async { repository.getSlider() } // Returns NetworkResult<Slider>
+          val moviesFlow = async { repository.fetchMovieDisplayData(tagIds).let { NetworkResult.Success(it) } }
+
+
+          // Wait for both responses
+          val sliderResponse = sliderFlow.await()
+          val moviesResponse = moviesFlow.await()
+
+          // Emit values after both responses are received
+          slider1.emit(sliderResponse)
+         // movieDisplayData1.emit(moviesResponse)
+
+
+
+
+        launch {
+
+          slider1.emit(repository.getSlider())
+
+
+
+        }
+
+
+
+          launch {
+
+              val data =  repository.fetchMovieDisplayData(tagIds = tagIds)
+              //_movieDisplayData.value=data
+            //  movieDisplayData1.emit(data)
+
+
+
+
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      }
+
+
+
+
+  }
+
+
+
+
+
+
+    fun fetchAllData(tagIds: List<Int>) {
+        viewModelScope.launch {
+            // Run both API calls in parallel
+            val sliderFlow = async { repository.getSlider() } // Returns NetworkResult<Slider>
+            val moviesFlow = async {
+                try {
+                    val data = repository.fetchMovieDisplayData(tagIds) // Returns List<MovieDisplayData>
+                    NetworkResult.Success(data) as NetworkResult<List<MovieDisplayData>?> // Explicitly match required type
+                } catch (e: Exception) {
+                    NetworkResult.Error(e.message ?: "Unknown error") // Handle errors properly
+                }
+            }
+
+            // Wait for both responses
+            val sliderResponse = sliderFlow.await()
+            val moviesResponse = moviesFlow.await()
+
+            // Emit values after both responses are received
+            _slider2.emit(sliderResponse)
+            _movieDisplayData2.emit(moviesResponse)
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     fun getMoviesByTags() {
@@ -511,8 +672,92 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    fun getMoviesByCategory(tag: String,categoryName:String,countries:String,name:String,size:Int): Flow<PagingData<MovieResult.DataMovie.Item>> {
+        Log.d(NOBINO_LOG_TAG,"getmovie......")
+        Log.d(NOBINO_LOG_TAG, "tag is......${tag.toString()}")
+
+        return Pager(
+            config = PagingConfig(
+                pageSize =20, // Page size
+                enablePlaceholders = false
+            ),
+
+
+            pagingSourceFactory = {
+
+                Log.d(NOBINO_LOG_TAG, "Creating new MoviePagingSource with categoryId: ${tag.toString()}")
+
+                ProductBySpecialCategoryDataSource(repository, tagName =tag,categoryName= categoryName, countries =countries, name = name, size = size )
+
+
+            }
+        ).flow.cachedIn(viewModelScope)
+    }
+
+
+
+
+    fun getMoviesByCategory3(
+        tag: String,
+        categoryName: String,
+        countries: String,
+        name: String,
+        size: Int
+    ): Flow<PagingData<MovieResult.DataMovie.Item>> {
+        if (moviePager != null) {
+            return moviePager!! // ✅ Prevents re-triggering the Pager unnecessarily
+        }
+
+        Log.d(NOBINO_LOG_TAG, "🎬 Fetching movies for tag=$tag")
+
+         moviePager = Pager(
+            config = PagingConfig(
+                pageSize = size,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                Log.d(NOBINO_LOG_TAG, "📡 Creating new PagingSource for tag=$tag")
+                ProductBySpecialCategoryDataSource(repository, tag, categoryName, countries, name, size)
+            }
+        ).flow
+            .cachedIn(viewModelScope)
+
+       return moviePager!!  // ✅ Cache the data
+
+
+    }
 
 
 
@@ -797,6 +1042,52 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
             }
             .launchIn(viewModelScope)
     }
+
+
+    fun getMoviesByCategory2(
+        tag: String,
+        categoryName: String,
+        countries: String,
+        name: String,
+        size: Int
+    ): Flow<PagingData<MovieResult.DataMovie.Item>> {
+        Log.d(NOBINO_LOG_TAG, "getMoviesByCategory() called with tag: $tag")
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                Log.d(NOBINO_LOG_TAG, "Creating new MoviePagingSource with tag: $tag")
+                ProductBySpecialCategoryDataSource(repository, tag, categoryName, countries, name, size)
+            }
+        ).flow
+            .onStart {
+                _isLoading1.value = true  // ✅ Show loading state immediately
+                Log.d(NOBINO_LOG_TAG, "Loading started...")
+
+                viewModelScope.launch {
+                    delay(2000) // ✅ Simulate a small delay without blocking the flow
+                    _isLoading1.value = false // ✅ Hide loading after delay
+                    Log.d(NOBINO_LOG_TAG, "Simulated delay finished. Loading state updated.")
+                }
+            }
+            .catch { e ->
+                _isLoading1.value = false // ❌ Hide loading on error
+                Log.e(NOBINO_LOG_TAG, "Error fetching movies: ${e.message}", e)
+            }
+            .cachedIn(viewModelScope)
+    }
+
+
+
+
+
+
+
+
+
 
 
 

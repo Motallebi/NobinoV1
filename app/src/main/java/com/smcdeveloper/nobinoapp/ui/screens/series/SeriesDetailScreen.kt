@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.series
 
+import CategoryChipsRow
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -224,6 +225,10 @@ fun ProductBanner(
                 .padding(16.dp),
             verticalArrangement = Arrangement.Bottom
         ) {
+
+
+            CategoryChipsRow()
+
             Text(
                 text = "$productTitle ($productEnglishTitle)",
                 color = Color.White,

@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +32,9 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.navigation.BottomNavigationBar
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoTop
 import com.smcdeveloper.nobinoapp.ui.theme.backgroundDark
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoSmall
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
@@ -61,6 +64,7 @@ fun ProductScreen(
 
 
     Product(navController,viewModel,tag,categoryName)
+    //ShowContent1()
 
 
 
@@ -104,7 +108,9 @@ fun Product(navController: NavHostController,
 
 
 
-) {
+)
+
+{
 
     // Log.d(LOG_TAG,"the tag is ${tag}" )
     LaunchedEffect(true) {
@@ -145,7 +151,7 @@ fun Product(navController: NavHostController,
        // .background(Color.Red)
         .padding(top = 60.dp)
         .height(700.dp)
-        .background(MaterialTheme.colorScheme.secondary)
+        .background(MaterialTheme.colorScheme.primary)
         ,
 
         contentAlignment = Alignment.TopStart
@@ -165,23 +171,7 @@ fun Product(navController: NavHostController,
         }*/
 
 
-        Column {
-            /*LazyColumn {
-                items(movies.itemCount) { index ->
-                    Log.d("NobinoApp", "Rendering movie: ${movies.get(index)?.name}")
-                    movies.get(index)?.let {
-                        Text(
-                            text = (index.toString() + it.name) ?: "No Name"
 
-
-                        )
-                    }
-                }
-
-
-            }*/
-
-        }
 
 
 
@@ -265,6 +255,103 @@ fun Product(navController: NavHostController,
     }
 
 
+
+
+
+
+@Composable
+fun ShowContent1()
+{
+
+
+
+
+
+
+
+
+
+    Box(modifier = Modifier.fillMaxSize(0.5f)
+        // .wrapContentSize(unbounded = true)
+        // .background(Color.Red)
+        .padding(top = 60.dp)
+        .height(700.dp)
+        .background(MaterialTheme.colorScheme.primary),
+
+
+        contentAlignment = Alignment.TopStart
+
+
+    )
+    {
+        Text("Test Screen")
+
+
+    }
+
+
+
+
+}
+
+
+
+@Composable
+fun ShowContent(navController: NavHostController) {
+
+    Scaffold(
+
+        topBar = { NobinoTop(navController) },
+        bottomBar = {
+            BottomNavigationBar(navController, onItemClick = {
+                navController.navigate(it.route)
+
+            }
+
+            )
+
+
+        },
+
+
+
+
+
+
+
+
+
+        ) {
+
+            paddingValues ->
+
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .padding(paddingValues)
+                // .wrapContentSize(unbounded = true)
+                // .background(Color.Red)
+                .padding(top = 60.dp)
+                .height(700.dp)
+                .background(MaterialTheme.colorScheme.primary),
+
+
+            contentAlignment = Alignment.TopStart
+
+
+        )
+        {
+            Text("Test Screen")
+
+
+        }
+
+
+
+
+    }
+
+
+}
 
 
 

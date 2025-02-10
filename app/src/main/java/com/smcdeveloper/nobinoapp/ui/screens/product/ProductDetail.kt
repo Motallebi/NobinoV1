@@ -1,5 +1,8 @@
+import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.widget.TextView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,11 +14,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +32,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
@@ -137,6 +148,8 @@ fun ShowProductDetailWithTabs(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+
+
         if (videoUrl.isNullOrEmpty()) {
             Text(
                 text = "Video is not available for this product.",
@@ -211,13 +224,51 @@ fun ProductDescriptionWithExtras(
             .fillMaxWidth()
     ) {
         // Description Text
-        item {
+       /* item {
             Text(
                 text = product.longDescription,
                 style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Start
             )
+        }*/
+
+        item{
+
+            HtmlText(product.shortDescription)
+
+
+
         }
+
+        item {
+
+            MovieInfoRow(year = product.productionYear.toString(),
+                time = product.ages,
+                rating = product.imdbRating.toString(),
+                country = product.owner.name
+
+
+                )
+
+
+
+        }
+
+        item {
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
 
         // Spacer
         item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -384,3 +435,102 @@ fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
         )
     }
 }
+
+
+@Composable
+fun HtmlText(html: String, modifier: Modifier = Modifier) {
+    AndroidView(
+        factory = { context ->
+            TextView(context).apply {
+                text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                movementMethod = LinkMovementMethod.getInstance() // Enables clickable links
+            }
+        },
+        update = { textView ->
+            textView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        },
+        modifier = modifier
+    )
+}
+
+
+
+
+@Composable
+fun MovieInfoRow(
+    year: String,
+    country: String,
+    rating: String,
+    time: String
+) {
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .background(Color.Black, shape = RoundedCornerShape(8.dp))
+            .border(1.dp, Color.White, shape = RoundedCornerShape(8.dp))
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        MovieInfoItem(Icons.Default.DateRange, year)  // Year
+        MovieInfoItem(Icons.Default.Public, country)  // Country
+        MovieInfoItem(Icons.Default.ThumbUp, "$rating%")  // Rating
+        MovieInfoItem(Icons.Default.Schedule, time)  // Duration
+    }
+}
+
+@Composable
+fun MovieInfoItem(icon: ImageVector, text: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = Modifier.padding(end = 8.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = Color.White,
+            modifier = Modifier.size(16.dp)
+        )
+        Text(
+            text = text,
+            color = Color.White,
+            fontSize = 14.sp
+        )
+    }
+}
+
+
+
+
+@Composable
+fun CategoryChip(text: String) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(20.dp)) // Rounded shape
+            .background(Color.DarkGray) // Background color
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+    ) {
+        Text(
+            text = text,
+            color = Color.White,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+
+
+@Composable
+fun CategoryChipsRow() {
+    Row(
+        modifier = Modifier.padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        CategoryChip("جنایی") // Crime
+        CategoryChip("اکشن") // Action
+    }
+}
+

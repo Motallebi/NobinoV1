@@ -5,4 +5,24 @@
     <string name="categories">دسته‌بندی</string>
     <string name="favorits">لیست من</string>
     <string name="user_profile">حساب کاربری</string>
+    <string name="edit_profile">ویرایش حساب کاربری</string>
+    <string name="buy_subscription">خرید اشتراک</string>
+    <string name="payment_history">سوابق پرداخت</string>
+    <string name="faq">سوالات متداول</string>
+    <string name="terms_conditions">قوانین و مقررات</string>
+    <string name="contact_us">تماس با ما</string>
+    <string name="logout">خروج از حساب کاربری</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
 </resources>

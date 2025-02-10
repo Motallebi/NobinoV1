@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -32,13 +33,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,20 +52,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.R
+import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
 
 
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
+import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
-    profileViewModel: ProfileViewModel= hiltViewModel()
+    profileViewModel: ProfileViewModel= hiltViewModel(),
+    dataStore: DataStoreViewModel= hiltViewModel()
 
 
 
@@ -78,7 +88,7 @@ fun ProfileScreen(
 {
 
     //profileViewModel.updateState(ProfileScreenState.LOGIN_STATE)
-    ProfilePage()
+    ProfilePage(navController = navController)
 
 
 
@@ -216,7 +226,25 @@ fun ProfilePagePreview() {
 }
 
 @Composable
-fun ProfilePage() {
+fun ProfilePage(navController: NavHostController,
+         // viewModel: ProfileViewModel,
+          //dataStore:DataStoreViewModel
+
+
+
+
+) {
+
+
+
+
+
+
+
+
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -226,7 +254,7 @@ fun ProfilePage() {
     ) {
         ProfileSection()
         Divider(color = Color.Gray, thickness = 1.dp)
-        MenuOptions()
+        ProfileScreen1(navController = navController)
     }
 }
 
@@ -324,4 +352,106 @@ fun MenuOptions() {
 
 
 
+@Composable
+fun ProfileItem1(title: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier.padding(start = 16.dp),
+            fontSize = 18.sp,
+            color = Color.White
+        )
+    }
+}
 
+
+
+
+
+
+
+
+
+
+@Composable
+fun ProfileScreen1(navController: NavController) {
+    val context = LocalContext.current
+
+    val profileItems = mapOf(
+        stringResource(id = R.string.edit_profile) to Screen.EditProfile,
+        stringResource(id = R.string.buy_subscription) to Screen.BuySubscription,
+        stringResource(id = R.string.payment_history) to Screen.PaymentHistory,
+        stringResource(id = R.string.faq) to Screen.FAQ,
+        stringResource(id = R.string.terms_conditions) to Screen.TermsAndConditions,
+        stringResource(id = R.string.contact_us) to Screen.ContactUs,
+        stringResource(id = R.string.logout) to Screen.Logout
+    )
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        profileItems.forEach { (title, screen) ->
+            item {
+                ProfileItem(title = title) {
+                    navController.navigate(screen.route)
+                    {
+                        launchSingleTop = true
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Composable
+fun ProfileItem(title: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier.padding(start = 16.dp),
+            fontSize = 18.sp,
+            color = Color.White
+        )
+    }
+}
+
+
+
+
+data class ProfileItemData(val titleResId: Int, val icon: ImageVector, val screen: Screen)

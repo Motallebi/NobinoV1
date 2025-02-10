@@ -1,6 +1,5 @@
 package com.smcdeveloper.nobinoapp.ui.screens.search
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -20,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,9 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.smcdeveloper.nobinoapp.ui.screens.home.getAllMovies
-import com.smcdeveloper.nobinoapp.ui.screens.home.getSlider
-import com.smcdeveloper.nobinoapp.ui.theme.extraBoldNumber
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoSmall
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 

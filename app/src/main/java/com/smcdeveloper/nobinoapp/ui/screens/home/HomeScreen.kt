@@ -1,17 +1,22 @@
 package com.smcdeveloper.nobinoapp.ui.screens.home
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.magnifier
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.smcdeveloper.nobinoapp.ui.screens.product.MovieScreen
 import com.smcdeveloper.nobinoapp.ui.screens.product.MovieScreen1
 import com.smcdeveloper.nobinoapp.util.Constants
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
@@ -34,35 +39,19 @@ fun Home(
 {
     LocalelUtils.setLocale(LocalContext.current, Constants.USER_LANGUAGE)
 
-    LaunchedEffect(Unit ){
+    /*LaunchedEffect(Unit ){
 
         refreshDataFromServer(viewModel)
-    }
+    }*/
 
     val preferredOrder = listOf(1,2,3,4,5,6,7,8,9,10)
 
-      Scaffold(
-
-          topBar ={ NobinoTop(navController)}
+  // GetSlider()
 
 
 
-      ) { PaddingValues->
-
-              Column(Modifier.padding(PaddingValues)) {
-
-                  MovieScreen1( viewModel,preferredOrder,navController)
-
-
-              }
-
-
-
-
-
-
-
-      }
+   // GetSlider()
+    MovieScreen( viewModel,navController,preferredOrder)
 
 
 
@@ -74,15 +63,61 @@ fun Home(
 
 
 
+           /*   Column (Modifier.padding(20.dp)
+                  .fillMaxSize()
+
+
+              )
+              {
+
+
+                 // item { getSlider()}
+
+                   // ImageSlider()
+               //   getSlider()
+                 // MovieScreen1( viewModel,preferredOrder,navController)
 
 
 
-    Column(
-     //   modifier = Modifier.padding(top = 30.dp)
 
 
-    )
-    {
+          }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       //  Text("NOBINO--------NONINO")
         //NobinoGradientCard("Nobino")
@@ -114,7 +149,7 @@ fun Home(
 
     }
 
-}
+
 
 private suspend fun refreshDataFromServer(viewModel: HomeViewModel) {
 

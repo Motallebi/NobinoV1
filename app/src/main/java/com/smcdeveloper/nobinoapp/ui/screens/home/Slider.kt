@@ -46,7 +46,7 @@ import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 
 @Composable
-fun getSlider(viewModel: HomeViewModel = hiltViewModel())
+fun GetSlider(viewModel: HomeViewModel = hiltViewModel())
 {
 
     val sliderState by viewModel.slider.collectAsState()

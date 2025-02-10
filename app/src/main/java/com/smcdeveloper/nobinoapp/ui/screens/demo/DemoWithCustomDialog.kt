@@ -260,7 +260,7 @@ fun DemoBottomSheetSearch(
 
 
     // 🔴 Fetch Movies Using Jetpack Paging (Triggers when query or filters change)
-    val products = homeViewModel.getMoviesByCategory1(
+    val products = homeViewModel.getMoviesByCategory(
         tag = debouncedTags,
         categoryName = debouncedCategories,
         countries = debouncedCountries,
@@ -268,6 +268,9 @@ fun DemoBottomSheetSearch(
         size = 20
 
     ).collectAsLazyPagingItems()
+
+
+
 
 
     val isLoading by homeViewModel.isLoading1.collectAsState()
