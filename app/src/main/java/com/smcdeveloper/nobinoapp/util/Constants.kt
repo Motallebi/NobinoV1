@@ -56,6 +56,13 @@ object Constants {
     var USER_ID = "USER_ID"
     var USER_FIRST_NAME = "USER_FIRST_NAME"
     var USER_LAST_NAME = "USER_LAST_NAME"
+    var IMAGE_BASE_URL= "https://vod.nobino.ir/vod/"
+
+
+
+
+
+
 
     var USER_PHONE = "USER_PHONE"
     var USER_PASSWORD = "USER_PASSWORD"

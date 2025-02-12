@@ -16,10 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.theme.selectedBottomBar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,15 +29,18 @@ import com.smcdeveloper.nobinoapp.navigation.Screen
 fun NobinoTop(navController: NavHostController) {
     var selectedTab by remember { mutableStateOf("نوینو") }
 
-
+    //val colors = MaterialTheme.colorScheme // Get the theme colors
 
 
     TopAppBar(
+
+
         title = {},
         actions = {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
+
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             )
@@ -67,7 +72,13 @@ fun NobinoTop(navController: NavHostController) {
         },
 
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.onBackground,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            titleContentColor = MaterialTheme.colorScheme.error
+
+
+
+
         ),
 
 

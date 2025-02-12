@@ -1,9 +1,12 @@
 package com.smcdeveloper.nobinoapp.data.repository
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.smcdeveloper.nobinoapp.data.model.Category
+import com.smcdeveloper.nobinoapp.data.model.prducts.Delimiter
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.SpecialBanner
 import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
@@ -21,6 +24,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseApiResponse2() {
@@ -43,6 +47,120 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
 
         }
+
+
+
+
+    suspend fun getDelimiter(): NetworkResult<Delimiter> =
+
+        safeApiCall {
+
+            try {
+                Log.d("API_CALL", "Fetching delimiter from API...") // Log before calling API
+                val response = api.getDelimiter(1)
+                Log.d("API_CALL", "Delimiter fetched successfully: ${response.body()}") // Log success response
+                Log.d("API_CALL", "Delimiter fetched successfully: ${  response.raw()}") // Log success response
+
+
+
+                response
+            } catch (e: Exception) {
+                Log.e("API_ERROR", "Error fetching delimiter: ${e.message}", e) // Log error
+                throw e // Ensure the error is still handled
+            }
+
+
+        }
+
+    suspend fun getSpecialBannerData():NetworkResult<SpecialBanner> =
+
+
+
+
+
+
+
+
+
+
+        safeApiCall {
+
+
+
+            try {
+                Log.d("API_CALL", "Fetching SERIES from API...") // Log before calling API
+                val response =   api.getSpecialBanner("SERIES")
+                Log.d("API_CALL", "SERIES fetched successfully: ${response.body()}") // Log success response
+                Log.d("API_CALL", "SERIES fetched successfully: ${  response.raw()}") // Log success response
+
+
+
+                response
+            } catch (e: Exception) {
+                Log.e("API_ERROR", "Error fetching delimiter: ${e.message}", e) // Log error
+                throw e // Ensure the error is still handled
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+
+    suspend fun getRelatedEpisode(seriesId:Int):NetworkResult<MovieResult> =
+   safeApiCall {
+
+        api.getSeriesEpisodes(seriesId)
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     suspend fun getMoveListBySize(tag: String): NetworkResult<MovieResult> =

@@ -1,7 +1,9 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
+import com.smcdeveloper.nobinoapp.data.model.prducts.Delimiter
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.SpecialBanner
 import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
 import com.smcdeveloper.nobinoapp.data.model.search.Genre
@@ -83,6 +85,43 @@ interface HomeApiInterface {
     suspend fun fetchContry(
         @Path("id") id: Int
     ): Response<CountryInfo>
+
+
+    @GET("api/settings/mainPage/normalDelimiters/{id}")
+    suspend fun getDelimiter(
+      @Path("id") id :Int
+
+
+    ):Response<Delimiter>
+
+
+
+
+
+
+
+    @GET("api/settings/mainPage/specials")
+    suspend fun getSpecialBanner(
+        @Query("type") type :String
+
+
+    ):Response<SpecialBanner>
+
+
+
+
+    @GET("api/products/relatedProducts/{id}")
+    suspend fun getSeriesEpisodes(
+        @Path("id") id: Int) :Response<MovieResult>
+
+
+
+
+
+
+
+
+
 
 
     @GET("/api/tags")

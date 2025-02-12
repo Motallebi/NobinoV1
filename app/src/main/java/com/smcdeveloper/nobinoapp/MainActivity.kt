@@ -3,10 +3,12 @@ package com.smcdeveloper.nobinoapp
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.LayoutDirection
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,6 +54,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            Log.d("theme", "dark theme" +isSystemInDarkTheme())
             navController = rememberNavController()
 
             LocalelUtils.setLocale(LocalContext.current, USER_LANGUAGE)
@@ -110,6 +113,8 @@ class MainActivity : ComponentActivity() {
                            Box( modifier = Modifier
                                .fillMaxSize()
                                .padding(it)
+                              // .consumeWindowInsets(it)
+
                               // .background(Color.Green)
 
                            )

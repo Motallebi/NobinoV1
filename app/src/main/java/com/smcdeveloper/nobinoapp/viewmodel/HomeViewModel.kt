@@ -7,13 +7,16 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.smcdeveloper.nobinoapp.data.model.prducts.Delimiter
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.SpecialBanner
 import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.HomeRepository
 import com.smcdeveloper.nobinoapp.data.source.ProductBySpecialCategoryDataSource
+import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG1
 import com.smcdeveloper.nobinoapp.util.MovieDisplayData
@@ -43,11 +46,12 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: HomeRepository):ViewModel() {
 
-    private var moviePager: Flow<PagingData<MovieResult.DataMovie.Item>>? = null // ✅ Cache the Flow, not the PagingData
+    private var moviePager: Flow<PagingData<MovieResult.DataMovie.Item>>? =
+        null // ✅ Cache the Flow, not the PagingData
 
     val slider1 = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
-    val movieDisplayData1 = MutableStateFlow<NetworkResult<List<MovieDisplayData>?>>(NetworkResult.Loading())
-
+    val movieDisplayData1 =
+        MutableStateFlow<NetworkResult<List<MovieDisplayData>?>>(NetworkResult.Loading())
 
 
     ////////////
@@ -55,33 +59,24 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     private val _slider2 = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
     val slider2: StateFlow<NetworkResult<Slider>> get() = _slider2.asStateFlow()
 
-    private val _movieDisplayData2 = MutableStateFlow<NetworkResult<List<MovieDisplayData>?>>(NetworkResult.Loading())
+    private val _delimiter = MutableStateFlow<NetworkResult<Delimiter>>(NetworkResult.Loading())
+    val delimiter: StateFlow<NetworkResult<Delimiter>> get() = _delimiter.asStateFlow()
+
+
+    private val _movieDisplayData2 =
+        MutableStateFlow<NetworkResult<List<MovieDisplayData>?>>(NetworkResult.Loading())
     val movieDisplayData2: StateFlow<NetworkResult<List<MovieDisplayData>?>> get() = _movieDisplayData2.asStateFlow()
 
 
+    private val _product = MutableStateFlow<NetworkResult<SpecialBanner>>(NetworkResult.Loading())
+    val product: StateFlow<NetworkResult<SpecialBanner>> get() = _product
 
-
+    private val _relatedProducts =
+        MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
+    val relatedProducts: StateFlow<NetworkResult<MovieResult>> get() = _relatedProducts
 
 
     /////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private val _movies = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
@@ -349,7 +344,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
             _sliders.value = NetworkResult.Loading()
             val result = repository.getSlider()
             _sliders.value = result
-            _isLoading.value=false
+            _isLoading.value = false
 
 
         }
@@ -358,107 +353,139 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     }
 
 
-  fun getAllDataFromServer(tagIds: List<Int>)
-  {
-
-      viewModelScope.launch {
-
-          val sliderFlow = async { repository.getSlider() } // Returns NetworkResult<Slider>
-          val moviesFlow = async { repository.fetchMovieDisplayData(tagIds).let { NetworkResult.Success(it) } }
+    fun getDelimiter() {
 
 
-          // Wait for both responses
-          val sliderResponse = sliderFlow.await()
-          val moviesResponse = moviesFlow.await()
-
-          // Emit values after both responses are received
-          slider1.emit(sliderResponse)
-         // movieDisplayData1.emit(moviesResponse)
+    }
 
 
+    fun getAllDataFromServer(tagIds: List<Int>) {
 
-
-        launch {
-
-          slider1.emit(repository.getSlider())
-
-
-
-        }
-
-
-
-          launch {
-
-              val data =  repository.fetchMovieDisplayData(tagIds = tagIds)
-              //_movieDisplayData.value=data
-            //  movieDisplayData1.emit(data)
-
-
-
-
-
-
-
-
-
-
-
-          }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      }
-
-
-
-
-  }
-
-
-
-
-
-
-    fun fetchAllData(tagIds: List<Int>) {
         viewModelScope.launch {
-            // Run both API calls in parallel
+
             val sliderFlow = async { repository.getSlider() } // Returns NetworkResult<Slider>
-            val moviesFlow = async {
-                try {
-                    val data = repository.fetchMovieDisplayData(tagIds) // Returns List<MovieDisplayData>
-                    NetworkResult.Success(data) as NetworkResult<List<MovieDisplayData>?> // Explicitly match required type
-                } catch (e: Exception) {
-                    NetworkResult.Error(e.message ?: "Unknown error") // Handle errors properly
-                }
-            }
+            val moviesFlow =
+                async { repository.fetchMovieDisplayData(tagIds).let { NetworkResult.Success(it) } }
+
 
             // Wait for both responses
             val sliderResponse = sliderFlow.await()
             val moviesResponse = moviesFlow.await()
 
             // Emit values after both responses are received
-            _slider2.emit(sliderResponse)
-            _movieDisplayData2.emit(moviesResponse)
+            slider1.emit(sliderResponse)
+            // movieDisplayData1.emit(moviesResponse)
+
+
+            launch {
+
+                slider1.emit(repository.getSlider())
+
+
+            }
+
+
+
+            launch {
+
+                val data = repository.fetchMovieDisplayData(tagIds = tagIds)
+                //_movieDisplayData.value=data
+                //  movieDisplayData1.emit(data)
+
+
+            }
+
+
         }
+
+
     }
+
+
+    fun fetchAllData(tagIds: List<Int>) {
+
+
+        viewModelScope.launch {
+
+
+            try {
+
+                // Run both API calls in parallel
+                val sliderFlow = async { repository.getSlider() } // Returns NetworkResult<Slider>
+             //   val delimiterFlow = async { repository.getDelimiter() }
+                val productFlow = async { repository.getSpecialBannerData() }
+
+
+                val moviesFlow = async {
+
+
+                    val data =
+                        repository.fetchMovieDisplayData(tagIds) // Returns List<MovieDisplayData>
+                    NetworkResult.Success(data) as NetworkResult<List<MovieDisplayData>?> // Explicitly match required type
+
+
+                }
+
+                // Wait for both responses
+                val sliderResponse = sliderFlow.await()
+                val moviesResponse = moviesFlow.await()
+               // val delimiterResponse = delimiterFlow.await()
+                val productResponse = productFlow.await()
+
+                _slider2.emit(sliderResponse)
+                _movieDisplayData2.emit(moviesResponse)
+
+
+                // If product is fetched successfully, fetch related products using productId
+                if (productResponse is NetworkResult.Success) {
+                    _product.emit(productResponse)
+
+                    val id = productResponse.data?.bannerData?.get(0)?.product?.id
+
+
+                    val relatedProductsResponse = id?.let { repository.getRelatedEpisode(it) }
+
+                    if (relatedProductsResponse != null) {
+                        _relatedProducts.emit(relatedProductsResponse)
+                    }
+                } else {
+                    _product.emit(productResponse) // Pass error state
+
+                }
+            }
+
+            catch (e: Exception) {
+                Log.e("API_ERROR", "Error fetching data: ${e.message}")
+            }
+
+
+            // Emit values after both responses are received
+
+            //  _delimiter.emit(delimiterResponse)
+        }
+
+
+    }
+
+
+
+
+    /////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

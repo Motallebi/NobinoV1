@@ -26,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -921,14 +922,14 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
     Box(
 
         modifier = Modifier
-            .width(300.dp)
-            .height(400.dp)
+            .width(200.dp)
+            .height(250.dp)
             // .padding(50.dp)
             //  .wrapContentSize()
 
             .clip(RoundedCornerShape(12.dp))
             .background(Color.Green)
-            .border(8.dp, Color(0xFF6200EE), RoundedCornerShape(12.dp)),
+           // .border(8.dp, Color(0xFF6200EE), RoundedCornerShape(12.dp)),
 
         //  contentAlignment = Alignment.Center
 
@@ -1049,19 +1050,6 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
 
 
 
-                    Row()
-                    {
-                        movieInfo?.name?.let {
-                            Text(
-                                it,
-                                style = MaterialTheme.typography.nobinoMedium
-
-
-                            )
-
-
-                        }
-                    }
 
 
 
@@ -1076,32 +1064,6 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
 
 
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                        //  .background(Color.Cyan),
-                        //  horizontalArrangement = Arrangement.SpaceAround
-
-
-                        //horizontalArrangement = Arrangement.SpaceAround
-
-
-                    )
-
-                    {
-                        movieInfo?.name?.let {
-                            Text(
-                                it,
-
-
-                                style = MaterialTheme.typography.nobinoMedium,
-                                // textAlign = TextAlign.Start
-                                //  fontSize = 16.sp,
-                                //   color = Color.White,
-                                //  fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
 
 
                     //   NobinoGradientCard("movieName") { }
@@ -1418,14 +1380,18 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
         modifier = Modifier.fillMaxWidth()
             .padding(top = 10.dp)
             .background(MaterialTheme.colorScheme.background),
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
 
 
     )
     {
 
         Text(title)
-        Text("ShowMore",
+          Text("مشاهده همه",
+              style = MaterialTheme.typography.bodySmall,
+
+
             modifier = Modifier.clickable {
                 Log.d("category", "Nobino Button Category is${category}")
                 //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
@@ -1445,10 +1411,18 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
 
 
 
-            }
+            },
+
+
+
+
+
+
 
 
         )
+
+        Icon(painterResource(R.drawable.phone_regular),"")
 
 
     }
@@ -1477,7 +1451,12 @@ fun NobinoSpecialRowBySection(title:String,navController: NavHostController,Sect
     {
 
         Text(title)
-        Text("ShowMore",
+
+
+
+
+
+        TextField("مشاهده همه",{},
             modifier = Modifier.clickable {
                 Log.d("category", "Nobino Button Category is${category}")
                 //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
@@ -1493,10 +1472,17 @@ fun NobinoSpecialRowBySection(title:String,navController: NavHostController,Sect
                 )
 
 
-            }
+            },
+           trailingIcon = { Icon(painterResource(R.drawable.mobile_icon,),
+               contentDescription = ""
+
+               ) }
+
+
 
 
         )
+
 
 
     }

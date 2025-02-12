@@ -3,6 +3,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -53,6 +55,7 @@ fun ProductDetailPage(
     productId: Int
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
+    val scrollState = rememberScrollState()
 
     // Fetch product details when the page loads
     LaunchedEffect(productId) {
@@ -79,45 +82,65 @@ fun ProductDetailPage(
                 backgroundColor = Color.Black
             )
         }
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            when (products) {
-                is NetworkResult.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
+    )
+
+    { paddingValues ->
+
+
+
+
+
+
+
+
+
+
+            Box(modifier = Modifier.padding(paddingValues)) {
+                when (products) {
+                    is NetworkResult.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
-                }
-                is NetworkResult.Error -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = "Error: ${(products as NetworkResult.Error).message}")
+                    is NetworkResult.Error -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "Error: ${(products as NetworkResult.Error).message}")
+                        }
                     }
-                }
-                is NetworkResult.Success -> {
-                    val productData = (products as NetworkResult.Success<ProductModel>).data?.data
-                    productData?.let { product ->
-                        ShowProductDetailWithTabs(
-                            productTitle = product.name,
-                            productEnglishTitle = product.translatedName,
-                            productImage = product.images.firstOrNull()?.src.orEmpty(),
-                            productDescription = product.longDescription,
-                            productApproval = 200,
-                            videoUrl = product.videoLink,
-                            navController = navController,
-                            selectedTabIndex = selectedTabIndex,
-                            onTabSelected = { index -> selectedTabIndex = index },
-                            relatedMovies = relatedMovies,
-                            product = product // Pass the entire ProductModel object
-                        )
+                    is NetworkResult.Success -> {
+                        val productData = (products as NetworkResult.Success<ProductModel>).data?.data
+                        productData?.let { product ->
+                            ShowProductDetailWithTabs(
+                                productTitle = product.name,
+                                productEnglishTitle = product.translatedName,
+                                productImage = product.images.firstOrNull()?.src.orEmpty(),
+                                productDescription = product.longDescription,
+                                productApproval = 200,
+                                videoUrl = product.videoLink,
+                                navController = navController,
+                                selectedTabIndex = selectedTabIndex,
+                                onTabSelected = { index -> selectedTabIndex = index },
+                                relatedMovies = relatedMovies,
+                                product = product // Pass the entire ProductModel object
+                            )
+                        }
                     }
                 }
             }
-        }
+
+
+
+
+
+
+
+
     }
 }
 
@@ -133,10 +156,22 @@ fun ShowProductDetailWithTabs(
     selectedTabIndex: Int,
     onTabSelected: (Int) -> Unit,
     relatedMovies: NetworkResult<MovieResult>,
-    product: ProductModel.MovieInfo
+    product: ProductModel.MovieInfo,
+
 )
 {
-    Column {
+    val scrollState = rememberScrollState() // Remember scroll state
+
+    Column(
+
+      //  modifier = Modifier.verticalScroll(scrollState)
+
+
+
+    ) {
+
+
+
         ProductBanner(
             productImage = productImage,
             productTitle = productTitle,
