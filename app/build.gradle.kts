@@ -105,6 +105,11 @@ dependencies {
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
 
+// Ui Controller
+
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+
+
 // Pagination 3
 
     implementation (libs.androidx.paging.compose)

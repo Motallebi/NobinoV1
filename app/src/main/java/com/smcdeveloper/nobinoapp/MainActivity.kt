@@ -43,6 +43,8 @@ import com.smcdeveloper.nobinoapp.util.LocalelUtils
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.layout.BeyondBoundsLayout
+import androidx.core.view.WindowCompat
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -52,6 +54,8 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false) // Extend content into the status bar
+
         enableEdgeToEdge()
         setContent {
             Log.d("theme", "dark theme" +isSystemInDarkTheme())
@@ -100,6 +104,9 @@ class MainActivity : ComponentActivity() {
 
 
                         topBar = {
+                            val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+                            Log.d("topbar",currentRoute.toString())
+                            if(!currentRoute.toString().startsWith("Demo_Screen"))
 
                                NobinoTop(navController)
 

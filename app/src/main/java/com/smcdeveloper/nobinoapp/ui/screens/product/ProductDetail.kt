@@ -1,3 +1,5 @@
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.TextView
@@ -28,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,9 +39,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
@@ -48,12 +53,17 @@ import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProductDetailPage(
     navController: NavHostController,
     productDetailsViewModel: ProductDetailsViewModel = hiltViewModel(),
     productId: Int
-) {
+)
+{
+
+
+
     var selectedTabIndex by remember { mutableStateOf(0) }
     val scrollState = rememberScrollState()
 
@@ -75,19 +85,16 @@ fun ProductDetailPage(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Product Detail", color = Color.White) },
-                backgroundColor = Color.Black
-            )
+
+  /*  val context = LocalContext.current
+    SideEffect {
+        (context as? Activity)?.let {
+            WindowCompat.setDecorFitsSystemWindows(it.window, false)
         }
-    )
-
-    { paddingValues ->
+    }*/
 
 
-
+    androidx.compose.material3.Scaffold(
 
 
 
@@ -95,43 +102,66 @@ fun ProductDetailPage(
 
 
 
-            Box(modifier = Modifier.padding(paddingValues)) {
-                when (products) {
-                    is NetworkResult.Loading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
+    ) {innerPadding->
+
+
+        LazyColumn(
+
+            modifier = Modifier.consumeWindowInsets(innerPadding),
+            contentPadding = innerPadding
+
+
+
+        ) {
+
+            item {
+
+
+                Box {
+
+                    when (products) {
+                        is NetworkResult.Loading -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
                         }
-                    }
-                    is NetworkResult.Error -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = "Error: ${(products as NetworkResult.Error).message}")
+
+                        is NetworkResult.Error -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = "Error: ${(products as NetworkResult.Error).message}")
+                            }
                         }
-                    }
-                    is NetworkResult.Success -> {
-                        val productData = (products as NetworkResult.Success<ProductModel>).data?.data
-                        productData?.let { product ->
-                            ShowProductDetailWithTabs(
-                                productTitle = product.name,
-                                productEnglishTitle = product.translatedName,
-                                productImage = product.images.firstOrNull()?.src.orEmpty(),
-                                productDescription = product.longDescription,
-                                productApproval = 200,
-                                videoUrl = product.videoLink,
-                                navController = navController,
-                                selectedTabIndex = selectedTabIndex,
-                                onTabSelected = { index -> selectedTabIndex = index },
-                                relatedMovies = relatedMovies,
-                                product = product // Pass the entire ProductModel object
-                            )
+
+                        is NetworkResult.Success -> {
+                            val productData = (products as NetworkResult.Success<ProductModel>).data?.data
+                            productData?.let { product ->
+                                ShowProductDetailWithTabs(
+                                    productTitle = product.name,
+                                    productEnglishTitle = product.translatedName,
+                                    productImage = product.images.firstOrNull()?.src.orEmpty(),
+                                    productDescription = product.longDescription,
+                                    productApproval = 200,
+                                    videoUrl = product.videoLink,
+                                    navController = navController,
+                                    selectedTabIndex = selectedTabIndex,
+                                    onTabSelected = { index -> selectedTabIndex = index },
+                                    relatedMovies = relatedMovies,
+                                    product = product // Pass the entire ProductModel object
+                                )
+                            }
                         }
                     }
                 }
+
+
+
+
             }
 
 
@@ -139,10 +169,78 @@ fun ProductDetailPage(
 
 
 
+        }
+
+
+
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @Composable
 fun ShowProductDetailWithTabs(
@@ -224,16 +322,16 @@ fun ShowProductDetailWithTabs(
 
 @Composable
 fun ProductDescription(description: String) {
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
-        item {
+    Column(modifier = Modifier.padding(16.dp)) {
+
             Text(
                 text = "Description",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-        }
-        item {
+
+
             Text(
                 text = description,
                 style = MaterialTheme.typography.body1,
@@ -241,7 +339,7 @@ fun ProductDescription(description: String) {
             )
         }
     }
-}
+
 
 
 
@@ -253,7 +351,7 @@ fun ProductDescriptionWithExtras(
     //screenshots: List<String>, // List of screenshot URLs
    // circularImages: List<Pair<String, String>> // List of (Actor Name, Image URL)
 ) {
-    LazyColumn(
+    Column (
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
@@ -267,15 +365,15 @@ fun ProductDescriptionWithExtras(
             )
         }*/
 
-        item{
+
 
             HtmlText(product.shortDescription)
 
 
 
-        }
 
-        item {
+
+
 
             MovieInfoRow(year = product.productionYear.toString(),
                 time = product.ages,
@@ -287,9 +385,9 @@ fun ProductDescriptionWithExtras(
 
 
 
-        }
 
-        item {
+
+
 
 
 
@@ -306,10 +404,10 @@ fun ProductDescriptionWithExtras(
 
 
         // Spacer
-        item { Spacer(modifier = Modifier.height(16.dp)) }
+       Spacer(modifier = Modifier.height(16.dp))
 
         // Row with icons and labels
-        item {
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -327,13 +425,13 @@ fun ProductDescriptionWithExtras(
                     }
                 }
             }
-        }
+
 
         // Spacer
-        item { Spacer(modifier = Modifier.height(16.dp)) }
+       Spacer(modifier = Modifier.height(16.dp))
 
         // Screenshots (LazyRow)
-        item {
+
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp)
@@ -349,13 +447,13 @@ fun ProductDescriptionWithExtras(
                     )
                 }
             }
-        }
+
 
         // Spacer
-        item { Spacer(modifier = Modifier.height(16.dp)) }
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Circular Images with Labels (LazyRow or LazyGrid)
-        item {
+
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp)
@@ -382,9 +480,9 @@ fun ProductDescriptionWithExtras(
                     }
                 }
             }
-        }
+
     }
-}
+
 
 
 
@@ -427,14 +525,61 @@ fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
                     Text(text = "No related movies available.")
                 }
             } else {
-                LazyVerticalGrid(
+
+        Column() {
+
+
+            Row()
+            {
+
+                LazyRow {
+
+                    items(movies) { movie ->
+                        RelatedMovieItem(movie)
+                    }
+
+                }
+
+
+
+            }
+
+           /* Row()
+            {
+
+                LazyRow {
+
+                    items(movies) { movie ->
+                        RelatedMovieItem(movie)
+                    }
+
+                }
+
+
+
+            }
+*/
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+               /* LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(8.dp)
                 ) {
                     items(movies) { movie ->
                         RelatedMovieItem(movie)
                     }
-                }
+                }*/
             }
         }
     }

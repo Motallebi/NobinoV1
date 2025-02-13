@@ -1,37 +1,39 @@
 package com.smcdeveloper.nobinoapp.ui.screens.series
 
-import CategoryChipsRow
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
-import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
-import com.smcdeveloper.nobinoapp.viewmodel.SeriesViewModel
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 @Composable
@@ -41,6 +43,8 @@ fun SeriesDetailPage(
     productId: Int
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
+
+
 
     // Fetch product details when the page loads
     LaunchedEffect(productId) {
@@ -69,7 +73,17 @@ fun SeriesDetailPage(
 
 
 
-    val relatedMovies by productDetailsViewModel.relatedSeries.collectAsState()
+
+    val episodes by productDetailsViewModel.episodes.collectAsState()
+
+
+   // val episodes by productDetailsViewModel.
+
+
+
+
+    // val episodes=relatedMovies
+
 
     Scaffold(
         topBar = {
@@ -119,7 +133,7 @@ fun SeriesDetailPage(
                                 Log.d("ProductDetailPage", "Tab selected: $index")
                                 selectedTabIndex = index
                             },
-                            relatedMovies = relatedMovies,
+                            relatedMovies = episodes,
                             productDetailsViewModel=productDetailsViewModel,
                             productId=productId
                         )
@@ -146,52 +160,87 @@ fun ShowProductDetailWithTabs(
     productId:Int
 
 ) {
-    Column {
-        ProductBanner(
-            productImage = productImage,
-            productTitle = productTitle,
-            productEnglishTitle = productEnglishTitle,
-            productApproval = productApproval,
-            videoUrl = videoUrl,
-            navController = navController
-        )
+    LazyColumn()  {
 
-        Spacer(modifier = Modifier.height(16.dp))
+        item {
+            ProductBanner(
+                productImage = productImage,
+                productTitle = productTitle,
+                productEnglishTitle = productEnglishTitle,
+                productApproval = productApproval,
+                videoUrl = videoUrl,
+                navController = navController
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+        }
+
+
 
         if (videoUrl.isNullOrEmpty()) {
-            Text(
-                text = "Video is not available for this product.",
-                color = Color.Red,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(16.dp)
-            )
+            item {
+                Text(
+                    text = "Video is not available for this product.",
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
         }
 
         // Tabs
         val tabTitles = listOf("Description", "Episodes","RelatedMovies")
-        TabRow(selectedTabIndex = selectedTabIndex) {
-            tabTitles.forEachIndexed { index, title ->
-                Tab(
-                    selected = selectedTabIndex == index,
-                    onClick = { onTabSelected(index) },
-                    text = { Text(text = title) }
-                )
+
+        item {
+
+
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                tabTitles.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { onTabSelected(index) },
+                        text = { Text(text = title) }
+                    )
+                }
             }
+
+
+            when (selectedTabIndex) {
+                0 -> ProductDescription(description = productDescription)
+                1 -> Episodes(
+                    productDetailsViewModel = productDetailsViewModel,
+                    productId = productId,
+
+
+                    relatedMovies = relatedMovies,
+                    onSessionSelected = { sessionIndex  ->
+
+                        productDetailsViewModel.getSeriesEpisodes4(productId,sessionIndex)
+
+
+                    },
+                    navController = navController
+
+
+
+                )
+                3-> RelatedMovies()
+            }
+
+
+
+
+
+
+
         }
+
+
 
         // Tab Content
-        when (selectedTabIndex) {
-            0 -> ProductDescription(description = productDescription)
-            1 -> Episodes(
-                relatedMovies = relatedMovies,
-                onSessionSelected = { sessionIndex  ->
 
-                    productDetailsViewModel.getSeriesEpisodes2(productId,sessionIndex)
-
-                }
-            )
-            3-> RelatedMovies()
-        }
     }
 }
 
@@ -203,7 +252,8 @@ fun ProductBanner(
     productEnglishTitle: String,
     productApproval: Int,
     videoUrl: String?,
-    navController: NavHostController
+    navController: NavHostController,
+   // productId:Int
 ) {
     val isVideoAvailable = !videoUrl.isNullOrEmpty()
 
@@ -225,10 +275,6 @@ fun ProductBanner(
                 .padding(16.dp),
             verticalArrangement = Arrangement.Bottom
         ) {
-
-
-            CategoryChipsRow()
-
             Text(
                 text = "$productTitle ($productEnglishTitle)",
                 color = Color.White,
@@ -401,7 +447,11 @@ fun Episodes(
 @Composable
 fun Episodes(
     relatedMovies: NetworkResult<MovieResult>, // Current state of episodes/movies
-    onSessionSelected: (Int) -> Unit // Callback when a session is selected
+    onSessionSelected: (Int) -> Unit ,// Callback when a session is selected
+    productDetailsViewModel: ProductDetailsViewModel,
+    productId:Int,
+    navController: NavHostController
+
 ) {
     when (relatedMovies) {
         is NetworkResult.Loading -> {
@@ -428,6 +478,8 @@ fun Episodes(
             // Process and display the list of sessions and episodes
             val sessions = relatedMovies.data?.movieInfo?.items.orEmpty().filterNotNull()
 
+
+
             if (sessions.isEmpty()) {
                 // Show a message if no sessions are found
                 Box(
@@ -438,10 +490,29 @@ fun Episodes(
                 }
             } else {
                 // Display sessions with a dropdown and list of episodes
-                EpisodesWithDropdown(
+
+/*
+                CustomComboBoxRTL1(
+                 relatedMovies = sessions,
+                    onSessionSelected=onSessionSelected
+
+
+
+
+                )*/
+
+
+
+                EpisodesWithDropdown3(
+                    productId = productId,
                     sessions = sessions,
-                    onSessionSelected = onSessionSelected
+                    viewModel = productDetailsViewModel,
+                    navController = navController
+
+                   // onSessionSelected = onSessionSelected
                 )
+
+
             }
         }
     }
@@ -453,7 +524,8 @@ fun Episodes(
 @Composable
 fun EpisodesWithDropdown(
     sessions: List<MovieResult.DataMovie.Item>, // List of sessions
-    onSessionSelected: (Int) -> Unit // Callback when a session is selected
+    onSessionSelected: (Int) -> Unit, // Callback when a session is selected
+    navController: NavHostController
 ) {
     var selectedSessionIndex by remember { mutableStateOf(0) } // Tracks the selected session index
 
@@ -471,21 +543,231 @@ fun EpisodesWithDropdown(
         Spacer(modifier = Modifier.height(16.dp))
 
         // LazyColumn for displaying episodes of the selected session
-        LazyColumn(
+        Column (
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
+           // contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        )
+        {
+            //
+            // val selectedSession = sessions[selectedSessionIndex]
+            sessions.forEach { episode ->
+
+                    //EpisodeItem(episode) // Display each episode
+
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+@Composable
+fun EpisodesWithDropdown2(
+    productId: Int, // Product ID needed for API call
+    sessions: List<MovieResult.DataMovie.Item>, // List of sessions
+    viewModel: ProductDetailsViewModel // ViewModel reference
+) {
+    var selectedSessionIndex by remember { mutableStateOf(0) } // Tracks the selected session index
+
+    // ✅ Observe episodes from ViewModel
+    val episodes by viewModel.episodes1.collectAsState()
+
+   episodes.data?.forEach {
+       Log.d("episode","episodes ${it.name}" )
+
+   }
+
+    Log.d("episode","episodes ")
+
+
+
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Dropdown for selecting sessions
+        SessionDropdownMenu(
+            sessions = sessions,
+            selectedSession = selectedSessionIndex,
+            onSessionSelected = { index ->
+                selectedSessionIndex = index // Update selected session
+                viewModel.getSeriesEpisodes4(productId, index) // Fetch episodes
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // ✅ Show episodes for the selected session
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        )
+        {
+
+            episodes.data?.forEach { episode->
+
+
+                  //  EpisodeItem(episode, navController = )
+
+
+
+            }
+
+
+
+
+
+        }
+    }
+}
+
+
+
+
+
+
+@Composable
+fun EpisodesWithDropdown3(
+
+
+    productId: Int, // Product ID needed for API call
+    sessions: List<MovieResult.DataMovie.Item>, // List of sessions
+    viewModel: ProductDetailsViewModel, // ViewModel reference
+    navController: NavHostController
+)
+ {
+    var selectedSessionIndex by remember { mutableStateOf(0) } // Tracks the selected session index
+
+    // ✅ Observe episodes from ViewModel
+    val episodes by viewModel.episodes1.collectAsState()
+
+    episodes.data?.forEach {
+        Log.d("episode","episodes ${it.name}" )
+
+    }
+
+    Log.d("episode","episodes ")
+
+
+
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Dropdown for selecting sessions
+        CustomComboBoxRTL1(
+            relatedMovies = sessions,
+            selectedSessionIndex = selectedSessionIndex,
+            onSessionSelected = { index ->
+                selectedSessionIndex = index // Update selected session
+                viewModel.getSeriesEpisodes4(productId, index) // Fetch episodes
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // ✅ Show episodes for the selected session
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        )
+        {
+
+            episodes.data?.forEach { episode->
+
+
+                EpisodeItem(episode,navController)
+
+
+
+            }
+
+
+
+
+
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Composable
+fun EpisodesWithDropdown1(
+    sessions: List<MovieResult.DataMovie.Item>, // List of sessions
+    onSessionSelected: (Int) -> Unit // Callback when a session is selected
+
+
+
+
+
+
+
+
+
+) {
+    var selectedSessionIndex by remember { mutableStateOf(0) } // Tracks the selected session index
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Dropdown for selecting sessions
+        CustomComboBoxRTL1 (
+            relatedMovies = sessions,
+            selectedSessionIndex= selectedSessionIndex,
+            onSessionSelected = { index ->
+                selectedSessionIndex = index // Update the selected session index
+                onSessionSelected(index) // Notify the parent with the selected index
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // LazyColumn for displaying episodes of the selected session
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            // contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             //
             // val selectedSession = sessions[selectedSessionIndex]
             sessions.forEach { episode ->
-                item {
-                    EpisodeItem(episode) // Display each episode
-                }
+
+              //  EpisodeItem(episode) // Display each episode
+
             }
         }
     }
 }
+
+
+
+
+
+
+
 
 
 
@@ -495,8 +777,18 @@ fun SessionDropdownMenu(
     sessions: List<MovieResult.DataMovie.Item>, // List of all sessions
     selectedSession: Int, // Currently selected session index
     onSessionSelected: (Int) -> Unit // Callback to notify the selected session index
+
+
+
+
+
+
+
+
+
 ) {
     var expanded by remember { mutableStateOf(false) } // Tracks dropdown expanded state
+    val sessions1 = remember { sessions.filter { it.category.toString().equals("SEASON")} } // Replace isSession
 
     Box(
         modifier = Modifier
@@ -518,19 +810,19 @@ fun SessionDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            sessions.forEachIndexed { index, session ->
+            sessions1.forEachIndexed { index, session ->
                 DropdownMenuItem(
 
                     onClick = {
                         expanded = false // Close the dropdown
                         onSessionSelected(index) // Pass the selected index
                     },
-                   content = {
-                       Text(session.name ?: "Session ${index + 1}")
+                    content = {
+                        Text(session.name ?: "Session ${index + 1}")
 
 
 
-                   }
+                    }
 
                 )
             }
@@ -640,12 +932,26 @@ fun SessionDropdownMenu(
 }*/
 
 @Composable
-fun EpisodeItem(episode: MovieResult.DataMovie.Item) {
+fun EpisodeItem(episode: MovieResult.DataMovie.Item,
+      navController: NavHostController
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable {
+
+                navController.navigate(Screen.ProductDetails.withArgs(episode.id.toString()))
+
+
+
+            }
+
+        ,
+
+
+
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -659,6 +965,13 @@ fun EpisodeItem(episode: MovieResult.DataMovie.Item) {
         Spacer(modifier = Modifier.width(8.dp))
 
         Column(modifier = Modifier.weight(1f)) {
+
+
+
+
+
+
+
             Text(
                 text = episode.name ?: "Untitled Episode",
                 fontWeight = FontWeight.Bold,
@@ -682,5 +995,304 @@ fun EpisodeItem(episode: MovieResult.DataMovie.Item) {
         )
     }
 }
+
+
+
+
+
+@Composable
+fun CustomComboBoxRTL(
+
+    option:List<MovieResult.DataMovie.Item>,
+   // sessions: List<MovieResult.DataMovie.Item>, // List of sessions
+    onSessionSelected: (Int) -> Unit // Callback when a session is selecte
+
+
+
+)
+
+{
+
+
+
+
+
+    var expanded by remember { mutableStateOf(false) }
+   // var selectedOption by remember { mutableStateOf("") }
+    var selectedSession by remember { mutableStateOf("") }
+    val sessions = remember {
+        option.filter {
+
+            it.category.equals("SEASON")
+
+        }
+    }
+
+
+
+
+    sessions.forEach {
+        Log.d("selected","options.."+it.name)
+
+    }
+
+
+
+
+
+
+
+
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl)
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            var boxWidth by remember { mutableStateOf(0) }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Red, shape = RoundedCornerShape(16.dp))
+                    .onGloballyPositioned { coordinates ->
+                        boxWidth = coordinates.size.width
+                    }
+                    .clickable { expanded = !expanded }
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    androidx.compose.material3.Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "Dropdown Icon",
+                        tint = Color.White
+                    )
+                    androidx.compose.material3.Text(
+                        text = if (selectedSession.isEmpty()) "Select an option" else selectedSession,
+                        color = Color.White
+                    )
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            androidx.compose.material3.DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) { boxWidth.toDp() })
+                    .background(Color.Red, shape = RoundedCornerShape(16.dp))
+                    .align(Alignment.TopEnd),
+                offset = DpOffset(x = 0.dp, y = 0.dp)
+            ) {
+                sessions.forEachIndexed { index,session  ->
+                    androidx.compose.material3.DropdownMenuItem(
+                        {
+                            androidx.compose.material3.Text(
+                                text = session .name.toString(),
+                                color = Color.White,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 8.dp),
+                                textAlign = TextAlign.End
+                            )
+                        },
+                        onClick = {
+
+
+
+
+                            selectedSession = session.name.toString()
+
+                            Log.d("selected","selected option is  $selectedSession")
+
+
+                            expanded = false
+                            onSessionSelected(index) // Pass the selected index
+
+
+
+
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    )
+                    {
+
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+
+
+                }
+            }
+        }
+
+    }
+
+
+
+
+
+
+}
+
+
+@Composable
+fun CustomComboBoxRTL1(
+    relatedMovies: List<MovieResult.DataMovie.Item>, // Raw API data
+    onSessionSelected: (Int) -> Unit,
+    selectedSessionIndex: Int, // Currently selected session index
+
+
+
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedSession by remember { mutableStateOf("") }
+
+
+    var boxWidth by remember { mutableStateOf(0) }
+
+   // var selectedSessionIndex by remember { mutableStateOf(0) } // Tracks the selected session index
+
+
+
+    // ✅ Filter only sessions from relatedMovies (first API call)
+    val sessions = remember { relatedMovies.filter { it.category.toString().equals("SEASON")} } // Replace isSession with your session identifier
+
+   // val  sessions=relatedMovies
+
+
+    sessions.forEach {
+
+
+
+
+
+    }
+
+
+
+
+
+
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Red, shape = RoundedCornerShape(16.dp))
+                    .onGloballyPositioned { coordinates -> boxWidth = coordinates.size.width }
+                    .clickable { expanded = !expanded }
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "Dropdown Icon",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = if (selectedSession.isEmpty()) "Select a session" else selectedSession,
+                        color = Color.White
+                    )
+                }
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) { boxWidth.toDp() })
+                    .background(Color.Red, shape = RoundedCornerShape(16.dp))
+            ) {
+                sessions.forEachIndexed { index, session ->
+                    DropdownMenuItem(
+                       content =  {
+
+                            androidx.compose.material3.Text(
+                                //text = session .name.toString(),
+                                text = " فصل   ${index+1} ",
+
+                                color = Color.White,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 8.dp),
+                                textAlign = TextAlign.End
+                            )
+                        },
+
+
+
+                        onClick = {
+                            //selectedSession = session.name.toString()
+                            selectedSession =    " فصل  ${index+1} "
+
+
+                            expanded = false
+
+
+
+                           onSessionSelected(index)
+
+                           // session.id?.let { onSessionSelected(it) } // Send session ID to fetch episodes
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+        }
+    }
+}
+
+
 
 

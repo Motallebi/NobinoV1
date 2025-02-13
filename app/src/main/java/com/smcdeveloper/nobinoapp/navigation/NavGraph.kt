@@ -21,6 +21,7 @@ import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.TestScreen
+import com.smcdeveloper.nobinoapp.ui.screens.bs.test1
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
 import com.smcdeveloper.nobinoapp.ui.screens.demo.BasicSearchScreen
 import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoBottomSheetSearch
@@ -206,7 +207,8 @@ fun SetupNavGraph(navController: NavHostController) {
             //DemoBottomSheetSearch(navController = navController)
            // MovieScreen1()
            // DemoDialogSearch(navController = navController)
-            TestScreen(navController)
+            //TestScreen(navController)
+            test1()
 
 
 
