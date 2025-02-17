@@ -61,6 +61,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
 
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoMediumLight
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
@@ -440,14 +441,25 @@ fun ProfileItem(title: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+
     ) {
         Text(
             text = title,
+            style = MaterialTheme.typography.nobinoMediumLight,
+
+
             modifier = Modifier.padding(start = 16.dp),
             fontSize = 18.sp,
-            color = Color.White
+            //color = Color.White
         )
+
+        Icon(painterResource(R.drawable.arrow_left),"")
+
+
+
+
     }
 }
 

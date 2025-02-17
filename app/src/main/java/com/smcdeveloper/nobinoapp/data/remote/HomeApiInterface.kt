@@ -1,9 +1,12 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
 import com.smcdeveloper.nobinoapp.data.model.prducts.Delimiter
+import com.smcdeveloper.nobinoapp.data.model.prducts.KidsBanner
+import com.smcdeveloper.nobinoapp.data.model.prducts.KidsBannerPics
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.SpecialBanner
+
 import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
 import com.smcdeveloper.nobinoapp.data.model.search.Genre
@@ -42,6 +45,27 @@ interface HomeApiInterface {
 
     ): Response<MovieResult>
 
+
+
+
+    @GET("api/products")
+    suspend fun getMoviesForKids(
+        @Query("size") size: Int = 20,
+        @Query("category") category: String = "",
+        @Query("tags") tags: List<String?> = emptyList(),
+        @Query("offset") offset: Int = 18,
+        @Query("countries") countries: String = "",
+        @Query("name") name: String = ""
+
+    ): Response<MovieResult>
+
+
+
+
+
+
+
+
     @GET("api/products")
     suspend fun getMoviesWithPagesTest(
         @Query("size") size: Int = 20,
@@ -53,6 +77,27 @@ interface HomeApiInterface {
 
     @GET("api/settings/mainPage/sliders")
     suspend fun getSlider(): Response<Slider>
+
+
+    @GET("api/settings/customPage/sliders/{id}")
+    suspend fun getSliderById(
+        @Path("id") id:String
+
+
+    ): Response<Slider>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @GET("movies/{id}")
@@ -87,12 +132,40 @@ interface HomeApiInterface {
     ): Response<CountryInfo>
 
 
-    @GET("api/settings/mainPage/normalDelimiters/{id}")
-    suspend fun getDelimiter(
+    @GET("/api/settings/mainPage/bigDelimiters/{id}")
+    suspend fun getKidsBanners(
       @Path("id") id :Int
 
 
+    ):Response<KidsBanner>
+
+
+
+
+    @GET("/api/settings/mainPage/picMenus")
+    suspend fun getKidsPics(
+
+
+
+    ):Response<KidsBannerPics>
+
+
+
+
+
+
+
+
+
+
+
+    @GET("api/settings/mainPage/normalDelimiters/{id}")
+    suspend fun getDelimiter(
+        @Path("id") id :Int
+
+
     ):Response<Delimiter>
+
 
 
 

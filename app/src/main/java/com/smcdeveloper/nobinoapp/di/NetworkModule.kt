@@ -30,7 +30,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpWithoutAuth(): OkHttpClient = OkHttpClient.Builder()
+    fun  provideOkHttpWithoutAuth(): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(TIMEOUT_IN_SECOND, TimeUnit.SECONDS)
         .readTimeout(TIMEOUT_IN_SECOND, TimeUnit.SECONDS)
         .writeTimeout(TIMEOUT_IN_SECOND, TimeUnit.SECONDS)
@@ -38,6 +38,7 @@ object NetworkModule {
             val request = chain.request().newBuilder()
 
             chain.proceed(request.build())
+
         }
         .addInterceptor(interceptor())
         .build()

@@ -59,7 +59,7 @@ fun NobinoTop(navController: NavHostController) {
                                     "فیلم" -> Screen.Movies.route
                                     "سریال" -> Screen.Series.route
                                     "آموزش" -> Screen.Training.route
-                                    "کودک" -> Screen.DemoScreen.route
+                                    "کودک" -> Screen.Kids.route
                                     else -> Screen.Home.route
                                 }
                             )

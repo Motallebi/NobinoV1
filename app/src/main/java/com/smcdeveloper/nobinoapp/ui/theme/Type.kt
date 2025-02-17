@@ -55,11 +55,27 @@ val Typography.nobinoMedium: TextStyle
     get() = TextStyle(
         fontFamily = nobino_fonts,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp,
+        fontSize =16.sp,
         color = Color.White,
 
 
     )
+
+val Typography.nobinoMediumLight: TextStyle
+    @Composable
+    get() = TextStyle(
+        fontFamily = nobino_fonts,
+        fontWeight = FontWeight.Bold,
+        fontSize =16.sp,
+        color = Color.White.copy(alpha =0.5f),
+
+
+        )
+
+
+
+
+
 
 val Typography.nobinoSmall: TextStyle
     @Composable

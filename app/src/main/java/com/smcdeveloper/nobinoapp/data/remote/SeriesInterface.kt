@@ -2,6 +2,7 @@ package com.smcdeveloper.nobinoapp.data.remote
 
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.Section
+import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -38,6 +39,18 @@ interface SeriesInterface {
 
 
         ):Response<Section>
+
+
+
+
+
+
+    @GET("api/settings/customPage/sliders/{id}")
+    suspend fun getSliderById(
+        @Path("id") id:String
+
+
+    ): Response<Slider>
 
 
 

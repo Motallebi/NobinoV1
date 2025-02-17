@@ -45,7 +45,8 @@ fun ProductScreen(
     viewModel: HomeViewModel = hiltViewModel(),
   //  tag1:List<String>,
     tag:String,
-    categoryName:String
+    categoryName:String,
+    categoryTitle:String
 
 
 
@@ -61,9 +62,10 @@ fun ProductScreen(
 
 {
     Log.d("ProductScreen","tag is $tag" )
+    Log.d("ProductScreen","category is $categoryTitle" )
 
 
-    Product(navController,viewModel,tag,categoryName)
+    Product(navController,viewModel,tag,categoryName,categoryTitle)
     //ShowContent1()
 
 
@@ -104,7 +106,9 @@ fun ProductScreen(
 
 @Composable
 fun Product(navController: NavHostController,
-            viewModel: HomeViewModel,tag: String,categoryName: String
+            viewModel: HomeViewModel,tag: String,categoryName: String,
+            categoryTitle: String
+
 
 
 
@@ -130,6 +134,8 @@ fun Product(navController: NavHostController,
 
     val products = viewModel.getMoviesByCategory(tag=tag,categoryName=categoryName, countries = "", name = "", size = 20).collectAsLazyPagingItems()
 
+   // products.loadState.mediator
+
 
 
   //  val movies = viewModel.getMoviesByCategory(tag).collectAsLazyPagingItems()
@@ -137,7 +143,7 @@ fun Product(navController: NavHostController,
    // val items= lazyPagingItems<MovieResult.DataMovie.Item>()
 
 
-    Text(tag,
+    Text(categoryTitle,
         style = MaterialTheme.typography.nobinoSmall,
         modifier = Modifier.padding(top = 5.dp)
             .background(Color.Red)
@@ -145,6 +151,9 @@ fun Product(navController: NavHostController,
 
 
     )
+
+    Text(categoryName)
+
 
     Box(modifier = Modifier.fillMaxSize()
        // .wrapContentSize(unbounded = true)
@@ -159,7 +168,7 @@ fun Product(navController: NavHostController,
 
     )
     {
-        Text("Product Screen..........")
+      //  Text("Product Screen..........")
 
 
 

@@ -1,7 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.repository
 
 import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.smcdeveloper.nobinoapp.data.model.Category
 import com.smcdeveloper.nobinoapp.data.model.prducts.Delimiter
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
@@ -24,7 +23,6 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseApiResponse2() {
@@ -672,6 +670,66 @@ data class MovieParams(
         }.awaitAll().filterNotNull() // Filter out null results
     }
 
+    suspend fun fetchMovieDisplayDataForkids(tagIds: List<Int>): List<MovieDisplayData> = coroutineScope {
+        Log.d(NOBINO_LOG_TAG, "fetchMovieDisplayData: Started with tagIds: $tagIds")
+
+        tagIds.map { id ->
+            async {
+                Log.d(NOBINO_LOG_TAG, "Processing tag ID: $id")
+                val movieCatResult = getMoviesTag(id)
+
+                if (movieCatResult is NetworkResult.Success) {
+                    Log.d(NOBINO_LOG_TAG, "fetchMovieDisplayData: Success for tag ID: $id")
+
+                    val movieCatData = movieCatResult.data?.movieCatData
+                    Log.d(NOBINO_LOG_TAG, "MovieCatData for tag ID $id: $movieCatData")
+
+                    val tags = movieCatData?.tags ?: emptyList()
+                    Log.d(NOBINO_LOG_TAG, "Tags for tag ID $id: $tags")
+
+                    // Fetch the first tag's MovieResult
+                    val firstTag = tags.firstOrNull()
+                    if (tags != null) {
+                        val movieResult = fetchMoviesByTagForkids(tags)
+
+                        if (movieResult is NetworkResult.Success) {
+                            Log.d(NOBINO_LOG_TAG, "fetchMoviesByTag2: Success for tag: $firstTag")
+
+                            val dataMovie = movieResult.data?.movieInfo
+                            val movieItems = dataMovie?.items ?: emptyList()
+
+                            movieItems.forEach {
+                                Log.d(NOBINO_LOG_TAG, "Movie Item: ${it?.name}")
+                            }
+
+                            if (movieCatData != null && movieResult.data != null) {
+                                MovieDisplayData(
+                                    movieCat = movieCatData,
+                                    movieResult = movieResult.data,
+                                    movieItems = movieResult.data.movieInfo?.items ?: emptyList()
+
+                                    //  movieItems = movieItems
+                                )
+                            } else {
+                                null
+                            }
+                        } else {
+                            Log.d(NOBINO_LOG_TAG, "fetchMoviesByTag2: Failed for tag: $firstTag")
+                            null
+                        }
+                    } else {
+                        Log.d(NOBINO_LOG_TAG, "No valid tags found for tag ID: $id")
+                        null
+                    }
+                } else {
+                    Log.d(NOBINO_LOG_TAG, "fetchMovieDisplayData: Failed for tag ID: $id")
+                    null // Handle errors or skip
+                }
+            }
+        }.awaitAll().filterNotNull() // Filter out null results
+    }
+
+
 
 
 
@@ -721,6 +779,33 @@ data class MovieParams(
       //  return safeApiCall { api.getMovieTest(tags = tagString)
         return result
         }
+
+    suspend fun fetchMoviesByTagForkids(tag: List<String?>): NetworkResult<MovieResult> {
+      //  val tagString = tag.substring(1, tag.length - 1) // Clean up tag format
+        //Log.d(NOBINO_LOG_TAG,"SAFE API CALL----"+tagString)
+
+
+        val result: NetworkResult<MovieResult>
+
+        result = safeApiCall { api.getMoviesForKids(tags = tag)}
+
+        result.data?.movieInfo?.items?.forEach {
+
+            Log.d(NOBINO_LOG_TAG,"Movie Name is ${it?.name.toString()}")
+
+
+
+        }
+
+
+
+
+        //    Log.d(LOG_TAG,"SAFE API CALL-----${result.data?.movieInfo?.items.toString()}")
+
+
+        //  return safeApiCall { api.getMovieTest(tags = tagString)
+        return result
+    }
 
 
 

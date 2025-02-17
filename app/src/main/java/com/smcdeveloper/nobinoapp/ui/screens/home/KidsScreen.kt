@@ -5,22 +5,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smcdeveloper.nobinoapp.ui.screens.product.MovieScreenHome
+import com.smcdeveloper.nobinoapp.ui.screens.product.KidsMovieScreen
 import com.smcdeveloper.nobinoapp.util.Constants
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
+import com.smcdeveloper.nobinoapp.viewmodel.KidsViewModel
 
 @Composable
-fun HomeScreen(navController: NavHostController)
+fun KidsScreen(navController: NavHostController)
 
 {
-    Home(navController=navController)
+    Kids(navController=navController)
 
 }
 
 @Composable
-fun Home(
+fun Kids(
     navController: NavHostController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: KidsViewModel = hiltViewModel()
 )
 
 
@@ -32,8 +33,8 @@ fun Home(
         refreshDataFromServer(viewModel)
     }*/
 
-   val preferredOrder = listOf(1,2,3,4,5,6,7,8,9,10)
-  //  val preferredOrder = listOf(12,13,14,15,16,17,18,19)
+
+    val preferredOrder = listOf(12,13,14,15,16,17,18,19)
 
 
   // GetSlider()
@@ -41,7 +42,7 @@ fun Home(
 
 
    // GetSlider()
-    MovieScreenHome( viewModel,navController,preferredOrder)
+    KidsMovieScreen( viewModel,navController,preferredOrder)
 
 
 

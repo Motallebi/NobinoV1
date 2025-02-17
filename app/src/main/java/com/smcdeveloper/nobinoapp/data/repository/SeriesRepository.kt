@@ -4,6 +4,7 @@ import android.util.Log
 import com.smcdeveloper.nobinoapp.data.model.Category
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.Section
+import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.remote.SeriesInterface
@@ -51,6 +52,21 @@ class SeriesRepository @Inject constructor(private val api:SeriesInterface):Base
 
 
     }
+
+
+
+
+
+    suspend fun getSlider(): NetworkResult<Slider> =
+
+        safeApiCall {
+
+            api.getSliderById("36")
+
+
+        }
+
+
 
 
 

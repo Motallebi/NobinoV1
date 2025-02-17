@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -27,17 +28,67 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.smcdeveloper.nobinoapp.R
-
+import com.smcdeveloper.nobinoapp.ui.theme.kidsPageColor
 
 
 @Composable
 fun test1()
 {
 
-    Show1()
+   // Show1()
+    TestBackGround()
+
 
 
 }
+
+
+
+
+
+
+
+
+
+@Composable
+fun TestBackGround()
+{
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+             .background(MaterialTheme.colorScheme.kidsPageColor)
+            //.graphicsLayer(alpha = 0.2f)
+        , // Set the yellow background
+
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.kids), // Replace with your PNG file
+            contentDescription = "Transparent PNG",
+            modifier = Modifier.fillMaxSize(),
+              //  .graphicsLayer(alpha = 0.8f),
+                    // Adjust size as needed
+            contentScale = ContentScale.Fit // Keep aspect ratio
+        )
+
+        Text("test ......")
+
+
+
+    }
+
+
+
+
+
+
+}
+
+
+
+
+
+
 
 
 

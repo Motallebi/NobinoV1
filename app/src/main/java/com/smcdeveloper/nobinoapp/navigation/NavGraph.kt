@@ -37,11 +37,14 @@ import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlayScreen
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoScreen
 import com.smcdeveloper.nobinoapp.ui.screens.favorit.Favorit
 import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
+import com.smcdeveloper.nobinoapp.ui.screens.home.Kids
+import com.smcdeveloper.nobinoapp.ui.screens.home.KidsScreen
 import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
 import com.smcdeveloper.nobinoapp.ui.screens.movie.MovieScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ContactUs
 import com.smcdeveloper.nobinoapp.ui.screens.profile.EditUserInfoPage
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreen
+import com.smcdeveloper.nobinoapp.ui.screens.profile.SubscriptionConfirmationPage
 import com.smcdeveloper.nobinoapp.ui.screens.search.Search
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesDetailPage
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
@@ -266,7 +269,7 @@ fun SetupNavGraph(navController: NavHostController) {
         }*/
 
 
-        composable(route = Screen.Product.route + "/{tags}/{category}",
+        composable(route = Screen.Product.route + "/{tags}/{category}/{categoryName}",
 
 
 
@@ -280,6 +283,11 @@ fun SetupNavGraph(navController: NavHostController) {
 
                 navArgument("category") {
                     type = NavType.StringType
+                },
+                navArgument("categoryName")
+                {
+                    type=NavType.StringType
+
                 }
 
 
@@ -299,6 +307,7 @@ fun SetupNavGraph(navController: NavHostController) {
 
             val tag = it.arguments?.getString("tags")
             val category = it.arguments?.getString("category")
+            val categoryTitle =it.arguments?.getString("categoryName")
             Log.d("navg","tags is" +tag.toString())
             Log.d("navg","category is" +category.toString())
             //Log.d("navg","category is" +tagsList.toString())
@@ -307,8 +316,11 @@ fun SetupNavGraph(navController: NavHostController) {
 
             if (tag != null) {
                 ProductScreen(
-                    navController = navController, tag = tag,
-                    categoryName = category.orEmpty()
+                    navController = navController,
+                    tag = tag,
+                    categoryName = category.orEmpty(),
+                    categoryTitle = categoryTitle.orEmpty()
+
 
 
                 )
@@ -370,6 +382,12 @@ fun SetupNavGraph(navController: NavHostController) {
                 )
             }
 
+
+        }
+
+        composable(route=Screen.Kids.route)
+        {
+            KidsScreen(navController=navController)
 
         }
 
@@ -473,6 +491,52 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         }
+
+        composable(route = Screen.SubscriptionConfirmation.route+"/{id}",
+
+            arguments = listOf(navArgument("id")
+            {
+                type=NavType.StringType
+
+
+            }
+
+            )
+
+        )
+
+
+            {
+
+            val id = it.arguments?.getString("id")
+
+
+                Log.d("plan","plan id: $id")
+
+                SubscriptionConfirmationPage(navController=navController, planid = id.toString())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
 
 
 

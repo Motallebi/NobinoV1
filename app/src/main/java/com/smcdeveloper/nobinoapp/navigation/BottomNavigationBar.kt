@@ -203,7 +203,6 @@ fun BottomNavigationBar(
                                 text = item.name,
                                 textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.nobinoMedium,
-                                fontWeight = FontWeight.Normal,
                                 modifier = Modifier.padding(top = 5.dp)
                             )
 
@@ -226,7 +225,7 @@ fun BottomNavigationBar(
 
                     colors =NavigationBarItemDefaults.colors(
                        selectedIconColor = Color.Red,
-                        unselectedIconColor = Color.Gray
+                        unselectedIconColor = Color.Black
 
 
 

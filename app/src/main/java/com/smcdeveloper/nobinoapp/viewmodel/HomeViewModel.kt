@@ -470,6 +470,75 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
+    fun fetchAllDataforKids(tagIds: List<Int>) {
+
+
+        viewModelScope.launch {
+
+
+            try {
+
+                // Run both API calls in parallel
+                val sliderFlow = async { repository.getSlider() } // Returns NetworkResult<Slider>
+                //   val delimiterFlow = async { repository.getDelimiter() }
+                val productFlow = async { repository.getSpecialBannerData() }
+
+
+                val moviesFlow = async {
+
+
+                    val data =
+                        repository.fetchMovieDisplayDataForkids(
+                            tagIds) // Returns List<MovieDisplayData>
+                    NetworkResult.Success(data) as NetworkResult<List<MovieDisplayData>?> // Explicitly match required type
+
+
+                }
+
+                // Wait for both responses
+                val sliderResponse = sliderFlow.await()
+                val moviesResponse = moviesFlow.await()
+                // val delimiterResponse = delimiterFlow.await()
+                val productResponse = productFlow.await()
+
+                _slider2.emit(sliderResponse)
+                _movieDisplayData2.emit(moviesResponse)
+
+
+                // If product is fetched successfully, fetch related products using productId
+                if (productResponse is NetworkResult.Success) {
+                    _product.emit(productResponse)
+
+                    val id = productResponse.data?.bannerData?.get(0)?.product?.id
+
+
+                    val relatedProductsResponse = id?.let { repository.getRelatedEpisode(it) }
+
+                    if (relatedProductsResponse != null) {
+                        _relatedProducts.emit(relatedProductsResponse)
+                    }
+                } else {
+                    _product.emit(productResponse) // Pass error state
+
+                }
+            }
+
+            catch (e: Exception) {
+                Log.e("API_ERROR", "Error fetching data: ${e.message}")
+            }
+
+
+            // Emit values after both responses are received
+
+            //  _delimiter.emit(delimiterResponse)
+        }
+
+
+    }
+
+
+
+
     /////////
 
 

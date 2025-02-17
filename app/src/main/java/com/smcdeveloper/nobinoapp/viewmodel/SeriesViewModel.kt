@@ -43,6 +43,17 @@ class SeriesViewModel @Inject constructor(
     private val _series = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
     val series: StateFlow<NetworkResult<MovieResult>> get() = _series.asStateFlow()
 
+    private val _slider= MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
+    val slider: StateFlow<NetworkResult<Slider>> get() = _slider.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false) // 🔴 Loading state
+    val isLoading1: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+
+
+
+
+
     /**
      * Fetch sections and update the `_sections` state.
      */
@@ -55,6 +66,15 @@ class SeriesViewModel @Inject constructor(
 
 
     }
+
+
+
+
+
+
+
+
+
 
 
     fun fetchMoviesForTags(tagsList: List<List<String>>) {
@@ -206,6 +226,13 @@ class SeriesViewModel @Inject constructor(
                                 sectionTitle to items
                             }
                         }
+
+
+
+
+
+
+
                     }
 
                     // Await all results
@@ -242,6 +269,34 @@ class SeriesViewModel @Inject constructor(
 
             }
         }
+
+
+
+
+
+    fun getSlider() {
+
+        viewModelScope.launch {
+            _slider.value = NetworkResult.Loading()
+            val result = repository.getSlider()
+            _slider.value = result
+            _isLoading.value = false
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 

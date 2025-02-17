@@ -60,6 +60,16 @@ val ColorScheme.bottomBar: Color
     get() = if (isSystemInDarkTheme()) Color(0xFFFFFFFF) else Color(0xFF303235)
 
 
+val ColorScheme.kidsPageColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFFD1C5A1) else Color(0xFFD1C5A1)
+
+
+
+
+
+
+
 
 
 

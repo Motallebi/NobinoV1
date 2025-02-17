@@ -52,6 +52,9 @@ data class MovieResult(
             val images: List<Image?>?= emptyList(),
             @SerializedName("imdbCode")
             val imdbCode: String?=null,
+            @SerializedName("imdbRating")
+            val imdbRating: String?=null,
+
             @SerializedName("longDescription")
             val longDescription: String?=null,
             @SerializedName("name")

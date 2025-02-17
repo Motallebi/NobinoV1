@@ -83,7 +83,7 @@ fun  AnimatedImageSlider(
 
 
   //  val sliderState by viewModel.slider.collectAsState()
-    val pagerState = rememberPagerState(initialPage = 0, pageCount =  {15})
+    val pagerState = rememberPagerState(initialPage = 0, pageCount =  {5})
 
    // slider?.get(pagerState.currentPage)?.imageHorizontalPath.toString()
 

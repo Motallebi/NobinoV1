@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 
+
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -539,15 +542,23 @@ fun NobinoGradientCard(
     Card(
 
         modifier = Modifier
-            .width(140.dp)
+            .width(110.dp)
             .height(40.dp)
-            .padding(8.dp),
+            .padding(horizontal = 6.dp,
+                vertical = 6.dp
+
+            ),
+           // .background(brush = gradientBrush),
+
+
 
         shape = MaterialTheme.roundedShape.large,
 
 
+
         colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent // Transparent to show gradient
+            containerColor = Color.Transparent,// Transparent to show gradien
+
         ),
         //contentPadding = ButtonDefaults.ContentPadding
     )
@@ -555,22 +566,22 @@ fun NobinoGradientCard(
         Box(
             modifier = Modifier
                 .background(brush = gradientBrush)
-                .wrapContentSize()
+                //.wrapContentSize()
                 .fillMaxSize()
 
                 .height(50.dp),
 
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
 
             )
         {
             Text(
-                style = MaterialTheme.typography.nobinoLarge,
+                style = MaterialTheme.typography.nobinoMedium,
                 //  textAlign = TextAlign.Center,
 
                 text = text,
                 color = Color.Black,
-                overflow = TextOverflow.Ellipsis
+              //  overflow = TextOverflow.Ellipsis
 
 
             )
@@ -784,7 +795,7 @@ fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {
                 modifier = Modifier
                     // .fillMaxWidth()
                     .padding(start = 15.dp)
-                 //   .background(Color.LightGray),
+                //   .background(Color.LightGray),
                 //  horizontalAlignment = Alignment.End
 
                 //  verticalArrangement = Arrangement.Bottom
@@ -819,7 +830,7 @@ fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                      //  .background(Color.Cyan),
+                    //  .background(Color.Cyan),
                     //  horizontalArrangement = Arrangement.SpaceAround
 
 
@@ -852,9 +863,7 @@ fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {
 
 
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment =Alignment.CenterVertically
-
-
+                    verticalAlignment = Alignment.CenterVertically
 
 
                 )
@@ -914,7 +923,6 @@ fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {
 }
 
 
-
 @Composable
 fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
 
@@ -928,8 +936,8 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
             //  .wrapContentSize()
 
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.Green)
-           // .border(8.dp, Color(0xFF6200EE), RoundedCornerShape(12.dp)),
+          //  .background(Color.Green)
+        // .border(8.dp, Color(0xFF6200EE), RoundedCornerShape(12.dp)),
 
         //  contentAlignment = Alignment.Center
 
@@ -944,8 +952,8 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
                 contentDescription = "Movie Poster",
                 modifier = Modifier
                     // .fillMaxSize(),
-                    .width(300.dp)
-                    .height(400.dp),
+                    .width(200.dp)
+                    .height(250.dp),
 
 
                 contentScale = ContentScale.Crop,
@@ -957,181 +965,139 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
         }
 
 
+        /* Image(
+        painter = painterResource(R.drawable.m1),
+        contentDescription = "Movie Poster",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .fillMaxSize()
+    )*/
 
+        // Gradient overlay
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            /* Image(
-            painter = painterResource(R.drawable.m1),
-            contentDescription = "Movie Poster",
-            contentScale = ContentScale.Crop,
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-        )*/
 
-            // Gradient overlay
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, Color.Black),
+                        startY = 100f
+                    )
+                ),
+            contentAlignment = Alignment.BottomStart
 
-            Box(
+
+        )
+
+        {
+
+            Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    // .fillMaxWidth()
+                    .padding(start = 15.dp)
 
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black),
-                            startY = 100f
-                        )
-                    ),
-                contentAlignment = Alignment.BottomStart
+
+                   .background(Color.Red),
+                //  horizontalAlignment = Alignment.End
+
+                 verticalArrangement = Arrangement.Bottom
 
 
             )
 
             {
 
-                Column(
-                    modifier = Modifier
-                        // .fillMaxWidth()
-                        .padding(start = 15.dp)
-                    //   .background(Color.LightGray),
-                    //  horizontalAlignment = Alignment.End
+                Row(modifier = Modifier.fillMaxWidth()
+                    .padding(8.dp)
+                    .background(Color.Yellow)
+                )
+                {
 
-                    //  verticalArrangement = Arrangement.Bottom
+                    movieInfo?.name?.let {
+                        Text(
+                            it,
+                            style = MaterialTheme.typography.nobinoMedium
+
+
+                        )
+
+
+                    }
+
+
+
+                }
+
+                Row(modifier = Modifier.fillMaxWidth()
+                    .background(Color.Green),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
 
 
                 )
 
+
+
                 {
-
-                    Row()
-                    {
-
-
+                    movieInfo.imdbRating?.let {
+                        NobinoGradientCard("IMDB $it")
                     }
 
-
-                    Row()
-                    {
-                        movieInfo?.name?.let {
-                            Text(
-                                it,
-                                style = MaterialTheme.typography.nobinoMedium
-
-
-                            )
-
-
-                        }
-                    }
+                    FeatureIconsRow(isKeyboardAvailable = true, isMicAvailable = true)
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    //   NobinoGradientCard("movieName") { }
-
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-
-
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-
-
-                    )
-
-
-                    {
-
-                        movieInfo?.imdbCode?.let {
-                            NobinoGradientCard("IMDB $it")
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            Text(
-                                "icon1",
-                                color = Color.Red,
-                                fontSize = 13.sp
-
-
-                            )
-
-
-                            //  Text("MivieName")
-                            //  Text("IMDB")
-
-
-                            Text(
-                                "icon1",
-                                color = Color.Red,
-                                fontSize = 13.sp
-
-
-                            )
-
-
-                        }
-
-
-                        // Movie details
-
-
-                    }
 
 
                 }
+
+
+
+
             }
         }
     }
+}
+
+
+
+
+@Composable
+fun FeatureIconsRow(isMicAvailable: Boolean, isKeyboardAvailable: Boolean) {
+    Row(
+        modifier = Modifier
+            //.fillMaxWidth()
+            .background(Color.Cyan)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        if (isMicAvailable) {
+            Icon(
+                painter = painterResource(id = R.drawable.mic), // Replace with actual mic icon
+                contentDescription = "Microphone",
+                tint = Color.White,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+
+        if (isKeyboardAvailable) {
+            Icon(
+                painter = painterResource(id = R.drawable.sub), // Replace with actual keyboard icon
+                contentDescription = "Keyboard",
+                tint = Color.White,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+
+
+
+
 
 
 
@@ -1145,17 +1111,10 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
 
 @Composable
 fun SeriesCardtest(item: MovieResult.DataMovie.Item) {
-   // val items = seriesInfo.items?: emptyList()
+    // val items = seriesInfo.items?: emptyList()
 
 
-
-
-
-
-
-
-
-           //MovieResult.DataMovie
+    //MovieResult.DataMovie
 
     Box(
 
@@ -1177,32 +1136,25 @@ fun SeriesCardtest(item: MovieResult.DataMovie.Item) {
         // Background image
 
 
+        if (!item.images.isNullOrEmpty() && item.images[0]?.src != null) {
+            val imagePath = "https://vod.nobino.ir/vod/" + item.images[0]?.src
 
-        if (!item.images.isNullOrEmpty() && item.images[0]?.src != null)
-            {
-                val imagePath = "https://vod.nobino.ir/vod/" + item.images[0]?.src
-
-                AsyncImage(
-                    model = imagePath,
-                    contentDescription = "Movie Poster",
-                    modifier = Modifier
-                        // .fillMaxSize(),
-                        .width(300.dp)
-                        .height(400.dp),
+            AsyncImage(
+                model = imagePath,
+                contentDescription = "Movie Poster",
+                modifier = Modifier
+                    // .fillMaxSize(),
+                    .width(300.dp)
+                    .height(400.dp),
 
 
-                    contentScale = ContentScale.Crop,
-                    //   clipToBounds = true
+                contentScale = ContentScale.Crop,
+                //   clipToBounds = true
 
-                )
-
-
-
-            }
+            )
 
 
-
-
+        }
 
 
         /* Image(
@@ -1248,11 +1200,12 @@ fun SeriesCardtest(item: MovieResult.DataMovie.Item) {
                 Row()
                 {
                     item.category?.let {
-                        Text(it,
+                        Text(
+                            it,
                             style = MaterialTheme.typography.nobinoMedium
 
 
-                            )
+                        )
 
                     }
 
@@ -1311,9 +1264,7 @@ fun SeriesCardtest(item: MovieResult.DataMovie.Item) {
 
 
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment =Alignment.CenterVertically
-
-
+                    verticalAlignment = Alignment.CenterVertically
 
 
                 )
@@ -1371,13 +1322,22 @@ fun SeriesCardtest(item: MovieResult.DataMovie.Item) {
         }
     }
 }
+
 //navController.navigate(Screen.Product.withArgs(tag.tags?.get(0).toString()))
 @Composable
-fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: MovieCat.MovieCatData,category:String) {
+fun NobinoSpecialRow(
+    title: String,
+    navController: NavHostController,
+    movieCat: MovieCat.MovieCatData,
+    category: String,
+    categoryName: String
+)
+{
 
 
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(top = 10.dp)
             .background(MaterialTheme.colorScheme.background),
         horizontalArrangement = Arrangement.SpaceAround,
@@ -1388,8 +1348,9 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
     {
 
         Text(title)
-          Text("مشاهده همه",
-              style = MaterialTheme.typography.bodySmall,
+        Text(
+            "مشاهده همه",
+            style = MaterialTheme.typography.bodySmall,
 
 
             modifier = Modifier.clickable {
@@ -1399,7 +1360,10 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
                 navController.navigate(
                     Screen.Product.withArgs(
                         movieCat.tags?.get(0).toString(),
-                        category
+                        category,
+                        movieCat.title.toString(),
+
+
 
                     )
 
@@ -1407,41 +1371,35 @@ fun NobinoSpecialRow(title:String,navController: NavHostController,movieCat: Mov
                 )
 
 
-              //  navController.navigate(Screen.DemoScreen.route)
-
+                //  navController.navigate(Screen.DemoScreen.route)
 
 
             },
 
 
+            )
 
-
-
-
-
-
-        )
-
-        Icon(painterResource(R.drawable.phone_regular),"")
+        Icon(painterResource(R.drawable.phone_regular), "")
 
 
     }
 
 
-
-
-
 }
 
 
-
-
 @Composable
-fun NobinoSpecialRowBySection(title:String,navController: NavHostController,Section: Section.Data,category:String) {
+fun NobinoSpecialRowBySection(
+    title: String,
+    navController: NavHostController,
+    Section: Section.Data,
+    category: String
+) {
 
 
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(top = 10.dp)
             .background(MaterialTheme.colorScheme.background),
         horizontalArrangement = Arrangement.SpaceAround
@@ -1456,7 +1414,7 @@ fun NobinoSpecialRowBySection(title:String,navController: NavHostController,Sect
 
 
 
-        TextField("مشاهده همه",{},
+        TextField("مشاهده همه", {},
             modifier = Modifier.clickable {
                 Log.d("category", "Nobino Button Category is${category}")
                 //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
@@ -1473,32 +1431,35 @@ fun NobinoSpecialRowBySection(title:String,navController: NavHostController,Sect
 
 
             },
-           trailingIcon = { Icon(painterResource(R.drawable.mobile_icon,),
-               contentDescription = ""
+            trailingIcon = {
+                Icon(
+                    painterResource(R.drawable.mobile_icon),
+                    contentDescription = ""
 
-               ) }
-
-
+                )
+            }
 
 
         )
 
 
-
     }
-
-
-
 
 
 }
 
 @Composable
-fun NobinoSpecialRowBySection1(title:String,navController: NavHostController,section: MovieResult.DataMovie.Item,category:String) {
+fun NobinoSpecialRowBySection1(
+    title: String,
+    navController: NavHostController,
+    section: MovieResult.DataMovie.Item,
+    category: String
+) {
 
 
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(top = 10.dp)
             .background(MaterialTheme.colorScheme.background),
         horizontalArrangement = Arrangement.SpaceAround
@@ -1537,17 +1498,22 @@ fun NobinoSpecialRowBySection1(title:String,navController: NavHostController,sec
 }
 
 
-
 @Composable
-fun NobinoSpecialRowBySection2(title:String,navController: NavHostController,tags:List<String>,category:String) {
+fun NobinoSpecialRowBySection2(
+    title: String,
+    navController: NavHostController,
+    tags: List<String>,
+    category: String
+) {
 
-    Log.d("categoty","category is $category")
-    Log.d("categoty","title is $title tags is $tags")
+    Log.d("categoty", "category is $category")
+    Log.d("categoty", "title is $title tags is $tags")
 
-   // Log.d("categoty","tags are ${section.tags.toString()}")
+    // Log.d("categoty","tags are ${section.tags.toString()}")
 
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(top = 10.dp)
             .background(MaterialTheme.colorScheme.background),
         horizontalArrangement = Arrangement.SpaceAround
@@ -1562,28 +1528,29 @@ fun NobinoSpecialRowBySection2(title:String,navController: NavHostController,tag
                 Log.d("category", "Nobino Button Category is${category}")
                 //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
 
-              //  Log.d("category", "Nobino Button tag is${ section.tags?.get(0)?.id.toString()}")
-              //  Log.d("category", "Nobino Button tag is${ section.tags.toString()}")
+                //  Log.d("category", "Nobino Button tag is${ section.tags?.get(0)?.id.toString()}")
+                //  Log.d("category", "Nobino Button tag is${ section.tags.toString()}")
 
-                val tagsList =tags
-                val tags =  tagsList.joinToString(",")
-              //  Log.d("category", "Nobino Button Category is${tagsJson}")
-               // Log.d("category", "Nobino Button Category is${Uri.encode(tagsJson)}")
+                val tagsList = tags
+                val tags = tagsList.joinToString(",")
+                //  Log.d("category", "Nobino Button Category is${tagsJson}")
+                // Log.d("category", "Nobino Button Category is${Uri.encode(tagsJson)}")
 
 
-
-               // navController.navigate("section_screen?tags=${Uri.encode(tagsJson)}")
+                // navController.navigate("section_screen?tags=${Uri.encode(tagsJson)}")
 
                 navController.navigate(
 
-                        Screen.Product.withArgs2(
+                    Screen.Product.withArgs(
 
 
-                            tags,
-                            category
+                        tags,
+                        category,
+                        title
 
 
-                        )
+
+                    )
 
                 )
 
@@ -1600,22 +1567,11 @@ fun NobinoSpecialRowBySection2(title:String,navController: NavHostController,tag
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 @Composable
 fun NobinoDefultButton(
     text: String,
-    onClick: () -> Unit ) {
+    onClick: () -> Unit
+) {
 
 
     Button(
