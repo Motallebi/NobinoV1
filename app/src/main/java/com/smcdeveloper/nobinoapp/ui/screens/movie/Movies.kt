@@ -106,7 +106,7 @@ fun SectionListScreen(
 
     LaunchedEffect(Unit) {
 
-        viewModel.getSlider()
+        viewModel.getSlider("31")
 
 
 

@@ -34,6 +34,7 @@ class SeriesViewModel @Inject constructor(
         MutableStateFlow<NetworkResult<List<Section.Data>>>(NetworkResult.Loading())
     val sections: StateFlow<NetworkResult<List<Section.Data>>> = _sections
 
+
     // Holds the movies grouped by section tags
     private val _moviesByTags =
         MutableStateFlow<NetworkResult<Map<String, List<MovieResult.DataMovie.Item>>>>(NetworkResult.Loading())
@@ -274,11 +275,11 @@ class SeriesViewModel @Inject constructor(
 
 
 
-    fun getSlider() {
+    fun getSlider(sliderId:String) {
 
         viewModelScope.launch {
             _slider.value = NetworkResult.Loading()
-            val result = repository.getSlider()
+            val result = repository.getSlider(sliderId)
             _slider.value = result
             _isLoading.value = false
 

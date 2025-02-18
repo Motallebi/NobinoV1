@@ -57,11 +57,11 @@ class SeriesRepository @Inject constructor(private val api:SeriesInterface):Base
 
 
 
-    suspend fun getSlider(): NetworkResult<Slider> =
+    suspend fun getSlider(sliderId:String): NetworkResult<Slider> =
 
         safeApiCall {
 
-            api.getSliderById("36")
+            api.getSliderById(sliderId)
 
 
         }

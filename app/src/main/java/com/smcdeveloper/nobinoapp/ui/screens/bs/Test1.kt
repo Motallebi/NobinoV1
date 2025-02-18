@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.smcdeveloper.nobinoapp.R
@@ -36,7 +37,8 @@ fun test1()
 {
 
    // Show1()
-    TestBackGround()
+  //  TestBackGround()
+    MyApp()
 
 
 
@@ -53,10 +55,24 @@ fun test1()
 @Composable
 fun TestBackGround()
 {
+
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setStatusBarColor(Color.Transparent) // Make status bar transparent
+        systemUiController.setSystemBarsColor(Color.Transparent) // Apply for both status and nav bars
+      //  systemUiController.setStatusBarDarkContentEnabled(false) // false = White icons, true = Dark icons
+    }
+
+
+
+
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
              .background(MaterialTheme.colorScheme.kidsPageColor)
+            //.windowInsetsPadding(WindowInsets.ime)
             //.graphicsLayer(alpha = 0.2f)
         , // Set the yellow background
 
@@ -65,10 +81,13 @@ fun TestBackGround()
         Image(
             painter = painterResource(id = R.drawable.kids), // Replace with your PNG file
             contentDescription = "Transparent PNG",
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .height(250.dp)
+            ,
               //  .graphicsLayer(alpha = 0.8f),
                     // Adjust size as needed
-            contentScale = ContentScale.Fit // Keep aspect ratio
+
+            contentScale = ContentScale.Crop // Keep aspect ratio
         )
 
         Text("test ......")
@@ -83,6 +102,43 @@ fun TestBackGround()
 
 
 }
+
+
+
+@Composable
+fun MyApp() {
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setStatusBarColor(Color.Transparent) // Make status bar transparent
+        systemUiController.setSystemBarsColor(Color.Transparent) // Apply for both status and nav bars
+       // systemUiController.setStatusBarDarkContentEnabled(false) // false = White icons, true = Dark icons
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Background Image (Behind Status Bar)
+        Image(
+            painter = painterResource(id = R.drawable.kids),
+            contentDescription = "Top Image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .align(Alignment.TopCenter)
+        )
+
+        // Content below
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.statusBars)
+        ) {
+            Text("Your App Content", color = Color.White, fontSize = 18.sp)
+        }
+    }
+}
+
 
 
 

@@ -71,7 +71,7 @@ fun NobinoTop(navController: NavHostController) {
 
         },
 
-        colors = TopAppBarDefaults.topAppBarColors(
+       /* colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.onBackground,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
             titleContentColor = MaterialTheme.colorScheme.error
@@ -79,7 +79,7 @@ fun NobinoTop(navController: NavHostController) {
 
 
 
-        ),
+        ),*/
 
 
         )

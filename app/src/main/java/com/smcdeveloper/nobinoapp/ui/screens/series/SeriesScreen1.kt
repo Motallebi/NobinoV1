@@ -110,7 +110,7 @@ fun SectionListScreen3(
     LaunchedEffect(Unit) {
 
 
-        viewModel.getSlider()
+        viewModel.getSlider("36")
 
 
 
@@ -505,7 +505,7 @@ fun SectionListScreen(
 
     LaunchedEffect(Unit) {
 
-        viewModel.getSlider()
+        viewModel.getSlider("36")
 
 
     }
@@ -588,7 +588,7 @@ fun SectionListScreen(
 
 
 
-                    NobinoSpecialRowBySection2(sectionTitle,navController,sectionTags,"SERIES")
+
 
 
                     SectionItemWithMovies(

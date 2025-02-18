@@ -20,14 +20,14 @@ val onPrimaryContainerLight = Color(0xFF21005D)
 val secondaryLight = Color(0xFF009688)
 val onSecondaryLight = Color(0xFFFFFFFF)
 val backgroundLight = Color(0xFFFFFBFE)
-val onBackgroundLight = Color(0xFF1C1B1F)
+val onBackgroundLight = Color(0xFF4CAF50)
 
 
 
 
 
 // 🎨 Define custom dark mode colors
-val primaryDark = Color(0xFF1A1A1A)
+val primaryDark = Color(0xFFE91E63)
 val onPrimaryDark = Color(0xFF381E72)
 val primaryContainerDark = Color(0xFF4F378B)
 val onPrimaryContainerDark = Color(0xFFEADDFF)

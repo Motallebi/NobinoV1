@@ -32,6 +32,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.KidsBannerPics
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRow
+import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection2
 import com.smcdeveloper.nobinoapp.ui.screens.home.AnimatedImageSlider
 import com.smcdeveloper.nobinoapp.ui.screens.home.SliderItemByTags
 import com.smcdeveloper.nobinoapp.ui.theme.kidsPageColor
@@ -155,14 +156,16 @@ fun KidsMovieScreen(viewModel: KidsViewModel, navController: NavHostController,t
                     // Show movies after the slider
                     movies.forEachIndexed {  index, displayData ->
                         item {
-                            NobinoSpecialRow(
-                                displayData.movieCat.title.toString(),
-                                navController = navController,
-                                displayData.movieCat,
-                                "",
-                                categoryName = ""
+                            displayData.movieCat.tags?.let {
+                                NobinoSpecialRowBySection2(
+                                    displayData.movieCat.title.toString(),
+                                    navController = navController,
+                                    tags = it.filterNotNull() ,
+                                    category = ""
 
-                            )
+
+                                )
+                            }
 
                             //  TagHeader(tag = displayData.movieCat.title ?: "Unknown Category")
                         }

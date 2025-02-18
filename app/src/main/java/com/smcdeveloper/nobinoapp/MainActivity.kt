@@ -89,6 +89,9 @@ class MainActivity : ComponentActivity() {
                 {
 
                     Scaffold(
+                        //modifier = Modifier.background(Color.Red),
+
+                      //  Modifier.consumeWindowInsets(WindowInsets.statusBars),
 
 
                         bottomBar = {
@@ -119,7 +122,9 @@ class MainActivity : ComponentActivity() {
 
                            Box( modifier = Modifier
                                .fillMaxSize()
+
                                .padding(it)
+                               //.windowInsetsPadding(WindowInsets.statusBars)
                               // .consumeWindowInsets(it)
 
                               // .background(Color.Green)
