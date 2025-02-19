@@ -825,6 +825,38 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
+
+
+
+    private val _backgroundImageUrl = MutableStateFlow<String?>(null) // Holds image URL
+    val backgroundImageUrl: StateFlow<String?> = _backgroundImageUrl.asStateFlow()
+
+    fun updateBackground(url: String?) {
+        _backgroundImageUrl.value = url
+
+
+
+    }
+
+
+    fun resetBackground() {
+        _backgroundImageUrl.value = null // Reset background when returning to home
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     fun getMoviesByCategory3(
         tag: String,
         categoryName: String,

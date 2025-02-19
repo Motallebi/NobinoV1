@@ -51,12 +51,13 @@ import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
 
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
 import com.smcdeveloper.nobinoapp.ui.screens.training.TrainingScreen
+import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun SetupNavGraph(navController: NavHostController,viewModel: HomeViewModel) {
 
     NavHost(
         navController = navController,
@@ -211,7 +212,7 @@ fun SetupNavGraph(navController: NavHostController) {
            // MovieScreen1()
            // DemoDialogSearch(navController = navController)
             //TestScreen(navController)
-            test1()
+            test1(navController,viewModel)
 
 
 

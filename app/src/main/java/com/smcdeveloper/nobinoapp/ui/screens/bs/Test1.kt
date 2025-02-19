@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.bs
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import android.app.Activity
 import android.os.Build
@@ -27,22 +28,202 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.smcdeveloper.nobinoapp.R
+import com.smcdeveloper.nobinoapp.ShowMainContent
 import com.smcdeveloper.nobinoapp.ui.theme.kidsPageColor
+import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
+import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 
 
 @Composable
-fun test1()
+fun test1(navController: NavHostController,viewModel: HomeViewModel)
 {
 
-   // Show1()
+
+   // DetailsScreen(navController, viewModel )
+    Show3()
+
+   // val navController = rememberNavController()
+   // ShowMainContent(navController = navController, backgroundImageUrl = "")
+
+
+
+
+
+
+
+
+
+
+
+
+  // Show1()
   //  TestBackGround()
-    MyApp()
+   // MyApp(modifier = Modifier)
+
+  /* Text("DEMO SCREEN",
+
+   style = MaterialTheme.typography.headlineLarge
+
+   )*/
+
+
+}
+
+
+
+
+
+
+
+@Composable
+fun Show3()
+{
+
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setStatusBarColor(Color.Transparent) // Make status bar transparent
+
+        systemUiController.setSystemBarsColor(Color.Transparent) // Apply for both status and nav bars
+        //  systemUiController.setStatusBarDarkContentEnabled(false) // false = White icons, true = Dark icons
+    }
+
+      Box(modifier = Modifier.fillMaxSize()
+          //.background(Color.Red)
+        //  .padding(top = 30.dp)
+
+      )
+      {
+          Box(modifier = Modifier.background(Color.Green))
+          {
+              Image(painterResource(R.drawable.m1),"",
+                  contentScale = ContentScale.Fit
+
+
+
+              )
+
+          }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      }
+
+
+
+    Text("test")
 
 
 
 }
+
+
+
+
+
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun Show2()
+{
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setStatusBarColor(Color.Transparent) // Make status bar transparent
+
+        systemUiController.setSystemBarsColor(Color.Transparent) // Apply for both status and nav bars
+        //  systemUiController.setStatusBarDarkContentEnabled(false) // false = White icons, true = Dark icons
+    }
+
+    Scaffold(modifier = Modifier.fillMaxSize()
+        .background(Color.Green)
+
+    ) {
+
+        Text("Demooo.....")
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+@Composable
+fun DetailsScreen(navController: NavController, backgroundViewModel: HomeViewModel) {
+
+
+
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+       systemUiController.setStatusBarColor(Color.Transparent) // Make status bar transparent
+
+        systemUiController.setSystemBarsColor(Color.Transparent) // Apply for both status and nav bars
+        //  systemUiController.setStatusBarDarkContentEnabled(false) // false = White icons, true = Dark icons
+    }
+
+
+
+
+    LaunchedEffect(Unit) {
+        val imagePAth="https://vod.nobino.ir/vod/IMAGES/2024-12/11897/11897_1735633207344_IMAGES_BANNER.jpg"
+        backgroundViewModel.updateBackground(imagePAth)
+    }
+
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .background(Color.Gray),
+
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Details Screen", fontSize = 20.sp, color = Color.White)
+
+        Button(onClick = { navController.navigate("home") }) {
+            Text("Go to Home")
+        }
+    }
+}
+
+
+
+
+
 
 
 
@@ -106,20 +287,22 @@ fun TestBackGround()
 
 
 @Composable
-fun MyApp() {
-    val systemUiController = rememberSystemUiController()
-    SideEffect {
-        systemUiController.setStatusBarColor(Color.Transparent) // Make status bar transparent
-        systemUiController.setSystemBarsColor(Color.Transparent) // Apply for both status and nav bars
-       // systemUiController.setStatusBarDarkContentEnabled(false) // false = White icons, true = Dark icons
-    }
+fun MyApp(modifier: Modifier) {
 
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent, // Transparent status bar
+            darkIcons = false // false = White icons, true = Dark icons
+        )
+    }
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         // Background Image (Behind Status Bar)
         Image(
-            painter = painterResource(id = R.drawable.kids),
+            painter = painterResource(id = R.drawable.m1),
             contentDescription = "Top Image",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -129,13 +312,14 @@ fun MyApp() {
         )
 
         // Content below
-        Column(
+       /* Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.statusBars)
+                .padding(WindowInsets.statusBars.asPaddingValues()) // ✅ Correct padding
+            // Avoid status bar overlap
         ) {
             Text("Your App Content", color = Color.White, fontSize = 18.sp)
-        }
+        }*/
     }
 }
 

@@ -36,6 +36,7 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
     LaunchedEffect(true) {
         viewModel.fetchAllDataforKids(tags)
+        viewModel.resetBackground()
     }
 
 

@@ -27,7 +27,7 @@ val onBackgroundLight = Color(0xFF4CAF50)
 
 
 // 🎨 Define custom dark mode colors
-val primaryDark = Color(0xFFE91E63)
+val primaryDark = Color(0xFF0C0C0C)
 val onPrimaryDark = Color(0xFF381E72)
 val primaryContainerDark = Color(0xFF4F378B)
 val onPrimaryContainerDark = Color(0xFFEADDFF)

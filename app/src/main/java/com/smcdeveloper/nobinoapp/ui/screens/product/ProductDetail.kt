@@ -3,6 +3,7 @@ import android.app.Activity
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.TextView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollable
@@ -44,6 +45,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
@@ -53,14 +56,28 @@ import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ProductDetailPage(
     navController: NavHostController,
     productDetailsViewModel: ProductDetailsViewModel = hiltViewModel(),
     productId: Int
 )
+
+
 {
+
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setStatusBarColor(Color.Transparent) // Make status bar transparent
+
+        systemUiController.setSystemBarsColor(Color.Transparent) // Apply for both status and nav bars
+        //  systemUiController.setStatusBarDarkContentEnabled(false) // false = White icons, true = Dark icons
+    }
+
+
+
+
 
 
 
@@ -94,7 +111,7 @@ fun ProductDetailPage(
     }*/
 
 
-    androidx.compose.material3.Scaffold(
+    Scaffold(
 
 
 
@@ -102,17 +119,41 @@ fun ProductDetailPage(
 
 
 
-    ) {innerPadding->
+    )
+
+
+    {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         LazyColumn(
 
-            modifier = Modifier.consumeWindowInsets(innerPadding),
-            contentPadding = innerPadding
+          //  modifier = Modifier.consumeWindowInsets(innerPadding),
+          // contentPadding = innerPadding
+        )
 
 
 
-        ) {
+        {
 
             item {
 
@@ -170,7 +211,6 @@ fun ProductDetailPage(
 
 
         }
-
 
 
 
@@ -266,7 +306,8 @@ fun ShowProductDetailWithTabs(
 
 
 
-    ) {
+    )
+    {
 
 
 
@@ -308,7 +349,7 @@ fun ShowProductDetailWithTabs(
         when (selectedTabIndex) {
             2 -> ProductDescription(description = productDescription)
             1 -> RelatedTab(relatedMovies = relatedMovies)
-           0 -> ProductDescriptionWithExtras( product = product
+            0 -> ProductDescriptionWithExtras( product = product
 
 
             )
@@ -714,3 +755,20 @@ fun CategoryChipsRow() {
     }
 }
 
+@Composable
+fun BackgroundImage() {
+    Box(
+        Modifier.fillMaxWidth() // ✅ Make sure the Box is full width
+    )
+    {
+        Image(
+            painter = painterResource(id = R.drawable.m1), // Replace with your image
+            contentDescription = "Background Image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp) // Adjust height as needed
+                .align(Alignment.TopCenter) // ✅ Correctly place inside Box
+        )
+    }
+}

@@ -120,7 +120,7 @@ fun BottomNavigationBar(
 
     val bottomBarRoutes = setOf(
         Screen.ContactUs.route,Screen.EditProfile.route,Screen.PaymentHistory.route,Screen.BuySubscription.route,
-        Screen.Product.route,Screen.Movies.route
+        Screen.Product.route,Screen.Movies.route,Screen.DemoScreen.route
 
 
     )
@@ -155,6 +155,9 @@ fun BottomNavigationBar(
       showBottomBar =true
 
     }
+
+
+
 
 
     if (showBottomBar1) {
