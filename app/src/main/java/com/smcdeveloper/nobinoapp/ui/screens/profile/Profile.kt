@@ -2,7 +2,7 @@ package com.smcdeveloper.nobinoapp.ui.screens.profile
 
 
 import OtpValidationScreen
-import ProductDetailPage
+
 import SubscriptionSelectionPage
 import android.util.Log
 import androidx.compose.foundation.Image

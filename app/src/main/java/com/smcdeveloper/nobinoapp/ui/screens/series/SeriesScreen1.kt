@@ -588,6 +588,10 @@ fun SectionListScreen(
 
 
 
+                    NobinoSpecialRowBySection2(title = sectionTitle,navController=navController,tags=sectionTags, category ="SERIES" )
+
+
+
 
 
 

@@ -2,7 +2,7 @@ package com.smcdeveloper.nobinoapp.navigation
 
 
 import OtpValidationScreen
-import ProductDetailPage
+
 import RegisterScreen
 import SubscriptionSelectionPage
 import android.util.Log
@@ -41,6 +41,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.home.Kids
 import com.smcdeveloper.nobinoapp.ui.screens.home.KidsScreen
 import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
 import com.smcdeveloper.nobinoapp.ui.screens.movie.MovieScreen
+import com.smcdeveloper.nobinoapp.ui.screens.product.ProductDetailPage
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ContactUs
 import com.smcdeveloper.nobinoapp.ui.screens.profile.EditUserInfoPage
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreen
@@ -57,7 +58,7 @@ import java.nio.charset.StandardCharsets
 
 
 @Composable
-fun SetupNavGraph(navController: NavHostController,viewModel: HomeViewModel) {
+fun SetupNavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
@@ -212,7 +213,7 @@ fun SetupNavGraph(navController: NavHostController,viewModel: HomeViewModel) {
            // MovieScreen1()
            // DemoDialogSearch(navController = navController)
             //TestScreen(navController)
-            test1(navController,viewModel)
+           // test1(navController,viewModel)
 
 
 

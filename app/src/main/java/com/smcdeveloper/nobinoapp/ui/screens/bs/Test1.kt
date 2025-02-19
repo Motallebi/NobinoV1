@@ -35,7 +35,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.smcdeveloper.nobinoapp.R
-import com.smcdeveloper.nobinoapp.ShowMainContent
+
 import com.smcdeveloper.nobinoapp.ui.theme.kidsPageColor
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
@@ -41,7 +42,26 @@ fun SeriesDetailPage(
     navController: NavHostController,
     productDetailsViewModel: ProductDetailsViewModel = hiltViewModel(),
     productId: Int
-) {
+)
+{
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setStatusBarColor(Color.Transparent
+
+        )
+
+
+
+
+
+
+
+
+
+    }
+
+
+
     var selectedTabIndex by remember { mutableStateOf(0) }
 
 
@@ -86,13 +106,10 @@ fun SeriesDetailPage(
 
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Product Detail", color = Color.White) },
-                backgroundColor = Color.Black
-            )
-        }
-    ) { paddingValues ->
+
+    )
+
+    { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             when (products) {
                 is NetworkResult.Loading -> {
