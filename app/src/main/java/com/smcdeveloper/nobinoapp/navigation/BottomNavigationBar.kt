@@ -2,12 +2,15 @@ package com.smcdeveloper.nobinoapp.navigation
 
 import android.graphics.drawable.Icon
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -65,11 +68,6 @@ fun BottomNavigationBar(
             deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 
 
-
-
-
-
-
             ),
         BottomNavItem(
             name = "test",
@@ -78,39 +76,18 @@ fun BottomNavigationBar(
             deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 
 
-
-
-
+            ),
+        BottomNavItem(
+            name = "Demo",
+            route = Screen.DemoScreen.route,
+            selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
+            deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 
 
             ),
-                BottomNavItem(
-                name = "Demo",
-        route = Screen.DemoScreen.route,
-        selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
-        deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 
 
-
-
-
-
-
-        ),
-
-
-
-
-
-
-
-
-
-
-
-
-
-    )
+        )
 
 
     val backStackEntry = navController.currentBackStackEntryAsState()
@@ -119,24 +96,29 @@ fun BottomNavigationBar(
     var showBottomBar = backStackEntry.value?.destination?.route in items.map { it.route }
 
     val bottomBarRoutes = setOf(
-        Screen.ContactUs.route,Screen.EditProfile.route,Screen.PaymentHistory.route,Screen.BuySubscription.route,
-        Screen.Product.route,Screen.Movies.route,Screen.DemoScreen.route
+        Screen.ContactUs.route,
+        Screen.EditProfile.route,
+        Screen.PaymentHistory.route,
+        Screen.BuySubscription.route,
+        Screen.Product.route,
+        Screen.Movies.route,
+        Screen.DemoScreen.route
 
 
     )
 
 
-    val currentRoute =backStackEntry.value?.destination?.route
+    val currentRoute = backStackEntry.value?.destination?.route
 
-    Log.d("nav","Show Bottom Bar: ${showBottomBar}")
-    Log.d("nav","Current Rout is: $currentRoute")
+    Log.d("nav", "Show Bottom Bar: ${showBottomBar}")
+    Log.d("nav", "Current Rout is: $currentRoute")
 
 
     val hiddenBottomNavRoutes = setOf(
         Screen.Login.route,
         Screen.Splash.route,
         Screen.SignUp.route
-      //  Screen.FullScreenVideo.route
+        //  Screen.FullScreenVideo.route
     )
 
 
@@ -150,9 +132,8 @@ fun BottomNavigationBar(
 
         || currentRoute?.startsWith(Screen.Series.route) == true
 
-        )
-    {
-      showBottomBar =true
+    ) {
+        showBottomBar = true
 
     }
 
@@ -161,79 +142,78 @@ fun BottomNavigationBar(
 
 
     if (showBottomBar1) {
-        NavigationBar()
+        NavigationBar(
+            containerColor = Color.Black,
+            tonalElevation = 4.dp
+        )
+
+
         {
 
             items.forEachIndexed { index, item ->
 
+
                 val selected = item.route == backStackEntry.value?.destination?.route
-                NavigationBarItem(
-                    selected = selected,
-                    onClick = {onItemClick(item)},
-
-                    icon = {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally)
-                        {
-                            if(selected)
-                            {
-                                Icon(
-                                    modifier = Modifier.height(24.dp),
-                                    painter = item.selectedIcon,
-                                    contentDescription = item.name
-
-
-
-                                )
+                val backgroundColor =
+                    if (selected) Color.Black else Color.Transparent // ✅ Match container color
 
 
 
 
 
-                            }
-                            else
-                            {
-                                Icon(
-                                    modifier = Modifier.height(24.dp),
-                                    painter = item.deSelectedIcon,
-                                    contentDescription = item.name
-                                )
+                        NavigationBarItem(
+                            selected = selected,
+                            onClick = { onItemClick(item) },
+
+
+                            icon = {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally)
+                                {
+                                    if (selected) {
+                                        Icon(
+                                            modifier = Modifier.height(24.dp),
+                                            painter = item.selectedIcon,
+                                            contentDescription = item.name
+
+
+                                        )
+
+
+                                    } else {
+                                        Icon(
+                                            modifier = Modifier.height(24.dp),
+                                            painter = item.deSelectedIcon,
+                                            contentDescription = item.name
+                                        )
+
+
+                                    }
+
+                                    Text(
+                                        text = item.name,
+                                        textAlign = TextAlign.Center,
+                                        style = MaterialTheme.typography.nobinoMedium,
+                                        modifier = Modifier.padding(top = 5.dp)
+                                    )
+
+
+                                }
+
+
+                            },
+
+                            colors = NavigationBarItemDefaults.colors(
+                                indicatorColor = if (selected) Color.Black else Color.Transparent , // ✅ Match container color
+                                selectedIconColor = Color.Red,
+                                selectedTextColor = Color.Red
 
 
 
-                            }
-
-                            Text(
-                                text = item.name,
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.nobinoMedium,
-                                modifier = Modifier.padding(top = 5.dp)
-                            )
 
 
 
-
-                        }
-
-
-
-
-
-
-
-
-                    },
-
-
-
-
-                    colors =NavigationBarItemDefaults.colors(
-                       selectedIconColor = Color.Red,
-                        unselectedIconColor = Color.Black
-
-
-
-
-                    ),
+                        )
+                        )
 
 
 
@@ -242,20 +222,24 @@ fun BottomNavigationBar(
 
 
 
-
-                )
-                
-                
-                
 
 
             }
 
-
         }
-
-
     }
 
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

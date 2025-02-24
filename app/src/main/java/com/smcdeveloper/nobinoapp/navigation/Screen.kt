@@ -10,8 +10,9 @@ sealed class Screen (val route:String) {
     data object Categories : Screen("categories_screen")
     data object Series : Screen("series_screen")
     data object Movies : Screen("movies_screen")
+    data object Actors : Screen("actor_screen")
 
-    data object Favorit : Screen("favorit_screen")
+    data object Favorite : Screen("favorite_screen")
     data object Training : Screen("training_screen")
 
 

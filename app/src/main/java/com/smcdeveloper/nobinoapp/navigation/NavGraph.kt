@@ -2,57 +2,39 @@ package com.smcdeveloper.nobinoapp.navigation
 
 
 import OtpValidationScreen
-
 import RegisterScreen
 import SubscriptionSelectionPage
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
-
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.smcdeveloper.nobinoapp.R
-
-import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
+import com.smcdeveloper.nobinoapp.ui.screens.Actors.ActorScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
-import com.smcdeveloper.nobinoapp.ui.screens.bs.TestScreen
-import com.smcdeveloper.nobinoapp.ui.screens.bs.test1
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
-import com.smcdeveloper.nobinoapp.ui.screens.demo.BasicSearchScreen
 import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoBottomSheetSearch
 import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoDialogSearch
-
-import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoModalSearch
-import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoScreen
-import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoSearch
-import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoSearchWithModal
-import com.smcdeveloper.nobinoapp.ui.screens.demo.MovieScreen1
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoDemo
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlayScreen
-import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoScreen
-import com.smcdeveloper.nobinoapp.ui.screens.favorit.Favorit
+import com.smcdeveloper.nobinoapp.ui.screens.favorit.FavoriteScreen
 import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
-import com.smcdeveloper.nobinoapp.ui.screens.home.Kids
 import com.smcdeveloper.nobinoapp.ui.screens.home.KidsScreen
 import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
 import com.smcdeveloper.nobinoapp.ui.screens.movie.MovieScreen
 import com.smcdeveloper.nobinoapp.ui.screens.product.ProductDetailPage
+import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ContactUs
 import com.smcdeveloper.nobinoapp.ui.screens.profile.EditUserInfoPage
+import com.smcdeveloper.nobinoapp.ui.screens.profile.PaymentHistoryPage
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.SubscriptionConfirmationPage
 import com.smcdeveloper.nobinoapp.ui.screens.search.Search
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesDetailPage
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
-
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
 import com.smcdeveloper.nobinoapp.ui.screens.training.TrainingScreen
-import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -62,7 +44,7 @@ fun SetupNavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Splash.route
 
 
     )
@@ -104,8 +86,8 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         }
-        composable(route = Screen.Favorit.route) {
-            Favorit(navController = navController)
+        composable(route = Screen.Favorite.route) {
+            FavoriteScreen(navController = navController)
 
 
         }
@@ -209,11 +191,13 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         composable(route = Screen.DemoScreen.route) {
-            //DemoBottomSheetSearch(navController = navController)
+            DemoBottomSheetSearch(navController = navController)
            // MovieScreen1()
            // DemoDialogSearch(navController = navController)
             //TestScreen(navController)
            // test1(navController,viewModel)
+           // FavoriteScreen(navController)
+           // Search(navController)
 
 
 
@@ -487,6 +471,53 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         }
+
+
+        composable(route = Screen.Actors.route+"/{id}",
+
+            arguments = listOf(navArgument("id")
+            {
+                type=NavType.IntType
+
+
+            }
+
+
+
+
+
+        )
+        )
+
+            {
+
+                val id = it.arguments?.getInt("id")
+
+
+
+
+
+                if (id != null) {
+                    ActorScreen(navController = navController, actorId = id)
+                }
+
+
+        }
+
+
+
+
+        composable(route = Screen.PaymentHistory.route) {
+            PaymentHistoryPage(navController = navController)
+
+
+        }
+
+
+
+
+
+
 
         composable(route = Screen.Training.route) {
             TrainingScreen(navController = navController)

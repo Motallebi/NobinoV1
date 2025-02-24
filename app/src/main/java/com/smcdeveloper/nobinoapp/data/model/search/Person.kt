@@ -13,3 +13,11 @@ data class Person(
 
 
 }
+
+
+data class Actor(
+    @SerializedName("data")
+    val personInfo: List<PersonInfo>?,
+    @SerializedName("total")
+    val total: Int
+)

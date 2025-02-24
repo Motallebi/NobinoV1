@@ -51,6 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.dataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -89,7 +90,7 @@ fun ProfileScreen(
 {
 
     //profileViewModel.updateState(ProfileScreenState.LOGIN_STATE)
-    ProfilePage(navController = navController)
+    ProfilePage(navController = navController, dataStore = dataStore)
 
 
 
@@ -229,7 +230,7 @@ fun ProfilePagePreview() {
 @Composable
 fun ProfilePage(navController: NavHostController,
          // viewModel: ProfileViewModel,
-          //dataStore:DataStoreViewModel
+          dataStore:DataStoreViewModel
 
 
 
@@ -255,7 +256,7 @@ fun ProfilePage(navController: NavHostController,
     ) {
         ProfileSection()
         Divider(color = Color.Gray, thickness = 1.dp)
-        ProfileScreen1(navController = navController)
+        ProfileScreen1(navController = navController,dataStore=dataStore)
     }
 }
 
@@ -381,7 +382,7 @@ fun ProfileItem1(title: String, onClick: () -> Unit) {
 
 
 @Composable
-fun ProfileScreen1(navController: NavController) {
+fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel) {
     val context = LocalContext.current
 
     val profileItems = mapOf(
@@ -391,14 +392,15 @@ fun ProfileScreen1(navController: NavController) {
         stringResource(id = R.string.faq) to Screen.FAQ,
         stringResource(id = R.string.terms_conditions) to Screen.TermsAndConditions,
         stringResource(id = R.string.contact_us) to Screen.ContactUs,
-        stringResource(id = R.string.logout) to Screen.Logout
+
     )
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-    ) {
+    )
+    {
         profileItems.forEach { (title, screen) ->
             item {
                 ProfileItem(title = title) {
@@ -409,6 +411,38 @@ fun ProfileScreen1(navController: NavController) {
 
                 }
             }
+
+
+
+
+
+
+
+
+
+
+            }
+
+        item{
+            ProfileItem(stringResource(id = R.string.logout)) {
+
+
+                dataStore.saveUserToken("")
+                dataStore.saveUserFirstName("")
+                dataStore.saveUserPhone("")
+                dataStore.saveUserLastName("")
+                dataStore.saveUserLoginStatus(false)
+
+
+
+
+
+
+
+            }
+
+
+
         }
     }
 }

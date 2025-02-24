@@ -93,7 +93,7 @@ val Typography.nobinoSmall: TextStyle
 
 // Set of Material typography styles to start with
 val AppTypography = Typography(
-    bodyLarge = TextStyle(
+        bodyLarge = TextStyle(
         fontFamily = font_bold,
         fontWeight = FontWeight.Normal,
         fontSize = 24.sp,

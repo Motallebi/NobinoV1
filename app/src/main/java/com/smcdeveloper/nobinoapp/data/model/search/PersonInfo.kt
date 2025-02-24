@@ -22,7 +22,11 @@ val name: String,
 @SerializedName("translatedName")
 val translatedName: String,
 @SerializedName("updatedAt")
-val updatedAt: Long
+val updatedAt: Long,
+@SerializedName("instagramLink")
+val instagramLink: String=""
+
+
 )
 
 

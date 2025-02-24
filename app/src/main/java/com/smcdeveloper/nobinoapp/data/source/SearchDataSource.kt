@@ -9,12 +9,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.repository.ProfileRepository
+import com.smcdeveloper.nobinoapp.data.repository.SearchRepository
 import retrofit2.HttpException
 import java.io.IOException
 
-class ProductBySpecialCategoryDataSource(
+class SearchDataSource(
 
-    private val repository:HomeRepository,
+    private val repository:SearchRepository,
     val tagName:String,
     val categoryName:String="",
     val countries:String="",
@@ -63,7 +64,7 @@ class ProductBySpecialCategoryDataSource(
             Log.d("page" ,"current offset is:${offset} size is: ${size}")
 
 
-            val response = repository.fetchMovieTest(
+            val response = repository.fetchMovies(
                 size = size,
                 tag = tagName,
                 categoty = categoryName,
@@ -116,7 +117,7 @@ class ProductBySpecialCategoryDataSource(
         Log.d("PagingSource", "🚀 Loading movies from offset=$offset, limit=$limit")
 
         return try {
-            val response = repository.fetchMovieTest(
+            val response = repository.fetchMovies(
 
                 size = limit,
                 tag = tagName,

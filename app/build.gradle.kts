@@ -133,4 +133,16 @@ dependencies {
     implementation("androidx.media3:media3-ui:1.1.0-beta01")
     implementation("androidx.media3:media3-exoplayer-hls:1.1.0-beta01")
 
+    // Animation
+
+    //animation
+    implementation ("com.airbnb.android:lottie-compose:5.2.0")
+
+
+
+
+
+
+
+
 }

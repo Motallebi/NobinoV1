@@ -12,9 +12,31 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
+import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 
 @Composable
-fun PaymentHistoryPage() {
+fun PaymentHistoryPage(navController: NavHostController,
+                  profileViewModel: ProfileViewModel = hiltViewModel(),
+                  dataStore: DataStoreViewModel = hiltViewModel()
+
+
+
+) {
+
+
+
+
+
+
+
+
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,6 +59,27 @@ fun PaymentHistoryPage() {
         PaymentHistoryTable()
     }
 }
+
+
+
+@Composable
+fun PaymentHistory(profileViewModel: ProfileViewModel,dataStore: DataStoreViewModel)
+{
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
 
 @Composable
 fun PaymentHistoryTable() {

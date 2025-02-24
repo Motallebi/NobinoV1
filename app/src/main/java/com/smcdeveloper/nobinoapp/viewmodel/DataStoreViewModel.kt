@@ -32,6 +32,9 @@ class DataStoreViewModel @Inject constructor(
         const val USER_REF_KEY = "USER_REF_KEY"
         const val USER_EMAIL_KEY = "USER_EMAIL_KEY"
         const val USER_BD_KEY = "USER_BD_KEY"
+        const val USER_LOGIN_STATUS_KEY = "USER_LOGIN_STATUS_KEY"
+
+
 
 
 
@@ -70,6 +73,10 @@ class DataStoreViewModel @Inject constructor(
     val userBdateKey: StateFlow<String?> get() =  _userBdateKey
 
 
+    private val _userLoginStatus = MutableStateFlow<Boolean?>(null)
+    val userLoginStatus: StateFlow<Boolean?> get() =  _userLoginStatus
+
+
 
 
 
@@ -91,6 +98,8 @@ class DataStoreViewModel @Inject constructor(
             _userRefKey.value = repository.getString(USER_REF_KEY)
             _userEmailKey.value=repository.getString(USER_EMAIL_KEY)
             _userBdateKey.value=repository.getString(USER_BD_KEY)
+            _userLoginStatus.value=repository.getBoolean(USER_LOGIN_STATUS_KEY)
+
 
         }
     }
@@ -202,6 +211,21 @@ class DataStoreViewModel @Inject constructor(
             repository.putString(USER_BD_KEY, value)
         }
     }
+
+
+
+    fun getUserLoginStatus(): Boolean? = runBlocking {
+        repository.getBoolean(USER_LOGIN_STATUS_KEY)
+    }
+
+
+    fun saveUserLoginStatus(value: Boolean) {
+        viewModelScope.launch {
+            repository.putBoolean(USER_LOGIN_STATUS_KEY, value)
+        }
+    }
+
+
 
 
 

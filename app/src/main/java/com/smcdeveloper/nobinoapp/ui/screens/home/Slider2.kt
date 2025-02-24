@@ -25,11 +25,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PageSize
 
 // Shapes, Graphics, and Drawing
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.ui.draw.clip
 
 
@@ -37,23 +45,33 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 
 // UI utilities
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
 
 // Coil for Image Loading (Coil 2.x)
 import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.size.Scale
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
+import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 // Kotlin Standard Library
 import kotlin.math.absoluteValue
@@ -159,6 +177,14 @@ fun  AnimatedImageSlider(
                     )
                 }
 
+
+
+
+
+
+
+
+
             }
 
 
@@ -197,6 +223,16 @@ fun SliderWithIndicator(
     space: Dp = 4.dp,
     animationDuration: Int = 300
 ) {
+
+
+
+
+
+
+
+
+
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(space),
         verticalAlignment = Alignment.CenterVertically,
@@ -223,3 +259,192 @@ fun SliderWithIndicator(
         }
     }
 }
+
+
+
+@Composable
+fun CustomSlider(
+    modifier: Modifier = Modifier,
+   // sliderList: MutableList<String>,
+    sliderList: List<Slider.Sliderinfo?>?,
+   // selectedPage: Int,
+
+    backwardIcon: ImageVector = Icons.Default.KeyboardArrowLeft,
+    forwardIcon: ImageVector = Icons.Default.KeyboardArrowRight,
+    dotsActiveColor: Color = Color.DarkGray,
+    dotsInActiveColor: Color = Color.LightGray,
+    dotsSize: Dp = 10.dp,
+    pagerPaddingValues: PaddingValues = PaddingValues(horizontal = 65.dp),
+    imageCornerRadius: Dp = 16.dp,
+    imageHeight: Dp = 250.dp,
+    unselectedSize: Dp = 8.dp,
+    selectedSize: Dp = 25.dp,
+    animationDuration: Int = 300,
+    selectedColor: Color = Color.Blue,
+    unselectedColor: Color = Color.LightGray,
+)
+
+{
+
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = {10})
+    val scope = rememberCoroutineScope()
+
+
+    LaunchedEffect(Unit) {
+        // viewModel.getSlider()
+
+        while (true) {
+            delay(3000) // Wait for 3 seconds before moving to the next page
+            val nextPage = (pagerState.currentPage + 1) % 15
+            pagerState.animateScrollToPage(nextPage)
+        }
+
+    }
+
+
+
+
+
+
+    Column(
+      //  Modifier.background(Color.Red),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    )
+
+
+    {
+        Row(
+            modifier = modifier.fillMaxWidth()
+               // .background(Color.Yellow)
+            ,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        )
+
+        {
+
+
+            HorizontalPager(
+                pageSize = PageSize.Fill,
+                state = pagerState,
+                contentPadding = pagerPaddingValues,
+                modifier = modifier.weight(1f)
+                //  .background(Color.Green)
+            )
+
+            { page ->
+                val pageOffset =
+                    (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
+
+                val scaleFactor = 0.75f + (1f - 0.75f) * (1f - pageOffset.absoluteValue)
+                // val scaleFactor = 0.75f + (1f - 0.2f) * (1f - pageOffset.absoluteValue)
+
+
+                Box(modifier = modifier
+                    .graphicsLayer {
+                        scaleX = scaleFactor
+                        scaleY = scaleFactor
+                    }
+                    .alpha(
+                        scaleFactor.coerceIn(0f, 1f)
+                    )
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(imageCornerRadius))) {
+                    val data = sliderList?.get(page)?.imageHorizontalPath.toString()
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current).scale(Scale.FILL)
+                            .crossfade(true).data(IMAGE_BASE_URL + data).build(),
+
+
+                        contentDescription = "Image",
+                        contentScale = ContentScale.Crop,
+                        // placeholder = painterResource(id = R.drawable.img),
+                        modifier = modifier.height(imageHeight)
+//                            .alpha(if (pagerState.currentPage == page) 1f else 0.5f)
+                    )
+                }
+            }
+
+        }
+
+
+
+            Row(
+                modifier
+                    .height(50.dp)
+                    .fillMaxWidth(), horizontalArrangement = Arrangement.Center
+            )
+
+            {
+
+/*
+                repeat(sliderList!!.size) {
+                    val color = if (pagerState.currentPage == it) dotsActiveColor else dotsInActiveColor
+                    Box(modifier = modifier
+                        .padding(2.dp)
+                        .clip(CircleShape)
+                        .size(dotsSize)
+                        .background(color)
+                        .clickable {
+                            scope.launch {
+                                pagerState.animateScrollToPage(it)
+                            }
+                        })
+                }*/
+
+
+
+
+                repeat(sliderList!!.size) { index ->
+                   val selectedPage =pagerState.currentPage
+                    val isSelected = index == selectedPage
+
+                    val dotWidth by animateDpAsState(
+                        targetValue = if (isSelected) selectedSize else unselectedSize,
+                        animationSpec = tween(durationMillis = animationDuration), label = ""
+                    )
+                    val dotColor by animateColorAsState(
+                        targetValue = if (isSelected) selectedColor else unselectedColor,
+                        animationSpec = tween(durationMillis = animationDuration), label = ""
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(unselectedSize)
+                            .width(dotWidth)
+                            .clip(CircleShape)
+                            .background(dotColor)
+                    )
+                }
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+        }
+    }
+
+
+
+
+
+
+
+
+

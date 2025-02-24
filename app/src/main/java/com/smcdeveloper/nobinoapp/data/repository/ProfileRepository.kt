@@ -66,6 +66,7 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
     Log.d("user","Api call")
 
+
     return result
 }
 

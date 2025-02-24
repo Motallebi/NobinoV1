@@ -54,7 +54,8 @@ data class MovieResult(
             val imdbCode: String?=null,
             @SerializedName("imdbRating")
             val imdbRating: String?=null,
-
+            @SerializedName("videoLink")
+            val videoLink: String?=null,
             @SerializedName("longDescription")
             val longDescription: String?=null,
             @SerializedName("name")
@@ -94,7 +95,24 @@ data class MovieResult(
             @SerializedName("updatedAt")
             val updatedAt: Double?=0.0,
             @SerializedName("videos")
-            val videos: List<Video?>?=null
+            val videos: List<Video?>?=null,
+
+            @SerializedName("liked")
+            val liked: Boolean = false,
+            @SerializedName("disliked")
+            val dislike: Boolean =false,
+
+        @SerializedName("bookmarked")
+        val bookmarked: Boolean=false
+
+
+
+
+
+
+
+
+
         ) {
             data class Actor(
                 @SerializedName("createdAt")

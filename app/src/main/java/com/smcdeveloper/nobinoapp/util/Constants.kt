@@ -12,6 +12,7 @@ object Constants {
     const val SeriesCategory = "MOVIE"
     const val SeasonCategory = "MOVIE"
     const val MovieCategory1 = "MOVIE"
+    var USER_LOGIN_STATUS= false
 
 
 

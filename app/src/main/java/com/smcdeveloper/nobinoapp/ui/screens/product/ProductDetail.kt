@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,9 +22,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -43,15 +48,21 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.smcdeveloper.nobinoapp.data.model.prducts.BookMarKRequest
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
-import com.smcdeveloper.nobinoapp.ui.screens.series.ProductBanner
+
+import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
+import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
+import kotlinx.coroutines.flow.collectLatest
+import okhttp3.internal.wait
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -101,6 +112,66 @@ fun ProductDetailPage(
             productDetailsViewModel.getRelatedMovies(tags = tag.toString())
         }
     }
+
+
+    LaunchedEffect(true) {
+
+        productDetailsViewModel.saveBookMarkResponse.collectLatest { result->
+
+            when(result)
+            {
+                is NetworkResult.Success->
+                {
+                    Log.d("bookmark","Success")
+
+
+                }
+
+
+                is NetworkResult.Error->
+                {
+
+                    Log.d("bookmark","Error")
+
+                }
+
+
+
+                is NetworkResult.Loading->
+                {
+
+                    Log.d("bookmark","Loading....")
+
+
+
+                }
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+    }
+
+
+
 
 
   /*  val context = LocalContext.current
@@ -168,7 +239,12 @@ fun ProductDetailPage(
                                     selectedTabIndex = selectedTabIndex,
                                     onTabSelected = { index -> selectedTabIndex = index },
                                     relatedMovies = relatedMovies,
-                                    product = product // Pass the entire ProductModel object
+                                    product = product, // Pass the entire ProductModel object
+                                    productId = productId,
+                                    viewModel = productDetailsViewModel,
+                                    bookmark = product.bookmarked
+
+
                                 )
                             }
                         }
@@ -271,6 +347,10 @@ fun ShowProductDetailWithTabs(
     onTabSelected: (Int) -> Unit,
     relatedMovies: NetworkResult<MovieResult>,
     product: ProductModel.MovieInfo,
+    viewModel: ProductDetailsViewModel,
+    productId:Int,
+    bookmark: Boolean
+
 
 )
 {
@@ -292,7 +372,15 @@ fun ShowProductDetailWithTabs(
             productEnglishTitle = productEnglishTitle,
             productApproval = productApproval,
             videoUrl = videoUrl,
-            navController = navController
+            navController = navController,
+            viewModel =viewModel,
+            productId = productId,
+            bookmark = bookmark
+
+
+
+
+
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -307,6 +395,24 @@ fun ShowProductDetailWithTabs(
                 modifier = Modifier.padding(16.dp)
             )
         }
+
+        if(USER_LOGIN_STATUS)
+
+        {
+            Text(
+                text = "Video is not available for this product.",
+                color = Color.Red,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(16.dp)
+            )
+
+
+
+        }
+
+
+
+
 
         // Tabs
         val tabTitles = listOf("Description", "Related Movies")
@@ -324,10 +430,7 @@ fun ShowProductDetailWithTabs(
         when (selectedTabIndex) {
             2 -> ProductDescription(description = productDescription)
             1 -> RelatedTab(relatedMovies = relatedMovies)
-           0 -> ProductDescriptionWithExtras( product = product
-
-
-            )
+            0 -> ProductDescriptionWithExtras( product = product,navController=navController)
 
 
 
@@ -362,6 +465,8 @@ fun ProductDescription(description: String) {
 @Composable
 fun ProductDescriptionWithExtras(
     product:ProductModel.MovieInfo,
+
+    navController: NavHostController
    // description: String,
    // List of (Label, IconResId)
     //screenshots: List<String>, // List of screenshot URLs
@@ -473,7 +578,8 @@ fun ProductDescriptionWithExtras(
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp)
-            ) {
+            )
+            {
                 items(product.actors) { actor ->
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         AsyncImage(
@@ -482,7 +588,15 @@ fun ProductDescriptionWithExtras(
                             modifier = Modifier
                                 .size(80.dp)
                                 .clip(CircleShape)
-                                .background(Color.LightGray),
+                                .background(Color.LightGray)
+                                .clickable {
+
+                                  navController.navigate(Screen.Actors.withArgs(actor.id))
+
+                                   // navController.navigate(Screen.Actors.route)
+
+
+                                },
                             contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.height(4.dp))
@@ -491,7 +605,9 @@ fun ProductDescriptionWithExtras(
                             style = MaterialTheme.typography.caption,
                             textAlign = TextAlign.Center,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color.White
+
                         )
                     }
                 }
@@ -730,3 +846,276 @@ fun CategoryChipsRow() {
     }
 }
 
+
+
+
+@Composable
+fun ProductBanner(
+    productImage: String,
+    productTitle: String,
+    productEnglishTitle: String,
+    productApproval: Int,
+    videoUrl: String?,
+    navController: NavHostController,
+    viewModel: ProductDetailsViewModel,
+  //  episode: MovieResult.DataMovie.Item
+    productId:Int,
+    bookmark: Boolean
+
+
+)
+
+{
+    val isVideoAvailable = !videoUrl.isNullOrEmpty()
+    val isUserLogin =USER_LOGIN_STATUS
+
+    Log.d("banner","Bookmarked is $bookmark")
+
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(400.dp)
+    ) {
+        AsyncImage(
+            model = "https://vod.nobino.ir/vod/$productImage",
+            contentDescription = productTitle,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Bottom
+        )
+
+
+
+
+
+
+
+
+
+        {
+
+            FloatingActionButtons(navController,viewModel,productId,bookmark)
+
+
+
+
+
+            Text(
+                text = "$productTitle ($productEnglishTitle)",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+           // Text("SAmple.. ${episode.name}")
+
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                    if (isVideoAvailable && isUserLogin) {
+                        val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
+                        Log.d("ProductBanner", "Navigating to video player with URL: $encodedUrl")
+                        navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
+                    }
+
+                    else{
+
+
+
+
+                        navController.navigate(Screen.SignUp.route)
+
+
+
+                    }
+
+
+
+
+
+
+
+
+
+                },
+                // enabled = isVideoAvailable && isUserLogin,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = if (isVideoAvailable && isUserLogin) Color.Red else Color.Gray
+                )
+            ) {
+                Text(
+                    text = if (isVideoAvailable && isUserLogin) "Play Movie" else "Login First",
+                    color = Color.White
+                )
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDetailsViewModel,productId: Int,bookmark:Boolean) {
+
+    val bookmarkState = remember {  mutableStateOf(bookmark)}
+
+
+
+
+
+
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Back button
+        TransparentIconButton(
+            icon = Icons.Default.ArrowBack,
+            contentDescription = "Back",
+            onClick = { navController.navigateUp() }
+        )
+
+        Row {
+            // Share button
+            TransparentIconButton(
+                icon = Icons.Default.Share,
+                contentDescription = "Share",
+                onClick = { /* Handle share action */ }
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Bookmark button
+            TransparentIconButton(
+                icon =
+                if(bookmarkState.value) {
+
+                    Icons.Default.Bookmark
+
+                }
+
+                else
+                    Icons.Default.BookmarkBorder
+
+                ,
+                contentDescription = "Bookmark",
+                onClick = {
+
+                    if (bookmarkState.value)
+
+
+                    viewModel.removeBookMark(
+                        auth = "Bearer $USER_TOKEN",
+
+                      bookmark =   BookMarKRequest(
+
+
+                            productId =productId ,
+                            type="BOOKMARK"
+
+
+
+
+                        )
+
+
+
+
+
+
+                    )
+
+                    else
+                    {
+
+                        viewModel.saveBookMark(
+                            auth = "Bearer $USER_TOKEN",
+
+                            bookmark =   BookMarKRequest(
+
+
+                                productId =productId ,
+                                type="BOOKMARK"
+
+
+
+
+                            )
+
+
+
+
+
+
+                        )
+
+
+
+
+
+
+
+
+                    }
+
+
+
+
+
+                /* Handle bookmark action */
+
+
+
+
+
+                }
+            )
+        }
+    }
+}
+
+
+
+
+
+
+
+@Composable
+fun TransparentIconButton(
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
+    var isSelected by remember { mutableStateOf(false) }
+
+    IconButton(
+        onClick = {
+            isSelected = !isSelected // ✅ Toggle selection state
+            onClick()
+        },
+        modifier = Modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .background(Color.Black.copy(alpha = 0.3f)) // ✅ Semi-transparent background
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = if (isSelected) Color.White else Color.Red, // ✅ Change icon color when selected
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}

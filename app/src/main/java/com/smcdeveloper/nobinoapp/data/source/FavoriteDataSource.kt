@@ -1,31 +1,28 @@
 package com.smcdeveloper.nobinoapp.data.source
 
 
-import android.annotation.SuppressLint
 import android.util.Log
-import androidx.paging.LOG_TAG
 import com.smcdeveloper.nobinoapp.data.repository.HomeRepository
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.smcdeveloper.nobinoapp.data.model.favorit.Favorite
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
-import com.smcdeveloper.nobinoapp.data.repository.ProfileRepository
+import com.smcdeveloper.nobinoapp.data.repository.FavoriteRepository
+import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import retrofit2.HttpException
 import java.io.IOException
 
-class ProductBySpecialCategoryDataSource(
+class FavoriteDataSource(
 
-    private val repository:HomeRepository,
-    val tagName:String,
-    val categoryName:String="",
-    val countries:String="",
-    val name: String="",
-    var offset :Int=0,
-    var size: Int =20
+    private val repository:FavoriteRepository,
+
+    var pageNum :Int=0,
+    var pagesize: Int =20
 
 
     //  val specialId:Int
 
-) :PagingSource <Int,MovieResult.DataMovie.Item>()
+) :PagingSource <Int,Favorite.FavoriteData.Item>()
 
 
 {
@@ -33,7 +30,7 @@ class ProductBySpecialCategoryDataSource(
 
 
 
-    override fun getRefreshKey(state: PagingState<Int, MovieResult.DataMovie.Item>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Favorite.FavoriteData.Item>): Int? {
 
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
@@ -44,7 +41,7 @@ class ProductBySpecialCategoryDataSource(
     }
 
 
-     suspend fun load1(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
+     suspend fun load1(params: LoadParams<Int>): LoadResult<Int, Favorite.FavoriteData.Item> {
         val offset = params.key ?: 0 // Default to 0 if no key provided
         var size =20
 
@@ -63,26 +60,25 @@ class ProductBySpecialCategoryDataSource(
             Log.d("page" ,"current offset is:${offset} size is: ${size}")
 
 
-            val response = repository.fetchMovieTest(
+            val response = repository.getUserFavorites(
+                auth = "Bearer $USER_TOKEN",
                 size = size,
-                tag = tagName,
-                categoty = categoryName,
-                offset = offset,
-                countries = countries,
-                name = name
+                pageNum = pageNum
+
+
 
 
             )
 
             // Extract the data from the response
-            val dataMovie = response.data?.movieInfo
+            val dataMovie = response.data?.favoritData
 
             if (response.data?.success == true && dataMovie != null) {
                 // Log successful responses for debugging purposes
                 Log.d("NobinoApp", "PAGING3 Success: ${dataMovie.items}")
 
                 // Return a successful LoadResult.Page
-                val nextOffset = if (response.data.movieInfo.size!! < size ) null else offset + size
+                val nextOffset = if (response.data.favoritData.size!! < size ) null else offset + size
                 LoadResult.Page(
                     data = dataMovie.items?.filterNotNull() ?: emptyList(),
 
@@ -109,32 +105,30 @@ class ProductBySpecialCategoryDataSource(
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Favorite.FavoriteData.Item> {
         val offset = params.key ?: 0
         val limit = params.loadSize
 
         Log.d("PagingSource", "🚀 Loading movies from offset=$offset, limit=$limit")
 
         return try {
-            val response = repository.fetchMovieTest(
+            val response = repository.getUserFavorites(
 
+               auth = "Bearer $USER_TOKEN",
                 size = limit,
-                tag = tagName,
-                categoty = categoryName,
-                offset = offset,
-                countries = countries,
-                name = name
+                pageNum = offset,
+
 
             )
-            Log.d("PagingSource", "✅ Received ${response.data?.movieInfo!!.size} items from API")
+            Log.d("PagingSource", "✅ Received ${response.data?.favoritData!!.size} items from API")
 
             // ❗ Ensure API returns expected data
-            if (response.data.movieInfo.items.isNullOrEmpty()) {
+            if (response.data.favoritData.items.isNullOrEmpty()) {
                 Log.d("PagingSource", "⛔ No more data available, stopping pagination.")
                 return LoadResult.Page(emptyList(), prevKey = null, nextKey = null) // Stop pagination
             }
 
-            val nextOffset = if (response.data.movieInfo.items.size < limit) {
+            val nextOffset = if (response.data.favoritData.items.size < limit) {
                 Log.d("PagingSource", "🚨 API returned less than requested, setting nextKey=null")
                 null
             } else {
@@ -142,7 +136,7 @@ class ProductBySpecialCategoryDataSource(
             }
 
             LoadResult.Page(
-                data = response.data.movieInfo.items.filterNotNull() ?: emptyList(),
+                data = response.data.favoritData.items.filterNotNull() ?: emptyList(),
                 prevKey = if (offset == 0) null else offset - limit,
                 nextKey = nextOffset
             )

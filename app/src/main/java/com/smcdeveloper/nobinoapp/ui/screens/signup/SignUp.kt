@@ -1,6 +1,7 @@
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.Dp
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import kotlinx.coroutines.Dispatchers
@@ -83,71 +86,116 @@ fun LoginScreen(
     profileViewModel: ProfileViewModel,
     navController: NavHostController,
     dataStoreViewModel: DataStoreViewModel= hiltViewModel()
-) {
+)
+{
     // Main container
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
+        verticalArrangement = Arrangement.Center
+    )
+
+    {
+
+
+
+
+
+
+
+
         // Top Bar
-        TopBar()
+
 
         // Logo and title
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(vertical = 16.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.bottom_nav_user_selected), // Replace with your logo resource
+
+
+        Row()
+        {
+
+            Image(
+                painter = painterResource(id = R.drawable.nobino_logo_title_large), // Replace with your logo resource
                 contentDescription = null,
-                tint = Color.Red,
-                modifier = Modifier.size(64.dp)
+                // tint = Color.Red,
+                // modifier = Modifier.size(64.dp)
             )
-            Text(
-                text = "نوپینو",
-                fontSize = 28.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
+
+
         }
+
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .padding(start = 16.dp)
+            ,
+
+            horizontalAlignment = Alignment.Start
+
+
+
+
+        )
+        {
+
+            Row(
+
+
+
+            )
+            {
+
+                Text(
+                    "ورود",
+                    style = MaterialTheme.typography.nobinoLarge
+
+
+                )
+
+
+            }
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        Row( modifier = Modifier.fillMaxWidth()
+            .padding(start = 16.dp, top = 16.dp)
+
+        )
+        {
+
+            Text("لطفاً شماره تلفن همراه خود را وارد نمایید.")
+
+
+        }
+
 
         // Phone input and buttons
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            PhoneInputField(profileViewModel, dataStoreViewModel = dataStoreViewModel)
 
-            Spacer(modifier = Modifier.height(16.dp))
+        ShowInputForms(profileViewModel,dataStoreViewModel)
 
-            Button(
-                onClick = {
 
-                    profileViewModel.getOtp() // Trigger OTP retrieval
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-            ) {
-                Text(text = "Retrieve OTP via SMS", color = Color.White, fontSize = 16.sp)
-            }
 
-            Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedButton(
-                onClick = {
-                    // Optional: Handle voice message code retrieval
-                },
-                border = BorderStroke(1.dp, Color.Red),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Retrieve OTP via Voice", color = Color.Red)
-            }
-        }
 
-        // Footer text
+
+
+
         Text(
             text = "کاربر گرامی شما می‌توانید پس از تکمیل ثبت‌نام، از سایر محصولات شرکت ارمغان راه طلایی نیز بدون نیاز به ثبت‌نام مجدد، استفاده نمایید.",
             color = Color.White,
@@ -155,61 +203,154 @@ fun LoginScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(16.dp)
         )
+
+
+
     }
+
+    // Footer text
+
 }
 
+
+
 @Composable
-fun TopBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = "9:30", color = Color.White)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = null,
-                tint = Color.White
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = null,
-                tint = Color.White
-            )
+fun ShowInputForms(profileViewModel: ProfileViewModel,dataStoreViewModel: DataStoreViewModel)
+{
+
+
+    var isPhoneValid by remember { mutableStateOf(false) }
+
+
+    PhoneInputField(profileViewModel, dataStoreViewModel = dataStoreViewModel,
+
+        onPhoneDataChanged = {
+
+            isValid-> isPhoneValid=isValid
+
         }
+
+
+        )
+
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Button(
+
+
+        onClick = {
+
+
+            profileViewModel.getOtp() // Trigger OTP retrieval
+        },
+
+
+        enabled = isPhoneValid,
+
+        modifier = Modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+    ) {
+        Text(text = "دریافت کد از طریق پیامک", color = Color.White, fontSize = 16.sp)
     }
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    OutlinedButton(
+        onClick = {
+            // Optional: Handle voice message code retrieval
+        },
+        border = BorderStroke(1.dp, Color.Red),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(text = "دریافت کد از طریق پیام صوتی", color = Color.Red)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+fun validate(phoneNumber:String): Boolean = phoneNumber.length==11
+
+
+
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhoneInputField(profileViewModel: ProfileViewModel,
-                    dataStoreViewModel: DataStoreViewModel
+                    dataStoreViewModel: DataStoreViewModel,
+                    onPhoneDataChanged:(Boolean)->Unit
+
 ) {
-    TextField(
+    OutlinedTextField(
+
         value = profileViewModel.inputPhoneState,
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
 
 
-        onValueChange = {
-            profileViewModel.inputPhoneState = it
-            dataStoreViewModel.saveUserPhone(it)
+        onValueChange = { newValue->
+
+            if (newValue.all { it.isDigit() } && newValue.length <= 11) { // ✅ Only digits, max 11
+
+                profileViewModel.inputPhoneState = newValue
+                dataStoreViewModel.saveUserPhone(newValue)
+                onPhoneDataChanged(newValue.length==11)
+
+            }
+
+
+
+
+
+
+
 
                         },
+        trailingIcon = {Icon(painterResource(R.drawable.phone_regular),"")},
+        leadingIcon = {Icon(painterResource(R.drawable.eye),"",
+            modifier = Modifier.size(32.dp)
+
+
+        )},
+
 
         placeholder = { Text(text = "09123456789", color = Color.Gray) },
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(8.dp))
+            .background(Color.Black, RoundedCornerShape(8.dp))
             .padding(horizontal = 16.dp),
         singleLine = true,
         colors = TextFieldDefaults.textFieldColors(
-             focusedTextColor =  Color.Black,
-            containerColor = Color.White,
+             focusedTextColor =  Color.White,
+            containerColor = Color.Black,
             focusedIndicatorColor = Color.Red,
             unfocusedIndicatorColor = Color.Gray
         )
+
+
     )
+
+
+
 }

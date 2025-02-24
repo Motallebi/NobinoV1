@@ -45,6 +45,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.layout.BeyondBoundsLayout
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.smcdeveloper.nobinoapp.util.AppConfig
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -82,6 +83,8 @@ class MainActivity : ComponentActivity() {
 
             AppTheme {
 
+                AppConfig()
+
 
                // CompositionLocalProvider(LocalLayoutDirection provides direction)
                 CompositionLocalProvider(LocalLayoutDirection provides androidx.compose.ui.unit.LayoutDirection.Rtl)
@@ -114,7 +117,14 @@ class MainActivity : ComponentActivity() {
                             if(
 
                                ! ( currentRoute.toString().startsWith("Product_Detail_Screen") ||
-                                currentRoute.toString().startsWith("SeriesDetail_Screen") )
+                                currentRoute.toString().startsWith("SeriesDetail_Screen") ||
+                                       currentRoute.toString().startsWith("SignUp_screen")
+
+
+
+
+
+                                       )
 
 
 

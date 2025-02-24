@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
+import com.smcdeveloper.nobinoapp.data.model.favorit.Favorite
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
@@ -14,6 +15,7 @@ import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ProfileApiInterface {
 
@@ -120,6 +122,25 @@ interface ProfileApiInterface {
 
 
 
+
+
+    @GET("/api/v2/user-interactions")
+    suspend fun getUserFavorits(
+        @Header("Authorization") auth: String ="",
+
+    @Query("size") size: Int=20,
+    @Query("page") page: Int=1,
+    @Query("type") type: String="BOOKMARK",
+
+
+
+
+
+
+
+
+
+    ) :Response<Favorite>
 
 
 

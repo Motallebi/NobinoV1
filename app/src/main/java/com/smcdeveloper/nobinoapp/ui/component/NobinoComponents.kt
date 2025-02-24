@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -61,6 +62,10 @@ import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.size.Scale
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.gson.Gson
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
@@ -953,10 +958,15 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
                 modifier = Modifier
                     // .fillMaxSize(),
                     .width(200.dp)
-                    .height(250.dp),
+                    .height(250.dp)
 
 
-                contentScale = ContentScale.Crop,
+                ,
+
+
+                contentScale = ContentScale.FillBounds,
+
+
                 //   clipToBounds = true
 
             )
@@ -1602,4 +1612,30 @@ fun NobinoDefultButton(
 
 
 }
+
+
+
+
+
+
+
+@Composable
+fun Loading3Dots(isDark: Boolean) {
+    if (isDark) {
+        val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading3dotsdark))
+        LottieAnimation(
+            composition = composition,
+            iterations = LottieConstants.IterateForever
+        )
+    } else {
+        val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.loading3dots))
+        LottieAnimation(
+            composition = composition,
+            iterations = LottieConstants.IterateForever
+        )
+    }
+
+}
+
+
 

@@ -49,12 +49,20 @@ class ProfileViewModel @Inject constructor(
 
     val setUserNameResponse = MutableStateFlow<NetworkResult<String>>(NetworkResult.Loading())
 
+
+
+
+
   //  private val _userProfile = MutableStateFlow<UserInfo?>(null)
   //  val userProfile: StateFlow<UserInfo?> = _userProfile
 
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+
+
+
+
 
 
 
@@ -176,6 +184,20 @@ class ProfileViewModel @Inject constructor(
 
 
 }
+
+private fun checkUserLogin()
+{
+
+
+
+
+
+
+
+
+
+}
+
 
 
 

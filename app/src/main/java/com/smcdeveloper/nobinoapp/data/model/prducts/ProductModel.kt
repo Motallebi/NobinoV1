@@ -33,6 +33,10 @@ data class ProductModel(
         val updatedAt: Long,
         val videos: List<Any>,
         val videoLink: String,
+        val bookmarked:Boolean
+
+
+
     ) {
         data class Actor(
             val createdAt: Long,

@@ -4,10 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smcdeveloper.nobinoapp.data.datastore.DataStoreRepository
+import com.smcdeveloper.nobinoapp.data.model.prducts.BookMarKRequest
+import com.smcdeveloper.nobinoapp.data.model.prducts.BookMark
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.ProductDetailsRepository
+import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
+import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel.Companion.USER_LOGIN_STATUS_KEY
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel.Companion.USER_TOKEN_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +41,13 @@ class ProductDetailsViewModel @Inject constructor(
     val episodes1: StateFlow<NetworkResult<List<MovieResult.DataMovie.Item>>> get() = _episodes1.asStateFlow()
 
 
+    val _saveBookMarkResponse = MutableStateFlow<NetworkResult<BookMark>>(NetworkResult.Loading())
+    val saveBookMarkResponse: StateFlow<NetworkResult<BookMark>> get() = _saveBookMarkResponse.asStateFlow()
+
+
+
+
+
 
 
 
@@ -52,18 +63,123 @@ class ProductDetailsViewModel @Inject constructor(
             //val results = repository.getProductDetails(productId,"Bearer "+token)
             Log.d("productdatils", "product id is:...${productId}")
             Log.d("Token", "product id is:...${token}")
-
-
-
             _product.value = NetworkResult.Loading()
+
+            if(USER_TOKEN_KEY.isNotBlank() && USER_LOGIN_STATUS)
+
             _product.value = repository.getProductDetails(productId, auth = "Bearer " + token)
+
+            else
+
+            _product.value = repository.getProductDetails(productId)
+
+
+
+
+
+
             //_product.value = repository.getProductDetails(productId, auth = "")
         }
     }
 
 
+
+    fun saveBookMark(bookmark:BookMarKRequest,auth:String)
+    {
+        viewModelScope.launch {
+
+
+          val result=  repository.saveBookMark(bookmark,auth)
+
+            _saveBookMarkResponse.value=result
+
+
+
+
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+
+    fun removeBookMark(bookmark:BookMarKRequest,auth:String)
+    {
+        viewModelScope.launch {
+
+
+            val result=  repository.saveBookMark(bookmark,auth)
+
+            _saveBookMarkResponse.value=result
+
+
+
+
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Fetch related movies
     fun getRelatedMovies(tags: String ) {
+        Log.d(
+            "ProductDetailsViewModel",
+            "Fetching related movies. Product ID: , Tags: $tags"
+        )
+        viewModelScope.launch {
+            _relatedMovies.value = NetworkResult.Loading()
+            Log.d("ProductDetailsViewModel", "Related movies loading state set.")
+
+            val result = repository.fetchRelatedMovies(tags)
+            _relatedMovies.value = result
+
+            when (result) {
+                is NetworkResult.Success -> {
+                    Log.d(
+                        "ProductDetailsViewModel",
+                        "Related movies fetched successfully: ${result.data}"
+                    )
+                }
+
+                is NetworkResult.Error -> {
+                    Log.e(
+                        "ProductDetailsViewModel",
+                        "Error fetching related movies: ${result.message}"
+                    )
+                }
+
+                is NetworkResult.Loading -> {
+                    Log.d("ProductDetailsViewModel", "Related movies are still loading.")
+                }
+            }
+        }
+    }
+
+    fun getRelatedMovies(tags: List<String> ) {
         Log.d(
             "ProductDetailsViewModel",
             "Fetching related movies. Product ID: , Tags: $tags"

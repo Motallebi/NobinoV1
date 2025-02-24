@@ -20,6 +20,7 @@ import coil3.compose.rememberAsyncImagePainter
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRow
 import com.smcdeveloper.nobinoapp.ui.screens.home.AnimatedImageSlider
+import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
 import com.smcdeveloper.nobinoapp.ui.screens.home.SliderItemByTags
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
@@ -104,7 +105,9 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                     item {
                         if (sliderData != null) {
                             Log.d("slider", "not null" + sliderState.data?.data.toString())
-                            AnimatedImageSlider(sliderData)
+                          // AnimatedImageSlider(sliderData)
+                            CustomSlider(modifier = Modifier,sliderData,)
+
                             Log.d("slider", "not null")
                         }
                     }

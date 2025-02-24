@@ -61,6 +61,8 @@ import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import coil3.compose.rememberAsyncImagePainter
 import com.smcdeveloper.nobinoapp.data.model.AudioSubtitle
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
@@ -72,9 +74,16 @@ import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.component.CustomBottomSheet
 import com.smcdeveloper.nobinoapp.ui.screens.product.InfoCard
 import com.smcdeveloper.nobinoapp.ui.screens.product.MovieCard
+import com.smcdeveloper.nobinoapp.ui.screens.search.FilterActorsSelectionSheet
+import com.smcdeveloper.nobinoapp.ui.screens.search.FilterAudioSelectionSheet
+import com.smcdeveloper.nobinoapp.ui.screens.search.FilterCountriesSelectionSheet
+import com.smcdeveloper.nobinoapp.ui.screens.search.FilterSubtitleSelectionSheet
 import com.smcdeveloper.nobinoapp.ui.screens.search.FilterType
+import com.smcdeveloper.nobinoapp.ui.screens.search.GenreSelectionSheet
+import com.smcdeveloper.nobinoapp.ui.screens.search.YearSelectionSheet
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
+import com.smcdeveloper.nobinoapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.delay
 import okhttp3.internal.wait
 import kotlin.math.abs
@@ -117,9 +126,13 @@ val audioOptions = listOf(
 fun DemoBottomSheetSearch(
     homeViewModel: HomeViewModel= hiltViewModel(),
     navController: NavHostController,
-    filterViewModel: FilterViewModel= hiltViewModel()
+    filterViewModel: FilterViewModel= hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel()
+
+
 
 )
+
 
 {
 
@@ -137,6 +150,9 @@ fun DemoBottomSheetSearch(
     var selectedCategories by remember { mutableStateOf(setOf("MOVIE,SERIES")) }
     var selectedCountryIds by remember { mutableStateOf(setOf<String>()) }
     var selectedGenreIds by remember { mutableStateOf(setOf<String>()) }
+    val selectedGenres by remember { mutableStateOf(setOf<GenreInfo>()) } // 🔴 Store full objects for UI
+
+
 
     var selectedActors by remember { mutableStateOf(setOf<String>()) }
 
@@ -163,7 +179,7 @@ fun DemoBottomSheetSearch(
 
 
     val selectedCountries by remember { mutableStateOf(setOf<CountryInfo>()) } // 🔴 Store full objects for UI
-    val selectedGenres by remember { mutableStateOf(setOf<GenreInfo>()) } // 🔴 Store full objects for UI
+
 
 
     // 🔴 Bottom Sheet Visibility
@@ -171,8 +187,8 @@ fun DemoBottomSheetSearch(
     var isChildSheetVisible by remember { mutableStateOf(false) }
     var selectedFilterType by remember { mutableStateOf<FilterType?>(null) }
 
-    val contryList by homeViewModel.contries.collectAsState()
-    val countryListState by homeViewModel.contries.collectAsState()
+    val contryList by searchViewModel.contries.collectAsState()
+    val countryListState by searchViewModel.contries.collectAsState()
 
     val actorState = filterViewModel.actors.collectAsState()
     val genreState = filterViewModel.genres.collectAsState()
@@ -186,7 +202,7 @@ fun DemoBottomSheetSearch(
 
     LaunchedEffect(Unit) {
         if (countryListState is NetworkResult.Loading) {
-            homeViewModel.fetchCountries()
+            searchViewModel.fetchCountries()
         }
     }
 // 🔴 Fetch genres when screen is first opened
@@ -259,8 +275,20 @@ fun DemoBottomSheetSearch(
     }
 
 
+
+    val searchText by searchViewModel.searchText.collectAsState()
+    val movies = searchViewModel.moviesFlow1.collectAsLazyPagingItems()
+    val isSearching by searchViewModel.isSearching.collectAsState()
+
+
+
+
+
+
+
+
     // 🔴 Fetch Movies Using Jetpack Paging (Triggers when query or filters change)
-    val products = homeViewModel.getMoviesByCategory(
+    val products = searchViewModel.getMovies(
         tag = debouncedTags,
         categoryName = debouncedCategories,
         countries = debouncedCountries,
@@ -307,14 +335,14 @@ fun DemoBottomSheetSearch(
 
                     Box(modifier = Modifier.fillMaxWidth()
                         .height(100.dp)
-                        .background(Color.Red),
-                        contentAlignment = Alignment.Center
+                        //.background(Color.Red),
+                       // contentAlignment = Alignment.Center
 
                     )
                     {
 
 
-                        if(true) {
+                      /*  if(true) {
                             CircularProgressIndicator(
                                 modifier = Modifier
                                     .padding(16.dp),
@@ -323,7 +351,7 @@ fun DemoBottomSheetSearch(
 
 
                             )
-                        }
+                        }*/
 
 
                     }
@@ -345,8 +373,113 @@ fun DemoBottomSheetSearch(
 //                    }
 
 
+                    TextField(
+                        value = searchText,
+                        onValueChange = searchViewModel::onSearchTextChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = { Text(text = "Search") }
+                    )
+
+
+                    if(isSearching) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                    }
+
+                    else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        )
+
+
+                        {
+                            Log.d("search", "movie are found ${movies.itemCount}")
+
+
+                            val movieName = listOf("mv1", "mv2", "mv3")
+
+
+                            items(
+                                count = movies.itemCount,
+                                key = { index -> movies[index]?.id ?: index },
+                                contentType = movies.itemContentType { "Comments" }
+                            )
+                            { index ->
+                               Text("Movie name is : ${movies[index]!!.name}")
+                                Log.d("search", "movie name is ${movies[index]?.name}")
+                            }
+
+
+
+
+
+
+
+
+
+
+
+
+                        }
+
+
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     // 🔴 Search Bar with Badge
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         SearchBarWithBadge1(
 
                             searchQuery = searchQuery,
@@ -375,7 +508,8 @@ fun DemoBottomSheetSearch(
                         LazyRow(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
+                        )
+                        {
                             items(appliedFilters) { filter ->
                                 FilterChip(text = filter, onRemove = {
                                     appliedFilters = appliedFilters - filter
@@ -392,8 +526,8 @@ fun DemoBottomSheetSearch(
                     )
 
                     {
-                        items(products.itemCount) { index ->
-                            val movie = products[index]
+                        items(movies.itemCount) { index ->
+                            val movie = movies[index]
                             if (movie != null) {
                                 /* MovieItem(
                                      movieTitle = movie.name.toString(),
@@ -778,71 +912,6 @@ fun DemoBottomSheetSearch(
 
 
 
-
-    @Composable
-    fun FilterCountriesSelectionSheet(
-        title: String,
-        items: List<CountryInfo>,
-        selectedItemIds: Set<String>, // 🔴 Store only IDs
-        onItemSelected: (CountryInfo, Boolean) -> Unit,
-        onClose: () -> Unit // 🔴 Handle closing bottom sheet
-    ) {
-        var searchQuery by remember { mutableStateOf("") }
-        val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
-
-        CustomBottomSheet(isVisible = true, onDismiss = onClose) { // 🔴 Use bottom sheet
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxSize(
-
-                    )
-                    .padding(16.dp)
-            ) {
-                // 🔴 Header with Close Button
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Text(text = title, style = MaterialTheme.typography.titleLarge)
-                    IconButton(onClick = onClose) { // 🔴 Close bottom sheet
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 🔴 Search Bar with Debouncing
-                TextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholder = { Text("جستجو...") }, // "Search..."
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 🔴 List of Selectable Items (Country Names, but track by ID)
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(filteredItems.chunked(2)) { rowItems ->
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            rowItems.forEach { item ->
-                                SelectionCheckboxItem(
-                                    text = item.name, // 🔴 Show country name
-                                    isSelected = item.id.toString() in selectedItemIds, // 🔴 Check by ID
-                                    onSelected = { isSelected -> onItemSelected(item, isSelected) },
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
 
     @Composable
@@ -1389,287 +1458,9 @@ fun DemoBottomSheetSearch(
     }
 
 
-    @Composable
-    fun FilterActorsSelectionSheet(
-        title: String,
-        actors: List<PersonInfo>,
-        selectedActorIds: Set<String>,
-        onActorSelected: (PersonInfo, Boolean) -> Unit,
-        onSearchQueryChanged: (String) -> Unit,
-        onClose: () -> Unit
-    ) {
-        var searchQuery by remember { mutableStateOf("") }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            // 🔴 Header with Close Button
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = title, style = MaterialTheme.typography.titleLarge)
-                IconButton(onClick = onClose) {
-                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 🔴 Search Bar
-            TextField(
-                value = searchQuery,
-                onValueChange = {
-                    searchQuery = it
-                    onSearchQueryChanged(it) // 🔴 Fetch actors from API based on input
-                },
-                placeholder = { Text("جستجو بازیگر...") }, // "Search Actor..."
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search"
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 🔴 Actor List as a Grid
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2), // 🔴 Two columns like in your image
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp)
-            ) {
-                items(actors) { actor ->
-                    ActorGridItem(
-                        actor = actor,
-                        isSelected = actor.id.toString() in selectedActorIds.toString(),
-                        onActorSelected = onActorSelected
-                    )
-                }
-            }
-        }
-    }
 
 
-    @Composable
-    fun ActorGridItem(
-        actor: PersonInfo,
-        isSelected: Boolean,
-        onActorSelected: (PersonInfo, Boolean) -> Unit
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-                .clickable { onActorSelected(actor, !isSelected) },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // 🔴 Actor Name
-            Text(
-                text = actor.name,
-                color = if (isSelected) Color.Red else MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.weight(1f)
-            )
 
-            // 🔴 Circular Actor Image
-            Image(
-                painter = rememberAsyncImagePainter("https://vod.nobino.ir/vod/" + actor.imagePath),
-                contentDescription = actor.name,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-            )
-        }
-    }
-
-
-    @Composable
-    fun YearSelectionSheet(
-        selectedFromYear: Int?,
-        selectedToYear: Int?,
-        onYearSelected: (Int, Boolean) -> Unit,
-        onClose: () -> Unit
-    ) {
-        val years = (1990..2025).toList()
-        val listState = rememberLazyListState()
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // 🔴 Header with Close Button
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "انتخاب سال", style = MaterialTheme.typography.titleLarge)
-                IconButton(onClick = onClose) {
-                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 🔴 "From" and "To" Year Fields INSIDE Year Selection Sheet
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                YearInputField(label = "از", selectedYear = selectedFromYear)
-                Text(
-                    "تا",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-                YearInputField(label = "تا", selectedYear = selectedToYear)
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 🔴 Animated Year Selection List
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp), // Controls visible area
-                contentAlignment = Alignment.Center
-            ) {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(vertical = 32.dp)
-                ) {
-                    itemsIndexed(years) { index, year ->
-                        YearItem(
-                            year = year,
-                            isSelected = year == selectedFromYear || year == selectedToYear,
-                            index = index,
-                            listState = listState,
-                            onYearSelected = { isFromYear -> onYearSelected(year, isFromYear) }
-                        )
-                    }
-                }
-            }
-        }
-
-        // 🔴 Scroll to selected year when opened
-        LaunchedEffect(Unit) {
-            val defaultYear = selectedFromYear ?: 2023
-            val index = years.indexOf(defaultYear)
-            if (index != -1) {
-                listState.animateScrollToItem(index) // 🔥 Smooth animation to selected year
-            }
-        }
-    }
-
-
-    @Composable
-    fun YearItem(
-        year: Int,
-        isSelected: Boolean,
-        index: Int,
-        listState: LazyListState,
-        onYearSelected: (Boolean) -> Unit
-    ) {
-        val centerIndex = listState.firstVisibleItemIndex + 2 // Center the middle item
-        val distance = abs(index - centerIndex)
-
-        // 🔴 Scaling Effect
-        val scale by animateFloatAsState(
-            targetValue = max(0.8f, 1.2f - (distance * 0.1f)),
-            animationSpec = tween(durationMillis = 300),
-            label = "Year Scaling"
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)
-                .clickable { onYearSelected(index < listState.layoutInfo.totalItemsCount / 2) }
-                .background(
-                    if (isSelected) Color.Red else Color.Transparent,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .padding(12.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = year.toString(),
-                style = MaterialTheme.typography.bodyLarge.copy(fontSize = (16.sp * scale)),
-                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-
-
-    @Composable
-    fun YearInputField(label: String, selectedYear: Int?) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth() // ✅ Ensures full width inside LazyColumn
-                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = selectedYear?.toString() ?: label, // ✅ Show label if no year is selected
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-    }
-
-
-    @Composable
-    fun ActorSelectionItem(
-        actor: PersonInfo,
-        isSelected: Boolean,
-        onActorSelected: (PersonInfo, Boolean) -> Unit,
-        modifier: Modifier = Modifier
-    ) {
-        Column(
-            modifier = modifier
-                .clickable { onActorSelected(actor, !isSelected) }
-                .padding(vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box {
-                // 🔴 Circular Actor Image
-                Image(
-                    painter = rememberAsyncImagePainter("https://vod.nobino.ir/vod/" + actor.imagePath),
-                    contentDescription = actor.name,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .border(2.dp, if (isSelected) Color.Red else Color.Gray, CircleShape)
-                )
-
-                // 🔴 Show Checkmark if Selected
-                if (isSelected) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Selected",
-                        tint = Color.Red,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .align(Alignment.BottomEnd)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // 🔴 Actor Name
-            Text(
-                text = actor.name,
-                color = if (isSelected) Color.Red else Color.Black
-            )
-        }
-    }
 
 
     @Composable
@@ -1717,109 +1508,8 @@ fun DemoBottomSheetSearch(
     }
 
 
-    @Composable
-    fun FilterAudioSelectionSheet(
-        title: String = "انتخاب زبان صوت",
-        //  audioSubtitles: List<AudioSubtitle>,
-        selectedAudioIds: Set<String>,
-        onAudioSelected: (AudioSubtitle, Boolean) -> Unit,
-        onClose: () -> Unit
 
 
-    ) {
-
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            // 🔴 Header with Close Button
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = title, style = MaterialTheme.typography.titleLarge)
-                IconButton(onClick = onClose) {
-                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 🔴 List of Selectable Audio Options
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(audioOptions.chunked(2)) { rowItems ->
-
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        rowItems.forEach { audio ->
-                            SelectionCheckboxItem2(
-                                text = audio.name, // ✅ Show localized name
-                                isSelected = audio.id in selectedAudioIds, // ✅ Check by ID
-                                onSelected = { isSelected ->
-                                    onAudioSelected(
-                                        audio,
-                                        isSelected
-                                    )
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    @Composable
-    fun FilterSubtitleSelectionSheet(
-        // audioSubtitles: List<AudioSubtitle>,
-        title: String = "انتخاب زیرنویس",
-        selectedSubtitleIds: Set<String>,
-        onSubtitleSelected: (AudioSubtitle, Boolean) -> Unit,
-        onClose: () -> Unit
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            // 🔴 Header with Close Button
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = title, style = MaterialTheme.typography.titleLarge)
-                IconButton(onClick = onClose) {
-                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 🔴 List of Selectable Subtitle Options
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(audioOptions.chunked(2)) { rowItems ->
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        rowItems.forEach { subtitle ->
-                            SelectionCheckboxItem(
-                                text = subtitle.name, // ✅ Show localized name
-                                isSelected = subtitle.id in selectedSubtitleIds, // ✅ Check by ID
-                                onSelected = { isSelected ->
-                                    onSubtitleSelected(
-                                        subtitle,
-                                        isSelected
-                                    )
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
 
 
     @Composable
@@ -1851,78 +1541,6 @@ fun DemoBottomSheetSearch(
         }
     }
 
-
-    @Composable
-    fun GenreSelectionSheet(
-
-        items: List<GenreInfo>,
-        selectedItemIds: Set<String>,
-        onItemSelected: (GenreInfo, Boolean) -> Unit,
-        onClose: () -> Unit
-    ) {
-        var searchQuery by remember { mutableStateOf("") }
-        val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
-
-        CustomBottomSheet(isVisible = true, onDismiss = onClose) { // 🔴 Use bottom sheet
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxSize(
-
-                    )
-                    .padding(16.dp)
-            ) {
-                // 🔴 Header with Close Button
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Text(text = title, style = MaterialTheme.typography.titleLarge)
-                    IconButton(onClick = onClose) { // 🔴 Close bottom sheet
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 🔴 Search Bar with Debouncing
-                TextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholder = { Text("جستجو...") }, // "Search..."
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 🔴 List of Selectable Items (Country Names, but track by ID)
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(filteredItems.chunked(2)) { rowItems ->
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            rowItems.forEach { item ->
-                                SelectionCheckboxItem(
-                                    text = item.name, // 🔴 Show country name
-                                    isSelected = item.id.toString() in selectedItemIds, // 🔴 Check by ID
-                                    onSelected = { isSelected ->
-                                        onItemSelected(
-                                            item,
-                                            isSelected
-                                        )
-                                    },
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-    }
 
 
 

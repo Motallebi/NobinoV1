@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -19,12 +20,10 @@ private val Context.datastore: DataStore<Preferences> by preferencesDataStore(na
 class DataStoreRepositoryImpl @Inject constructor(
 
     private val context: Context
-) : DataStoreRepository
-
-{
+) : DataStoreRepository {
     override suspend fun putString(key: String, value: String) {
-       // val encrypted = AES.encryptAES(value , KEY , IV)
-       // Log.e("3636" , encrypted)
+        // val encrypted = AES.encryptAES(value , KEY , IV)
+        // Log.e("3636" , encrypted)
         val preferencesKey = stringPreferencesKey(key)
         context.datastore.edit { preferences ->
             preferences[preferencesKey] = value
@@ -42,31 +41,24 @@ class DataStoreRepositoryImpl @Inject constructor(
     override suspend fun getString(key: String): String? {
 
 
-        return try{
+        return try {
 
             val preferencesKey = stringPreferencesKey(key)
-            val prefrences =context.datastore.data.first()
+            val prefrences = context.datastore.data.first()
             prefrences[preferencesKey]
 
 
-        }
-        catch (e:Exception)
-        {
-             e.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
             null
 
         }
 
 
-
-
-
     }
 
 
-
-
-   /* override suspend fun getString(key: String): String? {
+    /* override suspend fun getString(key: String): String? {
         return try {
             val preferencesKey = stringPreferencesKey(key)
             val preferences = context.datastore.data.first()
@@ -88,13 +80,30 @@ class DataStoreRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getBoolean(key: String): Boolean? {
 
 
+        return try {
+            val preferencesKey = booleanPreferencesKey(key)
+            val preferences = context.datastore.data.first()
+            preferences[preferencesKey]
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
 
 
+    }
+
+    override suspend fun putBoolean(key: String, value: Boolean){
+
+        val preferencesKey = booleanPreferencesKey(key)
+        context.datastore.edit { preferences ->
+            preferences[preferencesKey] = value
+        }
 
 
+    }
 
 }
-
 
