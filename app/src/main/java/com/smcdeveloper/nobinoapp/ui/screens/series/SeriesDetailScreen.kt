@@ -42,6 +42,7 @@ import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
+import kotlinx.coroutines.runBlocking
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 @Composable
@@ -277,7 +278,9 @@ fun ShowProductDetailWithTabs(
                 productApproval = productApproval,
                 videoUrl = videoUrl,
                 navController = navController,
-                episode = currentEpisode
+              //  episode = currentEpisode,
+                productId = productId,
+                viewModel = productDetailsViewModel
 
             )
 
@@ -378,17 +381,29 @@ fun ProductBanner(
     productApproval: Int,
     videoUrl: String?,
     navController: NavHostController,
-    episode: MovieResult.DataMovie.Item?
-   // productId:Int
+   // episode: MovieResult.DataMovie.Item?,
+    viewModel: ProductDetailsViewModel,
+   productId:Int
 
 
 )
 
 {
+    LaunchedEffect(Unit) {
+        viewModel.getSeriesFirstEpisode(productId,0)
+
+    }
   //
-    //  val isVideoAvailable = !videoUrl.isNullOrEmpty()
-    val isVideoAvailable = !episode?.videoLink.isNullOrEmpty()
-    val isUserLogin =USER_LOGIN_STATUS
+    var isVideoAvailable = !videoUrl.isNullOrEmpty()
+  // val isVideoAvailable = !episode?.videoLink.isNullOrEmpty()
+   val isUserLogin =USER_LOGIN_STATUS
+    val firstEpisode by viewModel.firstEpisode.collectAsState()
+
+    isVideoAvailable=true
+
+
+
+
 
     Box(
         modifier = Modifier
@@ -417,30 +432,110 @@ fun ProductBanner(
 
 
 
-            Text("SAmple.. ${episode?.name}")
-          Log.d("episode","video Link ${episode.toString()}")
+
+
+          //  Text("SAmple.. ${episode?.name}")
+            //  episode?.id.toString()
+
+       //   Log.d("episode","video Link ${episode.toString()}")
 
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = {
-                    if ( isUserLogin) {
-                        val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
-                        Log.d("ProductBanner", "Navigating to video player with URL: $encodedUrl")
-                        navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
-                    }
-
-                    else{
+                    if (isUserLogin) {
+                       // viewModel.getSeriesFirstEpisode(12702,0)
 
 
+                       /* if (episode != null) {
+                            episode.id?.let {
+
+                                Log.d("ProductBanner","episode.. $it")
+                                viewModel.getSeriesFirstEpisode(12702,0)
+
+                            }
+                        }*/
 
 
-                        navController.navigate(Screen.SignUp.route)
 
 
 
-                    }
+
+                            when(firstEpisode)
+                            {
+                                is NetworkResult.Success->
+
+                                {
+
+                                    val episodeDetails = (firstEpisode as NetworkResult.Success).data
+
+
+                                    Log.d("ProductBanner", "Success"+firstEpisode.data.toString())
+                                  val link  = episodeDetails?.data?.videoLink
+                                    Log.d("ProductBanner", "Success"+link)
+
+
+                                    if(link!=null)
+                                    {
+                                        val encodedUrl = URLEncoder.encode(link, StandardCharsets.UTF_8.toString())
+                                        Log.d("ProductBanner", "Navigating to video player with URL: $encodedUrl")
+                                        navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
+
+                                    }
+
+
+
+
+
+
+
+
+
+
+
+                                }
+                                else->
+                                {
+
+                                    Log.d("ProductBanner", "Failed")
+
+
+                                }
+
+
+
+                            }
+
+
+
+
+
+
+
+                        }
+
+
+                    else
+                    {
+
+
+
+
+                    navController.navigate(Screen.SignUp.route)
+
+
+
+                }
+
+
+
+
+
+
+
+
+
 
 
 

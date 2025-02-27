@@ -11,9 +11,11 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.ProductDetailsRepository
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
+import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel.Companion.USER_LOGIN_STATUS_KEY
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel.Companion.USER_TOKEN_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,6 +45,10 @@ class ProductDetailsViewModel @Inject constructor(
 
     val _saveBookMarkResponse = MutableStateFlow<NetworkResult<BookMark>>(NetworkResult.Loading())
     val saveBookMarkResponse: StateFlow<NetworkResult<BookMark>> get() = _saveBookMarkResponse.asStateFlow()
+
+
+    private val _firstEpisode = MutableStateFlow<NetworkResult<ProductModel>>(NetworkResult.Loading())
+    val firstEpisode: StateFlow<NetworkResult<ProductModel>> get() = _firstEpisode.asStateFlow()
 
 
 
@@ -178,6 +184,14 @@ class ProductDetailsViewModel @Inject constructor(
             }
         }
     }
+
+
+
+
+
+
+
+
 
     fun getRelatedMovies(tags: List<String> ) {
         Log.d(
@@ -346,6 +360,9 @@ class ProductDetailsViewModel @Inject constructor(
                 val result = repository.getSeriesEpisodes(seriesId)
                 Log.d("series", "Total episodes: ${result.data?.movieInfo?.total}")
 
+                Log.d("series", "series is: ${seriesId} series num ${seriesNum}")
+
+
                 // Extract the session ID
                 val firstItemId = result.data?.movieInfo?.items?.getOrNull(seriesNum)?.id
                 if (firstItemId == null) {
@@ -375,19 +392,118 @@ class ProductDetailsViewModel @Inject constructor(
 
 
 
+    fun getSeriesFirtsEpisodes1(seriesId: Int, seriesNum: Int) {
+        viewModelScope.launch {
+            try {
+                Log.d("series", "Product ID is $seriesId")
+                _firstEpisode.value = NetworkResult.Loading()
+
+                // First API call to get series episodes
+                val result = repository.getSeriesEpisodes(seriesId)
+                Log.d("series", "Total episodes: ${result.data?.movieInfo?.total}")
+
+                Log.d("series", "series is: ${seriesId} series num ${seriesNum}")
+
+
+                // Extract the session ID
+                val firstItemId = result.data?.movieInfo?.items?.getOrNull(seriesNum)?.id
+                if (firstItemId == null) {
+                    Log.e("series", "No items found in series")
+                    _firstEpisode.value = NetworkResult.Error("No items found in series")
+                    return@launch
+                }
+
+                Log.d("series", "First item ID: $firstItemId")
+
+                // Second API call to get episodes
+                val movieResult = repository.getSeriesEpisodes(firstItemId)
+                Log.d("series", "Movie result retrieved successfully")
+
+                val firstEpisodeData = movieResult.data?.movieInfo?.items?.filterNotNull().orEmpty()
+
+
+
+                // ✅ Store only the list of episodes, not the whole response
+                val episodeId = firstEpisodeData[0].id
+                Log.d("series",_firstEpisode.value.data.toString())
+                Log.d("series", USER_TOKEN_KEY)
+
+
+               val episodeResult= repository.getProductDetails(episodeId!!, "Bearer $USER_TOKEN")
+                _firstEpisode.value=episodeResult
 
 
 
 
+            } catch (e: Exception) {
+                Log.e("series", "Error: ${e.message}")
+                _firstEpisode.value = NetworkResult.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
 
 
 
+    fun getSeriesFirstEpisode(seriesId: Int, seriesNum: Int) {
+        viewModelScope.launch {
+            try {
+                Log.d("series", "Product ID is $seriesId")
 
+                // ✅ Show loading state
+                _firstEpisode.value = NetworkResult.Loading()
 
+                // 🔹 First API call (async)
+                val seriesResultDeferred = async { repository.getSeriesEpisodes(seriesId) }
+                val result = seriesResultDeferred.await()
+                Log.d("series", "Total episodes: ${result.data?.movieInfo?.total}")
 
+                // Extract session ID
+                val firstItemId = result.data?.movieInfo?.items?.getOrNull(seriesNum)?.id
+                if (firstItemId == null) {
+                    Log.e("series", "No items found in series")
+                    _firstEpisode.value = NetworkResult.Error("No items found in series")
+                    return@launch
+                }
 
+                // 🔹 Second API call (async)
+                val movieResultDeferred = async { repository.getSeriesEpisodes(firstItemId) }
+                val movieResult = movieResultDeferred.await()
+                Log.d("series", "Movie result retrieved successfully")
 
+                val firstEpisodeData = movieResult.data?.movieInfo?.items?.filterNotNull().orEmpty()
+                if (firstEpisodeData.isEmpty()) {
+                    Log.e("series", "No episodes found")
+                    _firstEpisode.value = NetworkResult.Error("No episodes found")
+                    return@launch
+                }
+
+                val episodeId = firstEpisodeData[0].id
+                Log.d("series", "Episode ID: $episodeId")
+
+                // 🔹 Third API call (async)
+                val episodeResultDeferred = async {
+                    repository.getProductDetails(episodeId!!, "Bearer $USER_TOKEN")
+                }
+                val episodeResult = episodeResultDeferred.await()
+
+                // ✅ Store final result (Success state)
+                _firstEpisode.value = episodeResult
+
+            } catch (e: Exception) {
+                Log.e("series", "Error: ${e.message}")
+                _firstEpisode.value = NetworkResult.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
 
 
 

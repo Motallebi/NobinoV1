@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentRequest
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentResponse
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
 import com.smcdeveloper.nobinoapp.data.model.profile.UpdateUserProfileRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.UserInfo
@@ -48,6 +50,10 @@ class ProfileViewModel @Inject constructor(
     val loginResponse = MutableStateFlow<NetworkResult<LoginResponse>>(NetworkResult.Loading())
 
     val setUserNameResponse = MutableStateFlow<NetworkResult<String>>(NetworkResult.Loading())
+    val _paymentResponse = MutableStateFlow<NetworkResult<PaymentResponse>>(NetworkResult.Loading())
+    val paymentResponse: StateFlow<NetworkResult<PaymentResponse>> get() = _paymentResponse.asStateFlow()
+
+
 
 
 
@@ -181,6 +187,44 @@ class ProfileViewModel @Inject constructor(
 
 
     }
+
+
+
+    fun postPayment(paymentRequest: PaymentRequest) {
+
+        viewModelScope.launch {
+
+
+           _isLoading.value =true
+          val result=  repository.sendUserPayment(paymentRequest)
+            _paymentResponse.value=result
+            _isLoading.value=false
+
+
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

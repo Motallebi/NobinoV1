@@ -52,6 +52,12 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
     val isSearching = _isSearching.asStateFlow()
 
 
+
+
+
+
+
+
     private val _moviesFlow1 = MutableStateFlow<PagingData<MovieResult.DataMovie.Item>>(PagingData.empty())
     //val moviesFlow1: StateFlow<PagingData<MovieResult.DataMovie.Item>> = _moviesFlow1.asStateFlow()
 
@@ -95,8 +101,11 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val moviesFlow1 = searchText
-        .debounce(500L) // ✅ Wait for user to stop typing
-        .distinctUntilChanged()
+        .debounce(500L)
+        .onEach { _isSearching.value=true }
+
+        // ✅ Wait for user to stop typing
+       // .distinctUntilChanged()
         .flatMapLatest { query ->
             if (query.isBlank()) {
                 flowOf(PagingData.empty()) // ✅ Return empty data when query is blank
@@ -119,6 +128,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                 ).flow.cachedIn(viewModelScope) // ✅ Convert Pager to Flow & cache it
             }
         }
+        .onEach { _isSearching.value = false } // ✅ Hide loading after getting data
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),

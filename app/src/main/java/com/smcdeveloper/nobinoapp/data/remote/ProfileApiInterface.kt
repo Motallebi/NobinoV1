@@ -1,6 +1,8 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
 import com.smcdeveloper.nobinoapp.data.model.favorit.Favorite
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentRequest
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentResponse
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
@@ -69,6 +71,34 @@ interface ProfileApiInterface {
 
 
     ): Response<LoginResponse>
+
+
+    @POST("api/subscriptions")
+    suspend fun postUserPayment(
+        @Header("Authorization") auth: String ="",
+        @Body paymentRequest: PaymentRequest
+
+
+
+
+
+
+    ): Response<PaymentResponse>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

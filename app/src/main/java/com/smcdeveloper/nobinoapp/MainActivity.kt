@@ -119,6 +119,7 @@ class MainActivity : ComponentActivity() {
                                ! ( currentRoute.toString().startsWith("Product_Detail_Screen") ||
                                 currentRoute.toString().startsWith("SeriesDetail_Screen") ||
                                        currentRoute.toString().startsWith("SignUp_screen")
+                                       || currentRoute.toString().startsWith("VideoPlayer_Screen")
 
 
 

@@ -1,12 +1,15 @@
 package com.smcdeveloper.nobinoapp.data.repository
 
 import android.util.Log
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentRequest
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentResponse
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
 import com.smcdeveloper.nobinoapp.data.model.profile.UpdateUserProfileRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.UserInfo
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.remote.ProfileApiInterface
+import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(private val api: ProfileApiInterface): BaseApiResponse2() {
@@ -79,6 +82,18 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
 
         }
+
+
+
+    suspend fun sendUserPayment(paymentRequest: PaymentRequest): NetworkResult<PaymentResponse> =
+
+        safeApiCall {
+
+            api.postUserPayment("Bearer $USER_TOKEN",paymentRequest)
+
+
+        }
+
 
 
 

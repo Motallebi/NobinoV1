@@ -95,14 +95,18 @@ fun BottomNavigationBar(
 
     var showBottomBar = backStackEntry.value?.destination?.route in items.map { it.route }
 
-    val bottomBarRoutes = setOf(
+    val videoScreen = "VideoPlayer_Screen/{videoUrl}"
+    val bottomBarRoutes = setOf<String>(
         Screen.ContactUs.route,
         Screen.EditProfile.route,
         Screen.PaymentHistory.route,
         Screen.BuySubscription.route,
         Screen.Product.route,
         Screen.Movies.route,
-        Screen.DemoScreen.route
+        Screen.DemoScreen.route,
+
+      //  videoScreen
+
 
 
     )
@@ -117,8 +121,11 @@ fun BottomNavigationBar(
     val hiddenBottomNavRoutes = setOf(
         Screen.Login.route,
         Screen.Splash.route,
-        Screen.SignUp.route
-        //  Screen.FullScreenVideo.route
+        Screen.SignUp.route,
+       // Screen.DemoScreen.route
+
+        Screen.VideoPlayerScreen.route.startsWith("VideoPlayer").toString(),
+        videoScreen
     )
 
 

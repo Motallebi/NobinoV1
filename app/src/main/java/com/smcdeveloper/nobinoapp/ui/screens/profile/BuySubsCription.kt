@@ -37,8 +37,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentRequest
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
+import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
+import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.SubsCriptionViewModel
 
 
@@ -46,7 +49,8 @@ import com.smcdeveloper.nobinoapp.viewmodel.SubsCriptionViewModel
 fun SubscriptionConfirmationPage(
     navController: NavHostController,
     viewModel: SubsCriptionViewModel = hiltViewModel(),
-    planid: String
+    planid: String,
+    profileViewModel: ProfileViewModel= hiltViewModel()
 
 
 )
@@ -80,7 +84,10 @@ fun SubscriptionConfirmationPage(
                 imagePath = IMAGE_BASE_URL + currentPlan.data?.planData?.logo.toString(),
                 subscriptionType = currentPlan.data?.planData?.name.toString(),
                 price = "1000 هزار تومان",
-                vat = "۹۰ هزار تومان"
+                vat = "۹۰ هزار تومان",
+                viewModel = profileViewModel,
+                navController=navController
+
             )
 
 
@@ -258,11 +265,14 @@ fun SubscriptionDetailsCard(
     imagePath: String,
     subscriptionType: String,
     price: String,
-    vat: String
+    vat: String,
+    viewModel: ProfileViewModel,
+    navController: NavHostController
 )
 
 {
     var discountCode by remember { mutableStateOf(TextFieldValue("")) }
+    val paymentState by viewModel.paymentResponse.collectAsState()
 
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -356,8 +366,27 @@ fun SubscriptionDetailsCard(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
+
+
                 Button(
-                    onClick = { /* Purchase Action */ },
+                    onClick = {
+
+                        navController.navigate(Screen.PaymentResult.withArgs(
+                            31,""
+
+
+
+                        ))
+
+
+
+                        /* Purchase Action */
+
+
+
+
+
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.weight(1f)

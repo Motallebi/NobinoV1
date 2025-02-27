@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.demo
 
+import android.graphics.Insets.add
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -9,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+
 
 
 import androidx.compose.foundation.lazy.LazyColumn
@@ -52,6 +54,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -64,8 +67,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import coil3.compose.rememberAsyncImagePainter
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.AudioSubtitle
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
 import com.smcdeveloper.nobinoapp.data.model.search.GenreInfo
 import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
@@ -134,6 +139,7 @@ fun DemoBottomSheetSearch(
 )
 
 
+
 {
 
 
@@ -147,14 +153,18 @@ fun DemoBottomSheetSearch(
 
     // 🔴 Selected Filters State
     var selectedTags by remember { mutableStateOf(setOf<String>()) }
+
     var selectedCategories by remember { mutableStateOf(setOf("MOVIE,SERIES")) }
     var selectedCountryIds by remember { mutableStateOf(setOf<String>()) }
     var selectedGenreIds by remember { mutableStateOf(setOf<String>()) }
-    val selectedGenres by remember { mutableStateOf(setOf<GenreInfo>()) } // 🔴 Store full objects for UI
+    val selectedGenres by remember { mutableStateOf(setOf<String>("9999")) } // 🔴 Store full objects for UI
 
 
 
     var selectedActors by remember { mutableStateOf(setOf<String>()) }
+    var selectedActorsIds by remember { mutableStateOf(setOf<String>()) }
+
+
 
     var selectedFromYear by remember { mutableStateOf<Int?>(null) }
     var selectedToYear by remember { mutableStateOf<Int?>(null) }
@@ -169,12 +179,15 @@ fun DemoBottomSheetSearch(
     var categoriesForApi by remember { mutableStateOf("") }
     var countriesForApi by remember { mutableStateOf("") }
     var genresForApi by remember { mutableStateOf("") }
+    var actorsForApi by remember { mutableStateOf("") }
+
+
 
 
     // 🔴 Debounce Filter Changes to Prevent Frequent API Calls
-    val debouncedTags = rememberDebouncedQuery(tagsForApi)
-    val debouncedCategories = rememberDebouncedQuery(categoriesForApi)
-    val debouncedCountries = rememberDebouncedQuery(countriesForApi)
+   // val debouncedTags = rememberDebouncedQuery(tagsForApi)
+   // val debouncedCategories = rememberDebouncedQuery(categoriesForApi)
+   // val debouncedCountries = rememberDebouncedQuery(countriesForApi)
     val debouncedGenres = rememberDebouncedQuery(genresForApi)
 
 
@@ -255,9 +268,11 @@ fun DemoBottomSheetSearch(
 
 
     // 🔴 Build Query Parameters When Filters Change
-    LaunchedEffect(selectedTags, selectedCategories, selectedCountryIds) {
-        tagsForApi = selectedTags.joinToString(",")
+    LaunchedEffect(selectedGenreIds, selectedCategories, selectedCountryIds,selectedGenres) {
+        tagsForApi = selectedGenreIds.joinToString(",")
+
         categoriesForApi = selectedCategories.joinToString(",")
+
         countriesForApi = selectedCountryIds.joinToString(",")
 
         //  homeViewModel.fetchCountries()
@@ -289,10 +304,10 @@ fun DemoBottomSheetSearch(
 
     // 🔴 Fetch Movies Using Jetpack Paging (Triggers when query or filters change)
     val products = searchViewModel.getMovies(
-        tag = debouncedTags,
-        categoryName = debouncedCategories,
-        countries = debouncedCountries,
-        name = debouncedSearchQuery,
+        tag = tagsForApi,
+        categoryName = categoriesForApi,
+        countries = countriesForApi,
+        name = searchText,
         size = 20
 
     ).collectAsLazyPagingItems()
@@ -333,7 +348,8 @@ fun DemoBottomSheetSearch(
 
                 {
 
-                    Box(modifier = Modifier.fillMaxWidth()
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
                         .height(100.dp)
                         //.background(Color.Red),
                        // contentAlignment = Alignment.Center
@@ -372,7 +388,7 @@ fun DemoBottomSheetSearch(
 //
 //                    }
 
-
+/*
                     TextField(
                         value = searchText,
                         onValueChange = searchViewModel::onSearchTextChange,
@@ -430,7 +446,7 @@ fun DemoBottomSheetSearch(
 
                     }
 
-
+*/
 
 
 
@@ -482,8 +498,8 @@ fun DemoBottomSheetSearch(
 
                         SearchBarWithBadge1(
 
-                            searchQuery = searchQuery,
-                            onSearchChange = { searchQuery = it }, // 🔴 Update search text
+                            searchQuery = searchText,
+                            // onSearchChange = { searchQuery = it }, // 🔴 Update search text
                             filterCount = appliedFilters.size,
                             onBadgeClick = {
                                 isParentSheetVisible = true
@@ -496,7 +512,14 @@ fun DemoBottomSheetSearch(
 
 
                             },
-                            suggestions = products
+                            //  suggestions = movies,
+                            viewModel = searchViewModel,
+                            tags = selectedGenreIds.joinToString(",") ,
+                            countries =countriesForApi ,
+                          //  genres = genresForApi,
+                            actors = actorsForApi,
+                            audio = selectedAudioIds.joinToString(",") ,
+                            subtitle = selectedSubtitleIds.joinToString(",")
 
 
                             // 🔴 Open Parent Bottom Shee
@@ -551,7 +574,7 @@ fun DemoBottomSheetSearch(
                         }
 
                         // 🔴 Show Loading Indicator While Fetching More Data
-                        products.apply {
+                        movies.apply {
                             when {
                                 loadState.append is LoadState.Loading -> {
                                     //  item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
@@ -703,6 +726,14 @@ fun DemoBottomSheetSearch(
                                         if (isSelected) add(genre.id.toString()) else remove(
                                             genre.id.toString()
                                         )
+
+                                        Log.d("gn",selectedGenreIds.toString())
+
+                                       appliedFilters= appliedFilters.toMutableList().apply {
+                                           if (isSelected) add(genre.name.toString()) else remove(
+                                               genre.name.toString())
+
+                                        }
                                     }
                                 },
 
@@ -721,11 +752,28 @@ fun DemoBottomSheetSearch(
                                 selectedSubtitleIds = selectedSubtitleIds.toMutableSet().apply {
                                     if (isSelected) add(sub.id) else remove(sub.id)
                                 }
+
                                 appliedFilters =
-                                    selectedTags.toList() + selectedSubtitleIds.toList() + selectedSubtitleIds.toList()
+
+                                  appliedFilters.toMutableList().apply {
+
+                                      if (isSelected) add(sub.name) else remove(sub.name)
+
+
+                                  }
+
+
+
+
+
                             },
 
+
+
                             // audioSubtitles = AUDIO_SUBTITLES,
+
+
+
 
                             onClose = { isChildSheetVisible = false }
 
@@ -818,18 +866,24 @@ fun DemoBottomSheetSearch(
                             FilterActorsSelectionSheet(
                                 title = "انتخاب بازیگر",
                                 actors = actors,
-                                selectedActorIds = selectedActors,
+                                selectedActorIds = selectedActorsIds,
                                 onActorSelected = { actor, isSelected ->
-                                    selectedActors = selectedActors.toMutableSet().apply {
+                                    selectedActorsIds = selectedActorsIds.toMutableSet().apply {
                                         if (isSelected) add(actor.id.toString()) else remove(
                                             actor.id.toString()
                                         )
                                     }
 
+                                    Log.d("act","actor ids $selectedActorsIds",)
+
 
                                     appliedFilters = appliedFilters.toMutableList().apply {
                                         if (isSelected) add(actor.name) else remove(actor.name)
                                     }
+
+
+                                    actorsForApi =
+                                        selectedActorsIds.joinToString(",")
 
 
                                 },
@@ -880,7 +934,15 @@ fun DemoBottomSheetSearch(
                                     if (isSelected) add(audio.id) else remove(audio.id)
                                 }
                                 appliedFilters =
-                                    selectedTags.toList() + selectedAudioIds.toList() + selectedSubtitleIds.toList()
+                                    appliedFilters.toMutableList().apply {
+
+                                        if (isSelected) add(audio.name) else remove(audio.name)
+
+
+
+                                    }
+
+
                             },
 
                             // audioSubtitles = AUDIO_SUBTITLES,
@@ -1225,7 +1287,9 @@ fun DemoBottomSheetSearch(
             {
 
                 Card(
-                    modifier = Modifier.fillMaxWidth().height(80.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp),
                     elevation = CardDefaults.cardElevation()
                 )
 
@@ -1339,18 +1403,30 @@ fun DemoBottomSheetSearch(
             }
         }
     }
-
+//badge1
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun SearchBarWithBadge1(
+    fun SearchBarWithBadge6(
         searchQuery: String,
-        onSearchChange: (String) -> Unit,
+        //onSearchChange: (String) -> Unit,
         filterCount: Int,
         onBadgeClick: () -> Unit,
-        suggestions: LazyPagingItems<MovieResult.DataMovie.Item>,
-        onSuggestionClick: (MovieResult.DataMovie.Item) -> Unit
+       // suggestions: LazyPagingItems<MovieResult.DataMovie.Item>,
+        onSuggestionClick: (MovieResult.DataMovie.Item) -> Unit,
+        viewModel: SearchViewModel
     ) {
         var expanded by remember { mutableStateOf(false) }
+        var previousQuery by remember { mutableStateOf("") }
+        val isSearching by viewModel.isSearching.collectAsState()
+
+        val suggestions = viewModel.moviesFlow1.collectAsLazyPagingItems() // ✅ Live updates
+
+
+        LaunchedEffect(suggestions.itemCount) {
+            expanded = searchQuery.isNotEmpty() && suggestions.itemCount > 0
+        }
+
+
 
         val textColor = if (expanded) Color.Green else Color.Red
 
@@ -1369,11 +1445,57 @@ fun DemoBottomSheetSearch(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
+                        ///** search text field
+                        /*
+
                         TextField(
                             value = searchQuery,
                             onValueChange = {
-                                onSearchChange(it)
+
+
+                                //onSearchChange(it)
+                                viewModel.onSearchTextChange(it)
                                 expanded = it.isNotEmpty() && suggestions.itemCount > 0
+                            } ,
+                            placeholder = { Text("جستجو...", color = Color.Red) },
+                            textStyle = TextStyle(Color.White),
+                            singleLine = true,
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .background(Color.DarkGray, shape = RoundedCornerShape(24.dp)),
+                            colors = TextFieldDefaults.textFieldColors(
+                                containerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Default.Search,
+                                    contentDescription = "Search",
+                                    tint = Color.Red
+                                )
+                           }
+                        )
+
+
+                     ///////
+                     */
+
+
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { newQuery ->
+                                viewModel.onSearchTextChange(newQuery)
+
+                                // ✅ Only expand if a new search is being performed
+                                if (newQuery.length > previousQuery.length) { // If user is typing more
+                                  //  expanded = newQuery.isNotEmpty() && suggestions.itemCount > 0
+                                    expanded=newQuery.isNotEmpty()
+                                } else if (newQuery.isBlank()) { // If input is cleared, close suggestions
+                                    expanded = false
+                                }
+
+                                previousQuery = newQuery // ✅ Update previous query
                             },
                             placeholder = { Text("جستجو...", color = Color.Red) },
                             textStyle = TextStyle(Color.White),
@@ -1395,6 +1517,48 @@ fun DemoBottomSheetSearch(
                             }
                         )
 
+
+
+                        if (isSearching) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator(color = Color.White)
+                            }
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         // 🔴 Filter Icon with Badge
                         IconButton(onClick = onBadgeClick) {
                             BadgedBox(
@@ -1414,11 +1578,13 @@ fun DemoBottomSheetSearch(
                     }
 
                     // 🔴 Expandable Card for Suggestions
-                    AnimatedVisibility(visible = expanded) {
+                    AnimatedVisibility(visible = expanded && !!isSearching) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
+
                                 .height(100.dp), // Show only 2 items at a time (each ~50.dp)
+
                             elevation = CardDefaults.cardElevation()
                         ) {
                             LazyColumn(
@@ -1444,6 +1610,219 @@ fun DemoBottomSheetSearch(
     }
 
 
+
+
+
+
+
+@Composable
+fun SearchBarWithBadge1(
+    searchQuery: String,
+    filterCount: Int,
+    onBadgeClick: () -> Unit,
+    onSuggestionClick: (MovieResult.DataMovie.Item) -> Unit,
+    viewModel: SearchViewModel,
+   //Genres is tags
+    tags:String,
+    countries:String,
+   // genres:String,
+    actors:String,
+    audio:String,
+    subtitle: String,
+
+
+
+
+
+)
+{
+    var expanded by remember { mutableStateOf(false) }
+    val searchResults = viewModel.moviesFlow1.collectAsLazyPagingItems()
+    val isLoading by viewModel.isSearching.collectAsState()
+
+
+
+    Log.d("SearchQuery", "selected tags are $tags" )
+    Log.d("SearchQuery", "selected countries are $countries" )
+    Log.d("SearchQuery", "selected Actors are $actors" )
+    Log.d("SearchQuery", "selected Audios are $audio" )
+    Log.d("SearchQuery", "selected Subtitles are $subtitle" )
+
+
+
+
+
+
+
+    // ✅ Expand when new search results arrive
+    LaunchedEffect(searchResults.itemCount) {
+        expanded = searchQuery.isNotEmpty() && searchResults.itemCount > 0
+    }
+    Log.d("loading","is laoding first $isLoading")
+
+
+    Column {
+
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+
+
+
+        )
+        {
+            Card(modifier = Modifier.fillMaxWidth(0.8f)) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+
+                        ,
+
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    )
+
+                    {
+                        TextField(
+                            modifier = Modifier.padding(horizontal = 20.dp),
+                            shape = MaterialTheme.shapes.large,
+
+
+                            value = searchQuery,
+                            onValueChange = {
+                                viewModel.onSearchTextChange(it)
+                                expanded = it.isNotEmpty()
+                            },
+                            placeholder = { Text("جستجو...") }
+                        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }
+
+
+
+                    // ✅ Show Loading Indicator While Searching
+                    if (isLoading) {
+
+                        Log.d("loading","is laoding $isLoading")
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator(color = Color.Red)
+                        }
+                    }
+
+                    // ✅ Show Search Suggestions
+                    AnimatedVisibility(visible = expanded && !isLoading) {
+                        Card(modifier = Modifier.fillMaxWidth()) {
+                            LazyColumn {
+                                items(searchResults.itemCount) { index ->
+                                    searchResults[index]?.let { movie->
+                                        SuggestionTextItem(
+                                            movie.name.toString(),
+                                            onClick = {
+                                                onSuggestionClick(movie)
+                                                expanded = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            IconButton(onClick = onBadgeClick,
+                modifier = Modifier.background(Color.Black)
+
+
+            ) {
+                BadgedBox(
+                    badge = {
+                        if (filterCount > 0) {
+                            Badge(
+                                modifier = Modifier,
+                                containerColor = Color.Red
+
+
+
+                            ) {
+
+                                Text("$filterCount")
+
+
+                            }
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.filter),
+                        contentDescription = "Filter",
+                        tint = if(filterCount>0) Color.Red else Color.White,
+                        modifier = Modifier.size(24.dp)
+
+                    )
+                }
+            }
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Composable
     fun SuggestionTextItem(text: String, onClick: () -> Unit) {
         Text(
@@ -1453,7 +1832,9 @@ fun DemoBottomSheetSearch(
                 .padding(8.dp)
                 .fillMaxWidth(),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = Color.White
+
+
         )
     }
 

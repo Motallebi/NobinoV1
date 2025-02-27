@@ -1,11 +1,15 @@
 package com.smcdeveloper.nobinoapp.ui.screens.profile
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,9 +18,106 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentRequest
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentResponse
+import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
+import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 
 @Composable
-fun PaymentSuccessPage() {
+fun PaymentResultScreen(
+    viewModel: ProfileViewModel= hiltViewModel(),
+    planId:Int,
+    discountCode:String
+
+
+
+
+
+)
+
+
+
+
+
+
+
+{
+
+
+    LaunchedEffect(Unit) {
+
+        val discount =PaymentRequest.Discount("")
+        val plan =PaymentRequest.Plan(31)
+        val paymentRequest =PaymentRequest(plan = plan, discount = discount)
+
+        viewModel.postPayment(paymentRequest = paymentRequest)
+
+
+
+
+
+
+    }
+
+
+    val paymentResponse by viewModel.paymentResponse.collectAsState()
+
+
+
+          when(paymentResponse)
+          {
+              is NetworkResult.Loading->
+          {
+              Log.d("payment","payment is loading")
+
+
+
+
+          }
+
+              is NetworkResult.Error->
+              {
+
+                  Log.d("payment","payment is Error")
+
+
+
+              }
+
+              is NetworkResult.Success ->
+              {
+                 // paymentResponse.data.paymentResponse.payment
+
+                  Log.d("payment","payment is Success")
+                  Log.d("payment","payment response ${paymentResponse.data?.paymentResponse?.payment?.redirect}")
+                  Log.d("payment","payment response ${paymentResponse.data?.paymentResponse?.payment.toString()}")
+
+
+
+
+
+              }
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
