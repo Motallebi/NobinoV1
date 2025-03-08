@@ -117,7 +117,7 @@ fun ShowSpecialCat(specialCat:String)
 
 
 @Composable
-fun SliderByMoveTag(items: List<MovieResult.DataMovie.Item>) {
+fun SliderByMoveTag(items: List<MovieResult.DataMovie.Item>,navController: NavHostController) {
 
 
     LazyRow(
@@ -128,7 +128,7 @@ fun SliderByMoveTag(items: List<MovieResult.DataMovie.Item>) {
             val movieInfo = items[index]
 
            // Log.d(LOG_TAG,"Slider PAth${sliderInfo?.imageHorizontalPath}")
-            SliderItemByTags(movieInfo)
+            SliderItemByTags(movieInfo,navController)
         }
     }
 }
@@ -228,9 +228,9 @@ fun SliderItem1(sliderInfo: Slider.Sliderinfo?) {
     }
 
 @Composable
-fun SliderItemByTags(movieInfo: MovieResult.DataMovie.Item) {
+fun SliderItemByTags(movieInfo: MovieResult.DataMovie.Item,navController: NavHostController) {
 
-    MovieCardtestByTag(movieInfo)
+    MovieCardtestByTag(movieInfo, navController =navController )
 
 
 
@@ -247,7 +247,7 @@ fun SliderItemByTags(movieInfo: MovieResult.DataMovie.Item) {
 
 
 @Composable
-fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel())
+fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel(),navController: NavHostController)
 {
 
     val movieState by viewModel.movieState.collectAsState()
@@ -296,7 +296,7 @@ fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel())
                 ShowSpecialCat("..test..")
 
 
-                SliderByMoveTag(it)
+                SliderByMoveTag(it, navController = navController)
 
             }
 
@@ -332,7 +332,7 @@ fun GetSliderByTag(viewModel: HomeViewModel = hiltViewModel())
 
 
 @Composable
-fun GetSliderByTag2(viewModel: HomeViewModel = hiltViewModel()) {
+fun GetSliderByTag2(viewModel: HomeViewModel = hiltViewModel(),navController: NavHostController) {
 
    // val movieState by viewModel.movieState.collectAsState()
     //val tagState by viewModel.moviesByTags.collectAsState()
@@ -379,7 +379,7 @@ fun GetSliderByTag2(viewModel: HomeViewModel = hiltViewModel()) {
                 Log.d(NOBINO_LOG_TAG, "networkcall.......")
                 Log.d(NOBINO_LOG_TAG, "networkcall......."+movieInfo.toString())
                 if (movieInfo != null) {
-                    SliderByMoveTag(movieInfo)
+                    SliderByMoveTag(movieInfo, navController =navController )
                 }
 
                 //  Log.d(LOG_TAG,"networkcall......."+movieInfo.)
@@ -410,7 +410,7 @@ fun GetSliderByTag2(viewModel: HomeViewModel = hiltViewModel()) {
 
 
 @Composable
-fun GetSliderByTag3(viewModel: HomeViewModel = hiltViewModel()) {
+fun GetSliderByTag3(viewModel: HomeViewModel = hiltViewModel(),navController: NavHostController) {
 
     // val movieState by viewModel.movieState.collectAsState()
     //val tagState by viewModel.moviesByTags.collectAsState()
@@ -460,7 +460,7 @@ fun GetSliderByTag3(viewModel: HomeViewModel = hiltViewModel()) {
                     is NetworkResult.Success -> {
                         val movieInfo = moviesResult.data
                         if (movieInfo != null) {
-                            SliderByMoveTag(movieInfo)
+                            SliderByMoveTag(movieInfo, navController =navController )
                         }
 
 
@@ -477,7 +477,7 @@ fun GetSliderByTag3(viewModel: HomeViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun GetSliderByTag4(viewModel: HomeViewModel = hiltViewModel()) {
+fun GetSliderByTag4(viewModel: HomeViewModel = hiltViewModel(),navController: NavHostController) {
 
     // val movieState by viewModel.movieState.collectAsState()
     //val tagState by viewModel.moviesByTags.collectAsState()
@@ -529,7 +529,7 @@ fun GetSliderByTag4(viewModel: HomeViewModel = hiltViewModel()) {
                         val movieInfo = moviesResult.data
                         if (movieInfo != null) {
 
-                            SliderByMoveTag(movieInfo)
+                            SliderByMoveTag(movieInfo, navController =navController )
                         }
 
 
@@ -623,7 +623,7 @@ fun GetSliderByTag5(viewModel: HomeViewModel = hiltViewModel(),
 
 
                     )
-                    SliderByMoveTag(movies)
+                    SliderByMoveTag(movies,navController)
 
                    // Text(text = "---"+tag.title)
 
@@ -934,7 +934,7 @@ fun MovieTagItem(tag: MovieCat.MovieCatData,
 
 
                 )
-                SliderByMoveTag(movies)
+                SliderByMoveTag(movies,navController)
 
 
             }

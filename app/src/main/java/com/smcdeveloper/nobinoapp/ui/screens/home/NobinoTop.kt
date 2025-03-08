@@ -30,7 +30,9 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.get
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
@@ -88,31 +90,54 @@ fun NobinoTop(navController: NavHostController) {
             {
                 val tabs = listOf("نوبینو", "فیلم", "سریال", "آموزش", "کودک")
                 tabs.forEachIndexed { index, tab ->
-                    val style =MaterialTheme.typography.nobinoLarge
+
+                    val style = MaterialTheme.typography.nobinoLarge
                     AppBarItem(
 
 
                         label = tab,
-                      //  style = if (index==1) MaterialTheme.typography.nobinoLarge else MaterialTheme.typography.titleSmall,
+                        //  style = if (index==1) MaterialTheme.typography.nobinoLarge else MaterialTheme.typography.titleSmall,
                         isSelected = tab == selectedTab,
-                        style = if (index==0) style else MaterialTheme.typography.titleSmall,
+                        style = if (index == 0) style else MaterialTheme.typography.titleSmall,
 
                         //isBold = index == 0, // ✅ First tab is bold
                         //fontSize = if (index == 0) 20.sp else 16.sp, // ✅ First tab is larger
 
                         onClick = {
-                            selectedTab = tab
-                            navController.navigate(
-                                when (tab) {
-                                    "نوینو" ->Screen.Home.route
-                                    "فیلم" -> Screen.Movies.route
-                                    "سریال" -> Screen.Series.route
-                                    "آموزش" -> Screen.Training.route
-                                    "کودک" -> Screen.Kids.route
-                                    else -> Screen.Home.route
+                            val route = when (tab) {
+                                "نوینو" -> Screen.Home.route
+                                "فیلم" -> Screen.Movies.route
+                                "سریال" -> Screen.Series.route
+                                "آموزش" -> Screen.Training.route
+                                "کودک" -> Screen.Kids.route
+                                else -> Screen.Home.route
+                            }
+                            // Check if the selected tab is already active
+
+
+
+
+
+
+
+
+
+                            if (selectedTab != tab) {
+                                selectedTab = tab
+                                navController.navigate(route) {
+                                    launchSingleTop = true
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    restoreState = true
                                 }
-                            )
+                            }
                         }
+
+
+                        //  restoreState = true
+
+
                     )
                 }
             }
@@ -131,10 +156,12 @@ fun NobinoTop(navController: NavHostController) {
         ),*/
 
 
-        )
+    )
 
 
 }
+
+
 
 
 @Composable

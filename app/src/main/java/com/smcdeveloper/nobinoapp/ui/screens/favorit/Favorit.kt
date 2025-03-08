@@ -19,7 +19,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,6 +42,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import com.smcdeveloper.nobinoapp.data.model.favorit.Favorite
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.component.HtmlText
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
 import com.smcdeveloper.nobinoapp.viewmodel.FavoritesViewModel
 
@@ -49,7 +52,7 @@ viewModel: FavoritesViewModel= hiltViewModel()
 )
 {
 
-    FavoriteListScreen(viewModel)
+    FavoriteListScreen(viewModel,navController)
 
 
 
@@ -78,7 +81,7 @@ fun ShowData()
 
 
 @Composable
-fun FavoriteListScreen(viewModel: FavoritesViewModel) {
+fun FavoriteListScreen(viewModel: FavoritesViewModel,navController: NavHostController) {
   //  val movies by viewModel.movies.collectAsState()
 
     val movies = viewModel.getUserFavorites(pageSize = 20, pageNumber = 1).collectAsLazyPagingItems()
@@ -93,6 +96,7 @@ fun FavoriteListScreen(viewModel: FavoritesViewModel) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(top = 100.dp)
             .padding(16.dp)
             .border(1.dp, Color.Gray.copy(alpha = 0.3f), RoundedCornerShape(8.dp)) // ✅ Light border
             .background(Color.Black) // ✅ Dark background
@@ -102,64 +106,133 @@ fun FavoriteListScreen(viewModel: FavoritesViewModel) {
             verticalArrangement = Arrangement.spacedBy(8.dp) // ✅ Space between items
         ) {
             items(movies.itemCount) { index -> // ✅ Show 3 items at a time
-                MovieItem(movies[index]!!)
+                MovieItem(movies[index]!!,navController)
             }
         }
     }
 }
 
 @Composable
-fun MovieItem(movie: Favorite.FavoriteData.Item) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.DarkGray, RoundedCornerShape(8.dp)) // ✅ Card-like look
-            .padding(12.dp)
-    ) {
-        AsyncImage(
-            model = IMAGE_BASE_URL +movie.images?.get(0)?.src,
-            contentDescription = "Movie Thumbnail",
+fun MovieItem(movie: Favorite.FavoriteData.Item,navController: NavHostController) {
+
+    Card(
+
+    )
+
+    {
+
+
+        Row(
             modifier = Modifier
-                .size(80.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .fillMaxWidth()
+                .background(Color.DarkGray, RoundedCornerShape(4.dp)) // ✅ Card-like look
+                .padding(4.dp)
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        {
 
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = movie.name.toString(),
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-          //  Text(text = "قسمت ${movie.episode}", color = Color.Gray, fontSize = 14.sp)
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = movie.shortDescription.toString(),
-                color = Color.LightGray,
-                fontSize = 12.sp,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+            AsyncImage(
+                model = IMAGE_BASE_URL + movie.images?.get(0)?.src,
+                contentDescription = "Movie Thumbnail",
+                modifier = Modifier
+                    .width(80.dp)
+                    .height(60.dp)
+                    .clip(RoundedCornerShape(16.dp))
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = movie.name.toString(),
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    softWrap = true
+
+
+
+
+                )
+            }
+
+
 
             Button(
-                onClick = { /* Play movie */ },
+                onClick = {
+                /* Play movie */
+
+                    if(movie.category.toString() != "SERIES") {
+
+                        navController.navigate(
+                            Screen.ProductDetails.withArgs(
+                                movie.id.toString()
+
+
+                            )
+                        )
+                    }
+                    else if (movie.category.toString() == "SERIES")
+                    {
+                        navController.navigate(Screen.SeriesDetailScreen.withArgs(
+                            movie.id.toString())
+                        )
+
+
+                    }
+
+
+
+
+
+
+
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                shape = RoundedCornerShape(4.dp),
-                modifier = Modifier.align(Alignment.Start)
-            ) {
+                shape = MaterialTheme.shapes.medium
+                //modifier = Modifier.align(Alignment.Start)
+            )
+            {
                 Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play", tint = Color.White)
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "پخش فیلم", color = Color.White)
             }
+
+
+
         }
+
+        HtmlText(movie.shortDescription.toString(), textColor = Color.White)
+
+
+
+
     }
-}
+
+
+
+
+
+
+
+
+
+
+
+       // Spacer(modifier = Modifier.width(12.dp))
+
+
+          //  Text(text = "قسمت ${movie.episode}", color = Color.Gray, fontSize = 14.sp)
+
+          //  Spacer(modifier = Modifier.height(4.dp))
+
+
+
+         //   Spacer(modifier = Modifier.height(8.dp))
+
+
+        }
+
+
 
 
 

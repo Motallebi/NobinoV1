@@ -46,9 +46,15 @@ class ProductDetailsViewModel @Inject constructor(
     val _saveBookMarkResponse = MutableStateFlow<NetworkResult<BookMark>>(NetworkResult.Loading())
     val saveBookMarkResponse: StateFlow<NetworkResult<BookMark>> get() = _saveBookMarkResponse.asStateFlow()
 
+    val _isBookmarked = MutableStateFlow(false)
+    val isBookmarked: StateFlow<Boolean> = _isBookmarked.asStateFlow()
+
+
+
 
     private val _firstEpisode = MutableStateFlow<NetworkResult<ProductModel>>(NetworkResult.Loading())
     val firstEpisode: StateFlow<NetworkResult<ProductModel>> get() = _firstEpisode.asStateFlow()
+
 
 
 
@@ -71,13 +77,16 @@ class ProductDetailsViewModel @Inject constructor(
             Log.d("Token", "product id is:...${token}")
             _product.value = NetworkResult.Loading()
 
-            if(USER_TOKEN_KEY.isNotBlank() && USER_LOGIN_STATUS)
+            if(USER_TOKEN_KEY.isNotBlank() && USER_LOGIN_STATUS) {
 
-            _product.value = repository.getProductDetails(productId, auth = "Bearer " + token)
+                _product.value = repository.getProductDetails(productId, auth = "Bearer " + token)
+                _isBookmarked.value=_product.value.data?.data?.bookmarked!!
+            }
 
             else
 
             _product.value = repository.getProductDetails(productId)
+
 
 
 
@@ -102,6 +111,12 @@ class ProductDetailsViewModel @Inject constructor(
 
 
 
+            _isBookmarked.value =  result.data?.data?.bookmarked!!
+
+
+
+
+
         }
 
 
@@ -119,10 +134,25 @@ class ProductDetailsViewModel @Inject constructor(
     {
         viewModelScope.launch {
 
+            val result1=  repository.removeBookMark(
+                bookMarKRequest = BookMarKRequest(12965,type="BOOKMARK"),
+                auth = auth
 
-            val result=  repository.saveBookMark(bookmark,auth)
+
+
+
+            )
+
+            val result=  repository.removeBookMark(bookmark,auth)
+
+            Log.d("book","result is ${result.data.toString()}")
+            Log.d("book",auth)
+
 
             _saveBookMarkResponse.value=result
+            _isBookmarked.value =  result.data?.data?.bookmarked!!
+
+
 
 
 

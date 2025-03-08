@@ -12,6 +12,16 @@
     <string name="terms_conditions">قوانین و مقررات</string>
     <string name="contact_us">تماس با ما</string>
     <string name="logout">خروج از حساب کاربری</string>
+    <string name="Description">توضیحات فیلم </string>
+    <string name="RelatedMovies">پیشنهاد‌های مرتبط</string>
+    <string name="PlayMovie">پخش فیلم</string>
+    <string name="LoginFirst">ورود و پخش</string>
+    <string name="Actors">بازیگران</string>
+    <string name="input_phone_please">    لطفا شمماره تلفن همراه خود را وارد نمایید.</string>
+    <string name="Show_More">مشاهده همه</string>
+
+
+
 
 
 

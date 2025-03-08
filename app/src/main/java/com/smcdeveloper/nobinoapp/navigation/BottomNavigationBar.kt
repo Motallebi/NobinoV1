@@ -26,7 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.get
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 
@@ -63,7 +65,7 @@ fun BottomNavigationBar(
             ),
         BottomNavItem(
             name = stringResource(R.string.serach),
-            route = Screen.Search.route,
+            route = Screen.DemoScreen.route,
             selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
             deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 
@@ -79,7 +81,7 @@ fun BottomNavigationBar(
             ),
         BottomNavItem(
             name = "Demo",
-            route = Screen.DemoScreen.route,
+            route = Screen.Favorite.route,
             selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
             deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 
@@ -105,8 +107,7 @@ fun BottomNavigationBar(
         Screen.Movies.route,
         Screen.DemoScreen.route,
 
-      //  videoScreen
-
+        //  videoScreen
 
 
     )
@@ -122,7 +123,7 @@ fun BottomNavigationBar(
         Screen.Login.route,
         Screen.Splash.route,
         Screen.SignUp.route,
-       // Screen.DemoScreen.route
+        // Screen.DemoScreen.route
 
         Screen.VideoPlayerScreen.route.startsWith("VideoPlayer").toString(),
         videoScreen
@@ -168,67 +169,86 @@ fun BottomNavigationBar(
 
 
 
-                        NavigationBarItem(
-                            selected = selected,
-                            onClick = { onItemClick(item) },
+                NavigationBarItem(
+                    selected = selected,
+                    onClick = {
+
+                        navController.navigate(item.route) {
+
+                            if(item.route==Screen.ProductDetails.route)
+                            {
+                                launchSingleTop =true
+                                popUpTo(navController.graph[Screen.Home.route])
+
+                            }
 
 
-                            icon = {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally)
-                                {
-                                    if (selected) {
-                                        Icon(
-                                            modifier = Modifier.height(24.dp),
-                                            painter = item.selectedIcon,
-                                            contentDescription = item.name
-
-
-                                        )
-
-
-                                    } else {
-                                        Icon(
-                                            modifier = Modifier.height(24.dp),
-                                            painter = item.deSelectedIcon,
-                                            contentDescription = item.name
-                                        )
-
-
-                                    }
-
-                                    Text(
-                                        text = item.name,
-                                        textAlign = TextAlign.Center,
-                                        style = MaterialTheme.typography.nobinoMedium,
-                                        modifier = Modifier.padding(top = 5.dp)
-                                    )
-
-
-                                }
-
-
-                            },
-
-                            colors = NavigationBarItemDefaults.colors(
-                                indicatorColor = if (selected) Color.Black else Color.Transparent , // ✅ Match container color
-                                selectedIconColor = Color.Red,
-                                selectedTextColor = Color.Red
+                            launchSingleTop = true
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            restoreState = true
+                        }
 
 
 
 
+
+
+
+
+                        onItemClick(
+                            item
 
 
                         )
-                        )
+                    },
 
 
+                    icon = {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally)
+                        {
+                            if (selected) {
+                                Icon(
+                                    modifier = Modifier.height(24.dp),
+                                    painter = item.selectedIcon,
+                                    contentDescription = item.name
 
 
+                                )
 
 
+                            } else {
+                                Icon(
+                                    modifier = Modifier.height(24.dp),
+                                    painter = item.deSelectedIcon,
+                                    contentDescription = item.name
+                                )
 
 
+                            }
+
+                            Text(
+                                text = item.name,
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.nobinoMedium,
+                                modifier = Modifier.padding(top = 5.dp)
+                            )
+
+
+                        }
+
+
+                    },
+
+                    colors = NavigationBarItemDefaults.colors(
+                        indicatorColor = if (selected) Color.Black else Color.Transparent, // ✅ Match container color
+                        selectedIconColor = Color.Red,
+                        selectedTextColor = Color.Red
+
+
+                    )
+                )
 
 
             }

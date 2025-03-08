@@ -1,7 +1,9 @@
 package com.smcdeveloper.nobinoapp.ui.component
 
-import android.net.Uri
+
+import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,18 +11,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-
-
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -29,7 +28,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -42,21 +40,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
@@ -66,23 +64,16 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.google.gson.Gson
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.Section
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
-import com.smcdeveloper.nobinoapp.data.repository.SeriesRepository
 import com.smcdeveloper.nobinoapp.navigation.Screen
-import com.smcdeveloper.nobinoapp.ui.theme.extraBoldNumber
-import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
-
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
-import com.smcdeveloper.nobinoapp.ui.theme.nobinoSmall
-import com.smcdeveloper.nobinoapp.ui.theme.nobino_fonts
 import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
 import com.smcdeveloper.nobinoapp.ui.theme.spacing
-import okhttp3.internal.wait
+import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,6 +116,34 @@ fun NobinoText() {
 
 
 }
+
+
+
+
+
+
+@Composable
+fun HtmlText(html: String, modifier: Modifier = Modifier, textColor: Color = Color.Black) {
+    AndroidView(
+        factory = { context ->
+            TextView(context).apply {
+                text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                movementMethod = LinkMovementMethod.getInstance() // Enables clickable links
+                setTextColor(textColor.toArgb())
+
+
+            }
+        },
+        update = { textView ->
+            textView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        },
+        modifier = modifier
+    )
+}
+
+
+
+
 
 @Composable
 fun NobinoButton(text: String, modifier: Modifier) {
@@ -929,7 +948,15 @@ fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {
 
 
 @Composable
-fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
+fun MovieCardtestByTag(
+
+    movieInfo: MovieResult.DataMovie.Item,
+    //onCardClick:()->Unit,
+    navController: NavHostController
+
+
+
+) {
 
 
     Box(
@@ -939,12 +966,43 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
             .height(250.dp)
             // .padding(50.dp)
             //  .wrapContentSize()
+            .clickable {
 
-            .clip(RoundedCornerShape(12.dp))
+                if(movieInfo.category.toString() != "SERIES") {
+
+                    navController.navigate(
+                        Screen.ProductDetails.withArgs(
+                            movieInfo.id.toString()
+
+
+                        )
+                    )
+                }
+                else if (movieInfo.category.toString() == "SERIES")
+                {
+                    navController.navigate(Screen.SeriesDetailScreen.withArgs(
+                        movieInfo.id.toString())
+                    )
+
+
+                }
+
+
+
+
+
+
+            }
+
+            .clip(RoundedCornerShape(16.dp)),
+
+
+
+
           //  .background(Color.Green)
         // .border(8.dp, Color(0xFF6200EE), RoundedCornerShape(12.dp)),
 
-        //  contentAlignment = Alignment.Center
+         // contentAlignment = Alignment.BottomStart
 
     )
 
@@ -1004,14 +1062,14 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
 
             Column(
                 modifier = Modifier
-                    // .fillMaxWidth()
-                    .padding(start = 15.dp)
+                     .fillMaxWidth(),
+                   //.padding(start = 15.dp)
 
 
-                   .background(Color.Red),
+                  // .background(Color.Red),
                 //  horizontalAlignment = Alignment.End
 
-                 verticalArrangement = Arrangement.Bottom
+                    verticalArrangement = Arrangement.Bottom
 
 
             )
@@ -1020,14 +1078,16 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
 
                 Row(modifier = Modifier.fillMaxWidth()
                     .padding(8.dp)
-                    .background(Color.Yellow)
+                  //  .background(Color.Yellow)
                 )
                 {
 
                     movieInfo?.name?.let {
                         Text(
                             it,
-                            style = MaterialTheme.typography.nobinoMedium
+                            style = MaterialTheme.typography.nobinoMedium,
+                            maxLines = 1
+
 
 
                         )
@@ -1039,8 +1099,8 @@ fun MovieCardtestByTag(movieInfo: MovieResult.DataMovie.Item) {
 
                 }
 
-                Row(modifier = Modifier.fillMaxWidth()
-                    .background(Color.Green),
+                Row(modifier = Modifier.fillMaxWidth(),
+                    //.background(Color.Green),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
 
@@ -1080,7 +1140,7 @@ fun FeatureIconsRow(isMicAvailable: Boolean, isKeyboardAvailable: Boolean) {
     Row(
         modifier = Modifier
             //.fillMaxWidth()
-            .background(Color.Cyan)
+           // .background(Color.Cyan)
             .padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -1344,52 +1404,96 @@ fun NobinoSpecialRow(
 )
 {
 
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
+            .padding(horizontal = 10.dp)
             .background(MaterialTheme.colorScheme.background),
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
 
 
+
     )
+
+
+
+
+
+
     {
 
         Text(title)
-        Text(
-            "مشاهده همه",
-            style = MaterialTheme.typography.bodySmall,
 
 
-            modifier = Modifier.clickable {
-                Log.d("category", "Nobino Button Category is${category}")
-                //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+        Row(
+            modifier = Modifier,
 
-                navController.navigate(
-                    Screen.Product.withArgs(
-                        movieCat.tags?.get(0).toString(),
-                        category,
-                        movieCat.title.toString(),
+            verticalAlignment = Alignment.CenterVertically
 
+
+
+        )
+
+        {
+
+            Text(
+                "مشاهده همه",
+                style = MaterialTheme.typography.bodySmall,
+
+
+                modifier = Modifier.clickable {
+                    Log.d("category", "Nobino Button Category is${category}")
+                    //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+
+                    navController.navigate(
+                        Screen.Product.withArgs(
+                            movieCat.tags?.get(0).toString(),
+                            category,
+                            movieCat.title.toString(),
+
+
+
+                            )
 
 
                     )
 
 
+                    //  navController.navigate(Screen.DemoScreen.route)
+
+
+                },
+
+
                 )
 
+            Icon(painterResource(R.drawable.arrow_left), "",
+                tint = Color.White
 
-                //  navController.navigate(Screen.DemoScreen.route)
-
-
-            },
 
 
             )
 
-        Icon(painterResource(R.drawable.phone_regular), "")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+
 
 
     }
@@ -1525,56 +1629,212 @@ fun NobinoSpecialRowBySection2(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
+            .padding(horizontal = 10.dp)
             .background(MaterialTheme.colorScheme.background),
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+
 
 
     )
+
     {
 
         Text(title)
-        Text("ShowMoreSeries...",
-            modifier = Modifier.clickable {
-                Log.d("category", "Nobino Button Category is${category}")
-                //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
 
-                //  Log.d("category", "Nobino Button tag is${ section.tags?.get(0)?.id.toString()}")
-                //  Log.d("category", "Nobino Button tag is${ section.tags.toString()}")
+        Row(
+            modifier = Modifier,
 
-                val tagsList = tags
-                val tags = tagsList.joinToString(",")
-                //  Log.d("category", "Nobino Button Category is${tagsJson}")
-                // Log.d("category", "Nobino Button Category is${Uri.encode(tagsJson)}")
+            verticalAlignment = Alignment.CenterVertically
 
-
-                // navController.navigate("section_screen?tags=${Uri.encode(tagsJson)}")
-
-                navController.navigate(
-
-                    Screen.Product.withArgs(
-
-
-                        tags,
-                        category,
-                        title
-
-
-
-                    )
-
-                )
-
-
-            }
 
 
         )
+        {
+
+
+            Text(
+                stringResource(R.string.Show_More),
+                modifier = Modifier.clickable {
+                    Log.d("category", "Nobino Button Category is${category}")
+                    //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+
+                    //  Log.d("category", "Nobino Button tag is${ section.tags?.get(0)?.id.toString()}")
+                    //  Log.d("category", "Nobino Button tag is${ section.tags.toString()}")
+
+                    val tagsList = tags
+                    val tags = tagsList.joinToString(",")
+                    //  Log.d("category", "Nobino Button Category is${tagsJson}")
+                    // Log.d("category", "Nobino Button Category is${Uri.encode(tagsJson)}")
+
+
+                    // navController.navigate("section_screen?tags=${Uri.encode(tagsJson)}")
+
+                    navController.navigate(
+
+                        Screen.Product.withArgs(
+
+
+                            tags,
+                            category,
+                            title
+
+
+
+                        )
+
+                    )
+
+
+                }
+
+
+
+
+            )
+
+            Icon(painterResource(R.drawable.arrow_left),"",
+                tint = Color.White
+
+
+
+            )
+
+
+
+
+        }
+
+
 
 
     }
 
 
 }
+
+
+
+
+@Composable
+fun NobinoSpecialRowBySectionForKids(
+    title: String,
+    navController: NavHostController,
+    tags: List<String>,
+    category: String
+) {
+
+    Log.d("categoty", "category is $category")
+    Log.d("categoty", "title is $title tags is $tags")
+
+    // Log.d("categoty","tags are ${section.tags.toString()}")
+
+    Row(
+        modifier = Modifier
+            .background(Color.Transparent)
+            .fillMaxWidth()
+            .padding(top = 10.dp)
+            .padding(horizontal = 10.dp),
+           // .background(MaterialTheme.colorScheme.background),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+
+
+
+    )
+
+    {
+
+        Text(title,
+            color = Color.Black
+
+
+        )
+
+        Row(
+            modifier = Modifier,
+
+            verticalAlignment = Alignment.CenterVertically
+
+
+
+        )
+        {
+
+
+            Text(
+                stringResource(R.string.Show_More),
+                color = Color.DarkGray.copy(alpha = 0.4f),
+
+                modifier = Modifier.clickable {
+                    Log.d("category", "Nobino Button Category is${category}")
+                    //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
+
+                    //  Log.d("category", "Nobino Button tag is${ section.tags?.get(0)?.id.toString()}")
+                    //  Log.d("category", "Nobino Button tag is${ section.tags.toString()}")
+
+                    val tagsList = tags
+                    val tags = tagsList.joinToString(",")
+                    //  Log.d("category", "Nobino Button Category is${tagsJson}")
+                    // Log.d("category", "Nobino Button Category is${Uri.encode(tagsJson)}")
+
+
+                    // navController.navigate("section_screen?tags=${Uri.encode(tagsJson)}")
+
+                    navController.navigate(
+
+                        Screen.Product.withArgs(
+
+
+                            tags,
+                            category,
+                            title
+
+
+
+                        )
+
+                    )
+
+
+                }
+
+
+
+
+            )
+
+            Icon(painterResource(R.drawable.arrow_left),"",
+                tint = Color.White
+
+
+
+            )
+
+
+
+
+        }
+
+
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @Composable
@@ -1636,6 +1896,85 @@ fun Loading3Dots(isDark: Boolean) {
     }
 
 }
+
+
+@Composable
+fun LayeredImageBackgroundCard(
+    info: MovieResult.DataMovie.Item,
+    modifier: Modifier = Modifier,
+    overlayColor: Color = Color.Black.copy(alpha = 0.3f)
+)
+
+{
+    Box(modifier = modifier
+        .width(100.dp)
+        .height(200.dp)
+        .background(color = Color.Black, shape = MaterialTheme.roundedShape.medium)
+
+
+
+
+
+    )
+    {
+        // First layer: full image (base layer)
+        AsyncImage(
+           model = IMAGE_BASE_URL+info.images?.get(0)?.src.toString(),
+
+            contentDescription = "Layer 1",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+                .clip(MaterialTheme.roundedShape.medium)
+
+        )
+
+        // Second layer: same image with a transparency effect
+        AsyncImage(
+            model = IMAGE_BASE_URL+info.images?.get(0)?.src.toString(),
+            contentDescription = "Layer 2",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .offset( y=(-4).dp)
+
+                .alpha(0.2f)  // Adjust transparency as needed
+                .clip(MaterialTheme.roundedShape.medium)
+        )
+        // Third layer: image with additional overlay (color + transparency)
+        Box(modifier = Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = IMAGE_BASE_URL+info.images?.get(0)?.src.toString(),
+                contentDescription = "Layer 3",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .offset(y=(-8).dp)
+                    .background(color = Color.Black.copy(alpha = 0.1f), shape = MaterialTheme.roundedShape.medium)
+                    .clip(MaterialTheme.roundedShape.medium)
+
+                    .alpha(0.1f) // Further transparency effect
+            )
+            // Overlay color applied on top of the third image
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(overlayColor,shape = MaterialTheme.roundedShape.medium),
+                contentAlignment = Alignment.BottomCenter
+
+
+            )
+            {
+                Text("09099099")
+
+
+            }
+
+
+
+        }
+    }
+}
+
 
 
 

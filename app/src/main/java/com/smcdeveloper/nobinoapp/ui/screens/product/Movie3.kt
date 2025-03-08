@@ -157,7 +157,7 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                                 ) {
                                     items(displayData.movieItems) { datamovie ->
                                         datamovie?.let {
-                                            SliderItemByTags(it)
+                                            SliderItemByTags(it,navController)
                                         }
                                     }
                                 }
@@ -184,7 +184,7 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                             ) {
                                 items(displayData.movieItems) { datamovie ->
                                     datamovie?.let {
-                                        SliderItemByTags(it)
+                                        SliderItemByTags(it,navController)
                                     }
                                 }
                             }

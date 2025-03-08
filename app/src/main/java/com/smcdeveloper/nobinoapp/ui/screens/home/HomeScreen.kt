@@ -1,11 +1,24 @@
 package com.smcdeveloper.nobinoapp.ui.screens.home
 
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.BackHandler
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smcdeveloper.nobinoapp.ui.screens.product.MovieScreenHome
+import com.smcdeveloper.nobinoapp.util.AppConfigManager
 import com.smcdeveloper.nobinoapp.util.Constants
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
 
@@ -24,8 +37,76 @@ fun Home(
 )
 
 
+
 {
+      val apiError by viewModel.apiError.collectAsState()
+
+    LaunchedEffect(Unit) {
+
+
+
+
+
+    }
+
+
+
+
+
+
     LocalelUtils.setLocale(LocalContext.current, Constants.USER_LANGUAGE)
+    val token by AppConfigManager.userToken.collectAsState()
+
+    if (token != null) {
+        // Your app now uses the updated token/config
+        Log.d("token","Token is updated: $token")
+    } else {
+        Log.d("token", "No token yet")
+    }
+
+
+
+
+    var showExitDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    // Intercept the back press
+    BackHandler {
+        showExitDialog = true
+    }
+
+
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text("Exit App") },
+            text = { Text("Are you sure you want to exit?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showExitDialog = false
+                        // Exit the app by finishing the activity
+                        (context as? Activity)?.finish()
+                    }
+                ) {
+                    Text("Exit")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showExitDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+
+
+
+
+
+
+
 
     /*LaunchedEffect(Unit ){
 
@@ -42,6 +123,8 @@ fun Home(
 
    // GetSlider()
     MovieScreenHome( viewModel,navController,preferredOrder)
+
+
 
 
 

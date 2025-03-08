@@ -24,7 +24,7 @@ val translatedName: String,
 @SerializedName("updatedAt")
 val updatedAt: Long,
 @SerializedName("instagramLink")
-val instagramLink: String=""
+val instagramLink: String?=""
 
 
 )

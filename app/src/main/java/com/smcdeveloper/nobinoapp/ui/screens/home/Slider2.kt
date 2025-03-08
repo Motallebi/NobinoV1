@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -38,6 +39,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.clip
 
 
@@ -68,6 +70,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import coil3.size.Scale
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
+import com.smcdeveloper.nobinoapp.ui.theme.sliderdots
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import kotlinx.coroutines.delay
@@ -277,16 +280,16 @@ fun CustomSlider(
     pagerPaddingValues: PaddingValues = PaddingValues(horizontal = 65.dp),
     imageCornerRadius: Dp = 16.dp,
     imageHeight: Dp = 250.dp,
-    unselectedSize: Dp = 8.dp,
+    unselectedSize: Dp = 15.dp,
     selectedSize: Dp = 25.dp,
     animationDuration: Int = 300,
-    selectedColor: Color = Color.Blue,
-    unselectedColor: Color = Color.LightGray,
+    selectedColor: Color = Color.White,
+    unselectedColor: Color = MaterialTheme.colorScheme.sliderdots,
 )
 
 {
 
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = {10})
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = {sliderList!!.size})
     val scope = rememberCoroutineScope()
 
 
@@ -373,7 +376,8 @@ fun CustomSlider(
             Row(
                 modifier
                     .height(50.dp)
-                    .fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             )
 
             {
@@ -394,28 +398,36 @@ fun CustomSlider(
                 }*/
 
 
+                Row(horizontalArrangement =Arrangement.spacedBy(8.dp))
+                {
 
+                    repeat(sliderList!!.size) { index ->
+                        val selectedPage =pagerState.currentPage
+                        val isSelected = index == selectedPage
 
-                repeat(sliderList!!.size) { index ->
-                   val selectedPage =pagerState.currentPage
-                    val isSelected = index == selectedPage
+                        val dotWidth by animateDpAsState(
+                            targetValue = if (isSelected) selectedSize else unselectedSize,
+                            animationSpec = tween(durationMillis = animationDuration), label = ""
+                        )
+                        val dotColor by animateColorAsState(
+                            targetValue = if (isSelected) selectedColor else unselectedColor,
+                            animationSpec = tween(durationMillis = animationDuration), label = ""
+                        )
+                        Box(
+                            modifier = Modifier
+                                .height(unselectedSize)
+                                .width(dotWidth)
+                                .clip(CircleShape)
+                                .border(width = 1.dp, color = dotColor, shape = CircleShape)
+                                .background(dotColor)
+                        )
+                    }
 
-                    val dotWidth by animateDpAsState(
-                        targetValue = if (isSelected) selectedSize else unselectedSize,
-                        animationSpec = tween(durationMillis = animationDuration), label = ""
-                    )
-                    val dotColor by animateColorAsState(
-                        targetValue = if (isSelected) selectedColor else unselectedColor,
-                        animationSpec = tween(durationMillis = animationDuration), label = ""
-                    )
-                    Box(
-                        modifier = Modifier
-                            .height(unselectedSize)
-                            .width(dotWidth)
-                            .clip(CircleShape)
-                            .background(dotColor)
-                    )
                 }
+
+
+
+
 
 
 

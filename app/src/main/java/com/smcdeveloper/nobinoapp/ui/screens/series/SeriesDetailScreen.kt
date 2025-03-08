@@ -40,6 +40,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.component.HtmlText
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
 import kotlinx.coroutines.runBlocking
@@ -1723,23 +1724,6 @@ fun SessionDropdownMenu(
     }
 
 
-    @Composable
-    fun HtmlText(html: String, modifier: Modifier = Modifier, textColor: Color = Color.Black) {
-        AndroidView(
-            factory = { context ->
-                TextView(context).apply {
-                    text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                    movementMethod = LinkMovementMethod.getInstance() // Enables clickable links
-                    setTextColor(textColor.toArgb())
 
-
-                }
-            },
-            update = { textView ->
-                textView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
-            },
-            modifier = modifier
-        )
-    }
 
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.MaterialTheme
@@ -155,44 +156,82 @@ fun SplashScreen(navController: NavHostController)
 
 @Composable
 fun Splash(isNetworkAvailable: Boolean, onRetryClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .background(Color.Black)
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.primary
+
+
     )
 
+
+
     {
-        Image(
-            modifier = Modifier.size(250.dp),
-            painter = painterResource(id =R.drawable.nobino_logo),
-            contentDescription = null
-        )
+
+
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(100.dp),
-            contentAlignment = Alignment.BottomCenter
-        ) {
+                //.background(Color.Black)
+                .fillMaxSize(0.5f),
+            contentAlignment = Alignment.Center
+        )
+
+        {
             Image(
-                modifier = Modifier.height(30.dp),
-                painter = painterResource(id =R.drawable.sub),
+                modifier =Modifier,
+                painter = painterResource(id =R.drawable.nobino_logo),
                 contentDescription = null
             )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            if (isNetworkAvailable) {
-                Loading3Dots(false)
-            } else {
-                ReTry(onRetryClick = onRetryClick)
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(100.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Image(
+                    modifier = Modifier.height(30.dp),
+                    painter = painterResource(id =R.drawable.sub),
+                    contentDescription = null
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                if (isNetworkAvailable) {
+                    Loading3Dots(false)
+                } else {
+                    ReTry(onRetryClick = onRetryClick)
+                }
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
+
+
+
 }
 
 @Composable

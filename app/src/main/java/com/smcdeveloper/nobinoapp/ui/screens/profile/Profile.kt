@@ -1,10 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.profile
 
 
-import OtpValidationScreen
-
-import SubscriptionSelectionPage
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,18 +24,17 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -51,19 +46,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.dataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.navigation.Screen
-import com.smcdeveloper.nobinoapp.ui.screens.login.LoginScreen
-
-
+import com.smcdeveloper.nobinoapp.ui.theme.divider
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMediumLight
-import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 
@@ -255,7 +246,7 @@ fun ProfilePage(navController: NavHostController,
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         ProfileSection()
-        Divider(color = Color.Gray, thickness = 1.dp)
+        HorizontalDivider(color = Color.Gray, thickness = 1.dp)
         ProfileScreen1(navController = navController,dataStore=dataStore)
     }
 }
@@ -339,9 +330,11 @@ fun MenuOptions() {
                     painter = painterResource(id = icon),
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
-                    tint = Color.Black
+                    tint = Color.White
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(16.dp)
+
+                )
                 Text(label, fontSize = 16.sp, fontWeight = FontWeight.Medium)
             }
         }
@@ -393,111 +386,374 @@ fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel) {
         stringResource(id = R.string.terms_conditions) to Screen.TermsAndConditions,
         stringResource(id = R.string.contact_us) to Screen.ContactUs,
 
-    )
+        )
+
+
+
+
+
+
+
+
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     )
+
+
     {
-        profileItems.forEach { (title, screen) ->
-            item {
-                ProfileItem(title = title) {
-                    navController.navigate(screen.route)
+
+        item {
+
+
+                ProfileItem2 (
+                    title = stringResource(R.string.edit_profile),
+                    icon = painterResource(R.drawable.edit_profile)
+
+
+                )
+                {
+                    navController.navigate(Screen.EditProfile.route)
                     {
                         launchSingleTop = true
                     }
 
+
                 }
-            }
+
+        }
 
 
 
+        item {
 
 
+            ProfileItem2 (
+                title = stringResource(R.string.buy_subscription),
+                icon = painterResource(R.drawable.buy_subscription)
 
 
-
-
-
-            }
-
-        item{
-            ProfileItem(stringResource(id = R.string.logout)) {
-
-
-                dataStore.saveUserToken("")
-                dataStore.saveUserFirstName("")
-                dataStore.saveUserPhone("")
-                dataStore.saveUserLastName("")
-                dataStore.saveUserLoginStatus(false)
-
-
-
-
-
+            )
+            {
+                navController.navigate(Screen.BuySubscription.route)
+                {
+                    launchSingleTop = true
+                }
 
 
             }
 
+        }
+        item {
+
+
+            ProfileItem2 (
+                title = stringResource(R.string.payment_history),
+                icon = painterResource(R.drawable.payment_history)
+
+
+            )
+            {
+                navController.navigate(Screen.PaymentHistory.route)
+                {
+                    launchSingleTop = true
+                }
+
+
+            }
+
+        }
+
+        item {
+
+
+            ProfileItem2 (
+                title = stringResource(R.string.faq),
+                icon = painterResource(R.drawable.faq)
+
+
+            )
+            {
+                navController.navigate(Screen.FAQ.route)
+                {
+                    launchSingleTop = true
+                }
+
+
+            }
+
+        }
+
+        item {
+
+
+            ProfileItem2 (
+                title = stringResource(R.string.terms_conditions),
+                icon = painterResource(R.drawable.terms)
+
+
+            )
+            {
+                navController.navigate(Screen.TermsAndConditions.route)
+                {
+                    launchSingleTop = true
+                }
+
+
+            }
+
+        }
+
+        item {
+
+
+            ProfileItem2 (
+                title = stringResource(R.string.terms_conditions),
+                icon = painterResource(R.drawable.terms)
+
+
+            )
+            {
+                navController.navigate(Screen.TermsAndConditions.route)
+                {
+                    launchSingleTop = true
+                }
+
+
+            }
+
+        }
+
+
+        item {
+
+
+            ProfileItem2 (
+                title = stringResource(R.string.contact_us),
+                icon = painterResource(R.drawable.contact_us)
+
+
+            )
+            {
+                navController.navigate(Screen.ContactUs.route)
+                {
+                    launchSingleTop = true
+                }
+
+
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            item {
+                ProfileItem(stringResource(id = R.string.logout))
+                {
+
+
+                    dataStore.saveUserToken("")
+                    dataStore.saveUserFirstName("")
+                    dataStore.saveUserPhone("")
+                    dataStore.saveUserLastName("")
+                    dataStore.saveUserLoginStatus(false)
+
+
+                }
+
+
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Composable
+    fun ProfileItem(title: String, onClick: () -> Unit) {
+
+
+        Column(
+
+        ) {
+
+            //   Icon(icon,"")
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .clickable { onClick() },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+
+            )
+
+            {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.nobinoMediumLight,
+
+
+                    modifier = Modifier.padding(start = 16.dp),
+                    fontSize = 18.sp,
+                    //color = Color.White
+                )
+
+                Icon(
+                    painterResource(R.drawable.arrow_left),
+
+
+                    tint = Color.White.copy(alpha = 0.3f),
+
+
+                    contentDescription = ""
+                )
+
+
+            }
+
+            Spacer(
+                Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.divider)
+
+            )
 
 
         }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@Composable
-fun ProfileItem(title: String, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.nobinoMediumLight,
-
-
-            modifier = Modifier.padding(start = 16.dp),
-            fontSize = 18.sp,
-            //color = Color.White
-        )
-
-        Icon(painterResource(R.drawable.arrow_left),"")
-
-
-
 
     }
-}
+
+
+    @Composable
+    fun ProfileItem2(title: String, icon:Painter, onClick: () -> Unit) {
+
+
+        Column(
+
+        ) {
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .clickable { onClick() },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+
+            )
+
+
+
+            {
+
+                Row()
+                {
+
+                    Icon(icon,"",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
 
 
 
 
-data class ProfileItemData(val titleResId: Int, val icon: ImageVector, val screen: Screen)
+                    )
+
+
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.nobinoMediumLight,
+
+
+                        modifier = Modifier.padding(start = 16.dp),
+                        fontSize = 18.sp,
+                        //color = Color.White
+                    )
+
+
+                }
+
+
+
+
+                Icon(
+                    painterResource(R.drawable.arrow_left),
+
+
+                    tint = Color.White.copy(alpha = 0.3f),
+
+
+                    contentDescription = ""
+                )
+
+
+            }
+
+            Spacer(
+                Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.divider)
+
+            )
+
+
+        }
+
+    }
+
+
+    data class ProfileItemData(val titleResId: Int, val icon: ImageVector, val screen: Screen)

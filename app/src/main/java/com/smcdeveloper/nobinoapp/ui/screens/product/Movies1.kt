@@ -158,7 +158,7 @@ fun  MovieListByTag(movieDisplayData: List<MovieDisplayData>,navController: NavH
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                     items(displayData.movieItems) { datamovie ->
                         datamovie?.let {
-                            SliderItemByTags(it) // Render individual movie item
+                            SliderItemByTags(it,navController) // Render individual movie item
                         }
                     }
                 }
@@ -262,7 +262,7 @@ fun  MovieListByTag1(navController: NavHostController,
                         LazyRow(modifier = Modifier.fillMaxWidth()) {
                             items(displayData.movieItems) { datamovie ->
                                 datamovie?.let {
-                                    SliderItemByTags(it)
+                                    SliderItemByTags(it,navController)
                                 }
                             }
                         }

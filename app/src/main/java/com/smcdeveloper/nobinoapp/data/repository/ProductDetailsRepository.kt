@@ -216,6 +216,33 @@ class ProductDetailsRepository @Inject constructor(
 
 
 
+    suspend fun removeBookMark(bookMarKRequest: BookMarKRequest,auth: String):NetworkResult<BookMark>
+
+    {
+        Log.d("book","removing bookmark")
+        Log.d("book",bookMarKRequest.toString())
+
+     val result=   safeApiCall {
+
+         api.removeBookMark(
+             auth = auth,
+             bookMark = bookMarKRequest
+         )
+
+     }
+
+        return result
+
+
+
+
+        }
+
+
+
+
+
+
 
 
 

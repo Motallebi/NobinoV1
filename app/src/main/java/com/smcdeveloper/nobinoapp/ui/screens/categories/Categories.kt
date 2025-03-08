@@ -26,6 +26,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -78,17 +79,15 @@ fun CategoryScreen(
    // var categories: List<ProductCategories.ProductCategoryData>
 
     // Scaffold with a loading indicator and the list of categories
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Categories") }
-            )
-        }
-    ) { padding ->
+    Surface (
+
+    )
+
+    {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                //.padding(padding)
         ) {
             when (categoriesState) {
                 is NetworkResult.Loading -> {
@@ -97,7 +96,7 @@ fun CategoryScreen(
                     )
                 }
                 is NetworkResult.Success -> {
-                    val categories = (categoriesState as NetworkResult.Success<List<ProductCategories.ProductCategoryData>>).data.orEmpty()
+                    val categories = (categoriesState as? NetworkResult.Success<List<ProductCategories.ProductCategoryData>>)?.data.orEmpty()
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2), // 2 columns
                         modifier = Modifier.fillMaxSize(),
@@ -110,15 +109,17 @@ fun CategoryScreen(
                         items(categories)
 
                         { category->
-                            CategoryItemCard (category = category, onClick = {
-                                onCategoryClick(category)
+                            CategoryItemCard (category = category, onClick =
+                            {
+                              //  onCategoryClick(category)
                                     Log.d("category","categoryname is....."+category.name)
 
 
                                 navController.navigate(
                                     Screen.Product.withArgs(
-                                        category.tags.get(0).toString(),
-                                       ""
+                                        category.tags[0],
+                                      category.name.toString(),
+                                       category.title.toString()
 
                                     ))
 

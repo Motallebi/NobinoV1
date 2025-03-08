@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -63,7 +64,7 @@ import kotlin.math.absoluteValue
 fun MovieScreen(navController: NavHostController) {
 
 
-    Text("Movies.......")
+
     // SectionTest()
 
     SectionListScreen(navController = navController,
@@ -117,6 +118,8 @@ fun SectionListScreen(
 
 
     // Fetch all movies once sections are loaded
+
+
     if (sectionsResult is NetworkResult.Success) {
         val sections = (sectionsResult as NetworkResult.Success).data.orEmpty()
         Log.d("SectionListScreen", "Sections fetched successfully: ${sections.size} sections")
@@ -163,6 +166,7 @@ fun SectionListScreen(
                 color = MaterialTheme.colorScheme.error
             )
         }
+
         sectionsResult is NetworkResult.Success && moviesByTagsResult is NetworkResult.Success
                 && sliderResult is NetworkResult.Success
 
@@ -175,7 +179,7 @@ fun SectionListScreen(
 
 
 
-                val sliderData = (sliderResult as NetworkResult.Success).data?.data
+                val sliderData = (sliderResult as? NetworkResult.Success)?.data?.data
 
                 item {
 
@@ -213,7 +217,8 @@ fun SectionListScreen(
                     SectionItemWithMovies(
                         sectionTitle = sectionTitle,
                         movies = movies,
-                        onMovieClick = onMovieClick
+                        onMovieClick = onMovieClick,
+                        navController = navController
                     )
                 }
             }
@@ -226,19 +231,34 @@ fun SectionListScreen(
 fun SectionItemWithMovies(
     sectionTitle: String,
     movies: List<MovieResult.DataMovie.Item?>?,
-    onMovieClick: (Int) -> Unit
+    onMovieClick: (Int) -> Unit,
+    navController: NavHostController
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         // Section Title
-        Text(text = sectionTitle, style = MaterialTheme.typography.titleSmall)
+       // Text(text = sectionTitle, style = MaterialTheme.typography.titleSmall)
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // Movies LazyRow
-        LazyRow {
+        LazyRow(
+            modifier = Modifier.fillMaxWidth()
+                .padding(16.dp),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+
+
+
+        ) {
+
+
+
+
+
             items(movies.orEmpty().filterNotNull()) { movie ->
                 // MovieItem(movie = movie, onClick = { onMovieClick(movie.id ?: 0) })
-                SliderItemByTags(movie)
+                SliderItemByTags(movie, navController = navController)
             }
 
 

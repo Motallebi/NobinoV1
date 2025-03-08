@@ -92,6 +92,7 @@ fun SetupNavGraph(navController: NavHostController) {
             FavoriteScreen(navController = navController)
 
 
+
         }
 
         composable(route = Screen.Categories.route) {

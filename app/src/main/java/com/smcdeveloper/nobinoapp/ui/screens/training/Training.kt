@@ -63,7 +63,7 @@ import kotlin.math.absoluteValue
 fun TrainingScreen(navController: NavHostController) {
 
 
-    Text("Learning.......")
+
     // SectionTest()
 
     SectionListScreen(navController = navController,
@@ -186,7 +186,8 @@ fun SectionListScreen(
                     SectionItemWithMovies(
                         sectionTitle = sectionTitle,
                         movies = movies,
-                        onMovieClick = onMovieClick
+                        onMovieClick = onMovieClick,
+                        navController = navController
                     )
                 }
             }
@@ -199,7 +200,8 @@ fun SectionListScreen(
 fun SectionItemWithMovies(
     sectionTitle: String,
     movies: List<MovieResult.DataMovie.Item?>?,
-    onMovieClick: (Int) -> Unit
+    onMovieClick: (Int) -> Unit,
+    navController: NavHostController
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         // Section Title
@@ -211,7 +213,7 @@ fun SectionItemWithMovies(
         LazyRow {
             items(movies.orEmpty().filterNotNull()) { movie ->
                 // MovieItem(movie = movie, onClick = { onMovieClick(movie.id ?: 0) })
-                SliderItemByTags(movie)
+                SliderItemByTags(movie, navController = navController)
             }
 
 

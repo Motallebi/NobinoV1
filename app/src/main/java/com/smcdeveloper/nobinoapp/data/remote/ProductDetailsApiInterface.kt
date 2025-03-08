@@ -16,6 +16,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -144,11 +145,14 @@ interface ProductDetailsApiInterface {
 
 
 
-    @DELETE("/api/v2/user-interactions")
+
+    @HTTP(method = "DELETE", path = "/api/v2/user-interactions", hasBody = true)
     suspend fun removeBookMark(
         @Header("Authorization") auth: String ="",
         @Body bookMark: BookMarKRequest
     ): Response<BookMark>
+
+
 
 
 

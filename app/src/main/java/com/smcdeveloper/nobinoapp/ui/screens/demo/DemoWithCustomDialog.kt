@@ -1,34 +1,31 @@
 package com.smcdeveloper.nobinoapp.ui.screens.demo
 
-import android.graphics.Insets.add
+
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-
-
-
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Audiotrack
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Folder
@@ -38,7 +35,21 @@ import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.Subtitles
-import androidx.compose.material3.*
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -50,30 +61,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
-import androidx.paging.compose.itemKey
-import coil3.compose.rememberAsyncImagePainter
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.AudioSubtitle
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
-import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
-import com.smcdeveloper.nobinoapp.data.model.search.GenreInfo
-import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.component.CustomBottomSheet
@@ -90,17 +93,6 @@ import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.delay
-import okhttp3.internal.wait
-import kotlin.math.abs
-import kotlin.math.max
-
-
-
-
-
-
-
-
 
 
 val audioOptions = listOf(
@@ -340,6 +332,7 @@ fun DemoBottomSheetSearch(
                 Column (
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(Color.Blue)
                         .padding(paddingValues)
                         .padding(horizontal = 16.dp)
 
@@ -348,14 +341,17 @@ fun DemoBottomSheetSearch(
 
                 {
 
-                    Box(modifier = Modifier
+                    Row(modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp)
+                        .background(Color.Magenta)
+                        .height(50.dp)
+                        .padding(bottom = 20.dp)
                         //.background(Color.Red),
                        // contentAlignment = Alignment.Center
 
                     )
                     {
+                        Text("Search")
 
 
                       /*  if(true) {
@@ -1614,9 +1610,9 @@ fun DemoBottomSheetSearch(
 
 
 
-
+/////Search box 1
 @Composable
-fun SearchBarWithBadge1(
+fun SearchBarWithBadge7(
     searchQuery: String,
     filterCount: Int,
     onBadgeClick: () -> Unit,
@@ -1660,47 +1656,79 @@ fun SearchBarWithBadge1(
     }
     Log.d("loading","is laoding first $isLoading")
 
+    Row(modifier = Modifier,
+    verticalAlignment = Alignment.CenterVertically
 
-    Column {
+    )
+    {
 
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        Row(modifier = Modifier.fillMaxWidth(0.8f)
+            .background(Color.Green)
+            ,
+            // horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
 
 
 
         )
+
+
         {
-            Card(modifier = Modifier.fillMaxWidth(0.8f)) {
-                Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-
-                        ,
-
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    )
-
-                    {
-                        TextField(
-                            modifier = Modifier.padding(horizontal = 20.dp),
-                            shape = MaterialTheme.shapes.large,
 
 
-                            value = searchQuery,
-                            onValueChange = {
-                                viewModel.onSearchTextChange(it)
-                                expanded = it.isNotEmpty()
-                            },
-                            placeholder = { Text("جستجو...") }
-                        )
+            Column(modifier = Modifier) {
 
 
 
 
 
+                Row(
+                    Modifier
+                        .background(Color.Yellow)
+                        .padding(vertical = 10.dp)
+                    ,
+
+                    verticalAlignment = Alignment.CenterVertically,
+                    // horizontalArrangement = Arrangement.SpaceBetween
+
+
+
+                )
+
+
+                {
+                    Card() {
+                        Column {
+                            Row(
+                                modifier = Modifier
+
+                                ,
+
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            )
+
+                            {
+                                TextField(
+                                    modifier = Modifier.padding(horizontal = 20.dp),
+                                    shape = MaterialTheme.shapes.large,
+
+
+                                    value = searchQuery,
+                                    onValueChange = {
+                                        viewModel.onSearchTextChange(it)
+                                        expanded = it.isNotEmpty()
+                                    },
+
+                                    placeholder = { Text("جستجو...") },
+                                    leadingIcon = {Icon(painterResource(R.drawable.search),"",
+                                        modifier = Modifier.size(24.dp)
+
+
+                                    )}
+
+
+                                )
 
 
 
@@ -1711,74 +1739,143 @@ fun SearchBarWithBadge1(
 
 
 
-                    }
 
 
 
-                    // ✅ Show Loading Indicator While Searching
-                    if (isLoading) {
 
-                        Log.d("loading","is laoding $isLoading")
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            CircularProgressIndicator(color = Color.Red)
-                        }
-                    }
 
-                    // ✅ Show Search Suggestions
-                    AnimatedVisibility(visible = expanded && !isLoading) {
-                        Card(modifier = Modifier.fillMaxWidth()) {
-                            LazyColumn {
-                                items(searchResults.itemCount) { index ->
-                                    searchResults[index]?.let { movie->
-                                        SuggestionTextItem(
-                                            movie.name.toString(),
-                                            onClick = {
-                                                onSuggestionClick(movie)
-                                                expanded = false
+                            }
+
+
+
+                            // ✅ Show Loading Indicator While Searching
+                            if (isLoading) {
+
+                                Log.d("loading","is laoding $isLoading")
+                                Row(
+                                    //modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    CircularProgressIndicator(color = Color.Red)
+                                }
+                            }
+
+                            // ✅ Show Search Suggestions
+                            AnimatedVisibility(visible = expanded && !isLoading) {
+                                Card(modifier = Modifier) {
+                                    LazyColumn {
+                                        items(searchResults.itemCount) { index ->
+                                            searchResults[index]?.let { movie->
+                                                SuggestionTextItem(
+                                                    movie.name.toString(),
+                                                    onClick = {
+                                                        onSuggestionClick(movie)
+                                                        expanded = false
+                                                    }
+                                                )
                                             }
-                                        )
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+
+                    /* IconButton(onClick = onBadgeClick,
+                         modifier = Modifier.background(Color.Black)
+
+
+                     ) {
+
+                     }*/
+
+
+
+
+
+
+
+
+
+
+
+
                 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
 
-            IconButton(onClick = onBadgeClick,
-                modifier = Modifier.background(Color.Black)
+
+
+
+
+
+        }
+
+
+        Box( modifier = Modifier.background(Color.Red)
+            .fillMaxWidth(),
+
+            contentAlignment = Alignment.Center
+
+        )
+
+
+
+
+        {
+
+            BadgedBox(
+                badge = {
+                    if (filterCount > 0) {
+                        Badge(
+                            modifier = Modifier,
+                            containerColor = Color.Red
+
+
+
+                        ) {
+
+                            Text("$filterCount")
+
+
+                        }
+                    }
+                },
+                modifier = Modifier.clickable (
+                    onClick = onBadgeClick
+
+
+                )
+
 
 
             ) {
-                BadgedBox(
-                    badge = {
-                        if (filterCount > 0) {
-                            Badge(
-                                modifier = Modifier,
-                                containerColor = Color.Red
+                Icon(
+                    painter = painterResource(R.drawable.filter),
+                    contentDescription = "Filter",
+                    tint = if(filterCount>0) Color.Red else Color.White,
+                    modifier = Modifier.size(48.dp)
 
 
 
-                            ) {
-
-                                Text("$filterCount")
-
-
-                            }
-                        }
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.filter),
-                        contentDescription = "Filter",
-                        tint = if(filterCount>0) Color.Red else Color.White,
-                        modifier = Modifier.size(24.dp)
-
-                    )
-                }
+                )
             }
 
 
@@ -1790,19 +1887,167 @@ fun SearchBarWithBadge1(
 
 
 
-
-
-
-
-
-
-
-
-
-
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
+
+
+
+@Composable
+fun SearchBarWithBadge1(
+    searchQuery: String,
+    filterCount: Int,
+    onBadgeClick: () -> Unit,
+    onSuggestionClick: (MovieResult.DataMovie.Item) -> Unit,
+    viewModel: SearchViewModel,
+    tags: String,
+    countries: String,
+    actors: String,
+    audio: String,
+    subtitle: String,
+                   // 🔹 Keep badge Y position fixed
+
+
+
+) {
+
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp  // 🔹 Get dynamic screen width
+    val badgeXPosition = screenWidth * 0.80f          // 🔹 Adjust badge position (85% of screen width)
+    val badgeYPosition = 20.dp
+
+
+
+
+    var expanded by remember { mutableStateOf(false) }
+    val searchResults = viewModel.moviesFlow1.collectAsLazyPagingItems()
+    val isLoading by viewModel.isSearching.collectAsState()
+
+    LaunchedEffect(searchResults.itemCount) {
+        expanded = searchQuery.isNotEmpty() && searchResults.itemCount > 0
+    }
+
+    Box(modifier = Modifier.fillMaxWidth()) {
+        // 🔹 Search Bar Section
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .background(Color.Green)
+                .padding(end = 30.dp), // Ensures space for the fixed badge
+            verticalAlignment = Alignment.CenterVertically
+        )
+
+        {
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Yellow)
+                        .padding(vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                )
+
+                {
+                    Card {
+                        Column {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                //horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                TextField(
+                                    modifier = Modifier.padding(horizontal = 10.dp),
+                                    shape = MaterialTheme.shapes.large,
+                                    value = searchQuery,
+                                    onValueChange = {
+                                        viewModel.onSearchTextChange(it)
+                                        expanded = it.isNotEmpty()
+                                    },
+                                    placeholder = { Text("جستجو...") },
+                                    leadingIcon = {
+                                        Icon(
+                                            painterResource(R.drawable.search),
+                                            contentDescription = "",
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                    }
+                                )
+                            }
+
+                            // 🔹 Show Loading Indicator While Searching
+                            if (isLoading) {
+                                Row(horizontalArrangement = Arrangement.Center) {
+                                    CircularProgressIndicator(color = Color.Red)
+                                }
+                            }
+
+                            // 🔹 Show Search Suggestions
+                            AnimatedVisibility(visible = expanded && !isLoading) {
+                                Card {
+                                    LazyColumn {
+                                        items(searchResults.itemCount) { index ->
+                                            searchResults[index]?.let { movie ->
+                                                SuggestionTextItem(
+                                                    movie.name.toString(),
+                                                    onClick = {
+                                                        onSuggestionClick(movie)
+                                                        expanded = false
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        // 🔥 FIXED BADGE POSITION
+        Box(
+            modifier = Modifier
+                .absoluteOffset(x = -badgeXPosition, y = badgeYPosition)// 🔹 Keep it at a fixed position
+                .background(Color.Red),
+            contentAlignment = Alignment.Center
+        ) {
+            BadgedBox(
+                badge = {
+                    if (filterCount > 0) {
+                        Badge(containerColor = Color.Red) {
+                            Text("$filterCount")
+                        }
+                    }
+                },
+                modifier = Modifier.clickable(onClick = onBadgeClick)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.filter),
+                    contentDescription = "Filter",
+                    tint = if (filterCount > 0) Color.Red else Color.White,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+        }
+    }
+}
 
 
 
@@ -1829,8 +2074,8 @@ fun SearchBarWithBadge1(
             text = text,
             modifier = Modifier
                 .clickable(onClick = onClick)
-                .padding(8.dp)
-                .fillMaxWidth(),
+                .padding(8.dp),
+              //  .fillMaxWidth(),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White
 
@@ -1838,6 +2083,56 @@ fun SearchBarWithBadge1(
         )
     }
 
+@Composable
+fun ShowBadgeBox(
+    onClick:()->Unit,
+    filterCounter: Int
+
+
+)
+
+{
+    BadgedBox(
+        badge = {
+            if (filterCounter > 0) {
+                Badge(
+                    modifier = Modifier,
+                    containerColor = Color.Red
+
+
+
+                ) {
+
+                    Text("$filterCounter")
+
+
+                }
+            }
+        }
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.filter),
+            contentDescription = "Filter",
+            tint = if(filterCounter>0) Color.Red else Color.White,
+            modifier = Modifier.size(24.dp)
+
+
+        )
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 
 

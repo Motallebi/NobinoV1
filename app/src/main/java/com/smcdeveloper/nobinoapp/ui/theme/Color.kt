@@ -65,6 +65,25 @@ val ColorScheme.kidsPageColor: Color
     get() = if (isSystemInDarkTheme()) Color(0xFFD1C5A1) else Color(0xFFD1C5A1)
 
 
+val ColorScheme.divider: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF212121) else Color(0xFF212121)
+
+
+
+val ColorScheme.sliderdots: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF343434) else Color(0xFF343434)
+
+
+
+
+val ColorScheme.disabledButtonColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFFE21622) else Color(0xFFE21622)
+
+
+
 
 
 

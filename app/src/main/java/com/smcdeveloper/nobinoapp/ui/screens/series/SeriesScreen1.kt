@@ -70,7 +70,7 @@ fun SeriesScreen(navController: NavHostController)
 
 {
     //Series(navController=navContro( onSectionClick = {})
-    Text("SERIES.......")
+
    // SectionTest()
 
     SectionListScreen(navController = navController,
@@ -213,7 +213,8 @@ fun SectionListScreen3(
 fun SectionItemWithMovies(
     sectionTitle: String,
     movies: List<MovieResult.DataMovie.Item?>?,
-    onMovieClick: (Int) -> Unit
+    onMovieClick: (Int) -> Unit,
+    navController: NavHostController
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         // Section Title
@@ -225,7 +226,7 @@ fun SectionItemWithMovies(
         LazyRow {
             items(movies.orEmpty().filterNotNull()) { movie ->
                // MovieItem(movie = movie, onClick = { onMovieClick(movie.id ?: 0) })
-                SliderItemByTags(movie)
+                SliderItemByTags(movie,navController)
             }
 
 
@@ -294,7 +295,7 @@ fun SectionItemWithMovies1(
             movies?.let {
                 items(it) { movie ->
                    // MovieItem(movie = movie, onClick = {})
-                    SliderItemByTags(movie)
+                    SliderItemByTags(movie,navController)
 
                 }
             }
@@ -305,9 +306,9 @@ fun SectionItemWithMovies1(
 
 
 @Composable
-fun SliderItemByTags(movieInfo: MovieResult.DataMovie.Item) {
+fun SliderItemByTags(movieInfo: MovieResult.DataMovie.Item,navController: NavHostController) {
 
-    MovieCardtestByTag(movieInfo)
+    MovieCardtestByTag(movieInfo, navController = navController)
 
 
 }
@@ -598,7 +599,9 @@ fun SectionListScreen(
                     SectionItemWithMovies(
                         sectionTitle = sectionTitle,
                         movies = movies,
-                        onMovieClick = onMovieClick
+                        onMovieClick = onMovieClick,
+                        navController = navController
+
                     )
                 }
             }

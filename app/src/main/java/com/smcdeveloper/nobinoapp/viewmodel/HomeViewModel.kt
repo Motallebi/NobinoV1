@@ -46,6 +46,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: HomeRepository):ViewModel() {
 
+
+
     private var moviePager: Flow<PagingData<MovieResult.DataMovie.Item>>? =
         null // ✅ Cache the Flow, not the PagingData
 
@@ -55,6 +57,17 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
     ////////////
+
+
+
+
+
+
+    private val _apiError = MutableStateFlow(false)
+    val apiError: StateFlow<Boolean> = _apiError
+
+
+
 
     private val _slider2 = MutableStateFlow<NetworkResult<Slider>>(NetworkResult.Loading())
     val slider2: StateFlow<NetworkResult<Slider>> get() = _slider2.asStateFlow()
@@ -139,6 +152,9 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
     private val _moviesState = MutableStateFlow<List<NetworkResult<MovieResult>>>(emptyList())
     val moviesState: StateFlow<List<NetworkResult<MovieResult>>> = _moviesState
+
+
+
 
     private val _movieResults = MutableStateFlow<List<NetworkResult<MovieResult>>>(emptyList())
     val movieResults: StateFlow<List<NetworkResult<MovieResult>>> = _movieResults
@@ -455,7 +471,17 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
             }
 
             catch (e: Exception) {
+
                 Log.e("API_ERROR", "Error fetching data: ${e.message}")
+
+                _product.value= NetworkResult.Error("API_ERROR")
+
+
+
+
+                _apiError.emit(true)
+
+
             }
 
 
@@ -525,6 +551,10 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
             catch (e: Exception) {
                 Log.e("API_ERROR", "Error fetching data: ${e.message}")
+
+                _product.value= NetworkResult.Error("API_ERROR")
+
+
             }
 
 

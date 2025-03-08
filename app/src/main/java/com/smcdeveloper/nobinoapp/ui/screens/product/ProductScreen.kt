@@ -3,18 +3,22 @@ package com.smcdeveloper.nobinoapp.ui.screens.product
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,17 +29,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.navigation.BottomNavigationBar
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.component.LayeredImageBackgroundCard
 import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoTop
 import com.smcdeveloper.nobinoapp.ui.theme.backgroundDark
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoSmall
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 
@@ -143,14 +151,59 @@ fun Product(navController: NavHostController,
    // val items= lazyPagingItems<MovieResult.DataMovie.Item>()
 
 
-    Text(categoryTitle,
-        style = MaterialTheme.typography.nobinoSmall,
-        modifier = Modifier.padding(top = 5.dp)
-            .background(Color.Red)
+
+    Row( modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 10.dp)
+        ,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
 
 
 
     )
+
+    {
+        Text(categoryTitle,
+            style = MaterialTheme.typography.nobinoLarge,
+            modifier = Modifier.padding(top = 5.dp)
+               // .background(Color.Red)
+
+
+
+        )
+
+        Icon(painterResource(R.drawable.arrow_left),"",
+            tint = Color.White,
+            modifier = Modifier.clickable {
+
+                navController.navigateUp()
+
+
+
+
+
+            }
+
+
+
+
+
+        )
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
 
     Text(categoryName)
 
@@ -461,9 +514,9 @@ fun DynamicMoviesGrid(
                 }
                 "SERIES" -> {
                 products[index]?.let {
-                    InfoCard(
-                        info = it,
-                        onClick = { products[index]?.let { movie -> onMovieClick(movie) } })
+                    SeriesCard(
+                        info = it)
+                       // onClick = { products[index]?.let { movie -> onMovieClick(movie) } })
                     Log.d("category","Movies")
 
 
@@ -509,12 +562,15 @@ fun DynamicMoviesGrid(
 fun MovieCard(movie: MovieResult.DataMovie.Item, onClick: () -> Unit) {
     Column(
         modifier = Modifier
+            .width(100.dp)
+            .height(200.dp)
             .padding(8.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color.DarkGray)
+           // .clip(RoundedCornerShape(8.dp))
+            //.background(Color.Red, shape = MaterialTheme.shapes.medium)
             .clickable { onClick() }
-            .fillMaxWidth()
-    ) {
+            //.fillMaxWidth()
+    )
+    {
         AsyncImage(
             model =  "https://vod.nobino.ir/vod/"+movie.images?.get(0)?.src.toString(), // Use Coil or similar libraries for image loading
             contentDescription = movie.shortDescription,
@@ -524,28 +580,55 @@ fun MovieCard(movie: MovieResult.DataMovie.Item, onClick: () -> Unit) {
                 .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        movie.name?.let {
-            Text(
-                text = it,
-                style = MaterialTheme.typography.nobinoSmall,
-                       // color = Color.White,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-        }
-        Text("Nobino"+movie.id.toString(),
-            style = MaterialTheme.typography.nobinoSmall
+    //    Spacer(modifier = Modifier.height(8.dp))
+
+
+
+
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(Color.Gray)
+            ,
+            contentAlignment = Alignment.BottomStart
 
 
         )
+        {
+
+            movie.name?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.nobinoSmall,
+                    // color = Color.White,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+            }
+
+
+
+        }
+
+
+
+
+
+
 
     }
+
+
+
+
+
+
 }
 
 @Composable
 fun InfoCard(info: MovieResult.DataMovie.Item, onClick: () -> Unit) {
     Column(
         modifier = Modifier
+            .width(100.dp)
+            .height(200.dp)
             .padding(8.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(backgroundDark)
@@ -591,7 +674,21 @@ fun InfoCard(info: MovieResult.DataMovie.Item, onClick: () -> Unit) {
     }
 }
 
+@Composable
+fun SeriesCard(info: MovieResult.DataMovie.Item)
+{
 
+    LayeredImageBackgroundCard(info)
+
+
+
+
+
+
+
+
+
+}
 
 
 

@@ -1,44 +1,72 @@
 package com.smcdeveloper.nobinoapp.ui.screens.product
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.graphics.drawable.Icon
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.TextView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,23 +74,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
-import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.BookMarKRequest
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
-
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
+import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
+import com.smcdeveloper.nobinoapp.util.DigitHelper
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
 import kotlinx.coroutines.flow.collectLatest
-import okhttp3.internal.wait
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -104,6 +133,7 @@ fun ProductDetailPage(
     // Fetch related movies when "Related Movies" tab is selected
     val products by productDetailsViewModel.product.collectAsState()
     val relatedMovies by productDetailsViewModel.relatedMovies.collectAsState()
+    val bookmarked by productDetailsViewModel.isBookmarked.collectAsState()
 
     LaunchedEffect(selectedTabIndex) {
         if (selectedTabIndex == 1) {
@@ -114,61 +144,7 @@ fun ProductDetailPage(
     }
 
 
-    LaunchedEffect(true) {
 
-        productDetailsViewModel.saveBookMarkResponse.collectLatest { result->
-
-            when(result)
-            {
-                is NetworkResult.Success->
-                {
-                    Log.d("bookmark","Success")
-
-
-                }
-
-
-                is NetworkResult.Error->
-                {
-
-                    Log.d("bookmark","Error")
-
-                }
-
-
-
-                is NetworkResult.Loading->
-                {
-
-                    Log.d("bookmark","Loading....")
-
-
-
-                }
-
-
-
-            }
-
-
-
-
-
-
-
-
-
-
-
-
-        }
-
-
-
-
-
-
-    }
 
 
 
@@ -182,7 +158,7 @@ fun ProductDetailPage(
     }*/
 
 
-    androidx.compose.material3.Scaffold(
+    Scaffold(
 
 
 
@@ -217,11 +193,22 @@ fun ProductDetailPage(
                         }
 
                         is NetworkResult.Error -> {
+
+
+
+
+
+
                             Box(
                                 modifier = Modifier.fillMaxSize(),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(text = "Error: ${(products as NetworkResult.Error).message}")
+
+
+
+
+
                             }
                         }
 
@@ -242,7 +229,7 @@ fun ProductDetailPage(
                                     product = product, // Pass the entire ProductModel object
                                     productId = productId,
                                     viewModel = productDetailsViewModel,
-                                    bookmark = product.bookmarked
+                                    bookmark = bookmarked
 
 
                                 )
@@ -334,6 +321,7 @@ fun ProductDetailPage(
 
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowProductDetailWithTabs(
     productTitle: String,
@@ -387,41 +375,58 @@ fun ShowProductDetailWithTabs(
 
 
 
-        if (videoUrl.isNullOrEmpty()) {
+      /*  if (videoUrl.isNullOrEmpty()) {
             Text(
                 text = "Video is not available for this product.",
                 color = Color.Red,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(16.dp)
             )
-        }
-
-        if(USER_LOGIN_STATUS)
-
-        {
-            Text(
-                text = "Video is not available for this product.",
-                color = Color.Red,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(16.dp)
-            )
+        }*/
 
 
-
-        }
 
 
 
 
 
         // Tabs
-        val tabTitles = listOf("Description", "Related Movies")
-        TabRow(selectedTabIndex = selectedTabIndex) {
+        val tabTitles = listOf(stringResource(R.string.Description), stringResource(R.string.RelatedMovies))
+        TabRow(
+            selectedTabIndex = selectedTabIndex,
+            containerColor = Color.Black,
+            contentColor = Color.White,
+           // divider = {},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        )
+
+
+
+
+
+        {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
                     selected = selectedTabIndex == index,
                     onClick = { onTabSelected(index) },
-                    text = { Text(text = title) }
+                    text = { Text(text = title) },
+                    selectedContentColor = Color.Red,
+                    unselectedContentColor = Color.White
+
                 )
             }
         }
@@ -453,7 +458,7 @@ fun ProductDescription(description: String) {
 
             Text(
                 text = description,
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.nobinoMedium,
                 textAlign = TextAlign.Start
             )
         }
@@ -488,7 +493,11 @@ fun ProductDescriptionWithExtras(
 
 
 
-            HtmlText(product.shortDescription)
+            HtmlText(product.longDescription,
+                textColor = Color.White
+
+
+            )
 
 
 
@@ -496,10 +505,13 @@ fun ProductDescriptionWithExtras(
 
 
 
-            MovieInfoRow(year = product.productionYear.toString(),
-                time = product.ages,
+            MovieInfoRow(
+
+
+                year = product.productionYear.toString(),
+                time = "1:24:30",
                 rating = product.imdbRating.toString(),
-                country = product.owner.name
+                country = product.countries[0].name
 
 
                 )
@@ -540,7 +552,7 @@ fun ProductDescriptionWithExtras(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = actor.name,
-                            style = MaterialTheme.typography.caption,
+                            style = MaterialTheme.typography.nobinoMedium,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -602,7 +614,7 @@ fun ProductDescriptionWithExtras(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = actor.name,
-                            style = MaterialTheme.typography.caption,
+                            style = MaterialTheme.typography.nobinoMedium,
                             textAlign = TextAlign.Center,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -766,6 +778,31 @@ fun HtmlText(html: String, modifier: Modifier = Modifier) {
 }
 
 
+@Composable
+fun HtmlText(html: String, modifier: Modifier = Modifier, textColor: Color = Color.Black) {
+    AndroidView(
+        factory = { context ->
+            TextView(context).apply {
+                text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                movementMethod = LinkMovementMethod.getInstance() // Enables clickable links
+                setTextColor(textColor.toArgb())
+
+
+            }
+        },
+        update = { textView ->
+            textView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        },
+        modifier = modifier
+    )
+}
+
+
+
+
+
+
+
 
 
 @Composable
@@ -774,41 +811,77 @@ fun MovieInfoRow(
     country: String,
     rating: String,
     time: String
-) {
+)
+
+{
     Row(
         modifier = Modifier
-            .padding(8.dp)
+            .fillMaxWidth()
+            .height(50.dp)
+           // .padding(horizontal = 8.dp)
             .background(Color.Black, shape = RoundedCornerShape(8.dp))
-            .border(1.dp, Color.White, shape = RoundedCornerShape(8.dp))
+            .border(1.dp, Color.Black, shape = RoundedCornerShape(8.dp))
             .padding(horizontal = 8.dp, vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        MovieInfoItem(Icons.Default.DateRange, year)  // Year
+             verticalAlignment = Alignment.CenterVertically,
+       // horizontalArrangement = Arrangement.SpaceEvenly
+    )
+    {
+
+        MovieInfoItem(null, DigitHelper.digitByLocate(time))  // Duration
+        MovieInfoItem(Icons.Default.ThumbUp, DigitHelper.digitByLocate("$rating%"))  // Rating
         MovieInfoItem(Icons.Default.Public, country)  // Country
-        MovieInfoItem(Icons.Default.ThumbUp, "$rating%")  // Rating
-        MovieInfoItem(Icons.Default.Schedule, time)  // Duration
+        MovieInfoItem(Icons.Default.DateRange, DigitHelper.digitByLocate(year),false)  // Year
+
+
+
     }
+
+
+
 }
 
+
+
+
+
 @Composable
-fun MovieInfoItem(icon: ImageVector, text: String) {
+fun MovieInfoItem(icon: ImageVector?, text: String,showSpacer:Boolean=true) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = Modifier.padding(end = 8.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(16.dp)
-        )
+        modifier = Modifier.padding(start = 5.dp)
+            //.background(Color.Blue)
+            .fillMaxHeight()
+            .width(70.dp),
+
+
+              verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+
+    )
+
+    {
+        icon?.let {
+            Icon(
+                imageVector = it,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
+        }
+
         Text(
             text = text,
-            color = Color.White,
-            fontSize = 14.sp
+            style = MaterialTheme.typography.nobinoMedium
         )
+        if(showSpacer) {
+            Spacer(
+                modifier = Modifier.height(50.dp)
+                    .background(Color.White)
+                    .width(1.dp)
+                    .padding(horizontal = 8.dp)
+            )
+        }
+
+
     }
 }
 
@@ -876,8 +949,11 @@ fun ProductBanner(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(400.dp)
-    ) {
+            .height(500.dp)
+    )
+
+    {
+
         AsyncImage(
             model = "https://vod.nobino.ir/vod/$productImage",
             contentDescription = productTitle,
@@ -888,9 +964,12 @@ fun ProductBanner(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Bottom
+                .padding(16.dp)
+                .padding(top = 50.dp)
+            ,
+            verticalArrangement = Arrangement.Top
         )
+
 
 
 
@@ -908,12 +987,47 @@ fun ProductBanner(
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             Text(
-                text = "$productTitle ($productEnglishTitle)",
+                text = productTitle,
                 color = Color.White,
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top=20.dp)
+
             )
+
+            Text(
+                text = productEnglishTitle,
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+               modifier = Modifier.padding(top=10.dp)
+            )
+
+
+            CategoryChipsRow()
+
+
 
            // Text("SAmple.. ${episode.name}")
 
@@ -921,6 +1035,7 @@ fun ProductBanner(
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
+              //  modifier = Modifier.width(150.dp),
                 onClick = {
                     if (isVideoAvailable && isUserLogin) {
                         val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
@@ -950,16 +1065,53 @@ fun ProductBanner(
                 },
                 // enabled = isVideoAvailable && isUserLogin,
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (isVideoAvailable && isUserLogin) Color.Red else Color.Gray
+
+
+
+                    contentColor = if (isVideoAvailable && isUserLogin) Color.Red else Color.Gray,
+                    containerColor = Color.Red
+
+
+                ),
+                shape = MaterialTheme.roundedShape.exlarge
+
+
+            )
+            {
+               Icon(painterResource(R.drawable.play1),"",
+                  modifier = Modifier.size(32.dp),
+                    tint = Color.White
+
+
+
                 )
-            ) {
+
                 Text(
-                    text = if (isVideoAvailable && isUserLogin) "Play Movie" else "Login First",
-                    color = Color.White
+                    text = if (isVideoAvailable && isUserLogin) stringResource(R.string.PlayMovie) else  stringResource(R.string.LoginFirst),
+                   style = MaterialTheme.typography.nobinoLarge
                 )
             }
         }
+
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
 }
 
 
@@ -967,7 +1119,20 @@ fun ProductBanner(
 @Composable
 fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDetailsViewModel,productId: Int,bookmark:Boolean) {
 
-    val bookmarkState = remember {  mutableStateOf(bookmark)}
+
+
+
+   // val bookmarkState = remember {  mutableStateOf(false)}
+   val bookmarkStat by viewModel.isBookmarked.collectAsState()
+
+    Log.d("bookmark ","bookmark state $bookmarkStat")
+
+
+
+
+
+
+
 
 
 
@@ -980,63 +1145,54 @@ fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDet
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        // Back button
-        TransparentIconButton(
-            icon = Icons.Default.ArrowBack,
-            contentDescription = "Back",
-            onClick = { navController.navigateUp() }
-        )
+    )
 
+    {
         Row {
-            // Share button
-            TransparentIconButton(
-                icon = Icons.Default.Share,
-                contentDescription = "Share",
-                onClick = { /* Handle share action */ }
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            // Bookmark button
-            TransparentIconButton(
+            TransparentBookmarkIconButton(
+                isBookmark =bookmarkStat,
                 icon =
-                if(bookmarkState.value) {
+                if(bookmarkStat) {
 
-                    Icons.Default.Bookmark
+                    painterResource(R.drawable.bottom_nav_user_selected)
+
+
+
+
 
                 }
 
                 else
-                    Icons.Default.BookmarkBorder
+                   painterResource(R.drawable.bookmark)
 
                 ,
                 contentDescription = "Bookmark",
                 onClick = {
 
-                    if (bookmarkState.value)
 
 
-                    viewModel.removeBookMark(
-                        auth = "Bearer $USER_TOKEN",
 
-                      bookmark =   BookMarKRequest(
+                    Log.d("stat", "Bookmark:${bookmark}")
 
-
-                            productId =productId ,
-                            type="BOOKMARK"
+                    if (bookmarkStat) {
 
 
+                        Log.d("stat", "removing bookmark")
+                        viewModel.removeBookMark(
+                            auth = "Bearer $USER_TOKEN",
+
+                            bookmark = BookMarKRequest(
+
+
+                                productId = productId,
+                                type = "BOOKMARK"
+
+
+                            )
 
 
                         )
-
-
-
-
-
-
-                    )
+                    }
 
                     else
                     {
@@ -1075,7 +1231,7 @@ fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDet
 
 
 
-                /* Handle bookmark action */
+                    /* Handle bookmark action */
 
 
 
@@ -1083,7 +1239,34 @@ fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDet
 
                 }
             )
+
+
+
+            // Share button
+            TransparentIconButton(
+                icon = painterResource(R.drawable.share),
+                contentDescription = "Share",
+                onClick = { /* Handle share action */ }
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Bookmark button
+
         }
+
+
+
+
+        // Back button
+        TransparentIconButton(
+            icon = painterResource(R.drawable.arrow_left),
+            contentDescription = "Back",
+            onClick = { navController.navigateUp() },
+
+        )
+
+
     }
 }
 
@@ -1094,27 +1277,81 @@ fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDet
 
 
 @Composable
-fun TransparentIconButton(
-    icon: ImageVector,
+fun TransparentBookmarkIconButton(
+    icon:Painter ,
     contentDescription: String,
-    onClick: () -> Unit
-) {
+    onClick: () -> Unit,
+    isBookmark:Boolean =false
+)
+
+{
     var isSelected by remember { mutableStateOf(false) }
+
+
+
+
+    Log.d("stat", "Loading ... Bookmark:$isBookmark Selected $isSelected")
+
+    IconButton(
+        onClick = {
+            isSelected = !isSelected // ✅ Toggle selection state
+
+
+            onClick()
+            Log.d("stat", "Bookmark:$isBookmark Selected $isSelected")
+        },
+        modifier = Modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .background(Color.Black.copy(alpha = 0.6f)) // ✅ Semi-transparent background
+    )
+    {
+        Icon(
+
+
+
+
+            painter = icon,
+            contentDescription = contentDescription,
+            tint = if (isBookmark) Color.Red else Color.White, // ✅ Change icon color when selected
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
+
+@Composable
+fun TransparentIconButton(
+    icon:Painter ,
+    contentDescription: String,
+    onClick: () -> Unit,
+
+)
+{
+    var isSelected by remember { mutableStateOf(false) }
+
+
 
     IconButton(
         onClick = {
             isSelected = !isSelected // ✅ Toggle selection state
             onClick()
+
         },
         modifier = Modifier
             .size(48.dp)
             .clip(CircleShape)
-            .background(Color.Black.copy(alpha = 0.3f)) // ✅ Semi-transparent background
-    ) {
+            .background(Color.Black.copy(alpha = 0.6f)) // ✅ Semi-transparent background
+    )
+    {
         Icon(
-            imageVector = icon,
+
+
+
+
+            painter = icon,
             contentDescription = contentDescription,
-            tint = if (isSelected) Color.White else Color.Red, // ✅ Change icon color when selected
+            tint = if (isSelected) Color.Red else Color.White, // ✅ Change icon color when selected
             modifier = Modifier.size(24.dp)
         )
     }
