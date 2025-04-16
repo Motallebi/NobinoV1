@@ -13,7 +13,10 @@ data class PaymentResponse(
     @SerializedName("success")
     val success: Boolean?,
     @SerializedName("timestamp")
-    val timestamp: Long?
+    val timestamp: Long?,
+
+
+
 )
 {
     data class PaymentResponseData(
@@ -28,7 +31,14 @@ data class PaymentResponse(
         @SerializedName("status")
         val status: String?,
         @SerializedName("user")
-        val user: User?
+        val user: User?,
+        @SerializedName("code")
+        val code: String?,
+        @SerializedName("userMessage")
+        val userMessage: String?
+
+
+
     ) {
         data class Payment(
             @SerializedName("createdAt")

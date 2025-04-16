@@ -70,6 +70,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.Section
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
 import com.smcdeveloper.nobinoapp.ui.theme.spacing
@@ -1500,6 +1501,99 @@ fun NobinoSpecialRow(
 
 
 }
+
+@Composable
+
+fun NobinoMainTitleHeader(title:String,navController: NavHostController)
+{
+
+    Row( modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 10.dp)
+        ,
+      //  verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+
+
+
+    )
+
+    {
+        Text(title,
+            style = MaterialTheme.typography.nobinoLarge,
+            modifier = Modifier.padding(top = 5.dp)
+            // .background(Color.Red)
+
+
+
+        )
+
+        Icon(painterResource(R.drawable.arrow_left),"",
+            tint = Color.White,
+            modifier = Modifier.clickable {
+
+                navController.navigateUp()
+
+
+
+
+
+            }
+
+
+
+
+
+        )
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @Composable

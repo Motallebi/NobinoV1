@@ -55,6 +55,7 @@ import com.smcdeveloper.nobinoapp.ui.component.MovieCardtestByTag
 import com.smcdeveloper.nobinoapp.ui.component.NobinoGradientCard
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection2
+import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
 
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
@@ -572,8 +573,11 @@ fun SectionListScreen(
 
             LazyColumn {
 
-                item{ Text("SLIDER") }
-                item{  AnimatedImageSlider(sliderState.data!!.data)}
+               // item{ Text("SLIDER") }
+
+                item { CustomSlider(modifier = Modifier, sliderList = sliderState.data?.data)  }
+
+             //   item{  AnimatedImageSlider(sliderState.data!!.data)}
 
 
 

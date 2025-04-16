@@ -837,6 +837,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
         return Pager(
             config = PagingConfig(
                 pageSize =20, // Page size
+                initialLoadSize = 20,
                 enablePlaceholders = false
             ),
 

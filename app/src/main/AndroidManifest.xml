@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
 
     <application
@@ -16,8 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NobinoApp"
+        android:screenOrientation="portrait"
 
-        tools:targetApi="31">
+
+        tools:targetApi="31"
+        tools:ignore="DiscouragedApi">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -28,6 +31,19 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="nobinoapp"
+                    android:host="payment_result_screen"
+                    android:pathPattern="/.*"
+
+
+                    />
             </intent-filter>
         </activity>
     </application>

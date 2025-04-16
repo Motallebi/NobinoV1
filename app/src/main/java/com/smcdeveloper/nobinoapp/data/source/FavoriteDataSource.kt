@@ -12,7 +12,7 @@ import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import retrofit2.HttpException
 import java.io.IOException
 
-class FavoriteDataSource(
+class  FavoriteDataSource(
 
     private val repository:FavoriteRepository,
 
@@ -22,12 +22,7 @@ class FavoriteDataSource(
 
     //  val specialId:Int
 
-) :PagingSource <Int,Favorite.FavoriteData.Item>()
-
-
-{
-
-
+) :PagingSource <Int,Favorite.FavoriteData.Item>() {
 
 
     override fun getRefreshKey(state: PagingState<Int, Favorite.FavoriteData.Item>): Int? {
@@ -41,31 +36,27 @@ class FavoriteDataSource(
     }
 
 
-     suspend fun load1(params: LoadParams<Int>): LoadResult<Int, Favorite.FavoriteData.Item> {
+    suspend fun load1(params: LoadParams<Int>): LoadResult<Int, Favorite.FavoriteData.Item> {
         val offset = params.key ?: 0 // Default to 0 if no key provided
-        var size =20
+        var size = 20
 
 
-        size = if(params.loadSize==60) {
-            20
-        } else
-            params.loadSize // The number of items to load per page
+
+        params.loadSize // The number of items to load per page
 
         //size1=20
-        Log.d("page" ,"offset is:${offset} size is: ${size}")
+        Log.d("page", "offset is:${offset} size is: ${size}")
 
 
         return try {
             // Make the API call with the correct parameters
-            Log.d("page" ,"current offset is:${offset} size is: ${size}")
+            Log.d("page", "current offset is:${offset} size is: ${size}")
 
 
             val response = repository.getUserFavorites(
                 auth = "Bearer $USER_TOKEN",
                 size = size,
-                pageNum = pageNum
-
-
+                pageNum = 10
 
 
             )
@@ -78,14 +69,15 @@ class FavoriteDataSource(
                 Log.d("NobinoApp", "PAGING3 Success: ${dataMovie.items}")
 
                 // Return a successful LoadResult.Page
-                val nextOffset = if (response.data.favoritData.size!! < size ) null else offset + size
+                val nextOffset =
+                    if (response.data.favoritData.size!! < size) null else offset + size
                 LoadResult.Page(
                     data = dataMovie.items?.filterNotNull() ?: emptyList(),
 
                     prevKey = if (offset == 0) null else offset - size,
 
 
-                 //   nextKey = if ((offset + size) >= (dataMovie.total ?: 0)) null else offset + size
+                    //   nextKey = if ((offset + size) >= (dataMovie.total ?: 0)) null else offset + size
                     nextKey = nextOffset
                 )
             } else {
@@ -106,45 +98,40 @@ class FavoriteDataSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Favorite.FavoriteData.Item> {
-        val offset = params.key ?: 0
-        val limit = params.loadSize
 
-        Log.d("PagingSource", "🚀 Loading movies from offset=$offset, limit=$limit")
+       // val pageNum = params.key ?: 0
+       // val limit = params.loadSize
+
+        //Log.d("PagingSource", "🚀 Loading movies from page=$pageNum, limit=$limit")
 
         return try {
+            val nextPageNumber = params.key ?: 1
+
+
             val response = repository.getUserFavorites(
+                auth = "Bearer $USER_TOKEN",
+                size = 20,
+                pageNum = nextPageNumber
+            ).data
 
-               auth = "Bearer $USER_TOKEN",
-                size = limit,
-                pageNum = offset,
-
-
-            )
-            Log.d("PagingSource", "✅ Received ${response.data?.favoritData!!.size} items from API")
-
-            // ❗ Ensure API returns expected data
-            if (response.data.favoritData.items.isNullOrEmpty()) {
-                Log.d("PagingSource", "⛔ No more data available, stopping pagination.")
-                return LoadResult.Page(emptyList(), prevKey = null, nextKey = null) // Stop pagination
-            }
-
-            val nextOffset = if (response.data.favoritData.items.size < limit) {
-                Log.d("PagingSource", "🚨 API returned less than requested, setting nextKey=null")
-                null
-            } else {
-                offset + limit
-            }
 
             LoadResult.Page(
-                data = response.data.favoritData.items.filterNotNull() ?: emptyList(),
-                prevKey = if (offset == 0) null else offset - limit,
-                nextKey = nextOffset
+                data = response?.favoritData?.items!!.filterNotNull(
+
+                ),
+                prevKey = null,
+                nextKey = nextPageNumber + 1
             )
+
+
         } catch (e: Exception) {
-            Log.e("PagingSource", "❌ Error loading movies at offset=$offset: ${e.message}", e)
-            LoadResult.Error(e)
+            Log.d("3636", "error:$e ")
+            PagingSource.LoadResult.Error(e)
         }
+
     }
+
+}
 
 
 
@@ -230,7 +217,7 @@ class FavoriteDataSource(
 
 
 
-}
+
 
 
 

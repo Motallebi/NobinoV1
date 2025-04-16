@@ -23,6 +23,8 @@ class DataStoreViewModel @Inject constructor(
         const val USER_LANGUAGE_KEY = "USER_LANGUAGE_KEY"
         const val USER_TOKEN_KEY = "USER_TOKEN_KEY"
         const val USER_ID_KEY = "USER_ID_KEY"
+        const val USER_PROFILE_ID_KEY = "USER_PROFILE_ID_KEY"
+
         const val USER_PHONE_KEY = "USER_PHONE_KEY"
         const val USER_PASSWORD_KEY = "USER_PASSWORD_KEY"
         const val USER_FIRST_NAME_KEY = "USER_FIRST_NAME_KEY"
@@ -76,6 +78,11 @@ class DataStoreViewModel @Inject constructor(
     private val _userLoginStatus = MutableStateFlow<Boolean?>(null)
     val userLoginStatus: StateFlow<Boolean?> get() =  _userLoginStatus
 
+    private val _userProfileIdKey = MutableStateFlow<String?>(null)
+    val userProfileIdKey: StateFlow<String?> get() =  _userProfileIdKey
+
+
+
 
 
 
@@ -90,6 +97,8 @@ class DataStoreViewModel @Inject constructor(
         viewModelScope.launch {
             _userToken.value = repository.getString(USER_TOKEN_KEY)
             _userId.value = repository.getString(USER_ID_KEY)
+            _userProfileIdKey.value = repository.getString(USER_PROFILE_ID_KEY)
+
             _userPhone.value = repository.getString(USER_PHONE_KEY)
             _userFirstName.value = repository.getString(USER_FIRST_NAME_KEY)
             _userLastName.value = repository.getString(USER_LAST_NAME_KEY)
@@ -99,6 +108,8 @@ class DataStoreViewModel @Inject constructor(
             _userEmailKey.value=repository.getString(USER_EMAIL_KEY)
             _userBdateKey.value=repository.getString(USER_BD_KEY)
             _userLoginStatus.value=repository.getBoolean(USER_LOGIN_STATUS_KEY)
+
+
 
 
         }
@@ -150,8 +161,29 @@ class DataStoreViewModel @Inject constructor(
         }
     }
 
+    fun saveUserProfileIdKey(value: String) {
+        viewModelScope.launch {
+            repository.putString(USER_PROFILE_ID_KEY, value)
+        }
+    }
+
+    fun getUserCurrentProfileId(): String? = runBlocking {
+        repository.getString(USER_PROFILE_ID_KEY)
+    }
+
+
+
+
+
+
 
     fun getUserToken(): String? = runBlocking {
+        repository.getString(USER_TOKEN_KEY)
+    }
+
+
+
+    fun getUserProfileId(): String? = runBlocking {
         repository.getString(USER_TOKEN_KEY)
     }
 

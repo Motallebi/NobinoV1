@@ -11,6 +11,7 @@ import com.smcdeveloper.nobinoapp.util.Constants.USER_LAST_NAME
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 
 import com.smcdeveloper.nobinoapp.util.Constants.USER_PHONE
+import com.smcdeveloper.nobinoapp.util.Constants.USER_PROFILE_ID
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
@@ -152,4 +153,5 @@ private fun getDataStoreVariables(dataStore: DataStoreViewModel) {
     USER_FIRST_NAME = dataStore.getUserFirstName().toString()
     USER_LAST_NAME = (dataStore.getUserLastName()?: "")
     USER_LOGIN_STATUS =dataStore.getUserLoginStatus()?:false
+    USER_PROFILE_ID= dataStore.getUserCurrentProfileId().toString()
 }

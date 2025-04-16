@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
@@ -492,7 +493,11 @@ fun DynamicMoviesGrid(
         contentPadding = PaddingValues(16.dp)
     )
     {
-        items(products.itemCount)
+        items(
+          count  =  products.itemCount,
+          key = products.itemKey()
+
+        )
         {
             index ->
             when (val item = products[index]?.category) {

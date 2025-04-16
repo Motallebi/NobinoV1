@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.ui.screens.demo
 
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -21,8 +22,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Audiotrack
@@ -88,11 +92,14 @@ import com.smcdeveloper.nobinoapp.ui.screens.search.FilterCountriesSelectionShee
 import com.smcdeveloper.nobinoapp.ui.screens.search.FilterSubtitleSelectionSheet
 import com.smcdeveloper.nobinoapp.ui.screens.search.FilterType
 import com.smcdeveloper.nobinoapp.ui.screens.search.GenreSelectionSheet
+import com.smcdeveloper.nobinoapp.ui.screens.search.SearchWidget
 import com.smcdeveloper.nobinoapp.ui.screens.search.YearSelectionSheet
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import retrofit2.http.Query
 
 
 val audioOptions = listOf(
@@ -115,6 +122,170 @@ val audioOptions = listOf(
 
 
 
+@Composable
+fun TestSearch(
+    homeViewModel: HomeViewModel= hiltViewModel(),
+    navController: NavHostController,
+    filterViewModel: FilterViewModel= hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    tags:String=""
+
+
+
+)
+
+{
+
+
+    val searchQuery by searchViewModel.searchQuery
+    val searchedProducts = searchViewModel.searchedProducts.collectAsLazyPagingItems()
+
+    Scaffold(
+        content = { paddingValues ->
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
+
+            )
+
+            {
+
+                SearchWidget(
+
+
+                    text = searchQuery,
+                    onTextChange = {searchViewModel.updateSearchQuery(query = it)
+                        Log.d("newsearch ", "text changed$it")
+
+
+                                   },
+                    onSearchClicked = {
+                        searchViewModel.searchProducts(query = it)
+                        Log.d("newsearch ",it)
+
+
+                                      },
+                    onCloseClicked =  { navController.popBackStack()}
+
+
+
+
+
+
+
+
+
+                )
+
+
+                LazyColumn() {
+
+                    items(searchedProducts.itemCount)
+                    {
+                            index-> Row()
+                    {
+                        searchedProducts[index]?.name?.let { Text(it) }
+
+
+                    }
+
+
+
+
+                    }
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+            }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+@Composable
+fun PerformSearch( performSearch:Boolean,tags:String="",query: String,
+    homeViewModel: HomeViewModel= hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
+                   navController: NavHostController
+
+
+
+
+
+
+) {
+    LaunchedEffect(performSearch) {
+        Log.d("search2", "performing search......")
+        Log.d("search2", "performing search......")
+
+        searchViewModel.updateSearchParams(
+            countries = "",
+            category = listOf("SERIES,MOVIES"),
+            tag = tags,
+            query = query
+
+
+        )
+      //  searchViewModel.onSearchTextChange("نمو")
+
+
+
+
+    }
+
+  //  val movies = searchViewModel.moviesFlow.collectAsLazyPagingItems()
+    // ShowSearchMovies(movies,navController)
+
+
+}
+
 
 
 
@@ -124,7 +295,11 @@ fun DemoBottomSheetSearch(
     homeViewModel: HomeViewModel= hiltViewModel(),
     navController: NavHostController,
     filterViewModel: FilterViewModel= hiltViewModel(),
-    searchViewModel: SearchViewModel = hiltViewModel()
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    tags:String="",
+    categoryName:String="",
+    categoryId:Int=1
+
 
 
 
@@ -133,11 +308,24 @@ fun DemoBottomSheetSearch(
 
 
 {
+    var scrollToIndex: (suspend (Int) -> Unit)? by remember { mutableStateOf(null) }
+    val searchScope = rememberCoroutineScope()
+
+
+
+    Log.d("search", "tag is... $tags")
+
+
+
+  //  var tags:String=""
 
 
     // 🔴 Search Query State
 
     var searchQuery by remember { mutableStateOf("") } // 🔴 Search text state
+    val gridState = rememberLazyGridState()
+
+    var searchQuery1 by remember { mutableStateOf("نمو") } // 🔴 Search text state
     val debouncedSearchQuery = rememberDebouncedQuery(searchQuery) // 🔴 Debounced input
 
     val coroutineScope = rememberCoroutineScope()
@@ -148,7 +336,7 @@ fun DemoBottomSheetSearch(
 
     var selectedCategories by remember { mutableStateOf(setOf("MOVIE,SERIES")) }
     var selectedCountryIds by remember { mutableStateOf(setOf<String>()) }
-    var selectedGenreIds by remember { mutableStateOf(setOf<String>()) }
+    var selectedGenreIds by remember { mutableStateOf(setOf<String>(tags)) }
     val selectedGenres by remember { mutableStateOf(setOf<String>("9999")) } // 🔴 Store full objects for UI
 
 
@@ -167,8 +355,8 @@ fun DemoBottomSheetSearch(
     var appliedFilters by remember { mutableStateOf<List<String>>(emptyList()) }
 
     // 🔴 API Query Parameters (Updated Dynamically)
-    var tagsForApi by remember { mutableStateOf("") }
-    var categoriesForApi by remember { mutableStateOf("") }
+    var tagsForApi by remember { mutableStateOf(tags) }
+    var categoriesForApi by remember { mutableStateOf(emptyList<String>()) }
     var countriesForApi by remember { mutableStateOf("") }
     var genresForApi by remember { mutableStateOf("") }
     var actorsForApi by remember { mutableStateOf("") }
@@ -199,6 +387,129 @@ fun DemoBottomSheetSearch(
     val genreState = filterViewModel.genres.collectAsState()
 
     var shouldFetchGenres by remember { mutableStateOf(true) } // ✅ Boolean flag
+    val performSearch by remember { mutableStateOf(false) }
+    var firstSearch by remember { mutableStateOf(false) }
+
+
+   /* PerformSearch(
+        performSearch = true,
+        navController = navController,
+        query = searchQuery
+
+
+
+
+
+    )*/
+
+
+
+
+
+
+
+    val movies = searchViewModel.moviesFlow.collectAsLazyPagingItems()
+
+
+    Log.d("search..",movies.itemCount.toString())
+
+
+
+
+
+
+
+
+
+
+
+
+
+    LaunchedEffect(performSearch) {
+       /* Log.d("search2","performing search......")
+        Log.d("search2","performing search......")
+
+        searchViewModel.updateSearchParams(
+            countries = "",
+            category = listOf("SERIES,MOVIES"),
+            tag = tagsForApi,
+            query = ""
+
+
+        )
+        searchViewModel.onSearchTextChange("")*/
+
+
+
+
+
+
+
+
+
+/*
+        if(firstSearch)
+        {
+
+            Log.d("search","performing firstsearch......")
+            searchViewModel.updateSearchParams(
+                countries = "",
+                category = "SERIES,MOVIES",
+                tag = tagsForApi,
+                query = ""
+
+
+            )
+
+            firstSearch=false
+
+        }
+
+        else{
+            Log.d("search","performing othersearch......")
+            searchViewModel.updateSearchParams(
+                countries = "",
+                category = "SERIES,MOVIES",
+                tag = tagsForApi,
+                query = ""
+
+
+            )
+            firstSearch=false
+
+        }*/
+
+
+
+
+
+        if (tags.isNotBlank()) {
+
+
+            selectedGenreIds = selectedGenreIds.toMutableSet().apply {
+                 add(categoryId.toString())
+            }
+
+
+            Log.d("gn", selectedGenreIds.toString())
+
+            appliedFilters = appliedFilters.toMutableList().apply {
+                add(categoryName.toString())
+
+            }
+        }
+
+    }
+
+  //  val moviesFlow = searchViewModel.moviesFlow.collectAsState()
+
+
+
+
+
+
+
+
 
 
 
@@ -209,6 +520,10 @@ fun DemoBottomSheetSearch(
         if (countryListState is NetworkResult.Loading) {
             searchViewModel.fetchCountries()
         }
+
+
+
+
     }
 // 🔴 Fetch genres when screen is first opened
     LaunchedEffect(shouldFetchGenres) { // ✅ Runs when shouldFetchGenres changes
@@ -260,15 +575,45 @@ fun DemoBottomSheetSearch(
 
 
     // 🔴 Build Query Parameters When Filters Change
-    LaunchedEffect(selectedGenreIds, selectedCategories, selectedCountryIds,selectedGenres) {
-        tagsForApi = selectedGenreIds.joinToString(",")
+    LaunchedEffect(selectedGenreIds, selectedCategories, selectedCountryIds,selectedGenres,tags) {
 
-        categoriesForApi = selectedCategories.joinToString(",")
+
+
+
+
+        if(selectedCategories.isEmpty())
+        {
+
+            categoriesForApi.plus("MOVIES,SERIES")
+
+
+        }
+
+        tagsForApi = tags.ifBlank { selectedTags.joinToString(",") }
+
+
+
+        categoriesForApi = selectedCategories.toList()
 
         countriesForApi = selectedCountryIds.joinToString(",")
 
         //  homeViewModel.fetchCountries()
         Log.d("search", "ciuntries are" + contryList.data.toString())
+        Log.d("search", "tags are" + tagsForApi.toString())
+
+
+        searchViewModel.updateSearchParams(
+
+            countries = countriesForApi,
+            tag = tagsForApi,
+            category = categoriesForApi,
+            //query = searchQuery.ifEmpty { searchQuery1 }
+            query = searchQuery
+
+
+        )
+
+
 
     }
 
@@ -284,8 +629,13 @@ fun DemoBottomSheetSearch(
 
 
     val searchText by searchViewModel.searchText.collectAsState()
-    val movies = searchViewModel.moviesFlow1.collectAsLazyPagingItems()
+
     val isSearching by searchViewModel.isSearching.collectAsState()
+
+
+
+    Log.d("search", "total... "+movies.itemCount.toString() )
+
 
 
 
@@ -295,7 +645,7 @@ fun DemoBottomSheetSearch(
 
 
     // 🔴 Fetch Movies Using Jetpack Paging (Triggers when query or filters change)
-    val products = searchViewModel.getMovies(
+    val produmcts = searchViewModel.getMovies(
         tag = tagsForApi,
         categoryName = categoriesForApi,
         countries = countriesForApi,
@@ -332,7 +682,7 @@ fun DemoBottomSheetSearch(
                 Column (
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Blue)
+                        .background(Color.Black)
                         .padding(paddingValues)
                         .padding(horizontal = 16.dp)
 
@@ -341,7 +691,7 @@ fun DemoBottomSheetSearch(
 
                 {
 
-                    Row(modifier = Modifier
+                   /* Row(modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.Magenta)
                         .height(50.dp)
@@ -354,7 +704,7 @@ fun DemoBottomSheetSearch(
                         Text("Search")
 
 
-                      /*  if(true) {
+                      *//*  if(true) {
                             CircularProgressIndicator(
                                 modifier = Modifier
                                     .padding(16.dp),
@@ -363,10 +713,10 @@ fun DemoBottomSheetSearch(
 
 
                             )
-                        }*/
+                        }*//*
 
 
-                    }
+                    }*/
 
 
 
@@ -470,6 +820,8 @@ fun DemoBottomSheetSearch(
                     // 🔴 Search Bar with Badge
                     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
 
+                        Log.d("saerch","Composite "+movies.itemCount.toString())
+
 
 
 
@@ -520,10 +872,12 @@ fun DemoBottomSheetSearch(
 
                             // 🔴 Open Parent Bottom Shee
                         )
+
+
                     }
 
                     // 🔴 Show Applied Filters Below Search Bar
-                    if (appliedFilters.isNotEmpty()) {
+                    if (appliedFilters.isNotEmpty() || tags.isNotBlank()) {
                         LazyRow(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -538,110 +892,28 @@ fun DemoBottomSheetSearch(
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(8.dp)
-                    )
+                    ShowSearchMovies(movies =movies, navController= navController,searchQuery=searchText,
+                        onScrollCallbackReady = {
+                            scrollToIndex?.let { callback ->
 
-                    {
-                        items(movies.itemCount) { index ->
-                            val movie = movies[index]
-                            if (movie != null) {
-                                /* MovieItem(
-                                     movieTitle = movie.name.toString(),
-                                     rating = movie.popularityRate.toString()
-                                 )*/
-
-                                MovieCard(movie = movie) {
-
-                                    products[index]?.let {
-
-                                        navController.navigate(Screen.ProductDetails.withArgs("${movie.id}"))
-
-
-                                    }
-
-
+                                searchScope.launch {
+                                    callback(15)
                                 }
 
 
                             }
-                        }
-
-                        // 🔴 Show Loading Indicator While Fetching More Data
-                        movies.apply {
-                            when {
-                                loadState.append is LoadState.Loading -> {
-                                    //  item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
-                                }
-
-                                loadState.refresh is LoadState.Loading -> {
-                                    // item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
-                                }
-
-                            }
 
 
-                        }
+                        }, gridState = gridState
 
 
-                        // DynamicMoviesGrid(products=products)
-
-                        /* products.apply {
-                        when {
-                            loadState.append is LoadState.Loading -> {
-
-                                item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
-                            }
+                        )
 
 
 
 
-                            loadState.refresh is LoadState.Loading -> {
-                                item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
-                            }
-                        }*/
 
 
-                        // 🔴 Movie Grid with Pagination
-                        /*   LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(8.dp)
-                    )
-
-                    {
-                        items(products.itemCount) { index ->
-                            val movie = products[index]
-                            if (movie != null) {
-
-                                MovieCard(movie) {
-
-
-                                }
-
-                            }
-                        }
-
-                        // 🔴 Show Loading Indicator While Fetching More Data
-                        products.apply {
-                            when {
-                                loadState.append is LoadState.Loading -> {
-
-                                    item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
-                                }
-
-
-
-
-                                loadState.refresh is LoadState.Loading -> {
-                                    item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
-                                }
-                            }
-                        }
-                    }*/
-                    }
 
 
                 }
@@ -662,11 +934,22 @@ fun DemoBottomSheetSearch(
             onDismiss = { isParentSheetVisible = false }
         ) {
             Column {
-                Text(
-                    text = "فیلترها", // "Filters"
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                Row( modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+
+
+
                 )
+                {
+                    Text(
+                        text = "فیلتر", // "Filters"
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(bottom = 16.dp)
+
+                    )
+
+                }
+
 
                 LazyColumn {
                     val filterOptions = listOf(
@@ -962,6 +1245,68 @@ fun DemoBottomSheetSearch(
 
 }
 
+@Composable
+private fun ShowSearchMovies(
+
+    movies: LazyPagingItems<MovieResult.DataMovie.Item>,
+    navController: NavHostController,
+    onScrollCallbackReady: (suspend (Int) -> Unit) -> Unit,
+    searchQuery: String,
+    gridState: LazyGridState
+
+)
+
+{
+   val refreshstate= movies.loadState.refresh
+   val appendstate= movies.loadState.append
+    val gridstate = rememberLazyGridState()
+    // Remember a CoroutineScope to be able to launch
+    val coroutineScope = rememberCoroutineScope()
+    Log.d("Scroll", searchQuery)
+
+
+
+
+    LaunchedEffect(searchQuery) {
+
+        coroutineScope.launch {
+            Log.d("Scroll", "launchh scrol")
+            val index = (0 until movies.itemCount).firstOrNull { idx ->
+                movies.peek(idx)?.name?.contains(searchQuery, ignoreCase = true) == true
+            }
+
+            if (index != null) {
+                gridState.animateScrollToItem(index)
+            } else {
+                // Optional: handle not found
+                Log.d("Scroll", "Item not found")
+            }
+
+        }
+
+
+
+    }
+
+
+
+
+
+/*
+LaunchedEffect(Unit) {
+    onScrollCallbackReady{ index->
+
+        coroutineScope.launch {
+            gridstate.animateScrollToItem(15)
+        }
+
+
+    }
+
+
+
+}
+*/
 
 
 
@@ -970,9 +1315,236 @@ fun DemoBottomSheetSearch(
 
 
 
+     when(refreshstate) {
+         is LoadState.Loading -> {
+             Log.d("loadingsate", "REFRESH")
+             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                 CircularProgressIndicator()
+             }
+         }
+
+         is LoadState.Error -> {}
+
+         else -> {
+             Log.d("loadingsate", "REFRESH ELSE..")
 
 
-    @Composable
+
+             LazyVerticalGrid(
+                 state = gridstate,
+                 columns = GridCells.Fixed(2),
+                 modifier = Modifier.fillMaxSize(),
+                 contentPadding = PaddingValues(8.dp)
+             )
+
+             {
+                 items(movies.itemCount) { index ->
+
+
+                     Log.d("loadingsate", "REFRESH ELSE..${movies.itemCount}")
+
+
+                     val movie = movies[index]
+                     if (movie != null) {
+                         /* MovieItem(
+                                              movieTitle = movie.name.toString(),
+                                              rating = movie.popularityRate.toString()
+                                          )*/
+
+                         MovieCard(movie = movie) {
+
+                             movies[index]?.let {
+
+                                 navController.navigate(Screen.ProductDetails.withArgs("${movie.id}"))
+
+
+                             }
+
+
+                         }
+                         Text("$index")
+
+                        // item { Text("000000000000") }
+
+
+                     }
+                 }
+
+
+
+
+
+                 if (movies.loadState.append is LoadState.Loading) {
+                     Log.d("loadingsate", "append  grid..")
+
+                     item {
+                         Box(
+                             Modifier
+                                 .fillMaxWidth()
+                                 .padding(16.dp),
+                             contentAlignment = Alignment.Center
+                         ) {
+                             CircularProgressIndicator()
+                         }
+                     }
+                 }
+
+
+
+
+
+
+
+             }
+
+
+
+         }
+
+     }
+
+
+
+
+
+
+
+    when(appendstate)
+    {
+        is LoadState.Loading->{
+
+            Log.d("loadingsate","APPEND")
+
+        }
+
+        is LoadState.Error->{}
+
+        else ->{}
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+/////LazyGrid
+
+   /* LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(8.dp)
+    )
+
+    {
+        items(movies.itemCount) { index ->
+
+
+            val movie = movies[index]
+            if (movie != null) {
+                *//* MovieItem(
+                                     movieTitle = movie.name.toString(),
+                                     rating = movie.popularityRate.toString()
+                                 )*//*
+
+                MovieCard(movie = movie) {
+
+                    movies[index]?.let {
+
+                        navController.navigate(Screen.ProductDetails.withArgs("${movie.id}"))
+
+
+                    }
+
+
+                }
+
+
+            }
+        }
+
+        // 🔴 Show Loading Indicator While Fetching More Data
+        movies.apply {
+            when {
+                loadState.append is LoadState.Loading -> {
+                    //  item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                }
+
+                loadState.refresh is LoadState.Loading -> {
+                    // item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                }
+
+            }
+
+
+        }
+
+
+        // DynamicMoviesGrid(products=products)
+
+        *//* products.apply {
+                        when {
+                            loadState.append is LoadState.Loading -> {
+
+                                item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                            }
+
+
+
+
+                            loadState.refresh is LoadState.Loading -> {
+                                item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                            }
+                        }*//*
+
+
+        // 🔴 Movie Grid with Pagination
+        *//*   LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(8.dp)
+                    )
+
+                    {
+                        items(products.itemCount) { index ->
+                            val movie = products[index]
+                            if (movie != null) {
+
+                                MovieCard(movie) {
+
+
+                                }
+
+                            }
+                        }
+
+                        // 🔴 Show Loading Indicator While Fetching More Data
+                        products.apply {
+                            when {
+                                loadState.append is LoadState.Loading -> {
+
+                                    item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                                }
+
+
+
+
+                                loadState.refresh is LoadState.Loading -> {
+                                    item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                                }
+                            }
+                        }
+                    }*//*
+    }*/
+}
+
+
+@Composable
     fun DynamicMoviesGrid(
         products: LazyPagingItems<MovieResult.DataMovie.Item>, // A list of mixed data types (movies and informational items)
         modifier: Modifier = Modifier,
@@ -1926,6 +2498,8 @@ fun SearchBarWithBadge1(
 
 ) {
 
+    Log.d("search","search tag is........$tags")
+
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp  // 🔹 Get dynamic screen width
     val badgeXPosition = screenWidth * 0.80f          // 🔹 Adjust badge position (85% of screen width)
@@ -1935,11 +2509,21 @@ fun SearchBarWithBadge1(
 
 
     var expanded by remember { mutableStateOf(false) }
-    val searchResults = viewModel.moviesFlow1.collectAsLazyPagingItems()
+    val searchResults = viewModel.moviesFlow.collectAsLazyPagingItems()
+
+
     val isLoading by viewModel.isSearching.collectAsState()
 
-    LaunchedEffect(searchResults.itemCount) {
+    LaunchedEffect(searchResults.itemCount, tags) {
         expanded = searchQuery.isNotEmpty() && searchResults.itemCount > 0
+
+      /*  if(tags.isNotBlank())
+        {
+            viewModel.getMovieFlow(tags)
+
+        }*/
+
+
     }
 
     Box(modifier = Modifier.fillMaxWidth()) {
@@ -1963,59 +2547,14 @@ fun SearchBarWithBadge1(
                 )
 
                 {
-                    Card {
-                        Column {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 10.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                //horizontalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                TextField(
-                                    modifier = Modifier.padding(horizontal = 10.dp),
-                                    shape = MaterialTheme.shapes.large,
-                                    value = searchQuery,
-                                    onValueChange = {
-                                        viewModel.onSearchTextChange(it)
-                                        expanded = it.isNotEmpty()
-                                    },
-                                    placeholder = { Text("جستجو...") },
-                                    leadingIcon = {
-                                        Icon(
-                                            painterResource(R.drawable.search),
-                                            contentDescription = "",
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    }
-                                )
-                            }
+                    SearchBox(
+                        searchQuery,
+                        viewModel,
 
-                            // 🔹 Show Loading Indicator While Searching
-                            if (isLoading) {
-                                Row(horizontalArrangement = Arrangement.Center) {
-                                    CircularProgressIndicator(color = Color.Red)
-                                }
-                            }
-
-                            // 🔹 Show Search Suggestions
-                            AnimatedVisibility(visible = expanded && !isLoading) {
-                                Card {
-                                    LazyColumn {
-                                        items(searchResults.itemCount) { index ->
-                                            searchResults[index]?.let { movie ->
-                                                SuggestionTextItem(
-                                                    movie.name.toString(),
-                                                    onClick = {
-                                                        onSuggestionClick(movie)
-                                                        expanded = false
-                                                    }
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                        isLoading,
+                        searchResults,
+                        onSuggestionClick ={it.name}
+                    )
                 }
             }
         }
@@ -2050,25 +2589,99 @@ fun SearchBarWithBadge1(
 }
 
 
+@Composable
+private fun SearchBox(
+    searchQuery: String,
+    viewModel: SearchViewModel,
+    //expanded: Boolean,
+    isLoading: Boolean,
+    searchResults: LazyPagingItems<MovieResult.DataMovie.Item>,
+    onSuggestionClick: (MovieResult.DataMovie.Item) -> Unit
+) {
+
+    var expanded by remember { mutableStateOf(false) }
+    var textFieldValue by remember { mutableStateOf(searchQuery) }
 
 
 
 
 
 
+   // var expanded1 = expanded
+    Card {
+        Column {
+            Row(
+                modifier = Modifier.padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                //horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                TextField(
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                    shape = MaterialTheme.shapes.large,
+                    //value = if(searchQuery=="نمو") "" else searchQuery,
+                    value = textFieldValue,
+                    onValueChange = {
+                        viewModel.updateSearchParams(
+                            query = it, tag = "", category = listOf("MOVIE,SERIES,COURSE,CERTIFICATED_COURSE"), countries = ""
+                        )
+                        viewModel.onSearchTextChange(it)
 
 
+                        expanded = it.isNotEmpty()
+                        textFieldValue=it
 
 
+                    },
+                    placeholder = { Text("جستجو...") },
+                    leadingIcon = {
+                        Icon(
+                            painterResource(R.drawable.search),
+                            contentDescription = "",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                )
+            }
+
+            // 🔹 Show Loading Indicator While Searching
+            if (isLoading) {
+                Row(horizontalArrangement = Arrangement.Center) {
+                    CircularProgressIndicator(color = Color.Red)
+                }
+            }
+
+            // 🔹 Show Search Suggestions
+            AnimatedVisibility(visible = expanded && !isLoading) {
+                Log.d("search", "search result ${searchResults.itemCount}")
+
+                Card(modifier = Modifier.height(300.dp)) {
+                    LazyColumn {
+                        items(searchResults.itemCount) { index ->
+                            searchResults[index]?.let { movie ->
+                                SuggestionTextItem(
+                                    movie.name.toString(),
+                                    onClick = {
+                                        onSuggestionClick(
+                                         movie
 
 
+                                        )
+                                        expanded = false
+                                       textFieldValue=movie.name.toString()
+
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 
-
-
-
-
-    @Composable
+@Composable
     fun SuggestionTextItem(text: String, onClick: () -> Unit) {
         Text(
             text = text,

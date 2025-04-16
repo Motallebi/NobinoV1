@@ -11,11 +11,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.smcdeveloper.nobinoapp.ui.screens.Actors.ActorScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
 import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoBottomSheetSearch
 import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoDialogSearch
+import com.smcdeveloper.nobinoapp.ui.screens.demo.TestSearch
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoDemo
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlay
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlayScreen
@@ -28,8 +30,10 @@ import com.smcdeveloper.nobinoapp.ui.screens.product.ProductDetailPage
 import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ContactUs
 import com.smcdeveloper.nobinoapp.ui.screens.profile.EditUserInfoPage
+import com.smcdeveloper.nobinoapp.ui.screens.profile.NewMemberPage
 import com.smcdeveloper.nobinoapp.ui.screens.profile.PaymentHistoryPage
 import com.smcdeveloper.nobinoapp.ui.screens.profile.PaymentResultScreen
+import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfilePictureSelectionPage
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.SubscriptionConfirmationPage
 import com.smcdeveloper.nobinoapp.ui.screens.search.Search
@@ -193,8 +197,73 @@ fun SetupNavGraph(navController: NavHostController) {
         }
 
 
-        composable(route = Screen.DemoScreen.route) {
-            DemoBottomSheetSearch(navController = navController)
+        composable(
+            route = "${Screen.DemoScreen.route}/?tags={tags}?categoryName={categoryName}?categoryId={categoryId}",
+            arguments = listOf(
+                navArgument("tags")
+
+            {
+                type =NavType.StringType
+
+            },
+                navArgument("categoryName")
+
+                {
+                    type =NavType.StringType
+
+                },
+                navArgument("categoryId")
+
+                {
+                    type =NavType.IntType
+
+                },
+
+
+
+
+
+
+
+                )
+
+
+            )
+
+
+        { backStackEntry->
+
+            val tags = backStackEntry.arguments?.getString("tags") ?: ""
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val categoryId = backStackEntry.arguments?.getInt("categoryName") ?: 1
+
+
+            DemoBottomSheetSearch(navController = navController, tags = tags, categoryName = categoryName, categoryId = categoryId)
+
+        }
+
+
+
+        composable(
+            route = Screen.DemoScreen.route)
+
+
+        {
+
+
+
+            DemoBottomSheetSearch(navController = navController, tags = "")
+
+        }
+
+
+
+
+
+
+
+
+
            // MovieScreen1()
            // DemoDialogSearch(navController = navController)
             //TestScreen(navController)
@@ -204,7 +273,7 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
-        }
+
 
 
 
@@ -213,19 +282,58 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         composable(
-            route = Screen.OtpValidation.route + "/{refNumber}",
-            arguments = listOf(navArgument("refNumber")
-            { type = NavType.StringType })
+          //  val otpRoute = "${Screen.OtpValidation.route}/{refNumber}?name={name}&username={username}&avatarId={avatarId}"
+          //  route = Screen.OtpValidation.route +"/{refNumber}?name={name}?username={username}&avatarId={avatarId}",
+            route = "${Screen.OtpValidation.route}/{refNumber}?name={name}&username={username}&avatarId={avatarId}",
+            arguments = listOf(
+                navArgument("refNumber")
+            {
+                type = NavType.StringType
+            },
+
+                navArgument("name")
+                {
+                    type = NavType.StringType
+                    defaultValue=""
+                    nullable=true
+                },
+
+
+                navArgument("username")
+                {
+                    type = NavType.StringType
+                    defaultValue=""
+                    nullable=true
+                },
+                navArgument("avatarId")
+                {
+                    type = NavType.IntType
+                    defaultValue=1
+
+                }
+
+
+
+
+
+                )
 
 
         )
 
 
         {
+            backStackEntry->
 
-                backStackEntry ->
             val refNumber = backStackEntry.arguments?.getString("refNumber") ?: ""
-            OtpValidationScreen(navController = navController, refNumber = refNumber)
+            OtpValidationScreen(navController = navController,
+                refNumber = refNumber,
+                name= backStackEntry.arguments?.getString("name").toString(),
+                username= backStackEntry.arguments?.getString("username").toString(),
+                avatarId =  backStackEntry.arguments?.getInt("avatarId") ?: 1
+            )
+
+
 
 
         }
@@ -236,7 +344,12 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
         composable(
-            route = Screen.PaymentResult.route + "/{planId}/{discountCode}",
+            route = Screen.PaymentResult.route + "/{planId}/{discountCode}/{id}",
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "nobinoapp://payment_result_screen/{planId}/{discountCode}/{id}"
+                }
+            ),
             arguments = listOf(
                 navArgument("planId")
                 {
@@ -251,6 +364,10 @@ fun SetupNavGraph(navController: NavHostController) {
             )
 
 
+
+
+
+
         )
 
 
@@ -259,10 +376,11 @@ fun SetupNavGraph(navController: NavHostController) {
                 backStackEntry ->
             val planId = backStackEntry.arguments?.getInt("planId") ?: 1
             val discountCode = backStackEntry.arguments?.getString("discountCode") ?: ""
+            val id = backStackEntry.arguments?.getString("id") ?: ""
 
 
 
-            PaymentResultScreen(planId = planId, discountCode = discountCode)
+            PaymentResultScreen(planId = planId, discountCode = discountCode,id=id)
 
 
         }
@@ -437,6 +555,19 @@ fun SetupNavGraph(navController: NavHostController) {
         }
 
 
+
+        composable(route=Screen.NewMember.route)
+        {
+            NewMemberPage(navController= navController)
+
+        }
+
+
+        composable(route=Screen.NewMemberSelection.route)
+        {
+            ProfilePictureSelectionPage(navController= navController)
+
+        }
 
 
 

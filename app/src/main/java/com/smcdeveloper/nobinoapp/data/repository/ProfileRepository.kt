@@ -1,15 +1,26 @@
 package com.smcdeveloper.nobinoapp.data.repository
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.smcdeveloper.nobinoapp.data.model.avatar.Avatar
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentHistory
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentRequest
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentResponse
+import com.smcdeveloper.nobinoapp.data.model.profile.ActiveUserProfile
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
+import com.smcdeveloper.nobinoapp.data.model.profile.NewUserProfileRequest
+import com.smcdeveloper.nobinoapp.data.model.profile.ProfileActivationRequest
+import com.smcdeveloper.nobinoapp.data.model.profile.ProfileResponse
 import com.smcdeveloper.nobinoapp.data.model.profile.UpdateUserProfileRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.UserInfo
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.remote.ProfileApiInterface
+import com.smcdeveloper.nobinoapp.data.source.PaymentDataSource
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ProfileRepository @Inject constructor(private val api: ProfileApiInterface): BaseApiResponse2() {
@@ -73,6 +84,70 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
     return result
 }
 
+    suspend fun  getUserPaymentHistory1(auth: String):NetworkResult<PaymentHistory> =
+
+        safeApiCall {
+
+            api.getUserPaymentHistory(auth,"1","10")
+
+        }
+
+
+    fun getPaymentHistory(): Flow<PagingData<PaymentHistory.PaymentHistoryData.Payment>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10,
+                initialLoadSize = 10
+
+
+            ),
+            pagingSourceFactory = {
+                PaymentDataSource( api = api,
+
+
+
+
+
+
+
+                    )
+            }
+        ).flow
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  suspend fun getAvatars() :NetworkResult<Avatar> =
+
+      safeApiCall {
+
+          api.getAvatars()
+
+
+
+      }
+
+
+
+
+
+
+
+
+
+
 
     suspend fun UpdateUserProfile(userid:String,updateRequest:UpdateUserProfileRequest): NetworkResult<UserInfo> =
 
@@ -82,6 +157,81 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
 
         }
+
+
+
+
+    suspend fun makeNewProfile(auth: String,profileRequest: NewUserProfileRequest ) :NetworkResult<ProfileResponse> =
+
+        safeApiCall {
+
+            api.makeNewProfile(auth = auth ,profileRequest )
+
+
+
+        }
+
+
+
+    suspend fun activeNewProfile(auth: String,profileActivationRequest: ProfileActivationRequest ) :NetworkResult<ProfileResponse> =
+
+        safeApiCall {
+
+            api.profileActivation(auth = auth ,profileActivationRequest )
+
+
+
+        }
+
+
+
+    suspend fun activeCurrentProfile(auth: String,profileActivationRequest: ProfileActivationRequest ) :NetworkResult<ProfileResponse> =
+
+        safeApiCall {
+
+            api.activeCurrentProfile(auth = auth ,profileActivationRequest )
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    suspend fun getCurrentUserProfile() : NetworkResult<List<ActiveUserProfile>> =
+
+        safeApiCall {
+
+            api.getUserProfile("Bearer $USER_TOKEN")
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

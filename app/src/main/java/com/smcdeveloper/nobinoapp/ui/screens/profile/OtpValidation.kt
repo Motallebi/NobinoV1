@@ -33,6 +33,7 @@ import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.util.AppConfigManager
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
+import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.util.DigitHelper
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
@@ -43,8 +44,13 @@ import kotlinx.coroutines.flow.collectLatest
 fun OtpValidationScreen(
     navController: NavController,
     refNumber: String,
+    name:String,
+    username:String,
+    avatarId:Int=1,
+
     profileViewModel: ProfileViewModel = hiltViewModel(),
     dataStoreViewModel: DataStoreViewModel= hiltViewModel()
+
 
 ) {
     val otpLength = 5
@@ -52,6 +58,7 @@ fun OtpValidationScreen(
     val context = LocalContext.current
     var isValid by remember { mutableStateOf(true) }
     var isEnabled by remember { mutableStateOf(false) }
+    val profileState by profileViewModel.profileState.collectAsState()
 
 
 
@@ -62,6 +69,12 @@ fun OtpValidationScreen(
 
     // Initialize refNumber in ViewModel
     LaunchedEffect(refNumber) {
+        if(refNumber=="SubProfile")
+        {
+            profileViewModel.initiateProfileCreation(auth = "Bearer $USER_TOKEN", name = name, username = username, avatarId = avatarId)
+
+
+        }
         profileViewModel.inputRefSates = refNumber
         dataStoreViewModel.saveUserRefKey(refNumber)
 
@@ -102,6 +115,59 @@ fun OtpValidationScreen(
             }
         }
     }
+
+
+    LaunchedEffect(Unit) {
+
+
+      profileViewModel.profileState.collectLatest { response->
+
+          when(response)
+          {
+              is NetworkResult.Success->
+              {
+
+
+              }
+
+              is NetworkResult.Error -> {
+
+                  Toast.makeText(
+                      context,
+                      response.message ?: "Invalid OTP or refNumber",
+                      Toast.LENGTH_LONG
+                  ).show()
+
+              }
+              is NetworkResult.Loading -> {
+
+
+
+              }
+          }
+
+
+
+
+
+
+
+      }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
 
     // Functions for onResendOtp and onEditPhoneNumber
     val onResendOtp = {
@@ -171,7 +237,9 @@ fun OtpValidationScreen(
                     //.padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-            ) {
+            )
+
+            {
 
 
 
@@ -256,20 +324,31 @@ fun OtpValidationScreen(
 
 
                                profileViewModel.inputOtpState = DigitHelper.digitByLocateFaToEn(otp)
+                                if (refNumber == "SubProfile")
+                                {
+                                    profileViewModel.setOtpCode(DigitHelper.digitByLocateFaToEn(otp))
+                                }
+
+
+
                               //  profileViewModel.inputOtpState = otp
-
-                                profileViewModel.validateOtp(
-                                   refNumber =  dataStoreViewModel.getUserRefKey().toString(),
-                                    otp=profileViewModel.inputOtpState,
-                                    mobile = dataStoreViewModel.getUserPhoneNumber().toString()
-
-
+                                else {
+                                    profileViewModel.validateOtp(
+                                        refNumber =  dataStoreViewModel.getUserRefKey().toString(),
+                                        otp=profileViewModel.inputOtpState,
+                                        mobile = dataStoreViewModel.getUserPhoneNumber().toString()
 
 
 
 
 
-                                )
+
+
+                                    )
+
+                                }
+
+
                             }
                         },
                         colors = TextFieldDefaults.textFieldColors(
@@ -308,22 +387,92 @@ fun OtpValidationScreen(
 
                         profileViewModel.inputOtpState = DigitHelper.digitByLocateFaToEn(otp)
 
-                        profileViewModel.validateOtp(
-                            refNumber = profileViewModel.inputRefSates,
-                            otp = profileViewModel.inputOtpState,
-                            mobile = dataStoreViewModel.getUserPhoneNumber().toString()
 
 
-                        )
+                        if(refNumber != "SubProfile") {
+                            profileViewModel.validateOtp(
+                                refNumber = profileViewModel.inputRefSates,
+                                otp = profileViewModel.inputOtpState,
+                                mobile = dataStoreViewModel.getUserPhoneNumber().toString()
+
+
+                            )
+                        }
+                        else
+                        {
+                             // Update the OTP in the ViewModel
+                            profileViewModel.setOtpCode(DigitHelper.digitByLocateFaToEn(otp))
+                            // Call completeProfileCreation to trigger OTP verification and final user creation
+                            profileViewModel.completeProfileCreation(auth ="Bearer $USER_TOKEN" )
+                            navController.popBackStack()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        }
+
+
                     }
                 },
 
 
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-            ) {
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+
+                )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            {
                 Text("تایید کد", color = Color.White)
             }
+
+
 
             Spacer(modifier = Modifier.height(16.dp))
 

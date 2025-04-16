@@ -1,5 +1,9 @@
 package com.smcdeveloper.nobinoapp.ui.screens.profile
 
+import android.content.Context
+import android.content.Intent
+
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,7 +34,11 @@ import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 fun PaymentResultScreen(
     viewModel: ProfileViewModel= hiltViewModel(),
     planId:Int,
-    discountCode:String
+    discountCode:String,
+    id:String,
+    result:Boolean?= null
+
+
 
 
 
@@ -45,11 +54,16 @@ fun PaymentResultScreen(
 
 {
 
+    val context = LocalContext.current
+
 
     LaunchedEffect(Unit) {
 
+
+        Log.d("payment", "payment with $id $planId $discountCode"    )
+
         val discount =PaymentRequest.Discount("")
-        val plan =PaymentRequest.Plan(31)
+        val plan =PaymentRequest.Plan(planId)
         val paymentRequest =PaymentRequest(plan = plan, discount = discount)
 
         viewModel.postPayment(paymentRequest = paymentRequest)
@@ -62,7 +76,7 @@ fun PaymentResultScreen(
     }
 
 
-    val paymentResponse by viewModel.paymentResponse.collectAsState()
+    val paymentResponse: NetworkResult<PaymentResponse> by viewModel.paymentResponse.collectAsState()
 
 
 
@@ -81,6 +95,15 @@ fun PaymentResultScreen(
               {
 
                   Log.d("payment","payment is Error")
+                  Log.d("payment","error code is ${paymentResponse.message}")
+                 // Log.d("payment","error code is ${paymentResponse.data.
+                  ShowPaymentResultDialog("404")
+
+
+
+
+
+
 
 
 
@@ -93,6 +116,16 @@ fun PaymentResultScreen(
                   Log.d("payment","payment is Success")
                   Log.d("payment","payment response ${paymentResponse.data?.paymentResponse?.payment?.redirect}")
                   Log.d("payment","payment response ${paymentResponse.data?.paymentResponse?.payment.toString()}")
+                  val redirect=paymentResponse.data?.paymentResponse?.payment?.redirect
+                //  val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                  val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirect))
+                  context.startActivity(intent)
+
+
+                  if(result != null)
+                  ShowPaymentResultDialog("1")
+
+
 
 
 
@@ -115,6 +148,14 @@ fun PaymentResultScreen(
 
 
 
+
+
+
+}
+
+@Composable
+fun ShowPaymentResultDialog(paymentId:String)
+{
 
 
 
@@ -137,7 +178,7 @@ fun PaymentResultScreen(
                 painter = painterResource(id = android.R.drawable.checkbox_on_background),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
-                tint = Color.White
+                tint = if(paymentId=="1") Color.White else Color.Red
             )
         }
 
@@ -145,7 +186,12 @@ fun PaymentResultScreen(
 
         // Success Message
         Text(
-            text = "پرداخت با موفقیت انجام شد",
+            text =
+            if(paymentId == "1")
+                "پرداخت با موفقیت انجام شد"
+            else if(paymentId == "400") "پرداخت با موفقیت انجام نشد"
+               else   "کد اشتباه است",
+
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -185,4 +231,16 @@ fun PaymentResultScreen(
             )
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
 }

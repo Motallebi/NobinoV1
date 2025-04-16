@@ -99,6 +99,7 @@ dependencies {
    // implementation(libs.coile.image)
     implementation(libs.coil.network.okhttp)
     implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 
 
 // Slider With View Pager
@@ -129,14 +130,18 @@ dependencies {
 
     // ExoPlayer
 
-    implementation("androidx.media3:media3-exoplayer:1.1.0-beta01")
-    implementation("androidx.media3:media3-ui:1.1.0-beta01")
-    implementation("androidx.media3:media3-exoplayer-hls:1.1.0-beta01")
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.exoplayer.hls)
 
     // Animation
 
     //animation
-    implementation ("com.airbnb.android:lottie-compose:5.2.0")
+    implementation (libs.lottie.compose)
+
+
+    //swipe refresh
+    implementation(libs.accompanist.swiperefresh)
 
 
 

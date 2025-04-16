@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.LayoutDirection
 import android.util.Log
@@ -57,6 +58,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
 
 
@@ -99,6 +101,10 @@ class MainActivity : ComponentActivity() {
                 {
 
                     Scaffold(
+
+                       // contentColor = Color.Red,
+                       // containerColor = Color.Green,
+
 
                         contentWindowInsets =  WindowInsets(0.dp,0.dp,0.dp,0.dp),
                         //modifier = Modifier.background(Color.Red),
@@ -150,6 +156,7 @@ class MainActivity : ComponentActivity() {
                                        currentRoute.toString().startsWith("SignUp_screen")
                                        || currentRoute.toString().startsWith("favorite")
                                        || currentRoute.toString().startsWith("VideoPlayer_Screen")
+                                       || currentRoute.toString().startsWith("Demo_Screen")
 
 
 

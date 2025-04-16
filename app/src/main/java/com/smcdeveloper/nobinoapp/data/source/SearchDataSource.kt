@@ -7,21 +7,23 @@ import androidx.paging.LOG_TAG
 import com.smcdeveloper.nobinoapp.data.repository.HomeRepository
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.smcdeveloper.nobinoapp.data.model.favorit.Favorite
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.repository.ProfileRepository
 import com.smcdeveloper.nobinoapp.data.repository.SearchRepository
+import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import retrofit2.HttpException
 import java.io.IOException
 
 class SearchDataSource(
 
     private val repository:SearchRepository,
-    val tagName:String,
-    val categoryName:String="",
-    val countries:String="",
-    val name: String="",
-    var offset :Int=0,
-    var size: Int =20
+    val tagName:String?=null,
+    val categoryName:List<String>?=null ,
+    val countries:String?=null,
+    val name: String?=null,
+   // var offset :Int=0,
+    var size: Int=10
 
 
     //  val specialId:Int
@@ -30,15 +32,18 @@ class SearchDataSource(
 
 
 {
-
+   var loadedItems=0
 
 
 
     override fun getRefreshKey(state: PagingState<Int, MovieResult.DataMovie.Item>): Int? {
+        Log.d("PagingSource","refresh...")
 
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            anchorPage?.prevKey?.plus(size) ?: anchorPage?.nextKey?.minus(size)
+
+            Log.d("PagingSource", "🚀 Loading movies from  perv:${anchorPage?.prevKey} + next:${anchorPage?.nextKey} )")
         }
 
 
@@ -110,7 +115,7 @@ class SearchDataSource(
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
+     suspend fun load2(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
         val offset = params.key ?: 0
         val limit = params.loadSize
 
@@ -128,6 +133,7 @@ class SearchDataSource(
 
             )
             Log.d("PagingSource", "✅ Received ${response.data?.movieInfo!!.size} items from API")
+            Log.d("PagingSource", "Loaded items: ${response.data.movieInfo.items.toString()}")
 
             // ❗ Ensure API returns expected data
             if (response.data.movieInfo.items.isNullOrEmpty()) {
@@ -152,6 +158,161 @@ class SearchDataSource(
             LoadResult.Error(e)
         }
     }
+
+
+    suspend fun load3(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
+
+        return try {
+            val nextPageNumber = params.key ?: 1
+
+
+            val response = repository.fetchMovies(
+                tag = tagName,
+                countries = countries,
+                name = name,
+                size = 20,
+                categoty = categoryName,
+                offset = nextPageNumber
+            ).data
+
+
+            LoadResult.Page(
+                data = response?.movieInfo?.items!!.filterNotNull(
+
+                ),
+                prevKey = null,
+                nextKey = nextPageNumber + 1
+            )
+
+
+        } catch (e: Exception) {
+            Log.d("3636", "error:$e ")
+            PagingSource.LoadResult.Error(e)
+        }
+
+
+
+
+
+
+    }
+
+
+    /*  override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item>> {
+
+          // val pageNum = params.key ?: 0
+          // val limit = params.loadSize
+
+          //Log.d("PagingSource", "🚀 Loading movies from page=$pageNum, limit=$limit")
+
+          return try {
+              val nextPageNumber = params.key ?: 1
+
+
+              val response = repository.fetchMovies(
+                  tag = tagName,
+                  countries = countries,
+                  name = name,
+                  size = 20,
+                  categoty = categoryName,
+                  offset = nextPageNumber
+              ).data
+
+
+              LoadResult.Page(
+                  data = response.movieInfo.items.filterNotNull(
+
+                  ),
+                  prevKey = null,
+                  nextKey = nextPageNumber + 1
+              )
+
+
+          } catch (e: Exception) {
+              Log.d("3636", "error:$e ")
+              PagingSource.LoadResult.Error(e)
+          }
+
+      }
+  */
+
+
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResult.DataMovie.Item> {
+
+        Log.d("PagingSource1", "🚀 Loading......")
+        Log.d("PagingSource", "🚀 Loading......key is:000-* ${params.key}")
+
+         val pageNum = params.key ?: 0
+         val limit = params.loadSize
+        // offset=pageNum*size
+        val offset = params.key ?: 0
+
+
+        Log.d("PagingSource", "🚀 Loading movies from page=$pageNum, limit=$limit")
+       // val nextPageNumber = params.key ?: 0
+
+        return try {
+
+            Log.d("PagingSource", "🔄 Loading page | offset = $offset, pageSize = $size")
+
+            val response = repository.fetchMovies(
+                tag = tagName,
+                countries = countries,
+                name = name,
+                size = limit,
+                categoty = categoryName,
+                offset = offset
+
+
+
+
+
+
+            ).data
+          var totalItems =response!!.movieInfo!!.total
+
+           loadedItems += response.movieInfo?.items?.size!!
+            Log.d("PagingSource", "🔄 Loading items are $loadedItems")
+            Log.d("PagingSource", "🔄 Loading total are $totalItems")
+
+
+
+          val nextKey=  if (response.movieInfo.items.size!!<limit)  null else limit+offset
+
+
+
+            Log.d("PagingSource", "✅ Loaded ${response.movieInfo.items.size} items at offset $offset  nextKey $nextKey"   )
+
+
+            LoadResult.Page(
+                data = response.movieInfo.items.filterNotNull(
+
+
+                ),
+
+
+
+
+                        //response.movieInfo.total
+                prevKey =   if(offset == 0) null else offset-size,
+                nextKey = nextKey
+            )
+
+
+
+        } catch (e: Exception) {
+            Log.d("3636", "error:$e ")
+            PagingSource.LoadResult.Error(e)
+        }
+
+
+
+    }
+
+
+
+
 
 
 

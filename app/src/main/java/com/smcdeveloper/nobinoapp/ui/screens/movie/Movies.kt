@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -52,6 +53,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection2
+import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
 import com.smcdeveloper.nobinoapp.ui.screens.series.SliderItemByTags
 
 
@@ -186,7 +188,10 @@ fun SectionListScreen(
 
                     if (sliderData != null) {
                        // Log.d("slider", "not null" + sliderState.data?.data.toString())
-                        AnimatedImageSlider(sliderData)
+
+                        CustomSlider(modifier = Modifier,sliderData)
+
+                        // AnimatedImageSlider(sliderData)
                         Log.d("slider", "not null")
                     }
 

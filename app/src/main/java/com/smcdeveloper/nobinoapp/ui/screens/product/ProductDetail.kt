@@ -1154,7 +1154,7 @@ fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDet
                 icon =
                 if(bookmarkStat) {
 
-                    painterResource(R.drawable.bottom_nav_user_selected)
+                    painterResource(R.drawable.bookmark)
 
 
 

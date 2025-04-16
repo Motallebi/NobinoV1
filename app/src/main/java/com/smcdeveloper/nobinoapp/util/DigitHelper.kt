@@ -1,5 +1,7 @@
 package com.smcdeveloper.nobinoapp.util
 
+import android.annotation.SuppressLint
+
 object DigitHelper {
 
     fun digitByLocate(englishStr: String): String {
@@ -71,6 +73,19 @@ object DigitHelper {
         return result
     }
 
+    fun formatWithCommas(number: Int): String {
+        val result = "%,d".format(number)
+
+        return digitByLocate(result)
+
+
+    }
+
+
+
+
+
+
 
     fun showPartialPhone(phoneNumber:String):String
     {
@@ -83,6 +98,30 @@ object DigitHelper {
 
 
     }
+
+
+
+    @SuppressLint("DefaultLocale")
+    fun formatSeconds(seconds: Long): String {
+        val hours = seconds / 3600
+        val minutes = (seconds % 3600) / 60
+        val secs = seconds % 60
+        return String.format("%02d:%02d:%02d", hours, minutes, secs)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

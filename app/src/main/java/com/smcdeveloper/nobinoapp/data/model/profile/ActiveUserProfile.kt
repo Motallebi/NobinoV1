@@ -11,7 +11,17 @@ data class ActiveUserProfile(
     @SerializedName("isMain")
     val isMain: Boolean,
     @SerializedName("name")
-    val name: String
+    val name: String,
+    @SerializedName("userId")
+    val userId: String,
+   @SerializedName("image")
+   val image: String,
+
+    @SerializedName("avatarId")
+    val avatarId: Int,
+
+
+
 
 
 

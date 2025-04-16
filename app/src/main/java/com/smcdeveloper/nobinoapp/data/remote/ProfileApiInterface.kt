@@ -1,11 +1,17 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
+import com.smcdeveloper.nobinoapp.data.model.avatar.Avatar
 import com.smcdeveloper.nobinoapp.data.model.favorit.Favorite
+import com.smcdeveloper.nobinoapp.data.model.payment.PaymentHistory
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentRequest
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentResponse
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
+import com.smcdeveloper.nobinoapp.data.model.profile.ActiveUserProfile
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
+import com.smcdeveloper.nobinoapp.data.model.profile.NewUserProfileRequest
+import com.smcdeveloper.nobinoapp.data.model.profile.ProfileActivationRequest
+import com.smcdeveloper.nobinoapp.data.model.profile.ProfileResponse
 import com.smcdeveloper.nobinoapp.data.model.profile.UpdateUserProfileRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.UserInfo
 import retrofit2.Response
@@ -154,6 +160,70 @@ interface ProfileApiInterface {
 
 
 
+    //@FormUrlEncoded
+    @POST("/api/profile")
+    suspend fun makeNewProfile(
+        @Header("Authorization") auth: String ="",
+        @Body addNewProfile: NewUserProfileRequest
+
+
+
+
+
+
+    ) :Response<ProfileResponse>
+
+
+
+
+
+
+    @POST("/api/profile")
+    suspend fun profileActivation(
+        @Header("Authorization") auth: String ="",
+        @Body profileActivation: ProfileActivationRequest
+
+
+
+
+
+
+    ) :Response<ProfileResponse>
+
+
+
+
+    @POST("/api/profile/activate")
+    suspend fun activeCurrentProfile(
+        @Header("Authorization") auth: String ="",
+        @Body profileActivation: ProfileActivationRequest
+
+
+
+
+
+
+    ) :Response<ProfileResponse>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @GET("/api/v2/user-interactions")
     suspend fun getUserFavorits(
         @Header("Authorization") auth: String ="",
@@ -171,6 +241,62 @@ interface ProfileApiInterface {
 
 
     ) :Response<Favorite>
+
+
+
+
+
+    @GET("/api/avatar")
+    suspend fun getAvatars(
+
+
+    ) :Response<Avatar>
+
+
+
+
+    @GET("/api/profile")
+    suspend fun getUserProfile(
+        @Header("Authorization") auth: String ="",
+        @Query("page") page: Int=1,
+        @Query("size") size: Int=10,
+
+
+
+
+
+
+
+
+
+
+        ) :Response<List<ActiveUserProfile>>
+
+
+
+
+
+    @GET("/api/v2/users/payments")
+    suspend fun getUserPaymentHistory(
+        @Header("Authorization") auth: String ="",
+        @Query("page") page: String,
+        @Query("size") size: String,
+
+
+
+
+
+
+
+
+
+
+
+        ) :Response<PaymentHistory>
+
+
+
+
 
 
 

@@ -115,13 +115,18 @@ fun CategoryScreen(
                                     Log.d("category","categoryname is....."+category.name)
 
 
-                                navController.navigate(
+
+                               /* navController.navigate(
                                     Screen.Product.withArgs(
                                         category.tags[0],
                                       category.name.toString(),
                                        category.title.toString()
 
-                                    ))
+                                    ))*/
+
+                                navController.navigate(Screen.DemoScreen.route +"/?tags=${category.tags[0]}?categoryName=${category.name}?categoryId=${category.id}"              )
+
+
 
 
 

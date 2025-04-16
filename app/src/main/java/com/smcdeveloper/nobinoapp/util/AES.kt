@@ -1,6 +1,11 @@
 package com.smcdeveloper.nobinoapp.util
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
@@ -26,6 +31,53 @@ object AES {
         val decrypted = cipher.doFinal(decode)
         return String(decrypted)
     }
+
+
+
+
+    fun base64ToBitmap(base64Str: String): Bitmap? {
+        return try {
+
+
+
+          //  var decodedString: Byte[]   = Base64.decode(base64Image, Base64.DEFAULT);
+
+            // Decode the Base64 string into a byte array
+            val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)
+            // Convert the byte array to a Bitmap
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+        }
+        catch (e: Exception) {
+
+            Log.e("image",e.toString())
+            e.printStackTrace()
+            null
+        }
+    }
+
+
+    fun base64ToImageBitmap(base64Str: String): ImageBitmap? {
+        return base64ToBitmap(base64Str)?.asImageBitmap()
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

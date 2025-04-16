@@ -15,6 +15,7 @@ import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -30,6 +31,8 @@ interface HomeApiInterface {
         @Query("category") category: String = "SERIES",
         @Query("tags") tags: String = "",
         @Query("offset") offset: Int = 0,
+        @Header("Authorization") token: String? = null, // Optional header
+        @Header("Profile-Id") profileId: String? = null // Optional header
 
         ): Response<MovieResult>
 
@@ -41,7 +44,13 @@ interface HomeApiInterface {
         @Query("tags") tags: String = "",
         @Query("offset") offset: Int = 18,
         @Query("countries") countries: String = "",
-        @Query("name") name: String = ""
+        @Query("name") name: String = "",
+        @Header("Authorization") token: String? = null, // Optional header
+        @Header("Profile-Id") profileId: String? = null // Optional header
+
+
+
+
 
     ): Response<MovieResult>
 

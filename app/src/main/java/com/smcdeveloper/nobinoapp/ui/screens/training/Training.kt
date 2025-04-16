@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -51,6 +52,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection2
+import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
 import com.smcdeveloper.nobinoapp.ui.screens.series.SliderItemByTags
 
 
@@ -147,7 +149,8 @@ fun SectionListScreen(
             LazyColumn {
 
 
-                item{  AnimatedImageSlider(sliderResult.data!!.data) }
+                //item{  AnimatedImageSlider(sliderResult.data!!.data) }
+                item{  CustomSlider(modifier = Modifier,sliderResult.data?.data) }
 
 
 
@@ -210,7 +213,18 @@ fun SectionItemWithMovies(
         Spacer(modifier = Modifier.height(8.dp))
 
         // Movies LazyRow
-        LazyRow {
+        LazyRow(
+
+            modifier = Modifier.fillMaxWidth()
+                .padding(16.dp),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+
+
+
+
+        ) {
             items(movies.orEmpty().filterNotNull()) { movie ->
                 // MovieItem(movie = movie, onClick = { onMovieClick(movie.id ?: 0) })
                 SliderItemByTags(movie, navController = navController)

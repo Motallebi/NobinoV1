@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,6 +21,7 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -39,7 +42,9 @@ import coil3.compose.AsyncImage
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.theme.ageSelectedButton
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
+import com.smcdeveloper.nobinoapp.util.DigitHelper
 import com.smcdeveloper.nobinoapp.viewmodel.SubsCriptionViewModel
 
 @Composable
@@ -712,35 +717,26 @@ fun SubscriptionCard3(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
-    ) {
-        // Wrap the card inside a BadgedBox to attach the badge correctly
-        BadgedBox(
-            badge = {
-                if (discountPercentage != null) {
-                    Badge(
-                        modifier = Modifier
-                            .background(Color.Red, shape = RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 2.dp),
-                        containerColor = Color.Red,
-                        contentColor = Color.White
-                    ) {
-                        Text(
-                            text = "٪$discountPercentage",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
-                }
-            },
-            modifier = Modifier.align(Alignment.TopStart)
-        ) {
+          //  .background(Color.Red)
+    )
+    {
+
+
+
+
+
+
+
+
+
+
             // Main Card
             Card(
                 shape = RoundedCornerShape(8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.Black),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.ageSelectedButton),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                 modifier = Modifier.fillMaxWidth()
+                    .size(width=400.dp,height=150.dp)
                     .clickable {
                         onBadgeClick()
 
@@ -753,7 +749,8 @@ fun SubscriptionCard3(
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+                )
+                {
                     // Image + Subscription Details
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         AsyncImage(
@@ -761,7 +758,7 @@ fun SubscriptionCard3(
                             contentDescription = "Subscription Icon",
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
-                                .size(40.dp)
+                                .size(60.dp)
                                 .clip(RoundedCornerShape(8.dp))
                         )
 
@@ -769,7 +766,7 @@ fun SubscriptionCard3(
 
                         Column {
                             Text(
-                                text = title,
+                                text = "اشتراک "+title,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -777,34 +774,133 @@ fun SubscriptionCard3(
 
                             Spacer(modifier = Modifier.height(4.dp))
 
-                            Text(
+                          /*  Text(
                                 text = duration,
                                 fontSize = 14.sp,
                                 color = Color.Gray
-                            )
+                            )*/
                         }
                     }
 
                     // Pricing Details
-                    Column(horizontalAlignment = Alignment.End) {
+
+                }
+
+
+                Row(modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(120.dp)
+
+
+                )
+                {
+                    Text(
+                        text = duration,
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+
+
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Center
+
+
+                    ) {
                         originalPrice?.let {
                             Text(
-                                text = "$it تومان",
-                                fontSize = 12.sp,
+                                text =DigitHelper.formatWithCommas(it)+" هزارتومان",
+                                fontSize = 14.sp,
                                 color = Color.Gray,
                                 textDecoration = TextDecoration.LineThrough
                             )
                         }
 
                         Text(
-                            text = "$discountedPrice تومان",
+                            text =DigitHelper.formatWithCommas(discountedPrice!!.toInt() )+" هزارتومان",
+
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
                     }
+
+
+
+
+
+
+
+
                 }
+
+
+
             }
+
+        // Wrap the card inside a BadgedBox to attach the badge correctly
+        Box(modifier = Modifier.fillMaxWidth(),
+           // .background(Color.Blue),
+            contentAlignment = Alignment.TopEnd
+
+
+        )
+        {
+            if (discountPercentage != null) {
+
+                Box(
+                    contentAlignment = Alignment.TopCenter
+
+
+
+                ) {
+
+
+                    Image(painterResource(R.drawable.badge),"",
+                        modifier = Modifier.size(80.dp)
+
+
+
+
+                    )
+
+
+                    Text(
+                        text = "٪"+DigitHelper.digitByLocate(discountPercentage.toString()),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+
+
+
+
+
+                }
+
+
+
+            }
+
+
+
+
+
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

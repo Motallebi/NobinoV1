@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 
 // 🎨 Define custom light mode colors
 val primaryLight = Color(0xFFFFC107)
-val onPrimaryLight = Color(0xFFFFFFFF)
+val onPrimaryLight = Color(0xFF2C3754)
 val primaryContainerLight = Color(0xFFC5062D)
 val onPrimaryContainerLight = Color(0xFF21005D)
 val secondaryLight = Color(0xFF009688)
@@ -81,6 +81,11 @@ val ColorScheme.sliderdots: Color
 val ColorScheme.disabledButtonColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFFE21622) else Color(0xFFE21622)
+
+val ColorScheme.ageSelectedButton: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF232328) else Color(0xFF232328)
+
 
 
 

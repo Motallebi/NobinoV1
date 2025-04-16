@@ -47,14 +47,14 @@ class FavoritesViewModel @Inject constructor(val repository: FavoriteRepository)
 
           return Pager(
               config = PagingConfig(
-                  pageSize =20, // Page size
+                  pageSize =5, // Page size
                   enablePlaceholders = false
               ),
 
 
               pagingSourceFactory = {
 
-                 // Log.d(NOBINO_LOG_TAG, "Creating new MoviePagingSource with categoryId: ${tag.toString()}")
+                  Log.d("refreshing", "Creating new MoviePagingSource with categoryId: ${pageSize.toString()}")
 
                   FavoriteDataSource(repository, pageNum = pageNumber, pagesize = pageSize  )
 

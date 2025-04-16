@@ -34,7 +34,7 @@ class ProductBySpecialCategoryDataSource(
 
 
     override fun getRefreshKey(state: PagingState<Int, MovieResult.DataMovie.Item>): Int? {
-
+        Log.d("PagingSource","refresh...product special")
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)

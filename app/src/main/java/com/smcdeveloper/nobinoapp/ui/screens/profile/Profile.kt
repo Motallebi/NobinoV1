@@ -1,6 +1,9 @@
 package com.smcdeveloper.nobinoapp.ui.screens.profile
 
 
+import android.annotation.SuppressLint
+import android.util.Base64
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +33,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,10 +53,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.dataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.svg.SvgDecoder
+import coil3.util.DebugLogger
+import coil3.util.Logger
 import com.smcdeveloper.nobinoapp.R
+import com.smcdeveloper.nobinoapp.data.model.profile.ActiveUserProfile
+import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.theme.divider
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
@@ -81,7 +98,7 @@ fun ProfileScreen(
 {
 
     //profileViewModel.updateState(ProfileScreenState.LOGIN_STATE)
-    ProfilePage(navController = navController, dataStore = dataStore)
+    ProfilePage(navController = navController, dataStore = dataStore, viewModel = profileViewModel)
 
 
 
@@ -108,13 +125,6 @@ fun ProfileScreen(
 
 
 
-        Text(
-            "user Profile",
-            style = MaterialTheme.typography.nobinoLarge,
-           // color = Color.Yellow
-
-
-        )
 
 
     }
@@ -220,7 +230,7 @@ fun ProfilePagePreview() {
 
 @Composable
 fun ProfilePage(navController: NavHostController,
-         // viewModel: ProfileViewModel,
+         viewModel: ProfileViewModel,
           dataStore:DataStoreViewModel
 
 
@@ -244,15 +254,77 @@ fun ProfilePage(navController: NavHostController,
             .background(Color(0xFF1A1818))
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
-    ) {
-        ProfileSection()
+    )
+
+
+
+
+    {
+        ProfileSection(navController, viewModel =viewModel)
         HorizontalDivider(color = Color.Gray, thickness = 1.dp)
         ProfileScreen1(navController = navController,dataStore=dataStore)
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
-fun ProfileSection() {
+fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel) {
+
+    var enableAddNewProfile = mutableStateOf(false)
+
+
+    LaunchedEffect(Unit) {
+
+        viewModel.getUserProfile()
+
+
+    }
+
+     val profile by viewModel.activeUserProfile.collectAsState()
+      var profileData: List<ActiveUserProfile> = emptyList()
+
+
+    when(profile)
+          {
+              is NetworkResult.Success ->
+              {
+                  profileData= profile.data!!
+                  Log.d("active", profileData.toString())
+                 Log.d("active", profileData[0].name.toString())
+
+
+              }
+
+              is NetworkResult.Loading ->
+              {
+
+
+              }
+
+              is NetworkResult.Error ->
+              {
+
+
+              }
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+
+
+
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -260,32 +332,117 @@ fun ProfileSection() {
     ) {
         // Existing Profiles
         Row(verticalAlignment = Alignment.CenterVertically) {
-            ProfileAvatar(name = "18+ years")
-            Spacer(modifier = Modifier.width(16.dp))
-            ProfileAvatar(name = "3-10 years")
+
+
+            if(profileData.size==3)
+
+            {
+
+
+                ProfileAvatar(name = "mainAccount", image = "")
+                {
+
+
+                }
+
+
+
+                ProfileAvatar(name = "18+ years", image = profileData[1].image)
+                {
+
+
+
+
+
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+
+                ProfileAvatar(name = "3-10 years",image = profileData[2].image)
+                {}
+
+
+
+            }
+
+            else if (profileData.size==2)
+            {
+                enableAddNewProfile.value=true
+
+                ProfileAvatar(name = "mainAccount", image = profileData[0].image)
+                {
+
+
+                }
+
+
+
+                ProfileAvatar(name = "18+ years", image = profileData[1].image)
+                {}
+
+
+
+            }
+
+            else {
+                enableAddNewProfile.value = true
+                ProfileAvatar(name = "mainAccount", image = "")
+                {
+
+
+                }
+            }
+
+
+
+
         }
 
         // Add New Profile
+
+        if(enableAddNewProfile.value)
+        {
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.clickable { /* Handle click */ }
         ) {
+
+
             Box(
                 modifier = Modifier
                     .size(56.dp)
-                    .background(Color.Red, shape = CircleShape),
+                    .background(Color.Transparent, shape = CircleShape),
                 contentAlignment = Alignment.Center
-            ) {
+            )
+
+
+            {
+                Image(painterResource(R.drawable.add_member), "",
+                    Modifier.clip(CircleShape)
+                        .size(56.dp)
+                        .clickable {
+
+                            navController.navigate(Screen.NewMember.route)
+
+
+                        }
+
+
+                )
+
                 Text("+", style = TextStyle(fontSize = 24.sp, color = Color.White))
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text("New Account", fontSize = 12.sp)
         }
+        }
     }
 }
 
 @Composable
-fun ProfileAvatar(name: String) {
+fun ProfileAvatar(name: String,image:String,onProfileClick:()->Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
@@ -294,16 +451,143 @@ fun ProfileAvatar(name: String) {
             contentAlignment = Alignment.Center
         ) {
             // Placeholder for Avatar Image
+            if(image.isBlank())
+
+
             Image(
                 painter = painterResource(id = android.R.drawable.ic_menu_gallery),
                 contentDescription = null,
                 modifier = Modifier.size(40.dp)
             )
+            else{
+
+                SvgImage(image,false)
+                {
+
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(name, fontSize = 12.sp)
     }
 }
+
+
+
+
+@Composable
+fun SvgImage(base64Svg: String
+             ,isSelected:Boolean =false,
+
+             onClick:()->Unit
+
+
+
+
+) {
+    val context = LocalContext.current
+
+
+
+
+
+
+// Use Coil to load the byte array into the ImageView
+
+
+
+
+    // Create an ImageLoader with SVG support using Coil 3
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            add(SvgDecoder.Factory())
+        }.logger(DebugLogger(Logger.Level.Debug))
+        .build()
+
+
+    // Construct a valid Data URI for the SVG
+
+
+    val imageByteArray = Base64.decode(base64Svg, Base64.DEFAULT)
+
+
+
+
+
+    // Build the ImageRequest
+    val imageRequest = ImageRequest.Builder(context)
+
+        .data(imageByteArray)
+        .crossfade(true)
+        .build()
+
+    AsyncImage(
+        model = imageRequest,
+        contentDescription = "SVG Image",
+        modifier = Modifier.clip(CircleShape
+        )
+            .border(width = 5.dp, shape = CircleShape, color = if(isSelected) Color.Red else Color.Gray)
+            .size(96.dp)
+            .clickable(onClick = onClick)
+
+        ,
+
+        clipToBounds = true,
+        contentScale = ContentScale.FillBounds,
+
+
+
+
+        imageLoader = imageLoader
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @Composable
 fun MenuOptions() {

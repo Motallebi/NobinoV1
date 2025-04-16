@@ -83,12 +83,19 @@ fun SubscriptionConfirmationPage(
             SubscriptionDetailsCard(
                 imagePath = IMAGE_BASE_URL + currentPlan.data?.planData?.logo.toString(),
                 subscriptionType = currentPlan.data?.planData?.name.toString(),
-                price = "1000 هزار تومان",
-                vat = "۹۰ هزار تومان",
+                price = currentPlan.data?.planData?.price?.totalAmount.toString(),
+                vat =  currentPlan.data?.planData?.price?.vat.toString(),
                 viewModel = profileViewModel,
-                navController=navController
+                navController=navController,
+                planId = planid
 
             )
+            {
+                Log.d("discount",it)
+
+
+
+            }
 
 
          /*   SubscriptionDetailsCard(
@@ -267,7 +274,12 @@ fun SubscriptionDetailsCard(
     price: String,
     vat: String,
     viewModel: ProfileViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    planId:String,
+    //discountCode:String?=null,
+
+    onDiscountCode:(String)->Unit
+
 )
 
 {
@@ -335,7 +347,13 @@ fun SubscriptionDetailsCard(
                 )
 
                 Button(
-                    onClick = { /* Apply Discount */ },
+                    onClick =
+                    { onDiscountCode(discountCode.text) }
+
+
+
+
+                    ,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (discountCode.text.isNotEmpty()) Color.Green else Color.Gray
                     ),
@@ -372,7 +390,9 @@ fun SubscriptionDetailsCard(
                     onClick = {
 
                         navController.navigate(Screen.PaymentResult.withArgs(
-                            31,""
+
+
+                           planId ,discountCode,""
 
 
 

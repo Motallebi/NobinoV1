@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -10,6 +11,7 @@ import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.search.Countries
+import com.smcdeveloper.nobinoapp.data.model.search.SearchParams
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.SearchRepository
 import com.smcdeveloper.nobinoapp.data.source.ProductBySpecialCategoryDataSource
@@ -38,6 +40,53 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(private val repository: SearchRepository):ViewModel() {
 
+   /// test search param..
+
+    private val _searchQuery = mutableStateOf("")
+    val searchQuery = _searchQuery
+
+    private val _searchedProducts = MutableStateFlow<PagingData<MovieResult.DataMovie.Item>>(PagingData.empty())
+    val searchedProducts = _searchedProducts
+
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
+
+    fun searchProducts(query: String) {
+        viewModelScope.launch {
+
+
+
+
+
+
+
+            repository.searchProduct(query = query).cachedIn(viewModelScope).collect {
+                _searchedProducts.value = it
+            }
+        }
+    }
+
+
+
+
+///////// end of test search
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private val _countries = MutableStateFlow<NetworkResult<Countries>>(NetworkResult.Loading())
     val contries: StateFlow<NetworkResult<Countries>> get() = _countries.asStateFlow()
 
@@ -52,6 +101,122 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
     val isSearching = _isSearching.asStateFlow()
 
 
+    private val _searchParams = MutableStateFlow(SearchParams())
+    val searchParams: StateFlow<SearchParams> = _searchParams
+
+
+    fun updateSearchParams(query:String , tag: String, category: List<String>, countries: String) {
+        _searchParams.value = SearchParams(query, tag, listOf("MOVIE","SERIES"), countries)
+
+    }
+
+
+
+
+
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val moviesFlow = _searchParams
+        .debounce(500L)
+        .onEach { params ->
+            Log.d("SearchViewModel", "Received search parameters: $params")
+        }
+        .flatMapLatest { params ->
+            if (params.query.isBlank() && params.tag.isBlank() && false) {
+                Log.d("SearchViewModel", "Query is blank. Emitting empty PagingData.")
+                flowOf(PagingData.empty())
+            }
+
+
+            else if(params.query.isBlank() && params.tag.isBlank())
+            {
+                Pager(
+                    config = PagingConfig(pageSize = 10, enablePlaceholders = false,
+                        initialLoadSize = 18
+
+                    ),
+                    pagingSourceFactory = {
+                        SearchDataSource(
+                            repository = repository,
+                            tagName = params.tag,
+                            categoryName = listOf("SERIES,MOVIE,COURSE,CERTIFICATED_COURSE"),
+                            countries = params.countries,
+                            name = " ",
+                            size = 18
+
+                        )
+                    }
+                ).flow.cachedIn(viewModelScope)
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+            else {
+
+
+
+                Log.d(
+                    "SearchViewModel",
+                    "Searching with query: ${params.query}, tag: ${params.tag}, category: ${params.category}, countries: ${params.countries}"
+                )
+
+                Pager(
+                    config = PagingConfig(pageSize = 10, enablePlaceholders = false,
+                        initialLoadSize = 10
+
+                    ),
+                    pagingSourceFactory = {
+                        SearchDataSource(
+                            repository = repository,
+                            tagName = params.tag,
+                            categoryName = params.category,
+                            countries = params.countries,
+                            name = params.query,
+                            size = 10
+
+                        )
+                    }
+                ).flow.cachedIn(viewModelScope)
+            }
+        }
+        .onEach {
+            Log.d("SearchViewModel", "New PagingData emitted.")
+
+        }
+
+      //  .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PagingData.empty())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -59,7 +224,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
 
     private val _moviesFlow1 = MutableStateFlow<PagingData<MovieResult.DataMovie.Item>>(PagingData.empty())
-    //val moviesFlow1: StateFlow<PagingData<MovieResult.DataMovie.Item>> = _moviesFlow1.asStateFlow()
+  //  val moviesFlow1: StateFlow<PagingData<MovieResult.DataMovie.Item>> = _moviesFlow1.asStateFlow()
 
 
     @OptIn(FlowPreview::class)
@@ -99,6 +264,21 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val moviesFlow1 = searchText
         .debounce(500L)
@@ -112,17 +292,17 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
             } else {
                 Pager(
                     config = PagingConfig(
-                        pageSize = 20, // ✅ Page size
+                        pageSize = 18, // ✅ Page size
                         enablePlaceholders = false
                     ),
                     pagingSourceFactory = {
                         SearchDataSource(
                             repository,
                             tagName = "",
-                            categoryName = "",
+                            categoryName = emptyList(),
                             countries = "",
                             name = query, // ✅ Pass search query to API
-                            size = 20
+                            //size = 20
                         )
                     }
                 ).flow.cachedIn(viewModelScope) // ✅ Convert Pager to Flow & cache it
@@ -140,7 +320,67 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
 
 
+fun getMovieFlow(tags:String):StateFlow<PagingData<MovieResult.DataMovie.Item>>
+{
 
+    val moviesFlow1 = searchText
+        .debounce(500L)
+        .onEach { _isSearching.value=true }
+
+        // ✅ Wait for user to stop typing
+        // .distinctUntilChanged()
+        .flatMapLatest { query ->
+            if (query.isBlank()) {
+                flowOf(PagingData.empty()) // ✅ Return empty data when query is blank
+            } else {
+                Pager(
+                    config = PagingConfig(
+                        pageSize = 20, // ✅ Page size
+                        enablePlaceholders = false
+                    ),
+                    pagingSourceFactory = {
+                        SearchDataSource(
+                            repository,
+                            tagName = tags,
+                            categoryName = emptyList(),
+                            countries = "",
+                            name = query, // ✅ Pass search query to API
+                            //size = 20
+                        )
+                    }
+                ).flow.cachedIn(viewModelScope) // ✅ Convert Pager to Flow & cache it
+            }
+        }
+        .onEach { _isSearching.value = false } // ✅ Hide loading after getting data
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            PagingData.empty()
+        )
+
+    return moviesFlow1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 
 
@@ -149,7 +389,16 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
 
     fun onSearchTextChange(text: String) {
-        _searchText.value = text
+       _searchText.value = text
+      /* _searchParams.value=SearchParams(
+           category = "MOVIES"
+
+
+
+       )*/
+      //  _searchParams.value =
+
+
     }
 
 
@@ -175,7 +424,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
 
 
-    fun getMovies(tag: String,categoryName:String,countries:String,name:String,size:Int): Flow<PagingData<MovieResult.DataMovie.Item>> {
+    fun getMovies(tag: String,categoryName:List<String>,countries:String,name:String,size:Int): Flow<PagingData<MovieResult.DataMovie.Item>> {
         Log.d(NOBINO_LOG_TAG,"getmovie......")
         Log.d(NOBINO_LOG_TAG, "tag is......${tag.toString()}")
 
@@ -190,7 +439,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
                 Log.d(NOBINO_LOG_TAG, "Creating new MoviePagingSource with categoryId: ${tag.toString()}")
 
-                SearchDataSource(repository, tagName =tag,categoryName= categoryName, countries =countries, name = name, size = size )
+                SearchDataSource(repository, tagName =tag,categoryName= categoryName, countries =countries, name = name )
 
 
             }

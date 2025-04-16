@@ -12,6 +12,7 @@ import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.HomeApiInterface
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
+import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.util.MovieDisplayData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -311,7 +312,10 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
                                 size = size,
                                 category = "SERIES",
                                 tags = firstTag,
-                                offset = offset
+                                offset = offset,
+                                token = "Bearer $USER_TOKEN",
+                                profileId = "10000840"
+
 
 
                             )
@@ -390,7 +394,9 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
                 api.getMoviesWithPages(
                     size = 10,
                     category = "",
-                    tags = tag
+                    tags = tag,
+                    token = "Bearer $USER_TOKEN",
+                    profileId = "10000840"
 
 
                 )
@@ -453,7 +459,9 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
             api.getMoviesWithPages(tags = tag,
                 category = categoty, size = size, offset = offset, countries = countries,
-                name = name
+                name = name,
+                token = "Bearer $USER_TOKEN",
+                profileId = "10000840"
 
 
             )
@@ -477,7 +485,13 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
         val result = safeApiCall {
 
 
-            api.getMoviesWithPages(tags = tagstring)
+            api.getMoviesWithPages(tags = tagstring,
+                    token = "Bearer $USER_TOKEN",
+                profileId = "10000840"
+
+
+
+            )
 
 
         }
@@ -760,7 +774,12 @@ data class MovieParams(
 
         val result: NetworkResult<MovieResult>
 
-        result = safeApiCall { api.getMoviesWithPages(tags = tag)}
+        result = safeApiCall { api.getMoviesWithPages(tags = tag,
+                token = "Bearer $USER_TOKEN",
+            profileId = "10000840"
+
+
+        )}
 
          result.data?.movieInfo?.items?.forEach {
 

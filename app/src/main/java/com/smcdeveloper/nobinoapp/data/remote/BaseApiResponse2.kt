@@ -22,6 +22,7 @@ abstract class BaseApiResponse2 {
                         return@withContext NetworkResult.Error("Response body is null.")
                     }
                 } else {
+
                     Log.e("SAFE_API_CALL", "API call failed. Code: ${response.code()}, Message: ${response.message()}")
                     return@withContext NetworkResult.Error("Code: ${response.code()}, Message: ${response.message()}")
                 }
