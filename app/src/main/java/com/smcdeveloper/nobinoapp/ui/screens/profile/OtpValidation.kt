@@ -1,5 +1,7 @@
+import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,21 +27,28 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.screens.profile.ValidationStatus
 import com.smcdeveloper.nobinoapp.util.AppConfigManager
 import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.util.DigitHelper
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtpValidationScreen(
@@ -53,19 +63,55 @@ fun OtpValidationScreen(
 
 
 ) {
+
+
+
+
+
+
     val otpLength = 5
-    val otpValues = remember { mutableStateListOf("", "", "", "", "") }
+    var otpValues = mutableStateListOf("", "", "", "", "" )
     val context = LocalContext.current
     var isValid by remember { mutableStateOf(true) }
     var isEnabled by remember { mutableStateOf(false) }
     val profileState by profileViewModel.profileState.collectAsState()
-
+    var validationStatus = profileViewModel.status
+    var errorTrigger by remember { mutableStateOf(0) }
 
 
 
 
     // Focus requesters for managing focus between fields
     val focusRequesters = List(otpLength) { FocusRequester() }
+
+   /* LaunchedEffect(validationStatus) {
+
+        Log.d("valid",validationStatus.toString())
+        if (validationStatus == ValidationStatus.Error || validationStatus == ValidationStatus.Success) {
+            delay(2000L) // 2 seconds
+            validationStatus = ValidationStatus.Default
+            otpValues= mutableStateListOf("", "", "", "", "")
+        }
+    }*/
+    var status by remember { mutableStateOf(ValidationStatus.Default) }
+
+   /* LaunchedEffect(Unit) {
+        profileViewModel.validationEvents.collect { newStatus ->
+
+            if (newStatus is ValidationStatus.Error) {
+                delay(5000)
+
+                status = ValidationStatus.Default
+                otpValues= mutableStateListOf("", "", "", "", "")
+            }
+        }
+    }*/
+
+
+
+
+
+
 
     // Initialize refNumber in ViewModel
     LaunchedEffect(refNumber) {
@@ -100,13 +146,14 @@ fun OtpValidationScreen(
                     }
                 }
                 is NetworkResult.Error -> {
+                    profileViewModel.triggerError()
                     Toast.makeText(
                         context,
-                        loginResponse.message ?: "Invalid OTP or refNumber",
+                        loginResponse.message+"Error...." ?: "Invalid OTP or refNumber",
                         Toast.LENGTH_LONG
                     ).show()
                    // otpValues.clear()
-
+                   // otpValues= mutableStateListOf("", "", "", "", "")
 
                 }
                 is NetworkResult.Loading -> {
@@ -131,6 +178,14 @@ fun OtpValidationScreen(
               }
 
               is NetworkResult.Error -> {
+                  Log.d("valid1","Status is Network Error")
+                  isValid=false
+                //  profileViewModel.status=ValidationStatus.Error
+                //  errorTrigger++
+                  profileViewModel.triggerError()
+               //   profileViewModel.setError()
+
+
 
                   Toast.makeText(
                       context,
@@ -192,14 +247,32 @@ fun OtpValidationScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Logo
-            Text(
-                text = "نوینو",
-                color = Color.Red,
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 32.dp)
+
+            Row(modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+
+
             )
+            {
+
+                Text(
+                    text = "نوبینو",
+                    color = Color.White,
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
+                Image(painterResource(R.drawable.nobino_logo),"")
+
+
+
+
+
+
+            }
+
+            // Logo
+
 
             // Title
             Text(
@@ -248,115 +321,18 @@ fun OtpValidationScreen(
 
 
                 repeat(otpLength) { i ->
-                    OutlinedTextField(
-                        value = otpValues[i],
-                        onValueChange = { value ->
-                            if (value.length <= 1) {
-                                otpValues[i] = DigitHelper.digitByLocate(value)
-
-
-
-                              //  otpValues[i] = value
-
-
-                                if (value.isNotBlank() && i < otpLength - 1) {
-                                    // Move focus to the next field
-                                    focusRequesters[i + 1].requestFocus()
-                                } else if (value.isEmpty() && i > 0) {
-                                    // Move focus to the previous field
-                                    focusRequesters[i - 1].requestFocus()
-                                }
-                            }
-
-
-                            val otp = otpValues.joinToString("")
-                            Log.d("otp",otp)
-
-                            if(otp.isDigitsOnly() && otp.length==5 )
-                            {
-                                isEnabled =true
-
-                            }
-
-
-
-
-
-
-
-                        },
-
-
-
-                        singleLine = true,
-                        modifier = Modifier
-                            .size(70.dp)
-                            .padding(8.dp)
-                            .border(
-                                width = 2.dp,
-                                color = when {
-                                    !isValid -> Color.Red
-                                    otpValues[i].isNotEmpty() -> Color.White
-                                    else -> Color.Gray
-                                },
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .background(Color.Black, shape = RoundedCornerShape(8.dp))
-                            .focusRequester(focusRequesters[i])
-                            .onFocusChanged { focusState ->
-                                if (!focusState.isFocused && otpValues[i].isEmpty()) {
-                                    isValid = true // Reset validation state for empty fields
-                                }
-                            },
-                        textStyle = TextStyle(
-                            color = Color.White,
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center
-                        ),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        visualTransformation = VisualTransformation.None,
-                        keyboardActions = KeyboardActions {
-                            if (i == otpLength - 1) {
-                                val otp = otpValues.joinToString("")
-
-
-
-
-
-                               profileViewModel.inputOtpState = DigitHelper.digitByLocateFaToEn(otp)
-                                if (refNumber == "SubProfile")
-                                {
-                                    profileViewModel.setOtpCode(DigitHelper.digitByLocateFaToEn(otp))
-                                }
-
-
-
-                              //  profileViewModel.inputOtpState = otp
-                                else {
-                                    profileViewModel.validateOtp(
-                                        refNumber =  dataStoreViewModel.getUserRefKey().toString(),
-                                        otp=profileViewModel.inputOtpState,
-                                        mobile = dataStoreViewModel.getUserPhoneNumber().toString()
-
-
-
-
-
-
-
-                                    )
-
-                                }
-
-
-                            }
-                        },
-                        colors = TextFieldDefaults.textFieldColors(
-                            focusedTextColor = Color.White,
-                            cursorColor = Color.Green,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        )
+                    NobinoValidationText(
+                        otpValues,
+                        i,
+                        otpLength,
+                        focusRequesters,
+                        isEnabled,
+                        profileViewModel,
+                        refNumber,
+                        navController,
+                        dataStoreViewModel,
+                        isValid=isValid,
+                        validationStatus = status
                     )
 
 
@@ -393,7 +369,8 @@ fun OtpValidationScreen(
                             profileViewModel.validateOtp(
                                 refNumber = profileViewModel.inputRefSates,
                                 otp = profileViewModel.inputOtpState,
-                                mobile = dataStoreViewModel.getUserPhoneNumber().toString()
+                                mobile = dataStoreViewModel.getUserPhoneNumber().toString(),
+                                onValidate = {}
 
 
                             )
@@ -530,5 +507,311 @@ fun OtpValidationScreen(
         }
     }
 }
+
+@SuppressLint("UnrememberedMutableState")
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun NobinoValidationText(
+    otpValues: MutableList<String>,
+    i: Int,
+    otpLength: Int,
+    focusRequesters: List<FocusRequester>,
+    isEnabled: Boolean,
+    profileViewModel: ProfileViewModel,
+    refNumber: String,
+    navController: NavController,
+    dataStoreViewModel: DataStoreViewModel,
+    isValid: Boolean,
+    validationStatus: ValidationStatus
+
+) {
+
+    Log.d("valid","ivalue: $i")
+
+   val st= getValidationStatus(profileViewModel)
+    var color=Color.White
+    val err = mutableStateOf("")
+    when(st.value)
+    {
+       ValidationStatus.Default -> { Log.d("valid","Default")
+           color= Color.Gray
+           err.value=otpValues[i]
+        }
+        ValidationStatus.Error -> {
+            Log.d("valid","Error")
+            color=Color.Red
+            err.value=""
+            otpValues.forEachIndexed(){index,_->
+                otpValues[index]=""
+
+            }
+
+
+        }
+        ValidationStatus.Success -> {
+            Log.d("valid","Success")
+            color=Color.Green
+            err.value=""
+        }
+    }
+
+
+
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var color2 =Color.White
+    LaunchedEffect(Unit) {
+        Log.d("valid","Launch..."+validationStatus.toString())
+
+             profileViewModel.validationEvents.collectLatest{
+
+                 color2= when(it)
+                 {
+                     ValidationStatus.Default ->Color.Gray
+                     ValidationStatus.Error -> Color.Red
+                     ValidationStatus.Success -> Color.White
+                 }
+
+
+
+            }
+        }
+
+
+    val status by profileViewModel.validationStatus.collectAsState()
+
+
+    val color1= when(status)
+    {
+          ValidationStatus.Default ->Color.Gray
+         ValidationStatus.Error -> Color.Red
+        ValidationStatus.Success -> Color.White
+    }
+    val errorVlue = when(validationStatus)
+    {
+        ValidationStatus.Default->otpValues[i]
+        ValidationStatus.Error -> ""
+        ValidationStatus.Success ->otpValues[i]
+    }
+
+
+
+
+
+    var isEnabled1 = isEnabled
+    OutlinedTextField(
+        value = err.value,
+        onValueChange = { value ->
+            if (value.length <= 1) {
+                otpValues[i] = DigitHelper.digitByLocate(value)
+
+
+                //  otpValues[i] = value
+
+
+                if (value.isNotBlank() && i < otpLength - 1) {
+                    // Move focus to the next field
+                    focusRequesters[i + 1].requestFocus()
+                } else if (value.isEmpty() && i > 0) {
+                    // Move focus to the previous field
+                    focusRequesters[i - 1].requestFocus()
+                }
+            }
+
+
+            val otp = otpValues.joinToString("")
+            Log.d("otp", otp)
+
+            if (otp.isDigitsOnly() && otp.length == 5) {
+                isEnabled1 = true
+                //  isValid=true
+                validateOtpCode(
+                    profileViewModel = profileViewModel,
+                    refNumber = refNumber,
+                    otp = otp,
+                    navController = navController,
+                    dataStoreViewModel = dataStoreViewModel,
+                    onValidate = {validationStatus}
+
+
+                )
+
+
+            }
+
+
+        },
+
+
+
+
+        singleLine = true,
+        modifier = Modifier
+            .size(70.dp)
+            .padding(8.dp)
+            .border(
+                width = 2.dp,
+                color =color,
+                /* color = if(otpValues[i].isNotEmpty() && )
+
+                color = when() {
+
+                    validationStatus -> Color.Green
+
+                    otpValues[i].isNotEmpty() -> Color.White
+                    else -> Color.Gray
+                },*/
+                shape = RoundedCornerShape(8.dp)
+            )
+            .background(Color.Black, shape = RoundedCornerShape(8.dp))
+            .focusRequester(focusRequesters[i])
+            .onFocusChanged { focusState ->
+                if (!focusState.isFocused && otpValues[i].isEmpty()) {
+
+                    Log.d("color", "isvalid $isValid")
+
+
+                    //  isValid = true // Reset validation state for empty fields
+                }
+            },
+        textStyle = TextStyle(
+            color = if (isValid) Color.White else Color.Red,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center
+        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        visualTransformation = VisualTransformation.None,
+        keyboardActions = KeyboardActions {
+            if (i == otpLength - 1) {
+                val otp = otpValues.joinToString("")
+
+
+
+
+
+                profileViewModel.inputOtpState = DigitHelper.digitByLocateFaToEn(otp)
+                if (refNumber == "SubProfile") {
+                    profileViewModel.setOtpCode(DigitHelper.digitByLocateFaToEn(otp))
+                }
+
+
+                //  profileViewModel.inputOtpState = otp
+                else {
+                    profileViewModel.validateOtp(
+                        refNumber = dataStoreViewModel.getUserRefKey().toString(),
+                        otp = profileViewModel.inputOtpState,
+                        mobile = dataStoreViewModel.getUserPhoneNumber().toString(),
+                        onValidate = {profileViewModel.status}
+
+
+
+                    )
+
+                }
+
+
+            }
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            focusedTextColor = Color.White,
+            cursorColor = Color.Green,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    )
+}
+
+
+fun validateOtpCode(profileViewModel: ProfileViewModel
+                    ,refNumber: String,
+                    otp:String,
+                    dataStoreViewModel: DataStoreViewModel,
+                    navController: NavController,
+                    onValidate:()->ValidationStatus
+
+                    )
+{
+
+
+    profileViewModel.inputOtpState = DigitHelper.digitByLocateFaToEn(otp)
+
+
+
+
+    if(refNumber != "SubProfile") {
+        profileViewModel.validateOtp(
+            refNumber = profileViewModel.inputRefSates,
+            otp = profileViewModel.inputOtpState,
+            mobile = dataStoreViewModel.getUserPhoneNumber().toString(),
+            onValidate = {onValidate()}
+
+        )
+
+    }
+    else
+    {
+        // Update the OTP in the ViewModel
+        profileViewModel.setOtpCode(DigitHelper.digitByLocateFaToEn(otp))
+        // Call completeProfileCreation to trigger OTP verification and final user creation
+        profileViewModel.completeProfileCreation(auth ="Bearer $USER_TOKEN" )
+        navController.popBackStack()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+@Composable
+fun NovinoValidationOutLineText()
+{
+
+
+
+
+
+
+}
+@Composable
+fun getValidationStatus(profileViewModel: ProfileViewModel)=
+
+
+    profileViewModel.validationStatus.collectAsState()
+
+
+
+
 
 

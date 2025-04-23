@@ -3,6 +3,8 @@ package com.smcdeveloper.nobinoapp.di
 import com.smcdeveloper.nobinoapp.util.Constants.BASE_URL
 import com.smcdeveloper.nobinoapp.util.Constants.PURCHASE_URL
 import com.smcdeveloper.nobinoapp.util.Constants.TIMEOUT_IN_SECOND
+import com.smcdeveloper.nobinoapp.util.Constants.USER_PROFILE_ID
+import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +32,20 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @Named("ins1")
+    internal fun interceptor2()= interceptor().apply {
+         setLevel(HttpLoggingInterceptor.Level.BODY)
+
+
+    }
+
+
+
+
+
+
+    @Provides
+    @Singleton
     fun  provideOkHttpWithoutAuth(): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(TIMEOUT_IN_SECOND, TimeUnit.SECONDS)
         .readTimeout(TIMEOUT_IN_SECOND, TimeUnit.SECONDS)
@@ -46,8 +62,9 @@ object NetworkModule {
 
 
 
-   /* @Provides
+    @Provides
     @Singleton
+    @Named("AUTH")
     fun provideOkHttp(): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(TIMEOUT_IN_SECOND, TimeUnit.SECONDS)
         .readTimeout(TIMEOUT_IN_SECOND, TimeUnit.SECONDS)
@@ -56,9 +73,13 @@ object NetworkModule {
             val request = chain.request().newBuilder()
 
             if (chain.request().url.toString().startsWith(BASE_URL)) {
-                request
-                    .addHeader("x-api-key", API_KEY)
-                    .addHeader("lang", USER_LANGUAGE)
+
+                if(USER_TOKEN.isNotEmpty()&& USER_PROFILE_ID.isNotEmpty()) {
+                    request
+                        .addHeader("Authorization", USER_TOKEN)
+                        .addHeader("Profile-Id", USER_PROFILE_ID)
+                }
+
             }
             chain.proceed(request.build())
         }
@@ -66,7 +87,7 @@ object NetworkModule {
         .build()
 
 
-*/
+
 
 
 
@@ -80,6 +101,23 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
+
+    @Provides
+    @Singleton
+    @Named("AUTH_RETROFIT")
+
+    fun provideAuthRetrofit(@Named("AUTH")okHttpClient: OkHttpClient): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+
+
+
+
+
+
 
 
     @Provides

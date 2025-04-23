@@ -47,7 +47,7 @@ fun SplashScreen(navController: NavHostController)
         isNetworkAvailable(context)
     }
 
-    Splash(isNetworkAvailable) {
+   /* Splash(isNetworkAvailable) {
         if (isNetworkAvailable(context)) {
             navController.navigate(Screen.Home.route) {
                 popUpTo(Screen.Splash.route) {
@@ -61,7 +61,7 @@ fun SplashScreen(navController: NavHostController)
                 Toast.LENGTH_LONG
             ).show()
         }
-    }
+    }*/
 
 
     LaunchedEffect(true) {
@@ -121,7 +121,7 @@ fun SplashScreen(navController: NavHostController)
 
         modifier =
         Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.onBackground),
+            .background(Color.Black),
         contentAlignment = Alignment.Center
 
 

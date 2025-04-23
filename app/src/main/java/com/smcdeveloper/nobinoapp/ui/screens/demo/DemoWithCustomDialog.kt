@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -94,6 +95,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.search.FilterType
 import com.smcdeveloper.nobinoapp.ui.screens.search.GenreSelectionSheet
 import com.smcdeveloper.nobinoapp.ui.screens.search.SearchWidget
 import com.smcdeveloper.nobinoapp.ui.screens.search.YearSelectionSheet
+import com.smcdeveloper.nobinoapp.ui.theme.searchIndicatorLine
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.SearchViewModel
@@ -147,7 +149,7 @@ fun TestSearch(
                     .fillMaxSize()
                     .background(Color.Black)
                     .padding(paddingValues)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 8.dp)
 
             )
 
@@ -682,9 +684,9 @@ fun DemoBottomSheetSearch(
                 Column (
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Black)
+                        .background(Color.Blue)
                         .padding(paddingValues)
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 8.dp)
 
                 )
 
@@ -1334,7 +1336,7 @@ LaunchedEffect(Unit) {
                  state = gridstate,
                  columns = GridCells.Fixed(2),
                  modifier = Modifier.fillMaxSize(),
-                 contentPadding = PaddingValues(8.dp)
+                 contentPadding = PaddingValues(4.dp)
              )
 
              {
@@ -2526,23 +2528,30 @@ fun SearchBarWithBadge1(
 
     }
 
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = Modifier.fillMaxWidth()
+
+
+
+    ) {
         // 🔹 Search Bar Section
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .background(Color.Green)
-                .padding(end = 30.dp), // Ensures space for the fixed badge
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth(),
+              //  .background(Color.Green),
+              // .padding(end = 30.dp), // Ensures space for the fixed badge
+                verticalAlignment = Alignment.CenterVertically
         )
 
         {
-            Column {
+            Column() {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Yellow)
-                        .padding(vertical = 10.dp),
+                        .fillMaxWidth(0.8f)
+                        //.background(Color.Yellow)
+                        .padding(vertical = 10.dp)
+                       // .padding(horizontal = 5.dp)
+                    ,
+
                     verticalAlignment = Alignment.CenterVertically
                 )
 
@@ -2576,11 +2585,23 @@ fun SearchBarWithBadge1(
                     }
                 },
                 modifier = Modifier.clickable(onClick = onBadgeClick)
-            ) {
+
+                 //   .offset(x = (-18).dp, y = (-4).dp) // move right & up
+
+            )
+
+            {
+                Row(modifier = Modifier,
+                    horizontalArrangement = Arrangement.Start
+
+                )
+                {
+
+                }
                 Icon(
                     painter = painterResource(R.drawable.filter),
                     contentDescription = "Filter",
-                    tint = if (filterCount > 0) Color.Red else Color.White,
+                    tint = if (filterCount > 0) Color.White else Color.White,
                     modifier = Modifier.size(48.dp)
                 )
             }
@@ -2608,16 +2629,19 @@ private fun SearchBox(
 
 
    // var expanded1 = expanded
-    Card {
+    Card() {
         Column {
             Row(
-                modifier = Modifier.padding(horizontal = 10.dp),
+                modifier = Modifier.padding(horizontal = 5.dp)
+
+                ,
                 verticalAlignment = Alignment.CenterVertically,
+
                 //horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 TextField(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    shape = MaterialTheme.shapes.large,
+                    shape = MaterialTheme.shapes.medium,
                     //value = if(searchQuery=="نمو") "" else searchQuery,
                     value = textFieldValue,
                     onValueChange = {
@@ -2639,7 +2663,19 @@ private fun SearchBox(
                             contentDescription = "",
                             modifier = Modifier.size(24.dp)
                         )
-                    }
+                    },
+                    colors = TextFieldDefaults.colors(
+
+                        focusedIndicatorColor = MaterialTheme.colorScheme.searchIndicatorLine,      // active line
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.searchIndicatorLine,    // default line
+                        disabledIndicatorColor = MaterialTheme.colorScheme.searchIndicatorLine
+
+
+
+
+
+
+                    )
                 )
             }
 
@@ -2654,7 +2690,7 @@ private fun SearchBox(
             AnimatedVisibility(visible = expanded && !isLoading) {
                 Log.d("search", "search result ${searchResults.itemCount}")
 
-                Card(modifier = Modifier.height(300.dp)) {
+                Card(modifier = Modifier.height(100.dp)) {
                     LazyColumn {
                         items(searchResults.itemCount) { index ->
                             searchResults[index]?.let { movie ->

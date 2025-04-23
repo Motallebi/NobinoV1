@@ -25,7 +25,7 @@ data class PaymentHistory(
             @SerializedName("createdAt")
             val createdAt: Long?,
             @SerializedName("description")
-            val description: String?,
+            val description: String?="",
             @SerializedName("discount")
             val discount: Discount?,
             @SerializedName("finalPrice")

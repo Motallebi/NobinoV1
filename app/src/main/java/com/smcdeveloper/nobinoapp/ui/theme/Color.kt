@@ -87,7 +87,9 @@ val ColorScheme.ageSelectedButton: Color
     get() = if (isSystemInDarkTheme()) Color(0xFF232328) else Color(0xFF232328)
 
 
-
+val ColorScheme.searchIndicatorLine: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0x63636333) else Color(0x63636333)
 
 
 

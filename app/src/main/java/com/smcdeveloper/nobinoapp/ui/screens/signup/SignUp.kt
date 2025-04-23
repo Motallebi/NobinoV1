@@ -111,25 +111,17 @@ fun LoginScreen(
     profileViewModel: ProfileViewModel,
     navController: NavHostController,
     dataStoreViewModel: DataStoreViewModel = hiltViewModel()
-)
-
-{
+) {
     // Main container
 
 
-
-
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier.fillMaxSize(),
+        //  .background(Color.Green),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
     )
 
     {
-
-
 
 
         // Top Bar
@@ -138,18 +130,14 @@ fun LoginScreen(
         // Logo and title
 
 
-
-
-
-
-
-
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-               // .background(Color.Blue)
-                .padding(horizontal = 16.dp),
+
+                //  .background(Color.Blue)
+                .padding(horizontal = 16.dp)
+                .padding(vertical = 16.dp),
+
 
             horizontalAlignment = Alignment.Start
 
@@ -159,6 +147,7 @@ fun LoginScreen(
         {
 
             Row(
+                modifier = Modifier.padding(bottom = 8.dp, start = 16.dp)
 
 
             )
@@ -181,7 +170,8 @@ fun LoginScreen(
 
             ) {
 
-                Text(stringResource(R.string.input_phone_please),
+                Text(
+                    DigitHelper.digitByLocate(stringResource(R.string.input_phone_please)),
                     style = MaterialTheme.typography.nobinoMedium
 
 
@@ -212,9 +202,11 @@ fun LoginScreen(
     }
 
 
-    Box(modifier = Modifier.fillMaxWidth()
-        .height(200.dp)
-       // .background(Color.Green)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+        // .background(Color.Green)
 
         ,
 
@@ -222,11 +214,7 @@ fun LoginScreen(
         contentAlignment = Alignment.Center
 
 
-
-
-
-    )
-    {
+    ) {
 
         Image(
             painter = painterResource(id = R.drawable.nobino_logo_title_large), // Replace with your logo resource
@@ -236,9 +224,7 @@ fun LoginScreen(
         )
 
 
-
     }
-
 
 
     // Footer text
@@ -257,8 +243,7 @@ fun ShowInputForms(profileViewModel: ProfileViewModel, dataStoreViewModel: DataS
 
         onPhoneDataChanged = {
 
-                isValid ->
-            isPhoneValid = isValid
+                isPhoneValid=it
 
         }
 
@@ -292,7 +277,7 @@ fun ShowInputForms(profileViewModel: ProfileViewModel, dataStoreViewModel: DataS
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Red,
             disabledContentColor = Color.Blue,
-            disabledContainerColor = MaterialTheme.colorScheme.disabledButtonColor.copy(alpha = 0.5f)
+            disabledContainerColor = MaterialTheme.colorScheme.disabledButtonColor.copy(alpha = 0.8f)
 
 
         )
@@ -300,7 +285,7 @@ fun ShowInputForms(profileViewModel: ProfileViewModel, dataStoreViewModel: DataS
         Text(text = "دریافت کد از طریق پیامک", color = Color.White, fontSize = 16.sp)
     }
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(16.dp))
 
     OutlinedButton(
         onClick = {
@@ -337,7 +322,7 @@ fun PhoneInputField(
 
         OutlinedTextField(
 
-            value = profileViewModel.inputPhoneState,
+            value = DigitHelper.digitByLocate(profileViewModel.inputPhoneState),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
 
 
@@ -351,7 +336,13 @@ fun PhoneInputField(
 
                     profileViewModel.inputPhoneState = newValue
                     dataStoreViewModel.saveUserPhone(newValue)
-                    onPhoneDataChanged(newValue.length == 11 && newValue.startsWith("09"))
+                    onPhoneDataChanged(
+                        newValue.length == 11 && newValue.startsWith(
+                            DigitHelper.digitByLocate(
+                                "09"
+                            )
+                        )
+                    )
 
                 }
 
@@ -377,11 +368,12 @@ fun PhoneInputField(
 
                 )
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
 
 
-                .background(Color.Black, RoundedCornerShape(8.dp))
-                .padding(horizontal = 16.dp),
+                .background(Color.Black, RoundedCornerShape(8.dp)),
+            // .padding(horizontal = 16.dp),
             singleLine = true,
             colors = TextFieldDefaults.textFieldColors(
                 focusedTextColor = Color.White,
@@ -390,8 +382,7 @@ fun PhoneInputField(
                 unfocusedIndicatorColor = Color.Gray
             ),
 
-                    shape = MaterialTheme.roundedShape.medium
-
+            shape = MaterialTheme.roundedShape.medium
 
 
         )

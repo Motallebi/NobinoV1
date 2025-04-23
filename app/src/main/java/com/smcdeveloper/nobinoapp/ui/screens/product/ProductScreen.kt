@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -565,34 +566,41 @@ fun DynamicMoviesGrid(
 
 @Composable
 fun MovieCard(movie: MovieResult.DataMovie.Item, onClick: () -> Unit) {
-    Column(
+    Box(
         modifier = Modifier
             .width(100.dp)
-            .height(200.dp)
+            .height(250.dp)
             .padding(8.dp)
-           // .clip(RoundedCornerShape(8.dp))
+           .clip(RoundedCornerShape(15.dp))
             //.background(Color.Red, shape = MaterialTheme.shapes.medium)
             .clickable { onClick() }
             //.fillMaxWidth()
     )
     {
         AsyncImage(
+
+
             model =  "https://vod.nobino.ir/vod/"+movie.images?.get(0)?.src.toString(), // Use Coil or similar libraries for image loading
             contentDescription = movie.shortDescription,
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f) // Ensures square aspect ratio for images
-                .clip(RoundedCornerShape(8.dp)),
+                .fillMaxSize()
+               // .aspectRatio(1f) // Ensures square aspect ratio for images
+                .clip(RoundedCornerShape(15.dp)),
             contentScale = ContentScale.Crop
         )
     //    Spacer(modifier = Modifier.height(8.dp))
 
-
-
-
         Box(
             modifier = Modifier.fillMaxSize()
-                .background(Color.Gray)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, Color.Black.copy(0.7f)),
+                        startY = 0f
+                    )
+                )
+
+
+            //.background(Color.Red)
             ,
             contentAlignment = Alignment.BottomStart
 
@@ -600,18 +608,48 @@ fun MovieCard(movie: MovieResult.DataMovie.Item, onClick: () -> Unit) {
         )
         {
 
+
+        }
+
+
+
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .padding(bottom = 5.dp)
+                //.background(Color.Red)
+            ,
+            contentAlignment = Alignment.BottomStart,
+
+
+
+
+        )
+
+
+
+
+
+
+
+
+        {
+
             movie.name?.let {
                 Text(
                     text = it,
                     style = MaterialTheme.typography.nobinoSmall,
                     // color = Color.White,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    maxLines = 1
+
                 )
             }
 
 
 
         }
+
+
 
 
 

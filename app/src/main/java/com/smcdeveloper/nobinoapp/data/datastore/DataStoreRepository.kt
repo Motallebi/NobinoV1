@@ -10,6 +10,7 @@ interface DataStoreRepository {
     suspend fun getInt(key: String): Int?
     suspend fun getBoolean(key: String): Boolean?
     suspend fun putBoolean(key: String,value:Boolean)
+    suspend fun clearData()
 
 
 

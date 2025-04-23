@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -14,6 +15,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.filter
 import com.smcdeveloper.nobinoapp.data.model.avatar.Avatar
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentHistory
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentRequest
@@ -30,15 +32,20 @@ import com.smcdeveloper.nobinoapp.data.repository.ProfileRepository
 import com.smcdeveloper.nobinoapp.data.source.PaymentDataSource
 import com.smcdeveloper.nobinoapp.data.source.SearchDataSource1
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreenState
+import com.smcdeveloper.nobinoapp.ui.screens.profile.ValidationStatus
 import com.smcdeveloper.nobinoapp.util.AES
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -66,6 +73,7 @@ class ProfileViewModel @Inject constructor(
 
     private val _requestId = mutableStateOf<String?>(null)
     val requestId: State<String?> = _requestId
+    var status by  mutableStateOf<ValidationStatus>(ValidationStatus.Default)
 
 
 
@@ -172,8 +180,38 @@ class ProfileViewModel @Inject constructor(
 
 
 
+/// using ValidationFlow
+private val _validationStatus = MutableStateFlow<ValidationStatus>(ValidationStatus.Default)
+    val validationStatus: StateFlow<ValidationStatus> = _validationStatus
+
+    fun setError() {
+        _validationStatus.value = ValidationStatus.Error
+
+        viewModelScope.launch {
+            delay(2000)
+            _validationStatus.value = ValidationStatus.Default
+        }
+    }
+/////
 
 
+    private val _validationEvents = MutableSharedFlow<ValidationStatus>()
+    val validationEvents = _validationEvents.asSharedFlow()
+
+    fun triggerError() {
+        viewModelScope.launch {
+
+
+                _validationEvents.emit(ValidationStatus.Error)
+                _validationStatus.emit(ValidationStatus.Error)
+                 Log.d("valid","Status is Error")
+
+            delay(1000)
+            _validationEvents.emit(ValidationStatus.Default)
+            _validationStatus.emit(ValidationStatus.Default)
+            Log.d("valid","Status is Default")
+        }
+    }
 
 
 
@@ -526,7 +564,8 @@ fun setOtpValue() {
     fun validateOtp(
         refNumber: String,
         otp: String,
-        mobile: String
+        mobile: String,
+        onValidate:(ValidationStatus)->Unit
     ) {
 
 
@@ -550,9 +589,17 @@ fun setOtpValue() {
 
             if (result is NetworkResult.Success) {
                 val token = result.data?.access_token
+                status=ValidationStatus.Success
+                onValidate(ValidationStatus.Success)
+                _validationStatus.value=ValidationStatus.Success
+
                 // Handle token if needed
             }
             loadingState = false
+          //  status=ValidationStatus.Error
+          //  onValidate(ValidationStatus.Error)
+           // _validationStatus.value=ValidationStatus.Error
+          //  _validationEvents.emit(ValidationStatus.Error)
         }
     }
 
@@ -619,9 +666,14 @@ fun setOtpValue() {
 
         viewModelScope.launch {
 
-            repository.getPaymentHistory().cachedIn(viewModelScope).collect {
+            repository.getPaymentHistory()
+
+
+
+                .cachedIn(viewModelScope).collect {
                 _paymentHistoryData.value = it
-            }
+                }
+
 
 
 

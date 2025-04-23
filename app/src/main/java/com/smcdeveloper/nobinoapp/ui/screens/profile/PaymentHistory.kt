@@ -4,15 +4,20 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+
+
+
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.text.TextStyle
@@ -37,6 +42,9 @@ fun PaymentHistoryPage(navController: NavHostController,
 
 
 )
+
+
+
 {
     LaunchedEffect(Unit) {
         Log.d("paymentData" , "payments Launch:")
@@ -46,22 +54,30 @@ fun PaymentHistoryPage(navController: NavHostController,
    // profileViewModel.getPaymentHistory()
 
 
+   // ShowPayments(profileViewModel)
+    UserTable(profileViewModel)
+
+
+}
+
+@Composable
+private fun ShowPayments(profileViewModel: ProfileViewModel) {
     val paymentData = profileViewModel.paymentHistoryData.collectAsLazyPagingItems()
 
-     val state = paymentData.loadState
+    val state = paymentData.loadState
 
-    when(state.refresh)
-    {
-         is LoadState.Loading ->{
+    when (state.refresh) {
+        is LoadState.Loading -> {
 
-             Log.d("paymentData" , "payments loading:")
-         }
-         is LoadState.Error -> {
-             Log.d("paymentData" , "payments Error ")
-         }
-        else ->
-        {
-          Log.d("paymentData" , "payments are:" + paymentData.toString())
+            Log.d("paymentData", "payments loading:")
+        }
+
+        is LoadState.Error -> {
+            Log.d("paymentData", "payments Error ")
+        }
+
+        else -> {
+            Log.d("paymentData", "payments are:" + paymentData.toString())
 
             Column(
                 modifier = Modifier
@@ -88,90 +104,28 @@ fun PaymentHistoryPage(navController: NavHostController,
 
                     items(
                         count = paymentData.itemCount,
-                        key =paymentData.itemKey{ payment-> payment.id!! }     ,
+                        key = paymentData.itemKey { payment -> payment.id!! },
 
 
                         )
-                    { index->
+                    { index ->
 
                         PaymentHistory(paymentData[index]!!)
-
-
-
-
-
 
 
                     }
 
 
-
-
-
-
-
                 }
-
-
-
-
-
-
-
-
-
-
-
 
 
                 //  PaymentHistoryTable()
             }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
 
 
 @Composable
@@ -335,6 +289,187 @@ fun PaymentHistory(payment:PaymentHistory.PaymentHistoryData.Payment)
 
 
 }
+
+
+
+@Composable
+fun UserTable(viewModel: ProfileViewModel) {
+    val lazyPagingItems = viewModel.paymentHistoryData.collectAsLazyPagingItems()
+
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        // Header Row
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.DarkGray)
+                .padding(8.dp)
+        ) {
+            TableCell("ID", true, modifier = Modifier
+                .weight(1f))
+            TableCell("Name", true,
+                modifier = Modifier
+                    .weight(1f))
+
+
+            TableCell("Age", true,
+                modifier = Modifier
+                    .weight(1f))
+
+
+            TableCell("Country", true,
+                modifier = Modifier
+                    .weight(1f))
+
+        }
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(lazyPagingItems.itemCount) { index ->
+                val payment = lazyPagingItems[index]
+                if (payment != null) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.LightGray)
+                            .padding(8.dp)
+                    ) {
+                        TableCell(payment.description ?: "NOT SUCCESS", modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp)
+
+                        )
+                        VerticalDivider(
+                            thickness = 1.dp, color = Color.Gray,
+                            modifier = Modifier.height(50.dp)
+
+
+                        )
+                        TableCell(payment.price.toString(),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(50.dp)
+                                .align(Alignment.CenterVertically)
+
+
+                        )
+
+
+                        VerticalDivider(
+                            thickness = 1.dp, color = Color.Gray,
+                            modifier = Modifier.height(50.dp)
+
+
+                        )
+
+
+
+                        TableCell(payment.status.toString(),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(50.dp)
+
+                        )
+
+                        VerticalDivider(
+                            thickness = 1.dp, color = Color.Gray,
+                            modifier = Modifier.height(50.dp)
+
+
+                        )
+
+                        TableCell(payment.createdAt.toString(),
+
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(50.dp)
+
+                        )
+
+
+                    }
+                }
+                HorizontalDivider(
+                    thickness = 2.dp, color = Color.Gray
+
+                )
+
+            }
+
+            // Show loading at the bottom
+            lazyPagingItems.apply {
+                when {
+                    loadState.refresh is LoadState.Loading -> {
+                        item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                    }
+                    loadState.append is LoadState.Loading -> {
+                        item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                    }
+                    loadState.append is LoadState.Error -> {
+                        item {
+                            Text(
+                                "Failed to load more",
+                                color = Color.Red,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TableCell(text: String?, isHeader: Boolean = false,modifier: Modifier) {
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+
+
+    )
+    {
+        Text(
+            text = text ?:"",
+            modifier = modifier
+
+                .padding(4.dp),
+            fontWeight = if (isHeader) FontWeight.Bold else FontWeight.Normal,
+            color = if (isHeader) Color.White else Color.Black,
+            textAlign = TextAlign.Center
+        )
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
