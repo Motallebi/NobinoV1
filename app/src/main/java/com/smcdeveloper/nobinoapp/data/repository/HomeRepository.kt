@@ -395,8 +395,8 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
                     size = 10,
                     category = "",
                     tags = tag,
-                    token = "Bearer $USER_TOKEN",
-                    profileId = "10000840"
+                   // token = "Bearer $USER_TOKEN",
+                  //  profileId = "10000840"
 
 
                 )
@@ -460,8 +460,8 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
             api.getMoviesWithPages(tags = tag,
                 category = categoty, size = size, offset = offset, countries = countries,
                 name = name,
-                token = "Bearer $USER_TOKEN",
-                profileId = "10000840"
+                //token = "Bearer $USER_TOKEN",
+               // profileId = "10000840"
 
 
             )
@@ -486,8 +486,8 @@ class HomeRepository @Inject constructor(private val api:HomeApiInterface):BaseA
 
 
             api.getMoviesWithPages(tags = tagstring,
-                    token = "Bearer $USER_TOKEN",
-                profileId = "10000840"
+                   //token = "Bearer $USER_TOKEN",
+                  //  profileId = "10000840"
 
 
 
@@ -775,8 +775,8 @@ data class MovieParams(
         val result: NetworkResult<MovieResult>
 
         result = safeApiCall { api.getMoviesWithPages(tags = tag,
-                token = "Bearer $USER_TOKEN",
-            profileId = "10000840"
+              //  token = "Bearer $USER_TOKEN",
+          //  profileId = "10000840"
 
 
         )}

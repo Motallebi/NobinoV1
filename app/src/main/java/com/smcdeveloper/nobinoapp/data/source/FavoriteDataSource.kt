@@ -54,7 +54,7 @@ class  FavoriteDataSource(
 
 
             val response = repository.getUserFavorites(
-                auth = "Bearer $USER_TOKEN",
+               // auth = "Bearer $USER_TOKEN",
                 size = size,
                 pageNum = 10
 
@@ -99,28 +99,46 @@ class  FavoriteDataSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Favorite.FavoriteData.Item> {
 
-       // val pageNum = params.key ?: 0
-       // val limit = params.loadSize
+        val pageNum = params.key ?: 0
+        val limit = params.loadSize
 
         //Log.d("PagingSource", "🚀 Loading movies from page=$pageNum, limit=$limit")
 
         return try {
-            val nextPageNumber = params.key ?: 1
+            val nextPageNumber = params.key ?: 0
 
 
             val response = repository.getUserFavorites(
-                auth = "Bearer $USER_TOKEN",
+               // auth = "Bearer $USER_TOKEN",
                 size = 20,
                 pageNum = nextPageNumber
             ).data
+
+
+
+            val nextOffset = if (response?.favoritData?.items?.size!! < limit) {
+                Log.d("PagingSource", "🚨 API returned less than requested, setting nextKey=null")
+                null
+            } else {
+                pageNum + 1
+            }
+
+
+
+
+
+
+
+
+
 
 
             LoadResult.Page(
                 data = response?.favoritData?.items!!.filterNotNull(
 
                 ),
-                prevKey = null,
-                nextKey = nextPageNumber + 1
+                prevKey =   if(pageNum == 0) null else pageNum-1,
+                nextKey = nextOffset
             )
 
 

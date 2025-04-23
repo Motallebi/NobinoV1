@@ -41,7 +41,7 @@ class ProductDetailsRepository @Inject constructor(
         Log.d("getProductDetails", "Fetching product details for productId: $productId, auth: $auth")
 
         val result = safeApiCall(
-            apiCall = { api.getProductDetailInfo(productId, auth) },
+            apiCall = { api.getProductDetailInfo(productId) },
           //  parseResponse = { it?.data }
         )
 
@@ -82,7 +82,7 @@ class ProductDetailsRepository @Inject constructor(
        // Log.d("getProductDetails", "Fetching product details for productId: $productId, auth: $auth")
 
         val result = safeApiCall(
-            apiCall = { api.getProductDetailInfo(productId) },
+            apiCall = { api.getProductDetailInfoWithoutAuth(productId) },
             //  parseResponse = { it?.data }
         )
 
@@ -203,7 +203,7 @@ class ProductDetailsRepository @Inject constructor(
        safeApiCall {
 
            api.saveBookMark(
-               auth = auth,
+              // auth = auth,
                bookMark =bookMarKRequest
            )
 
@@ -225,7 +225,7 @@ class ProductDetailsRepository @Inject constructor(
      val result=   safeApiCall {
 
          api.removeBookMark(
-             auth = auth,
+             //auth = auth,
              bookMark = bookMarKRequest
          )
 

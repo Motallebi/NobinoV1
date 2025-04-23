@@ -20,6 +20,7 @@ import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.remote.ProfileApiInterface
 import com.smcdeveloper.nobinoapp.data.source.PaymentDataSource
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
+import com.smcdeveloper.nobinoapp.util.DigitHelper
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -29,7 +30,7 @@ class ProfileRepository @Inject constructor(private val api: ProfileApiInterface
     suspend fun getOtp(mobile: String): NetworkResult<LoginResponse> {
         Log.d("Repository", "Request: mobile=$mobile")
         return safeApiCall {
-            val response = api.getOtp(mobile = mobile)
+            val response = api.getOtp(mobile = DigitHelper.digitByLocateFaToEn(mobile))
             Log.d("Repository", "Response: ${response.body().toString()}")
             Log.d("API Response", "Raw Response: ${response.raw()}")
             Log.d("API Response", "Response Body: ${response.body()}")
@@ -48,10 +49,11 @@ class ProfileRepository @Inject constructor(private val api: ProfileApiInterface
     ): NetworkResult<LoginResponse> {
 
         Log.d("Repository", "Request: ref_num=$ref_number")
+        Log.d("Repository", "Request: mobile_num=${DigitHelper.digitByLocateFaToEn(mobile)}")
         //Log.d("Repository", "Request: ref_num=$ref_number")
 
         return safeApiCall {
-            val response = api.validateOtp(refNumber = ref_number, otp = otp, mobile = mobile)
+            val response = api.validateOtp(refNumber = ref_number, otp = otp, mobile = DigitHelper.digitByLocateFaToEn(mobile))
             Log.d("Repository", "Request: ref_num=${response.body().toString()}")
 
 
@@ -73,7 +75,7 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
     val result = safeApiCall {
 
 
-        api.getUserInfo(auth)
+        api.getUserInfo()
 
 
     }
@@ -88,7 +90,7 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
         safeApiCall {
 
-            api.getUserPaymentHistory(auth,"1","10")
+            api.getUserPaymentHistory("1","10")
 
         }
 
@@ -177,7 +179,7 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
         safeApiCall {
 
-            api.profileActivation(auth = auth ,profileActivationRequest )
+            api.profileActivation(profileActivationRequest )
 
 
 
@@ -185,11 +187,11 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
 
 
-    suspend fun activeCurrentProfile(auth: String,profileActivationRequest: ProfileActivationRequest ) :NetworkResult<ProfileResponse> =
+    suspend fun activeCurrentProfile(profileActivationRequest: ProfileActivationRequest ) :NetworkResult<ProfileResponse> =
 
         safeApiCall {
 
-            api.activeCurrentProfile(auth = auth ,profileActivationRequest )
+            api.activeCurrentProfile(profileActivationRequest )
 
 
 
@@ -214,7 +216,7 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
         safeApiCall {
 
-            api.getUserProfile("Bearer $USER_TOKEN")
+            api.getUserProfile()
 
 
         }
@@ -239,7 +241,7 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
         safeApiCall {
 
-            api.postUserPayment("Bearer $USER_TOKEN",paymentRequest)
+            api.postUserPayment(paymentRequest)
 
 
         }

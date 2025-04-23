@@ -13,12 +13,12 @@ import javax.inject.Inject
 class FavoriteRepository @Inject constructor(private val api: ProfileApiInterface): BaseApiResponse2() {
 
 
-    suspend fun getUserFavorites(auth: String,size:Int,pageNum:Int): NetworkResult<Favorite> {
+    suspend fun getUserFavorites(size:Int,pageNum:Int): NetworkResult<Favorite> {
 
         val result = safeApiCall {
 
 
-            api.getUserFavorits(auth,size=size, page = pageNum)
+            api.getUserFavorits(size=size, page = pageNum)
 
 
         }

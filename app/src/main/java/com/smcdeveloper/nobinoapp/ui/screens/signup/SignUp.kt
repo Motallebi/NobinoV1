@@ -323,6 +323,7 @@ fun PhoneInputField(
         OutlinedTextField(
 
             value = DigitHelper.digitByLocate(profileViewModel.inputPhoneState),
+
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
 
 
@@ -331,8 +332,10 @@ fun PhoneInputField(
                 if (newValue.all { it.isDigit() } && newValue.length <= 11
 
 
+
                 ) { // ✅ Only digits, max 11
 
+                    Log.d("phone","phone is: "+newValue)
 
                     profileViewModel.inputPhoneState = newValue
                     dataStoreViewModel.saveUserPhone(newValue)

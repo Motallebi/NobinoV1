@@ -33,7 +33,7 @@ interface ProductDetailsApiInterface {
     suspend fun getProductDetailInfo(
 
         @Path("productId") id: Int,
-        @Header("Authorization") auth: String =""
+       // @Header("Authorization") auth: String =""
 
 
     ):Response<ProductModel>
@@ -41,7 +41,7 @@ interface ProductDetailsApiInterface {
 
 
     @GET("api/products/{productId}")
-    suspend fun getProductDetailInfo(
+    suspend fun getProductDetailInfoWithoutAuth(
 
         @Path("productId") id: Int,
 
@@ -139,7 +139,7 @@ interface ProductDetailsApiInterface {
 
     @POST("/api/v2/user-interactions")
     suspend fun saveBookMark(
-        @Header("Authorization") auth: String ="",
+       //@Header("Authorization") auth: String ="",
         @Body bookMark: BookMarKRequest
     ): Response<BookMark>
 
@@ -148,7 +148,7 @@ interface ProductDetailsApiInterface {
 
     @HTTP(method = "DELETE", path = "/api/v2/user-interactions", hasBody = true)
     suspend fun removeBookMark(
-        @Header("Authorization") auth: String ="",
+        //@Header("Authorization") auth: String ="",
         @Body bookMark: BookMarKRequest
     ): Response<BookMark>
 

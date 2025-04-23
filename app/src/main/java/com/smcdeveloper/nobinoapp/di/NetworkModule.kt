@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.di
 
+import android.util.Log
 import com.smcdeveloper.nobinoapp.util.Constants.BASE_URL
 import com.smcdeveloper.nobinoapp.util.Constants.PURCHASE_URL
 import com.smcdeveloper.nobinoapp.util.Constants.TIMEOUT_IN_SECOND
@@ -74,11 +75,23 @@ object NetworkModule {
 
             if (chain.request().url.toString().startsWith(BASE_URL)) {
 
-                if(USER_TOKEN.isNotEmpty()&& USER_PROFILE_ID.isNotEmpty()) {
+                if(USER_TOKEN.isNotEmpty() ) {
                     request
-                        .addHeader("Authorization", USER_TOKEN)
-                        .addHeader("Profile-Id", USER_PROFILE_ID)
+                        .addHeader("Authorization","Bearer $USER_TOKEN")
+                    Log.d("Network", "user token is: $USER_TOKEN userf profile is $USER_PROFILE_ID")
+
                 }
+                else if(USER_TOKEN.isNotEmpty()&& USER_PROFILE_ID.isNotBlank())
+                {
+                    request
+                        .addHeader("Authorization", "Bearer $USER_TOKEN")
+                        .addHeader("Profile-Id", USER_PROFILE_ID)
+                       // .addHeader("Profile-Id2", USER_PROFILE_ID)
+
+
+                }
+
+
 
             }
             chain.proceed(request.build())
@@ -95,7 +108,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
+    fun provideRetrofit(@Named("AUTH")okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -106,7 +119,7 @@ object NetworkModule {
     @Singleton
     @Named("AUTH_RETROFIT")
 
-    fun provideAuthRetrofit(@Named("AUTH")okHttpClient: OkHttpClient): Retrofit =
+    fun provideAuthRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

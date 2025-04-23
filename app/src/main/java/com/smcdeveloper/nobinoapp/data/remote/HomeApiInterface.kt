@@ -45,8 +45,8 @@ interface HomeApiInterface {
         @Query("offset") offset: Int = 18,
         @Query("countries") countries: String = "",
         @Query("name") name: String = "",
-        @Header("Authorization") token: String? = null, // Optional header
-        @Header("Profile-Id") profileId: String? = null // Optional header
+       // @Header("Authorization") token: String? = null, // Optional header
+       // @Header("Profile-Id") profileId: String? = null // Optional header
 
 
 

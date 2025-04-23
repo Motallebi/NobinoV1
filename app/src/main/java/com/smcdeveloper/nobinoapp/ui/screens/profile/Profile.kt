@@ -4,6 +4,8 @@ package com.smcdeveloper.nobinoapp.ui.screens.profile
 import android.annotation.SuppressLint
 import android.util.Base64
 import android.util.Log
+import androidx.compose.foundation.Canvas
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,7 +42,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -443,13 +450,51 @@ fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel)
 
 @Composable
 fun ProfileAvatar(name: String,image:String,onProfileClick:()->Unit) {
+
+
+
+
+
+
+
+
+
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
-                .size(56.dp)
-                .background(Color.LightGray, shape = CircleShape),
+                .size(80.dp),
+              //  .background(Color.LightGray, shape = CircleShape),
             contentAlignment = Alignment.Center
         ) {
+
+
+            Canvas (modifier =Modifier.size(150.dp)) {
+
+
+                val colors = listOf(Color.Red, Color.Red, Color.Red, Color.Blue, Color.Red)
+                val colors1 = listOf(Color.Red, Color.Black,Color.Red)
+
+
+                val brush = Brush.linearGradient(colors1)
+                drawRect(
+                    brush = brush,
+                    topLeft = Offset(0f, 0f),
+                    //  size= Size(400f, 400f),
+                    style = Stroke(width = 10f, cap = StrokeCap.Round)
+                )
+            }
+
+
+
+
+
+
+
+
+
+
+
             // Placeholder for Avatar Image
             if(image.isBlank())
 
@@ -545,10 +590,11 @@ fun SvgImage(base64Svg: String
     AsyncImage(
         model = imageRequest,
         contentDescription = "SVG Image",
-        modifier = Modifier.clip(CircleShape
+        modifier = Modifier.clip(
+            RectangleShape
         )
-            .border(width = 5.dp, shape = CircleShape, color = if(isSelected) Color.Red else Color.Gray)
-            .size(96.dp)
+            //.border(width = 5.dp, shape = RectangleShape, color = if(isSelected) Color.Red else Color.Gray)
+            .size(64.dp)
             .clickable(onClick = onClick)
 
         ,

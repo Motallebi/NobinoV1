@@ -42,6 +42,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import com.smcdeveloper.nobinoapp.data.model.favorit.Favorite
 import com.smcdeveloper.nobinoapp.navigation.Screen
@@ -212,7 +214,23 @@ fun FavoriteListScreen(viewModel: FavoritesViewModel,navController: NavHostContr
 
 
             {
-                items(movies.itemCount) { index -> // ✅ Show 3 items at a time
+                items(
+                    count = movies.itemCount,
+                    key=movies.itemKey { movie-> movie.id!! },
+                    contentType = movies.itemContentType { "movies" }
+
+
+
+
+
+
+                   )
+
+
+                {
+
+
+                    index -> // ✅ Show 3 items at a time
 
                     MovieItem(movies[index]!!,navController,index.toString())
 

@@ -35,6 +35,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreenState
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ValidationStatus
 import com.smcdeveloper.nobinoapp.util.AES
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
+import com.smcdeveloper.nobinoapp.util.DigitHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -63,7 +64,7 @@ class ProfileViewModel @Inject constructor(
 
     //Shared View Model
     // var screenState by mutableStateOf(ProfileScreenState.LOGIN_STATE)
-    var inputPhoneState by mutableStateOf("")
+    var inputPhoneState by mutableStateOf(DigitHelper.digitByLocate(""))
     var inputRefSates by mutableStateOf("")
     var inputOtpState by mutableStateOf("")
     var loadingState by mutableStateOf(false)

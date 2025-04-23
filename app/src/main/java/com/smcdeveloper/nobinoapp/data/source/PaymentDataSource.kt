@@ -114,7 +114,7 @@ class PaymentDataSource @Inject constructor(
 
 
             val response = api.getUserPaymentHistory(
-                auth ="Bearer $USER_TOKEN" ,
+                //auth ="Bearer $USER_TOKEN" ,
                 page = pageNum.toString(),
                 size = "10"
 

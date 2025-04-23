@@ -81,7 +81,7 @@ interface ProfileApiInterface {
 
     @POST("api/subscriptions")
     suspend fun postUserPayment(
-        @Header("Authorization") auth: String ="",
+       // @Header("Authorization") auth: String ="",
         @Body paymentRequest: PaymentRequest
 
 
@@ -129,7 +129,7 @@ interface ProfileApiInterface {
    // @FormUrlEncoded
     @GET("/api/v2/users/user-info")
     suspend fun getUserInfo(
-        @Header("Authorization") auth: String =""
+       // @Header("Authorization") auth: String =""
 
 
 
@@ -180,7 +180,7 @@ interface ProfileApiInterface {
 
     @POST("/api/profile")
     suspend fun profileActivation(
-        @Header("Authorization") auth: String ="",
+        //@Header("Authorization") auth: String ="",
         @Body profileActivation: ProfileActivationRequest
 
 
@@ -195,7 +195,7 @@ interface ProfileApiInterface {
 
     @POST("/api/profile/activate")
     suspend fun activeCurrentProfile(
-        @Header("Authorization") auth: String ="",
+       // @Header("Authorization") auth: String ="",
         @Body profileActivation: ProfileActivationRequest
 
 
@@ -226,7 +226,7 @@ interface ProfileApiInterface {
 
     @GET("/api/v2/user-interactions")
     suspend fun getUserFavorits(
-        @Header("Authorization") auth: String ="",
+       // @Header("Authorization") auth: String ="",
 
     @Query("size") size: Int=20,
     @Query("page") page: Int=1,
@@ -257,7 +257,7 @@ interface ProfileApiInterface {
 
     @GET("/api/profile")
     suspend fun getUserProfile(
-        @Header("Authorization") auth: String ="",
+        //@Header("Authorization") auth: String ="",
         @Query("page") page: Int=1,
         @Query("size") size: Int=10,
 
@@ -278,7 +278,7 @@ interface ProfileApiInterface {
 
     @GET("/api/v2/users/payments")
     suspend fun getUserPaymentHistory(
-        @Header("Authorization") auth: String ="",
+        //@Header("Authorization") auth: String ="",
         @Query("page") page: String,
         @Query("size") size: String,
 
