@@ -524,6 +524,7 @@ fun DynamicMoviesGrid(
                         info = it)
                        // onClick = { products[index]?.let { movie -> onMovieClick(movie) } })
                     Log.d("category","Movies")
+                    Log.d("category","Movies")
 
 
                 }
