@@ -405,32 +405,6 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
-        /*  composable(route = Screen.Product.route + "{/tags}",
-
-            arguments = listOf(
-                navArgument("tags") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                    nullable = true
-                }
-            )
-        )
-
-        {
-
-            it.arguments!!.getString("tag")?.let { tag ->
-                ProductScreen(
-                    navController = navController,
-                    tag = tag
-                )
-            }
-
-
-
-
-
-        }*/
-
 
         composable(route = Screen.Product.route + "/{tags}/{category}/{categoryName}",
 
@@ -471,11 +445,9 @@ fun SetupNavGraph(navController: NavHostController) {
             val tag = it.arguments?.getString("tags")
             val category = it.arguments?.getString("category")
             val categoryTitle =it.arguments?.getString("categoryName")
-            Log.d("navg","tags is" +tag.toString())
-            Log.d("navg","category is" +category.toString())
-            //Log.d("navg","category is" +tagsList.toString())
 
-            val tag2 = listOf(tag).filterNotNull()
+
+
 
             if (tag != null) {
                 ProductScreen(
@@ -610,12 +582,7 @@ fun SetupNavGraph(navController: NavHostController) {
 
             val videoUrl = it.arguments?.getString("videoUrl").toString()
             val videoUrlDecode = URLDecoder.decode(videoUrl, StandardCharsets.UTF_8.toString())
-            /*VideoPlayScreen(
-                navController = navController,
-                videourl = videoUrlDecode
 
-
-            )*/
             VideoPlay(videoUrl=videoUrlDecode)
 
 
@@ -735,7 +702,7 @@ fun SetupNavGraph(navController: NavHostController) {
             val id = it.arguments?.getString("id")
 
 
-                Log.d("plan","plan id: $id")
+
 
                 SubscriptionConfirmationPage(navController=navController, planid = id.toString())
 

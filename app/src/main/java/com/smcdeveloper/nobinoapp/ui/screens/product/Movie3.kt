@@ -2,34 +2,37 @@ package com.smcdeveloper.nobinoapp.ui.screens.product
 
 
 
-import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import coil3.compose.rememberAsyncImagePainter
-
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRow
-import com.smcdeveloper.nobinoapp.ui.screens.home.AnimatedImageSlider
 import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
 import com.smcdeveloper.nobinoapp.ui.screens.home.SliderItemByTags
-import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 
 @Composable
 fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, tags:List<Int>) {
     val sliderState by viewModel.slider2.collectAsState()
     val movieDataState by viewModel.movieDisplayData2.collectAsState()
-    //  val delimiterState by viewModel.delimiter.collectAsState()
+
     val productState by viewModel.product.collectAsState()
     val relatedProductsState by viewModel.relatedProducts.collectAsState()
 
@@ -87,8 +90,7 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                         productState is NetworkResult.Success &&
                         relatedProductsState is NetworkResult.Success -> {
 
-                    Log.d("slider", "movie3" + sliderState.data?.data.toString())
-                    //   Log.d("slider2","movie3"+delimiterState.data?.imageData?.leftImageLink)
+
 
 
                     val sliderData = (sliderState as NetworkResult.Success).data?.data
@@ -104,11 +106,11 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
                     item {
                         if (sliderData != null) {
-                            Log.d("slider", "not null" + sliderState.data?.data.toString())
+
                           // AnimatedImageSlider(sliderData)
                             CustomSlider(modifier = Modifier,sliderData,)
 
-                            Log.d("slider", "not null")
+
                         }
                     }
 
@@ -119,12 +121,12 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                                 displayData.movieCat.title.toString(),
                                 navController = navController,
                                 displayData.movieCat,
-                              //  category = displayData.movieCat.title.toString()
+
                                 category = "",
                                 categoryName = displayData.movieCat.title.toString()
                             )
 
-                            //  TagHeader(tag = displayData.movieCat.title ?: "Unknown Category")
+
                         }
 
                         if (index == 3) {
@@ -205,43 +207,6 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
 
-    @Composable
-    fun SpecialRow(imageUrls: List<String?>) {
-        if (imageUrls.size < 3) return // Ensure at least 3 images are provided
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            // Large Image on Top
-            Image(
-                painter = rememberAsyncImagePainter(model = IMAGE_BASE_URL + imageUrls[0]),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(16f / 9f) // Adjust as needed
-                    .padding(bottom = 4.dp)
-            )
-
-            // Two Smaller Images Below in a Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                for (i in 1..2) {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = IMAGE_BASE_URL + imageUrls[i]),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .weight(1f) // Equal width for both images
-                            .aspectRatio(16f / 9f) // Same aspect ratio as the top image
-                            .padding(4.dp)
-                    )
-                }
-            }
-        }
-    }
 
 
 }
