@@ -241,7 +241,7 @@ fun Product(navController: NavHostController,
                 val movieId= movie.id
                 Log.d("category", "Clicked movie: $movieId")
 
-                     if(movie.category.toString() == "SERIES")
+                     if(movie.category.toString() == "SERIES" || movie.category.toString() !=="MOVIE" )
                      {
                          Log.d("Catis","cat is .... ${movie.category.toString()}")
 
@@ -250,9 +250,10 @@ fun Product(navController: NavHostController,
 
                          navController.navigate(Screen.SeriesDetailScreen.withArgs("$movieId"))
                      }
-                     else
+                     else if(movie.category.toString() == "MOVIE")
                      {
                          Log.d("Catis","cat is .... ${movie.category.toString()}")
+                         Log.d("Catis","cat is .... MovieId$movieId")
                          navController.navigate(Screen.ProductDetails.withArgs("$movieId"))
 
 
