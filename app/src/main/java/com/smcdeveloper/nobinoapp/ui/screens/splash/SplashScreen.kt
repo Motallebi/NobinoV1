@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.ui.screens.splash
 
 import android.widget.Toast
+import androidx.collection.emptyLongSet
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,10 +43,19 @@ fun SplashScreen(navController: NavHostController)
 
 
     val context = LocalContext.current
+
+
+
+
+
+
     val isNetworkAvailable = remember {
 
         isNetworkAvailable(context)
     }
+
+
+
 
    /* Splash(isNetworkAvailable) {
         if (isNetworkAvailable(context)) {
@@ -76,8 +86,17 @@ fun SplashScreen(navController: NavHostController)
                 }
             }
 
+        else
+        {
+          Toast.makeText(context,"No Internet",Toast.LENGTH_LONG).show()
+
 
         }
+
+
+        }
+
+
 
 
 

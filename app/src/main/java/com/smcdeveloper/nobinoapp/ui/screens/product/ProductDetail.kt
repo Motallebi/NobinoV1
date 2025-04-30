@@ -215,7 +215,7 @@ fun ProductDetailPage(
                         is NetworkResult.Success -> {
                             val productData = (products as NetworkResult.Success<ProductModel>).data?.data
                             productData?.let { product ->
-                                ShowProductDetailWithTabs(
+                                ShowOtherProductDetailWithTabs(
                                     productTitle = product.name,
                                     productEnglishTitle = product.translatedName,
                                     productImage = product.images.firstOrNull()?.src.orEmpty(),
@@ -323,7 +323,7 @@ fun ProductDetailPage(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowProductDetailWithTabs(
+fun ShowOtherProductDetailWithTabs(
     productTitle: String,
     productEnglishTitle: String,
     productImage: String,

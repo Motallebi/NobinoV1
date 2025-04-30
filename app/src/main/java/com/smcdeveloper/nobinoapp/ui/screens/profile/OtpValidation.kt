@@ -140,7 +140,9 @@ fun OtpValidationScreen(
 
                         if (token.isNotBlank()) {
                             dataStoreViewModel.saveUserToken(token)
-                            navController.navigate(Screen.Profile.route)
+                          navController.navigate(Screen.Home.route)
+                            //navController.popBackStack()
+
                             AppConfigManager.updateToken(token)
                         }
                     }
@@ -713,8 +715,8 @@ private fun NobinoValidationText(
 
             }
         },
-        colors = TextFieldDefaults.textFieldColors(
-            focusedTextColor = Color.White,
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = if (isValid) Color.White else Color.Red,
             cursorColor = Color.Green,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent

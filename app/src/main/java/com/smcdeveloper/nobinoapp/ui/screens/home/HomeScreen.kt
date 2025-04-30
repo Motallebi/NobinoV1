@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.ui.screens.home
 
 import android.app.Activity
+import android.content.Context
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.AlertDialog
@@ -19,8 +20,10 @@ import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smcdeveloper.nobinoapp.ui.screens.product.MovieScreenHome
 import com.smcdeveloper.nobinoapp.util.AppConfigManager
+import com.smcdeveloper.nobinoapp.util.ConnectivityObserver
 import com.smcdeveloper.nobinoapp.util.Constants
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
+import com.smcdeveloper.nobinoapp.util.NetworkConnectivityObserver
 
 @Composable
 fun HomeScreen(navController: NavHostController)
@@ -40,6 +43,13 @@ fun Home(
 
 {
       val apiError by viewModel.apiError.collectAsState()
+      lateinit var connectivityObserver: ConnectivityObserver
+
+
+
+
+
+
 
     LaunchedEffect(Unit) {
 
@@ -68,7 +78,45 @@ fun Home(
 
 
     var showExitDialog by remember { mutableStateOf(false) }
+    var showInterDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    connectivityObserver = NetworkConnectivityObserver(context)
+
+
+    val status by connectivityObserver.observe().collectAsState(
+        initial = ConnectivityObserver.Status.Unavailable
+    )
+
+       when(status)
+       {
+           ConnectivityObserver.Status.Available->{
+             //  showInterDialog=false
+
+           }
+
+           else->
+           {
+//               showInterDialog=true
+
+
+
+           }
+
+
+
+
+
+
+
+       }
+
+
+
+
+
+
+
+
 
     // Intercept the back press
     BackHandler {
@@ -99,6 +147,30 @@ fun Home(
             }
         )
     }
+
+    if(showInterDialog)
+    {
+        ShowDialog("INTERNET","No Internet Connection",context,)
+        {
+            showInterDialog=false
+
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -221,6 +293,51 @@ fun Home(
 
 
     }
+
+
+@Composable
+fun ShowDialog(title:String,dialogText:String,context: Context,onDismiss:()->Unit)
+{
+
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        title = { Text(title) },
+        text = { Text(dialogText) },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                   onDismiss()
+                    // Exit the app by finishing the activity
+                    (context as? Activity)?.finish()
+                }
+            ) {
+                Text("Exit")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { onDismiss () }) {
+                Text("Cancel")
+            }
+        }
+    )
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
 
 
 

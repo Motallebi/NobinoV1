@@ -377,7 +377,7 @@ fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel)
             {
                 enableAddNewProfile.value=true
 
-                ProfileAvatar(name = "mainAccount", image = profileData[0].image)
+                ProfileAvatar(name = "mainAccount", image = profileData[0].image ?: "test")
                 {
 
 
@@ -386,7 +386,12 @@ fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel)
 
 
                 ProfileAvatar(name = "18+ years", image = profileData[1].image)
-                {}
+                {
+
+
+
+
+                }
 
 
 
@@ -449,7 +454,7 @@ fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel)
 }
 
 @Composable
-fun ProfileAvatar(name: String,image:String,onProfileClick:()->Unit) {
+fun ProfileAvatar(name: String,image:String?,onProfileClick:()->Unit) {
 
 
 
@@ -496,7 +501,7 @@ fun ProfileAvatar(name: String,image:String,onProfileClick:()->Unit) {
 
 
             // Placeholder for Avatar Image
-            if(image.isBlank())
+            if(image!!.isBlank() || image.isEmpty())
 
 
             Image(
