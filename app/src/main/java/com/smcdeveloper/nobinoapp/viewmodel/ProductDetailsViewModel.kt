@@ -12,7 +12,6 @@ import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.ProductDetailsRepository
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
-import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel.Companion.USER_LOGIN_STATUS_KEY
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel.Companion.USER_TOKEN_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -55,11 +54,24 @@ class ProductDetailsViewModel @Inject constructor(
     private val _firstEpisode = MutableStateFlow<NetworkResult<ProductModel>>(NetworkResult.Loading())
     val firstEpisode: StateFlow<NetworkResult<ProductModel>> get() = _firstEpisode.asStateFlow()
 
+    private val _isUserLoging = MutableStateFlow(false)
+    val isUserLoging : StateFlow<Boolean> = _isUserLoging.asStateFlow()
 
 
 
 
 
+
+
+    fun ChangeUserLogin()
+    {
+        _isUserLoging.value=true
+
+
+
+
+
+    }
 
 
 
