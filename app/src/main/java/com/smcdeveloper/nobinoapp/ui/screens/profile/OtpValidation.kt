@@ -42,6 +42,7 @@ import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.util.DigitHelper
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
+import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -59,7 +60,9 @@ fun OtpValidationScreen(
     avatarId:Int=1,
 
     profileViewModel: ProfileViewModel = hiltViewModel(),
-    dataStoreViewModel: DataStoreViewModel= hiltViewModel()
+    dataStoreViewModel: DataStoreViewModel= hiltViewModel(),
+    loginViewModel: LoginViewModel
+
 
 
 ) {
@@ -141,6 +144,7 @@ fun OtpValidationScreen(
                         if (token.isNotBlank()) {
                             dataStoreViewModel.saveUserToken(token)
                           navController.navigate(Screen.Home.route)
+                            loginViewModel.updateLoging(true)
                             //navController.popBackStack()
 
                             AppConfigManager.updateToken(token)

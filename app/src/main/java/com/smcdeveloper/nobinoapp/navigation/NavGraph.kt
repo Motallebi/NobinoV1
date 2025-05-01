@@ -41,12 +41,13 @@ import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesDetailPage
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
 import com.smcdeveloper.nobinoapp.ui.screens.training.TrainingScreen
+import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewModel) {
 
     NavHost(
         navController = navController,
@@ -330,7 +331,10 @@ fun SetupNavGraph(navController: NavHostController) {
                 refNumber = refNumber,
                 name= backStackEntry.arguments?.getString("name").toString(),
                 username= backStackEntry.arguments?.getString("username").toString(),
-                avatarId =  backStackEntry.arguments?.getInt("avatarId") ?: 1
+                avatarId =  backStackEntry.arguments?.getInt("avatarId") ?: 1,
+                loginViewModel = loginViewModel
+
+
             )
 
 
@@ -483,7 +487,8 @@ fun SetupNavGraph(navController: NavHostController) {
                 ProductDetailPage(
                     navController = navController,
 
-                    productId = productId
+                    productId = productId,
+                    loginViewModel = loginViewModel
 
 
                 )

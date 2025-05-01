@@ -56,6 +56,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.BeyondBoundsLayout
 import androidx.compose.ui.text.TextStyle
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
@@ -63,6 +64,7 @@ import com.smcdeveloper.nobinoapp.util.AppConfig
 import com.smcdeveloper.nobinoapp.util.ConnectivityObserver
 import com.smcdeveloper.nobinoapp.util.DigitHelper
 import com.smcdeveloper.nobinoapp.util.NetworkConnectivityObserver
+import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -112,6 +114,8 @@ class MainActivity : ComponentActivity() {
                 val status by connectivityObserver.observe().collectAsState(
                     initial = ConnectivityObserver.Status.Available
                 )
+                val loginViewModel:LoginViewModel= hiltViewModel()
+
                 var showInternetDialoge by remember { mutableStateOf(false) }
                 AppConfig()
 
@@ -318,7 +322,7 @@ class MainActivity : ComponentActivity() {
 
 
                                {
-                                   SetupNavGraph(navController)
+                                   SetupNavGraph(navController,loginViewModel)
                                  //  ShowContent1()
                                     // ShowLAzy(navController)
                                //ShowItems(navController)
@@ -381,7 +385,7 @@ fun ShowItems(navController:NavHostController)
 
 
     ) {
-        SetupNavGraph(navController = navController)
+      //  SetupNavGraph(navController = navController, loginViewModel = )
 
     }
 
@@ -430,7 +434,7 @@ fun ShowLAzy(navController:NavHostController)
 
 
             item {
-                SetupNavGraph(navController = navController)
+               // SetupNavGraph(navController = navController)
 
 
 

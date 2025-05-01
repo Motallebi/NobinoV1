@@ -84,6 +84,7 @@ import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.util.DigitHelper
+import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -93,7 +94,8 @@ import java.nio.charset.StandardCharsets
 fun ProductDetailPage(
     navController: NavHostController,
     productDetailsViewModel: ProductDetailsViewModel = hiltViewModel(),
-    productId: Int
+    productId: Int,
+    loginViewModel: LoginViewModel
 )
 {
 
@@ -127,6 +129,8 @@ fun ProductDetailPage(
     val products by productDetailsViewModel.product.collectAsState()
     val relatedMovies by productDetailsViewModel.relatedMovies.collectAsState()
     val bookmarked by productDetailsViewModel.isBookmarked.collectAsState()
+    val isUserLogedIn = loginViewModel.isUserLogin.collectAsState()
+
 
     LaunchedEffect(selectedTabIndex) {
         if (selectedTabIndex == 1) {
@@ -223,7 +227,9 @@ fun ProductDetailPage(
                                     productId = productId,
                                     viewModel = productDetailsViewModel,
                                     bookmark = bookmarked,
-                                    tags =  product.tags
+                                    tags =  product.tags,
+                                    isUserLogedIn=isUserLogedIn.value
+
 
 
 
@@ -335,7 +341,8 @@ fun ShowOtherProductDetailWithTabs(
     viewModel: ProductDetailsViewModel,
     productId:Int,
     bookmark: Boolean,
-    tags: List<ProductModel.MovieInfo.Tag>
+    tags: List<ProductModel.MovieInfo.Tag>,
+    isUserLogedIn:Boolean
 
 
 )
@@ -362,7 +369,9 @@ fun ShowOtherProductDetailWithTabs(
             viewModel =viewModel,
             productId = productId,
             bookmark = bookmark,
-            tags =tags
+            tags =tags,
+            isUserLogedIn=isUserLogedIn
+
 
 
 
@@ -933,7 +942,8 @@ fun ProductBanner(
   //  episode: MovieResult.DataMovie.Item
     productId:Int,
     bookmark: Boolean,
-    tags: List<ProductModel.MovieInfo.Tag>
+    tags: List<ProductModel.MovieInfo.Tag>,
+    isUserLogedIn:Boolean
 
 
 
@@ -1043,7 +1053,7 @@ fun ProductBanner(
             Button(
               //  modifier = Modifier.width(150.dp),
                 onClick = {
-                    if (isVideoAvailable && isUserLogin) {
+                    if ((isVideoAvailable && isUserLogin) || isUserLogedIn) {
                         val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
                         Log.d("ProductBanner", "Navigating to video player with URL: $encodedUrl")
                         navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
@@ -1074,7 +1084,7 @@ fun ProductBanner(
 
 
 
-                    contentColor = if (isVideoAvailable && isUserLogin) Color.Red else Color.Gray,
+                    contentColor = if ((isVideoAvailable && isUserLogin) || isUserLogedIn) Color.Red else Color.Gray,
                     containerColor = Color.Red
 
 
@@ -1093,7 +1103,7 @@ fun ProductBanner(
                 )
 
                 Text(
-                    text = if (isVideoAvailable && isUserLogin) stringResource(R.string.PlayMovie) else  stringResource(R.string.LoginFirst),
+                    text = if ((isVideoAvailable && isUserLogin) || isUserLogedIn) stringResource(R.string.PlayMovie) else  stringResource(R.string.LoginFirst),
                    style = MaterialTheme.typography.nobinoLarge
                 )
             }
