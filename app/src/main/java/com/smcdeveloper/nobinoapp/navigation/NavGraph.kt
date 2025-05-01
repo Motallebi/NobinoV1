@@ -89,7 +89,7 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
         }
         composable(route = Screen.Profile.route) {
             Log.d("navhost","Profile Screen")
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController = navController, loginViewModel = loginViewModel)
 
 
         }
