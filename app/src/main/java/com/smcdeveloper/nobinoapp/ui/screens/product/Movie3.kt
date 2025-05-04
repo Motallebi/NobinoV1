@@ -67,6 +67,10 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                     }
                 }
 
+
+
+
+
                 // Show error state if either request fails
                 sliderState is NetworkResult.Error ||
                         movieDataState is NetworkResult.Error ||
