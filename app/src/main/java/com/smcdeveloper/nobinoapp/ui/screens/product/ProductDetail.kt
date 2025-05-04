@@ -984,7 +984,7 @@ fun ProductBanner(
 
         {
 
-            FloatingActionButtons(navController, viewModel, productId, bookmark)
+            FloatingActionButtons(navController, viewModel, productId, bookmark,isUserLogedIn)
 
 
 
@@ -1133,7 +1133,7 @@ fun ProductBanner(
 
 
 @Composable
-fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDetailsViewModel,productId: Int,bookmark:Boolean) {
+fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDetailsViewModel,productId: Int,bookmark:Boolean,isUserLogedIn: Boolean) {
 
 
 
@@ -1210,41 +1210,41 @@ fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDet
                         )
                     }
 
-                    else
-                    {
+                    else {
+                        if (isUserLogedIn) {
 
-                        viewModel.saveBookMark(
-                            auth = "Bearer $USER_TOKEN",
+                            viewModel.saveBookMark(
+                                auth = "Bearer $USER_TOKEN",
 
-                            bookmark =   BookMarKRequest(
-
-
-                                productId =productId ,
-                                type="BOOKMARK"
+                                bookmark = BookMarKRequest(
 
 
+                                    productId = productId,
+                                    type = "BOOKMARK"
+
+
+                                )
 
 
                             )
 
 
+                        }
+
+                        else{
+
+                            navController.navigate(Screen.SignUp.route)
 
 
 
 
-                        )
 
 
 
-
-
-
+                        }
 
 
                     }
-
-
-
 
 
                     /* Handle bookmark action */
