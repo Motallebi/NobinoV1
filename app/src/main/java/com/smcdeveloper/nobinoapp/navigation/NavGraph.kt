@@ -15,12 +15,8 @@ import androidx.navigation.navDeepLink
 import com.smcdeveloper.nobinoapp.ui.screens.Actors.ActorScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
-import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoBottomSheetSearch
-import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoDialogSearch
-import com.smcdeveloper.nobinoapp.ui.screens.demo.TestSearch
-import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoDemo
+import com.smcdeveloper.nobinoapp.ui.screens.search.BottomSheetSearch
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlay
-import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlayScreen
 import com.smcdeveloper.nobinoapp.ui.screens.favorit.FavoriteScreen
 import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
 import com.smcdeveloper.nobinoapp.ui.screens.home.KidsScreen
@@ -239,7 +235,7 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
             val categoryId = backStackEntry.arguments?.getInt("categoryName") ?: 1
 
 
-            DemoBottomSheetSearch(navController = navController, tags = tags, categoryName = categoryName, categoryId = categoryId)
+            BottomSheetSearch(navController = navController, tags = tags, categoryName = categoryName, categoryId = categoryId)
 
         }
 
@@ -253,7 +249,7 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
 
 
 
-            DemoBottomSheetSearch(navController = navController, tags = "")
+            BottomSheetSearch(navController = navController, tags = "")
 
         }
 
@@ -594,36 +590,7 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
         }
 
 
-        composable(route = Screen.VideoDemoScreen.route + "/{videoUrl}",
 
-
-            arguments = listOf(
-                navArgument("videoUrl")
-                {
-                    type = NavType.StringType
-
-                }
-
-            )
-        )
-
-
-        {
-            val videoUrl = it.arguments?.getString("videoUrl")
-            val videoUrlDecode = URLDecoder.decode(videoUrl, StandardCharsets.UTF_8.toString())
-            if (videoUrl != null) {
-                VideoDemo(
-                    navController = navController,
-                    videUrl = videoUrlDecode
-
-
-                )
-
-
-            }
-
-
-        }
 
 
 

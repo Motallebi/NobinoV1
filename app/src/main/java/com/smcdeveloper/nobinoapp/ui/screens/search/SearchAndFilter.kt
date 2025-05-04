@@ -1,7 +1,6 @@
-package com.smcdeveloper.nobinoapp.ui.screens.demo
+package com.smcdeveloper.nobinoapp.ui.screens.search
 
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,7 +25,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Audiotrack
@@ -85,23 +82,18 @@ import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.component.CustomBottomSheet
+import com.smcdeveloper.nobinoapp.ui.screens.demo.FilterChip
+import com.smcdeveloper.nobinoapp.ui.screens.demo.FilterListItem
+import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
 import com.smcdeveloper.nobinoapp.ui.screens.product.InfoCard
 import com.smcdeveloper.nobinoapp.ui.screens.product.MovieCard
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterActorsSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterAudioSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterCountriesSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterSubtitleSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterType
-import com.smcdeveloper.nobinoapp.ui.screens.search.GenreSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.SearchWidget
-import com.smcdeveloper.nobinoapp.ui.screens.search.YearSelectionSheet
+import com.smcdeveloper.nobinoapp.ui.screens.product.SeriesCard
 import com.smcdeveloper.nobinoapp.ui.theme.searchIndicatorLine
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit2.http.Query
 
 
 val audioOptions = listOf(
@@ -293,7 +285,7 @@ fun PerformSearch( performSearch:Boolean,tags:String="",query: String,
 
 
 @Composable
-fun DemoBottomSheetSearch(
+fun BottomSheetSearch(
     homeViewModel: HomeViewModel= hiltViewModel(),
     navController: NavHostController,
     filterViewModel: FilterViewModel= hiltViewModel(),
@@ -684,7 +676,7 @@ fun DemoBottomSheetSearch(
                 Column (
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Blue)
+                       // .background(Color.Blue)
                         .padding(paddingValues)
                         .padding(horizontal = 8.dp)
 
@@ -1254,7 +1246,8 @@ private fun ShowSearchMovies(
     navController: NavHostController,
     onScrollCallbackReady: (suspend (Int) -> Unit) -> Unit,
     searchQuery: String,
-    gridState: LazyGridState
+    gridState: LazyGridState,
+  //  onMovieClick: (MovieResult.DataMovie.Item) -> Unit ,
 
 )
 
@@ -1335,23 +1328,118 @@ LaunchedEffect(Unit) {
              LazyVerticalGrid(
                  state = gridstate,
                  columns = GridCells.Fixed(2),
-                 modifier = Modifier.fillMaxSize(),
-                 contentPadding = PaddingValues(4.dp)
+                 modifier = Modifier.fillMaxSize()
+                     .padding(16.dp)
+                 ,
+                 contentPadding = PaddingValues(4.dp),
+                 verticalArrangement = Arrangement.spacedBy(32.dp),
+                 horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+
+
              )
 
              {
                  items(movies.itemCount) { index ->
 
+                     when(movies[index]?.category)
+                     {
 
-                     Log.d("loadingsate", "REFRESH ELSE..${movies.itemCount}")
+                         "MOVIES"-> {
+                             movies[index]?.let {
+                                 MovieCard(
+                                     movie = it,
+                                     onClick = { movies[index]?.let {  movie->   navController.navigate(Screen.ProductDetails.withArgs("${movie.id}")) }
+
+                                         Log.d("category clicked..",movies.get(index)?.name.toString())
+
+
+
+                                     }
+                                 )
+                                 Log.d("category","Movies")
+
+                             }
+                         }
+
+
+                         "SERIES" -> {
+                             movies[index]?.let {
+                                 SeriesCard(
+                                     info = it,
+                                     onClick = { movies[index]?.let {
+                                         series -> navController.navigate(Screen.SeriesDetailScreen.withArgs("${series.id}"))
+
+
+
+                                     } })
+                                 Log.d("category","Movies")
+
+
+                             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                     }
+                     else ->
+                     {
+
+
+
+                         movies[index]?.let {
+                             MovieCard(
+                                 movie = it,
+                                 onClick = { movies[index]?.let {
+                                         movie->   navController.navigate(Screen.ProductDetails.withArgs("${movie.id}"))
+
+
+                                 } }
+                             )
+                             Log.d("category","others")
+
+                         }
+
+
+
+
+
+
+
+
+                     }
+
+
+
+
+
+
+                     }
+
+
+
+
+
+                  /*   Log.d("loadingsate", "REFRESH ELSE..${movies.itemCount}")
 
 
                      val movie = movies[index]
                      if (movie != null) {
-                         /* MovieItem(
+                         *//* MovieItem(
                                               movieTitle = movie.name.toString(),
                                               rating = movie.popularityRate.toString()
-                                          )*/
+                                          )*//*
 
                          MovieCard(movie = movie) {
 
@@ -1364,7 +1452,7 @@ LaunchedEffect(Unit) {
 
 
                          }
-                         Text("$index")
+                         Text("$index")*/
 
                         // item { Text("000000000000") }
 
@@ -1375,7 +1463,7 @@ LaunchedEffect(Unit) {
 
 
 
-
+/*
                  if (movies.loadState.append is LoadState.Loading) {
                      Log.d("loadingsate", "append  grid..")
 
@@ -1389,7 +1477,7 @@ LaunchedEffect(Unit) {
                              CircularProgressIndicator()
                          }
                      }
-                 }
+                 }*/
 
 
 
@@ -1411,24 +1499,6 @@ LaunchedEffect(Unit) {
 
 
 
-    when(appendstate)
-    {
-        is LoadState.Loading->{
-
-            Log.d("loadingsate","APPEND")
-
-        }
-
-        is LoadState.Error->{}
-
-        else ->{}
-
-
-
-
-
-
-    }
 
 
 
@@ -1543,7 +1613,7 @@ LaunchedEffect(Unit) {
                         }
                     }*//*
     }*/
-}
+
 
 
 @Composable
@@ -1552,7 +1622,8 @@ LaunchedEffect(Unit) {
         modifier: Modifier = Modifier,
         onMovieClick: (MovieResult.DataMovie.Item) -> Unit = {}, // Handles movie card clicks
         onInfoClick: (MovieResult.DataMovie.Item) -> Unit = {} // Handles informational card clicks
-    ) {
+    )
+    {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2), // Adjust to your desired grid layout
             modifier = modifier.fillMaxSize(),

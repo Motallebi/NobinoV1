@@ -19,8 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smcdeveloper.nobinoapp.data.model.AudioSubtitle
-import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem2
-import com.smcdeveloper.nobinoapp.ui.screens.demo.audioOptions
 
 @Composable
 fun FilterAudioSelectionSheet(
