@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.search
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,11 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -23,9 +26,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.smcdeveloper.nobinoapp.data.model.search.GenreInfo
-import com.smcdeveloper.nobinoapp.ui.component.CustomBottomSheet
+import com.smcdeveloper.nobinoapp.ui.component.ParentFilterBottomSheet
+
 import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
 
 
@@ -33,24 +38,49 @@ import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
 fun GenreSelectionSheet(
 
     items: List<GenreInfo>,
-    selectedItemIds: Set<String>,
+    selectedItemIds: MutableSet<String>,
+
     onItemSelected: (GenreInfo, Boolean) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onClearAll:Boolean,
+
+    isAllClear:Boolean,
+    onClear:()->Unit,
+
+
+
+
+
 )
 
 {
     var searchQuery by remember { mutableStateOf("") }
     val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
-    CustomBottomSheet(isVisible = true, onDismiss = onClose) { // 🔴 Use bottom sheet
+
+
+    ParentFilterBottomSheet (
+
+       // isClear = onClearAll(),
+        isVisible = true,
+        onDismiss = onClose,
+        //onCheckBox = {},
+        modifier = Modifier) { // 🔴 Use bottom sheet
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxSize(
+                .fillMaxSize()
+                .background(Color.Blue)
+               // .padding(16.dp)
+        )
 
-                )
-                .padding(16.dp)
-        ) {
+        {
+
+
+            var isCheckBoxCleared by remember {mutableStateOf( onClearAll )  }
+
+
+
             // 🔴 Header with Close Button
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -72,7 +102,12 @@ fun GenreSelectionSheet(
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        shape = RoundedCornerShape(4.dp),
+                        color = MaterialTheme.colorScheme.background
+                    )
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -81,19 +116,35 @@ fun GenreSelectionSheet(
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(filteredItems.chunked(2)) { rowItems ->
                     Row(modifier = Modifier.fillMaxWidth()) {
+
+
+
+
                         rowItems.forEach { item ->
                             SelectionCheckboxItem(
                                 text = item.name, // 🔴 Show country name
-                                isSelected = item.id.toString() in selectedItemIds, // 🔴 Check by ID
+                                isSelected = if(isCheckBoxCleared) false else item.id.toString() in selectedItemIds, // 🔴 Check by ID
                                 onSelected = { isSelected ->
+
+                                    onClear()
+
+
+
+
                                     onItemSelected(
                                         item,
                                         isSelected
                                     )
                                 },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                //onClearAll = onClearAll
+
                             )
+
+
                         }
+                        isCheckBoxCleared=false
+
                     }
                 }
             }

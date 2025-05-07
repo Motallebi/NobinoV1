@@ -61,6 +61,20 @@ val Typography.nobinoMedium: TextStyle
 
     )
 
+
+val Typography.nobinoMediumCheckBox: TextStyle
+    @Composable
+    get() = TextStyle(
+        fontFamily = nobino_fonts,
+        fontWeight = FontWeight.Bold,
+        fontSize =16.sp,
+
+
+
+        )
+
+
+
 val Typography.nobinoMediumLight: TextStyle
     @Composable
     get() = TextStyle(

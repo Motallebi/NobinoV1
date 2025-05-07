@@ -105,8 +105,8 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
     val searchParams: StateFlow<SearchParams> = _searchParams
 
 
-    fun updateSearchParams(query:String , tag: String, category: List<String>, countries: String) {
-        _searchParams.value = SearchParams(query, tag, listOf("MOVIE","SERIES"), countries)
+    fun updateSearchParams(query:String , tag: String, category: List<String>, countries: String,persons:String) {
+        _searchParams.value = SearchParams(query, tag, listOf("MOVIE","SERIES"), countries,persons)
 
     }
 
@@ -141,6 +141,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                             categoryName = listOf("SERIES,MOVIE,COURSE,CERTIFICATED_COURSE"),
                             countries = params.countries,
                             name = " ",
+                            persons = params.persons,
                             size = 18
 
                         )

@@ -81,7 +81,8 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
-import com.smcdeveloper.nobinoapp.ui.component.CustomBottomSheet
+import com.smcdeveloper.nobinoapp.ui.component.FilterBottomSheet
+import com.smcdeveloper.nobinoapp.ui.component.MainFilterScreen
 import com.smcdeveloper.nobinoapp.ui.screens.demo.FilterChip
 import com.smcdeveloper.nobinoapp.ui.screens.demo.FilterListItem
 import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
@@ -263,7 +264,8 @@ fun PerformSearch( performSearch:Boolean,tags:String="",query: String,
             countries = "",
             category = listOf("SERIES,MOVIES"),
             tag = tags,
-            query = query
+            query = query,
+            persons = ""
 
 
         )
@@ -330,7 +332,13 @@ fun BottomSheetSearch(
 
     var selectedCategories by remember { mutableStateOf(setOf("MOVIE,SERIES")) }
     var selectedCountryIds by remember { mutableStateOf(setOf<String>()) }
-    var selectedGenreIds by remember { mutableStateOf(setOf<String>(tags)) }
+   // var selectedGenreIds =  (mutableSetOf(tags))
+    var selectedGenreIds  by remember { mutableStateOf(setOf<String>()) }
+
+
+
+
+
     val selectedGenres by remember { mutableStateOf(setOf<String>("9999")) } // 🔴 Store full objects for UI
 
 
@@ -383,6 +391,9 @@ fun BottomSheetSearch(
     var shouldFetchGenres by remember { mutableStateOf(true) } // ✅ Boolean flag
     val performSearch by remember { mutableStateOf(false) }
     var firstSearch by remember { mutableStateOf(false) }
+    var isAllCheckBoxesclear by remember { mutableStateOf(false) }
+    var showRemoveAllCheckBoxesIcon by remember { mutableStateOf(false) }
+
 
 
    /* PerformSearch(
@@ -569,7 +580,30 @@ fun BottomSheetSearch(
 
 
     // 🔴 Build Query Parameters When Filters Change
-    LaunchedEffect(selectedGenreIds, selectedCategories, selectedCountryIds,selectedGenres,tags) {
+    LaunchedEffect(
+        selectedGenreIds,
+        selectedCategories,
+        selectedCountryIds,
+        selectedGenres,
+        tags,
+        selectedActors,
+        selectedActorsIds)
+
+   // LaunchedEffect(Unit)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {
 
 
 
@@ -590,10 +624,12 @@ fun BottomSheetSearch(
         categoriesForApi = selectedCategories.toList()
 
         countriesForApi = selectedCountryIds.joinToString(",")
+        actorsForApi =selectedActorsIds.joinToString (",")
 
         //  homeViewModel.fetchCountries()
         Log.d("search", "ciuntries are" + contryList.data.toString())
         Log.d("search", "tags are" + tagsForApi.toString())
+        Log.d("search", "actors are" + actorsForApi.toString())
 
 
         searchViewModel.updateSearchParams(
@@ -602,7 +638,9 @@ fun BottomSheetSearch(
             tag = tagsForApi,
             category = categoriesForApi,
             //query = searchQuery.ifEmpty { searchQuery1 }
-            query = searchQuery
+            query = searchQuery,
+            persons =actorsForApi
+
 
 
         )
@@ -880,6 +918,22 @@ fun BottomSheetSearch(
                             items(appliedFilters) { filter ->
                                 FilterChip(text = filter, onRemove = {
                                     appliedFilters = appliedFilters - filter
+                                    countriesForApi=""
+
+
+
+
+                                    searchViewModel.updateSearchParams(
+                                        "", "",
+                                        category = emptyList() ,
+                                        countries = "",
+                                        persons = ""
+                                    )
+
+
+
+
+
                                 })
                             }
                         }
@@ -923,10 +977,17 @@ fun BottomSheetSearch(
         // 🔴 END OF SCAFFOLD 🔴
 
         // 🔴 Parent Bottom Sheet for Filter Selection
-        CustomBottomSheet(
+        MainFilterScreen  (
+            modifier = Modifier,
             isVisible = isParentSheetVisible,
-            onDismiss = { isParentSheetVisible = false }
-        ) {
+            onDismiss = { isParentSheetVisible = false },
+
+           // selectedFilterType = selectedFilterType,
+
+        )
+
+
+        {
             Column {
                 Row( modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -958,6 +1019,10 @@ fun BottomSheetSearch(
 
                     )
 
+
+
+
+
                     items(filterOptions) { (filterType, icon) ->
                         FilterListItem(
                             filterType = filterType,
@@ -973,44 +1038,192 @@ fun BottomSheetSearch(
             }
         }
         // 🔴 Child Bottom Sheet for Specific Filter Selection
+          val show = filterViewModel.isShowClearIconVisible.collectAsState()
+          Log.d("Filter","FilterViewModel show value ${show.value}")
 
-        CustomBottomSheet(
+        FilterBottomSheet (
+
+            viewmodel = filterViewModel,
+            modifier = Modifier,
             isVisible = isChildSheetVisible,
-            onDismiss = { isChildSheetVisible = false }
-        ) {
+            onDismiss = { isChildSheetVisible = false },
+
+            title = selectedFilterType?.label.toString(),
+            onRemoveAllClick = {
+
+               // selectedGenreIds.clear()
+                Log.d("Filter","onRemoveClicked")
+                isAllCheckBoxesclear=true
+
+
+
+
+
+            },
+            showIcon = show.value,
+
+
+            onCloseParanetSheetClick = { isChildSheetVisible=false },
+
+
+
+
+            //isParentVisible = isParentSheetVisible
+
+        )
+
+        {
+
             Column {
-                Text(
-                    text = selectedFilterType?.label ?: "",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
+
+
+
+
+
+
+
+
+                }
+
+
+
+
 
                 when (selectedFilterType) {
                     FilterType.GENRE -> {
 
 
+
+
+
+
+
+
+
+
+
+
+
                         if (genres != null) {
+                            val selectedItemIds = remember { mutableSetOf<String>() }
+                            Log.d("Filter","selected genres  ${selectedGenreIds.size}")
+                            Log.d("Filter","selected genres is empty  ${selectedGenreIds.isEmpty()}")
                             GenreSelectionSheet(
+
                                 // viewModel = filterViewModel, // ✅ Pass ViewModel
                                 items = genres,
-                                selectedItemIds = selectedGenreIds,
+                                selectedItemIds = selectedGenreIds.toMutableSet(),
                                 onItemSelected = { genre, isSelected ->
+
+
+                                    //AddGenre
                                     selectedGenreIds = selectedGenreIds.toMutableSet().apply {
-                                        if (isSelected) add(genre.id.toString()) else remove(
-                                            genre.id.toString()
-                                        )
 
-                                        Log.d("gn",selectedGenreIds.toString())
+                                        if (isSelected) {
+                                            add(genre.id.toString())
+                                            Log.d("Filter1","isSelected genres  ${selectedGenreIds.size}")
+                                          //  if(selectedGenreIds.size>=0)
 
-                                       appliedFilters= appliedFilters.toMutableList().apply {
-                                           if (isSelected) add(genre.name.toString()) else remove(
-                                               genre.name.toString())
+                                                filterViewModel.updateIconVisibility(true)
+
+
+
+
+
+
+
+
+                                        } else {
+
+                                            remove(genre.id.toString())
+                                            Log.d("Filter1","isSelected genres  ${selectedGenreIds.size}")
+                                            if(selectedGenreIds.size==1)
+                                            {
+                                                filterViewModel.updateIconVisibility(false)
+
+                                            }
+
+
 
                                         }
+
+
+                                    }
+
+                                    //AplyFilter
+
+                                    appliedFilters = appliedFilters.toMutableList().apply {
+                                        if (isSelected) add(genre.name.toString()) else remove(
+                                            genre.name.toString()
+                                        )
+
                                     }
                                 },
 
-                                onClose = { isChildSheetVisible = false }
+
+
+
+
+
+
+
+
+
+
+                                    //   filterViewModel.updateIconVisibility(true)
+
+
+
+                                           // showRemoveAllCheckBoxesIcon=true
+
+
+
+
+
+
+
+
+
+
+
+
+                                           //filterViewModel.updateIconVisibility(false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                onClose = { isChildSheetVisible = false },
+                               isAllClear = isAllCheckBoxesclear,
+                                onClearAll = isAllCheckBoxesclear,
+                                onClear = {
+
+
+                                    Log.d("Filter","OnClear On Genre Clicked" )
+                                  //  filterViewModel.updateIconVisibility(true)
+                                    showRemoveAllCheckBoxesIcon=true
+
+                                    selectedGenreIds.toMutableSet().clear()
+
+
+
+                                }
+
                             )
                         }
 
@@ -1237,7 +1450,7 @@ fun BottomSheetSearch(
 
 
 
-}
+
 
 @Composable
 private fun ShowSearchMovies(
@@ -2717,7 +2930,7 @@ private fun SearchBox(
                     value = textFieldValue,
                     onValueChange = {
                         viewModel.updateSearchParams(
-                            query = it, tag = "", category = listOf("MOVIE,SERIES,COURSE,CERTIFICATED_COURSE"), countries = ""
+                            query = it, tag = "", category = listOf("MOVIE,SERIES,COURSE,CERTIFICATED_COURSE"), countries = "", persons = ""
                         )
                         viewModel.onSearchTextChange(it)
 

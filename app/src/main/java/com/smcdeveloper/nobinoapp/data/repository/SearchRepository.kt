@@ -70,7 +70,7 @@ class SearchRepository @Inject constructor(val api:SearchApi) : BaseApiResponse2
 
 
 
-    suspend fun fetchMovies(tag: String?,categoty:List<String>?, size: Int,offset: Int,countries:String?,name:String?
+    suspend fun fetchMovies(tag: String?,categoty:List<String>?, size: Int,offset: Int,countries:String?,name:String?,persons:String?
 
 
 
@@ -81,7 +81,9 @@ class SearchRepository @Inject constructor(val api:SearchApi) : BaseApiResponse2
 
             api.getSearchMoviesWithPages(tags = tag,
                 categoris = categoty, size = size, offset = offset, countries = countries,
-                name = name
+                name = name,
+                persons = persons
+
 
 
             )

@@ -23,7 +23,8 @@ class SearchDataSource(
     val countries:String?=null,
     val name: String?=null,
    // var offset :Int=0,
-    var size: Int=10
+    var size: Int=10,
+    var persons:String?=null
 
 
     //  val specialId:Int
@@ -75,7 +76,9 @@ class SearchDataSource(
                 categoty = categoryName,
                 offset = offset,
                 countries = countries,
-                name = name
+                name = name,
+                persons = persons
+
 
 
             )
@@ -129,7 +132,8 @@ class SearchDataSource(
                 categoty = categoryName,
                 offset = offset,
                 countries = countries,
-                name = name
+                name = name,
+                persons = persons
 
             )
             Log.d("PagingSource", "✅ Received ${response.data?.movieInfo!!.size} items from API")
@@ -172,7 +176,8 @@ class SearchDataSource(
                 name = name,
                 size = 20,
                 categoty = categoryName,
-                offset = nextPageNumber
+                offset = nextPageNumber,
+                persons = persons
             ).data
 
 
@@ -262,7 +267,8 @@ class SearchDataSource(
                 name = name,
                 size = limit,
                 categoty = categoryName,
-                offset = offset
+                offset = offset,
+                persons = persons
 
 
 

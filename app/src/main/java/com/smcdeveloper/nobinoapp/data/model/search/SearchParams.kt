@@ -5,7 +5,8 @@ data class SearchParams(
     val query: String = "",
     val tag: String = "",
     val category: List<String> = emptyList(),
-    val countries: String = ""
+    val countries: String = "",
+    val persons:String=""
 
 
 
