@@ -35,7 +35,9 @@ interface SearchApi {
         @Query("tags") tags: String?= null,
         @Query("offset") offset: Int = 0,
         @Query("countries") countries: String? = null,
-        @Query("name") name: String? = null
+        @Query("name") name: String? = null,
+        @Query("persons") persons: String? = null
+
 
     ): Response<MovieResult>
 

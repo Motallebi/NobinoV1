@@ -15,12 +15,8 @@ import androidx.navigation.navDeepLink
 import com.smcdeveloper.nobinoapp.ui.screens.Actors.ActorScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
-import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoBottomSheetSearch
-import com.smcdeveloper.nobinoapp.ui.screens.demo.DemoDialogSearch
-import com.smcdeveloper.nobinoapp.ui.screens.demo.TestSearch
-import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoDemo
+import com.smcdeveloper.nobinoapp.ui.screens.search.BottomSheetSearch
 import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlay
-import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlayScreen
 import com.smcdeveloper.nobinoapp.ui.screens.favorit.FavoriteScreen
 import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
 import com.smcdeveloper.nobinoapp.ui.screens.home.KidsScreen
@@ -41,12 +37,13 @@ import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesDetailPage
 import com.smcdeveloper.nobinoapp.ui.screens.series.SeriesScreen
 import com.smcdeveloper.nobinoapp.ui.screens.splash.SplashScreen
 import com.smcdeveloper.nobinoapp.ui.screens.training.TrainingScreen
+import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewModel) {
 
     NavHost(
         navController = navController,
@@ -88,7 +85,7 @@ fun SetupNavGraph(navController: NavHostController) {
         }
         composable(route = Screen.Profile.route) {
             Log.d("navhost","Profile Screen")
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController = navController, loginViewModel = loginViewModel)
 
 
         }
@@ -238,7 +235,7 @@ fun SetupNavGraph(navController: NavHostController) {
             val categoryId = backStackEntry.arguments?.getInt("categoryName") ?: 1
 
 
-            DemoBottomSheetSearch(navController = navController, tags = tags, categoryName = categoryName, categoryId = categoryId)
+            BottomSheetSearch(navController = navController, tags = tags, categoryName = categoryName, categoryId = categoryId)
 
         }
 
@@ -252,7 +249,7 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
-            DemoBottomSheetSearch(navController = navController, tags = "")
+            BottomSheetSearch(navController = navController, tags = "")
 
         }
 
@@ -330,7 +327,10 @@ fun SetupNavGraph(navController: NavHostController) {
                 refNumber = refNumber,
                 name= backStackEntry.arguments?.getString("name").toString(),
                 username= backStackEntry.arguments?.getString("username").toString(),
-                avatarId =  backStackEntry.arguments?.getInt("avatarId") ?: 1
+                avatarId =  backStackEntry.arguments?.getInt("avatarId") ?: 1,
+                loginViewModel = loginViewModel
+
+
             )
 
 
@@ -405,32 +405,6 @@ fun SetupNavGraph(navController: NavHostController) {
 
 
 
-        /*  composable(route = Screen.Product.route + "{/tags}",
-
-            arguments = listOf(
-                navArgument("tags") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                    nullable = true
-                }
-            )
-        )
-
-        {
-
-            it.arguments!!.getString("tag")?.let { tag ->
-                ProductScreen(
-                    navController = navController,
-                    tag = tag
-                )
-            }
-
-
-
-
-
-        }*/
-
 
         composable(route = Screen.Product.route + "/{tags}/{category}/{categoryName}",
 
@@ -471,11 +445,9 @@ fun SetupNavGraph(navController: NavHostController) {
             val tag = it.arguments?.getString("tags")
             val category = it.arguments?.getString("category")
             val categoryTitle =it.arguments?.getString("categoryName")
-            Log.d("navg","tags is" +tag.toString())
-            Log.d("navg","category is" +category.toString())
-            //Log.d("navg","category is" +tagsList.toString())
 
-            val tag2 = listOf(tag).filterNotNull()
+
+
 
             if (tag != null) {
                 ProductScreen(
@@ -511,7 +483,8 @@ fun SetupNavGraph(navController: NavHostController) {
                 ProductDetailPage(
                     navController = navController,
 
-                    productId = productId
+                    productId = productId,
+                    loginViewModel = loginViewModel
 
 
                 )
@@ -610,48 +583,14 @@ fun SetupNavGraph(navController: NavHostController) {
 
             val videoUrl = it.arguments?.getString("videoUrl").toString()
             val videoUrlDecode = URLDecoder.decode(videoUrl, StandardCharsets.UTF_8.toString())
-            /*VideoPlayScreen(
-                navController = navController,
-                videourl = videoUrlDecode
 
-
-            )*/
             VideoPlay(videoUrl=videoUrlDecode)
 
 
         }
 
 
-        composable(route = Screen.VideoDemoScreen.route + "/{videoUrl}",
 
-
-            arguments = listOf(
-                navArgument("videoUrl")
-                {
-                    type = NavType.StringType
-
-                }
-
-            )
-        )
-
-
-        {
-            val videoUrl = it.arguments?.getString("videoUrl")
-            val videoUrlDecode = URLDecoder.decode(videoUrl, StandardCharsets.UTF_8.toString())
-            if (videoUrl != null) {
-                VideoDemo(
-                    navController = navController,
-                    videUrl = videoUrlDecode
-
-
-                )
-
-
-            }
-
-
-        }
 
 
 
@@ -735,7 +674,7 @@ fun SetupNavGraph(navController: NavHostController) {
             val id = it.arguments?.getString("id")
 
 
-                Log.d("plan","plan id: $id")
+
 
                 SubscriptionConfirmationPage(navController=navController, planid = id.toString())
 

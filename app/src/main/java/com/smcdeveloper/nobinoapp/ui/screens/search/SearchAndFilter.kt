@@ -1,7 +1,6 @@
-package com.smcdeveloper.nobinoapp.ui.screens.demo
+package com.smcdeveloper.nobinoapp.ui.screens.search
 
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,7 +25,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Audiotrack
@@ -84,24 +81,20 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
-import com.smcdeveloper.nobinoapp.ui.component.CustomBottomSheet
+import com.smcdeveloper.nobinoapp.ui.component.FilterBottomSheet
+import com.smcdeveloper.nobinoapp.ui.component.MainFilterScreen
+import com.smcdeveloper.nobinoapp.ui.screens.demo.FilterChip
+import com.smcdeveloper.nobinoapp.ui.screens.demo.FilterListItem
+import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
 import com.smcdeveloper.nobinoapp.ui.screens.product.InfoCard
 import com.smcdeveloper.nobinoapp.ui.screens.product.MovieCard
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterActorsSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterAudioSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterCountriesSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterSubtitleSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.FilterType
-import com.smcdeveloper.nobinoapp.ui.screens.search.GenreSelectionSheet
-import com.smcdeveloper.nobinoapp.ui.screens.search.SearchWidget
-import com.smcdeveloper.nobinoapp.ui.screens.search.YearSelectionSheet
+import com.smcdeveloper.nobinoapp.ui.screens.product.SeriesCard
 import com.smcdeveloper.nobinoapp.ui.theme.searchIndicatorLine
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit2.http.Query
 
 
 val audioOptions = listOf(
@@ -271,7 +264,8 @@ fun PerformSearch( performSearch:Boolean,tags:String="",query: String,
             countries = "",
             category = listOf("SERIES,MOVIES"),
             tag = tags,
-            query = query
+            query = query,
+            persons = ""
 
 
         )
@@ -293,7 +287,7 @@ fun PerformSearch( performSearch:Boolean,tags:String="",query: String,
 
 
 @Composable
-fun DemoBottomSheetSearch(
+fun BottomSheetSearch(
     homeViewModel: HomeViewModel= hiltViewModel(),
     navController: NavHostController,
     filterViewModel: FilterViewModel= hiltViewModel(),
@@ -338,7 +332,13 @@ fun DemoBottomSheetSearch(
 
     var selectedCategories by remember { mutableStateOf(setOf("MOVIE,SERIES")) }
     var selectedCountryIds by remember { mutableStateOf(setOf<String>()) }
-    var selectedGenreIds by remember { mutableStateOf(setOf<String>(tags)) }
+   // var selectedGenreIds =  (mutableSetOf(tags))
+    var selectedGenreIds  by remember { mutableStateOf(setOf<String>()) }
+
+
+
+
+
     val selectedGenres by remember { mutableStateOf(setOf<String>("9999")) } // 🔴 Store full objects for UI
 
 
@@ -391,6 +391,9 @@ fun DemoBottomSheetSearch(
     var shouldFetchGenres by remember { mutableStateOf(true) } // ✅ Boolean flag
     val performSearch by remember { mutableStateOf(false) }
     var firstSearch by remember { mutableStateOf(false) }
+    var isAllCheckBoxesclear by remember { mutableStateOf(false) }
+    var showRemoveAllCheckBoxesIcon by remember { mutableStateOf(false) }
+
 
 
    /* PerformSearch(
@@ -577,7 +580,30 @@ fun DemoBottomSheetSearch(
 
 
     // 🔴 Build Query Parameters When Filters Change
-    LaunchedEffect(selectedGenreIds, selectedCategories, selectedCountryIds,selectedGenres,tags) {
+    LaunchedEffect(
+        selectedGenreIds,
+        selectedCategories,
+        selectedCountryIds,
+        selectedGenres,
+        tags,
+        selectedActors,
+        selectedActorsIds)
+
+   // LaunchedEffect(Unit)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {
 
 
 
@@ -598,10 +624,12 @@ fun DemoBottomSheetSearch(
         categoriesForApi = selectedCategories.toList()
 
         countriesForApi = selectedCountryIds.joinToString(",")
+        actorsForApi =selectedActorsIds.joinToString (",")
 
         //  homeViewModel.fetchCountries()
         Log.d("search", "ciuntries are" + contryList.data.toString())
         Log.d("search", "tags are" + tagsForApi.toString())
+        Log.d("search", "actors are" + actorsForApi.toString())
 
 
         searchViewModel.updateSearchParams(
@@ -610,7 +638,9 @@ fun DemoBottomSheetSearch(
             tag = tagsForApi,
             category = categoriesForApi,
             //query = searchQuery.ifEmpty { searchQuery1 }
-            query = searchQuery
+            query = searchQuery,
+            persons =actorsForApi
+
 
 
         )
@@ -684,7 +714,7 @@ fun DemoBottomSheetSearch(
                 Column (
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Blue)
+                       // .background(Color.Blue)
                         .padding(paddingValues)
                         .padding(horizontal = 8.dp)
 
@@ -888,6 +918,22 @@ fun DemoBottomSheetSearch(
                             items(appliedFilters) { filter ->
                                 FilterChip(text = filter, onRemove = {
                                     appliedFilters = appliedFilters - filter
+                                    countriesForApi=""
+
+
+
+
+                                    searchViewModel.updateSearchParams(
+                                        "", "",
+                                        category = emptyList() ,
+                                        countries = "",
+                                        persons = ""
+                                    )
+
+
+
+
+
                                 })
                             }
                         }
@@ -931,10 +977,17 @@ fun DemoBottomSheetSearch(
         // 🔴 END OF SCAFFOLD 🔴
 
         // 🔴 Parent Bottom Sheet for Filter Selection
-        CustomBottomSheet(
+        MainFilterScreen  (
+            modifier = Modifier,
             isVisible = isParentSheetVisible,
-            onDismiss = { isParentSheetVisible = false }
-        ) {
+            onDismiss = { isParentSheetVisible = false },
+
+           // selectedFilterType = selectedFilterType,
+
+        )
+
+
+        {
             Column {
                 Row( modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -966,6 +1019,10 @@ fun DemoBottomSheetSearch(
 
                     )
 
+
+
+
+
                     items(filterOptions) { (filterType, icon) ->
                         FilterListItem(
                             filterType = filterType,
@@ -981,44 +1038,192 @@ fun DemoBottomSheetSearch(
             }
         }
         // 🔴 Child Bottom Sheet for Specific Filter Selection
+          val show = filterViewModel.isShowClearIconVisible.collectAsState()
+          Log.d("Filter","FilterViewModel show value ${show.value}")
 
-        CustomBottomSheet(
+        FilterBottomSheet (
+
+            viewmodel = filterViewModel,
+            modifier = Modifier,
             isVisible = isChildSheetVisible,
-            onDismiss = { isChildSheetVisible = false }
-        ) {
+            onDismiss = { isChildSheetVisible = false },
+
+            title = selectedFilterType?.label.toString(),
+            onRemoveAllClick = {
+
+               // selectedGenreIds.clear()
+                Log.d("Filter","onRemoveClicked")
+                isAllCheckBoxesclear=true
+
+
+
+
+
+            },
+            showIcon = show.value,
+
+
+            onCloseParanetSheetClick = { isChildSheetVisible=false },
+
+
+
+
+            //isParentVisible = isParentSheetVisible
+
+        )
+
+        {
+
             Column {
-                Text(
-                    text = selectedFilterType?.label ?: "",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
+
+
+
+
+
+
+
+
+                }
+
+
+
+
 
                 when (selectedFilterType) {
                     FilterType.GENRE -> {
 
 
+
+
+
+
+
+
+
+
+
+
+
                         if (genres != null) {
+                            val selectedItemIds = remember { mutableSetOf<String>() }
+                            Log.d("Filter","selected genres  ${selectedGenreIds.size}")
+                            Log.d("Filter","selected genres is empty  ${selectedGenreIds.isEmpty()}")
                             GenreSelectionSheet(
+
                                 // viewModel = filterViewModel, // ✅ Pass ViewModel
                                 items = genres,
-                                selectedItemIds = selectedGenreIds,
+                                selectedItemIds = selectedGenreIds.toMutableSet(),
                                 onItemSelected = { genre, isSelected ->
+
+
+                                    //AddGenre
                                     selectedGenreIds = selectedGenreIds.toMutableSet().apply {
-                                        if (isSelected) add(genre.id.toString()) else remove(
-                                            genre.id.toString()
-                                        )
 
-                                        Log.d("gn",selectedGenreIds.toString())
+                                        if (isSelected) {
+                                            add(genre.id.toString())
+                                            Log.d("Filter1","isSelected genres  ${selectedGenreIds.size}")
+                                          //  if(selectedGenreIds.size>=0)
 
-                                       appliedFilters= appliedFilters.toMutableList().apply {
-                                           if (isSelected) add(genre.name.toString()) else remove(
-                                               genre.name.toString())
+                                                filterViewModel.updateIconVisibility(true)
+
+
+
+
+
+
+
+
+                                        } else {
+
+                                            remove(genre.id.toString())
+                                            Log.d("Filter1","isSelected genres  ${selectedGenreIds.size}")
+                                            if(selectedGenreIds.size==1)
+                                            {
+                                                filterViewModel.updateIconVisibility(false)
+
+                                            }
+
+
 
                                         }
+
+
+                                    }
+
+                                    //AplyFilter
+
+                                    appliedFilters = appliedFilters.toMutableList().apply {
+                                        if (isSelected) add(genre.name.toString()) else remove(
+                                            genre.name.toString()
+                                        )
+
                                     }
                                 },
 
-                                onClose = { isChildSheetVisible = false }
+
+
+
+
+
+
+
+
+
+
+                                    //   filterViewModel.updateIconVisibility(true)
+
+
+
+                                           // showRemoveAllCheckBoxesIcon=true
+
+
+
+
+
+
+
+
+
+
+
+
+                                           //filterViewModel.updateIconVisibility(false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                onClose = { isChildSheetVisible = false },
+                               isAllClear = isAllCheckBoxesclear,
+                                onClearAll = isAllCheckBoxesclear,
+                                onClear = {
+
+
+                                    Log.d("Filter","OnClear On Genre Clicked" )
+                                  //  filterViewModel.updateIconVisibility(true)
+                                    showRemoveAllCheckBoxesIcon=true
+
+                                    selectedGenreIds.toMutableSet().clear()
+
+
+
+                                }
+
                             )
                         }
 
@@ -1245,7 +1450,7 @@ fun DemoBottomSheetSearch(
 
 
 
-}
+
 
 @Composable
 private fun ShowSearchMovies(
@@ -1254,7 +1459,8 @@ private fun ShowSearchMovies(
     navController: NavHostController,
     onScrollCallbackReady: (suspend (Int) -> Unit) -> Unit,
     searchQuery: String,
-    gridState: LazyGridState
+    gridState: LazyGridState,
+  //  onMovieClick: (MovieResult.DataMovie.Item) -> Unit ,
 
 )
 
@@ -1335,23 +1541,118 @@ LaunchedEffect(Unit) {
              LazyVerticalGrid(
                  state = gridstate,
                  columns = GridCells.Fixed(2),
-                 modifier = Modifier.fillMaxSize(),
-                 contentPadding = PaddingValues(4.dp)
+                 modifier = Modifier.fillMaxSize()
+                     .padding(16.dp)
+                 ,
+                 contentPadding = PaddingValues(4.dp),
+                 verticalArrangement = Arrangement.spacedBy(32.dp),
+                 horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+
+
              )
 
              {
                  items(movies.itemCount) { index ->
 
+                     when(movies[index]?.category)
+                     {
 
-                     Log.d("loadingsate", "REFRESH ELSE..${movies.itemCount}")
+                         "MOVIES"-> {
+                             movies[index]?.let {
+                                 MovieCard(
+                                     movie = it,
+                                     onClick = { movies[index]?.let {  movie->   navController.navigate(Screen.ProductDetails.withArgs("${movie.id}")) }
+
+                                         Log.d("category clicked..",movies.get(index)?.name.toString())
+
+
+
+                                     }
+                                 )
+                                 Log.d("category","Movies")
+
+                             }
+                         }
+
+
+                         "SERIES" -> {
+                             movies[index]?.let {
+                                 SeriesCard(
+                                     info = it,
+                                     onClick = { movies[index]?.let {
+                                         series -> navController.navigate(Screen.SeriesDetailScreen.withArgs("${series.id}"))
+
+
+
+                                     } })
+                                 Log.d("category","Movies")
+
+
+                             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                     }
+                     else ->
+                     {
+
+
+
+                         movies[index]?.let {
+                             MovieCard(
+                                 movie = it,
+                                 onClick = { movies[index]?.let {
+                                         movie->   navController.navigate(Screen.ProductDetails.withArgs("${movie.id}"))
+
+
+                                 } }
+                             )
+                             Log.d("category","others")
+
+                         }
+
+
+
+
+
+
+
+
+                     }
+
+
+
+
+
+
+                     }
+
+
+
+
+
+                  /*   Log.d("loadingsate", "REFRESH ELSE..${movies.itemCount}")
 
 
                      val movie = movies[index]
                      if (movie != null) {
-                         /* MovieItem(
+                         *//* MovieItem(
                                               movieTitle = movie.name.toString(),
                                               rating = movie.popularityRate.toString()
-                                          )*/
+                                          )*//*
 
                          MovieCard(movie = movie) {
 
@@ -1364,7 +1665,7 @@ LaunchedEffect(Unit) {
 
 
                          }
-                         Text("$index")
+                         Text("$index")*/
 
                         // item { Text("000000000000") }
 
@@ -1375,7 +1676,7 @@ LaunchedEffect(Unit) {
 
 
 
-
+/*
                  if (movies.loadState.append is LoadState.Loading) {
                      Log.d("loadingsate", "append  grid..")
 
@@ -1389,7 +1690,7 @@ LaunchedEffect(Unit) {
                              CircularProgressIndicator()
                          }
                      }
-                 }
+                 }*/
 
 
 
@@ -1411,24 +1712,6 @@ LaunchedEffect(Unit) {
 
 
 
-    when(appendstate)
-    {
-        is LoadState.Loading->{
-
-            Log.d("loadingsate","APPEND")
-
-        }
-
-        is LoadState.Error->{}
-
-        else ->{}
-
-
-
-
-
-
-    }
 
 
 
@@ -1543,7 +1826,7 @@ LaunchedEffect(Unit) {
                         }
                     }*//*
     }*/
-}
+
 
 
 @Composable
@@ -1552,7 +1835,8 @@ LaunchedEffect(Unit) {
         modifier: Modifier = Modifier,
         onMovieClick: (MovieResult.DataMovie.Item) -> Unit = {}, // Handles movie card clicks
         onInfoClick: (MovieResult.DataMovie.Item) -> Unit = {} // Handles informational card clicks
-    ) {
+    )
+    {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2), // Adjust to your desired grid layout
             modifier = modifier.fillMaxSize(),
@@ -2646,7 +2930,7 @@ private fun SearchBox(
                     value = textFieldValue,
                     onValueChange = {
                         viewModel.updateSearchParams(
-                            query = it, tag = "", category = listOf("MOVIE,SERIES,COURSE,CERTIFICATED_COURSE"), countries = ""
+                            query = it, tag = "", category = listOf("MOVIE,SERIES,COURSE,CERTIFICATED_COURSE"), countries = "", persons = ""
                         )
                         viewModel.onSearchTextChange(it)
 

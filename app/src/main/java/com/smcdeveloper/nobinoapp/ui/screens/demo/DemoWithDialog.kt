@@ -70,7 +70,9 @@ fun DemoDialogSearch(
     viewModel: FilterViewModel = hiltViewModel(), navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel()
 
-) {
+)
+
+{
     val coroutineScope = rememberCoroutineScope()
 
     var searchQuery by remember { mutableStateOf("") } // 🔴 User input

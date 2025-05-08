@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -25,7 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
-import com.smcdeveloper.nobinoapp.ui.component.CustomBottomSheet
+import com.smcdeveloper.nobinoapp.ui.component.ParentFilterBottomSheet
+
 import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
 
 
@@ -40,30 +40,37 @@ fun FilterCountriesSelectionSheet(
     var searchQuery by remember { mutableStateOf("") }
     val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
-    CustomBottomSheet(isVisible = true, onDismiss = onClose) { // 🔴 Use bottom sheet
+    ParentFilterBottomSheet( isVisible = true, onDismiss = onClose, modifier = Modifier) { // 🔴 Use bottom sheet
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxSize(
 
                 )
-                .padding(16.dp)
+             //   .padding(16.dp)
         ) {
             // 🔴 Header with Close Button
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                // Text(text = title, style = MaterialTheme.typography.titleLarge)
+            )
+
+
+
+            {
                 IconButton(onClick = onClose) { // 🔴 Close bottom sheet
                     Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
                 }
             }
 
+                // Text(text = title, style = MaterialTheme.typography.titleLarge)
+
+
             Spacer(modifier = Modifier.height(8.dp))
 
             // 🔴 Search Bar with Debouncing
             TextField(
+
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 placeholder = { Text("جستجو...") }, // "Search..."

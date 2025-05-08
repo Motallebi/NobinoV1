@@ -80,13 +80,15 @@ import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMediumLight
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
+import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
 
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
     profileViewModel: ProfileViewModel= hiltViewModel(),
-    dataStore: DataStoreViewModel= hiltViewModel()
+    dataStore: DataStoreViewModel= hiltViewModel(),
+    loginViewModel: LoginViewModel
 
 
 
@@ -105,7 +107,7 @@ fun ProfileScreen(
 {
 
     //profileViewModel.updateState(ProfileScreenState.LOGIN_STATE)
-    ProfilePage(navController = navController, dataStore = dataStore, viewModel = profileViewModel)
+    ProfilePage(navController = navController, dataStore = dataStore, viewModel = profileViewModel, loginViewModel =loginViewModel )
 
 
 
@@ -238,7 +240,8 @@ fun ProfilePagePreview() {
 @Composable
 fun ProfilePage(navController: NavHostController,
          viewModel: ProfileViewModel,
-          dataStore:DataStoreViewModel
+          dataStore:DataStoreViewModel,
+          loginViewModel: LoginViewModel
 
 
 
@@ -267,15 +270,15 @@ fun ProfilePage(navController: NavHostController,
 
 
     {
-        ProfileSection(navController, viewModel =viewModel)
+        ProfileSection(navController, viewModel =viewModel, loginViewModel = loginViewModel)
         HorizontalDivider(color = Color.Gray, thickness = 1.dp)
-        ProfileScreen1(navController = navController,dataStore=dataStore)
+        ProfileScreen1(navController = navController,dataStore=dataStore, loginViewModel = loginViewModel)
     }
 }
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel) {
+fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel,loginViewModel: LoginViewModel) {
 
     var enableAddNewProfile = mutableStateOf(false)
 
@@ -289,6 +292,7 @@ fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel)
 
      val profile by viewModel.activeUserProfile.collectAsState()
       var profileData: List<ActiveUserProfile> = emptyList()
+    val loginstate = loginViewModel.isUserLogin.collectAsState()
 
 
     when(profile)
@@ -340,68 +344,61 @@ fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel)
         // Existing Profiles
         Row(verticalAlignment = Alignment.CenterVertically) {
 
-
-            if(profileData.size==3)
-
+            if (loginstate.value)
             {
 
-
-                ProfileAvatar(name = "mainAccount", image = "")
-                {
+                if (profileData.size == 3) {
 
 
+                    ProfileAvatar(name = "mainAccount", image = "")
+                    {
+
+
+                    }
+
+
+
+                    ProfileAvatar(name = "18+ years", image = profileData[1].image)
+                    {
+
+
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+
+                    ProfileAvatar(name = "3-10 years", image = profileData[2].image)
+                    {}
+
+
+                } else if (profileData.size == 2) {
+                    enableAddNewProfile.value = true
+
+                    ProfileAvatar(name = "mainAccount", image = profileData[0].image ?: "test")
+                    {
+
+
+                    }
+
+
+
+                    ProfileAvatar(name = "18+ years", image = profileData[1].image)
+                    {
+
+
+                    }
+
+
+                } else {
+                    enableAddNewProfile.value = true
+                    ProfileAvatar(name = "mainAccount", image = "")
+                    {
+
+
+                    }
                 }
 
-
-
-                ProfileAvatar(name = "18+ years", image = profileData[1].image)
-                {
-
-
-
-
-
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-
-                ProfileAvatar(name = "3-10 years",image = profileData[2].image)
-                {}
-
-
-
-            }
-
-            else if (profileData.size==2)
-            {
-                enableAddNewProfile.value=true
-
-                ProfileAvatar(name = "mainAccount", image = profileData[0].image)
-                {
-
-
-                }
-
-
-
-                ProfileAvatar(name = "18+ years", image = profileData[1].image)
-                {}
-
-
-
-            }
-
-            else {
-                enableAddNewProfile.value = true
-                ProfileAvatar(name = "mainAccount", image = "")
-                {
-
-
-                }
-            }
-
-
+        }
 
 
         }
@@ -449,7 +446,7 @@ fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel)
 }
 
 @Composable
-fun ProfileAvatar(name: String,image:String,onProfileClick:()->Unit) {
+fun ProfileAvatar(name: String,image:String?,onProfileClick:()->Unit) {
 
 
 
@@ -496,7 +493,7 @@ fun ProfileAvatar(name: String,image:String,onProfileClick:()->Unit) {
 
 
             // Placeholder for Avatar Image
-            if(image.isBlank())
+            if(image!!.isBlank() || image.isEmpty())
 
 
             Image(
@@ -705,7 +702,7 @@ fun ProfileItem1(title: String, onClick: () -> Unit) {
 
 
 @Composable
-fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel) {
+fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel,loginViewModel: LoginViewModel) {
     val context = LocalContext.current
 
     val profileItems = mapOf(
@@ -920,6 +917,8 @@ fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel) {
                     dataStore.saveUserPhone("")
                     dataStore.saveUserLastName("")
                     dataStore.saveUserLoginStatus(false)
+                    loginViewModel.updateLoging(false)
+
 
 
                 }

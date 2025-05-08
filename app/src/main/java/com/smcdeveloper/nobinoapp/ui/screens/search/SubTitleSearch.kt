@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smcdeveloper.nobinoapp.data.model.AudioSubtitle
 import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
-import com.smcdeveloper.nobinoapp.ui.screens.demo.audioOptions
 
 
 @Composable

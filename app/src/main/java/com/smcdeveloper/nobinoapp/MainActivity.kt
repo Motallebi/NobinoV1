@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.LayoutDirection
@@ -43,22 +44,40 @@ import com.smcdeveloper.nobinoapp.util.Constants.USER_LANGUAGE
 import com.smcdeveloper.nobinoapp.util.LocalelUtils
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.BeyondBoundsLayout
+import androidx.compose.ui.text.TextStyle
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.util.AppConfig
+import com.smcdeveloper.nobinoapp.util.ConnectivityObserver
 import com.smcdeveloper.nobinoapp.util.DigitHelper
+import com.smcdeveloper.nobinoapp.util.NetworkConnectivityObserver
+import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
+    private lateinit var connectivityObserver: ConnectivityObserver
 
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        connectivityObserver = NetworkConnectivityObserver(applicationContext)
+
 
 
 
@@ -92,6 +111,12 @@ class MainActivity : ComponentActivity() {
 
             AppTheme {
 
+                val status by connectivityObserver.observe().collectAsState(
+                    initial = ConnectivityObserver.Status.Available
+                )
+                val loginViewModel:LoginViewModel= hiltViewModel()
+
+                var showInternetDialoge by remember { mutableStateOf(false) }
                 AppConfig()
 
 
@@ -101,6 +126,7 @@ class MainActivity : ComponentActivity() {
                 {
 
                     Scaffold(
+
 
                        // contentColor = Color.Red,
                        // containerColor = Color.Green,
@@ -179,6 +205,109 @@ class MainActivity : ComponentActivity() {
 
                        content =  {it->
 
+
+                           when(status)
+                           {
+                               ConnectivityObserver.Status.Available->{
+                                   showInternetDialoge=false
+                                   Log.d("connect","Connection Status: ${ConnectivityObserver.Status.Available}")
+
+
+                               }
+                               ConnectivityObserver.Status.Unavailable->{
+                                   Log.d("connect","Connection Status: ${ConnectivityObserver.Status.Unavailable}")
+
+                                   Box(modifier = Modifier.fillMaxSize()
+                                       .background(Color.Red),
+                                       contentAlignment = Alignment.Center
+                                   )
+                                   {
+                                       Text("No Internet Connection.... ",
+                                           style = MaterialTheme.typography.nobinoLarge
+
+
+                                           )
+
+
+
+                                   }
+
+
+
+
+                               }
+
+
+
+
+
+
+                               else -> {
+                                   showInternetDialoge=true
+
+
+                                       AlertDialog(
+                                           containerColor =Color.White,
+                                           onDismissRequest = { showInternetDialoge = false },
+                                           title = { Text("No InterNet") },
+                                           text = { Text("Are you sure you want to exit?") },
+                                           confirmButton = {
+                                               TextButton(
+                                                   onClick = {
+                                                       showInternetDialoge = false
+                                                       // Exit the app by finishing the activity
+                                                      this.finish()
+                                                   }
+                                               ) {
+                                                   Text("Exit")
+                                               }
+                                           },
+                                           dismissButton = {
+                                               TextButton(onClick ={showInternetDialoge=false}) {
+
+                                                   Text("Cancel")
+                                                   Log.d("connect","dialog Status: $showInternetDialoge")
+
+                                               }
+                                           }
+                                       )
+
+
+
+
+
+
+
+
+
+
+
+
+                                   Box(modifier = Modifier.fillMaxSize()
+                                       .background(Color.Red),
+                                       contentAlignment = Alignment.Center
+                                   )
+                                   {
+                                       Text("No Internet Connection.... ",
+                                           style = MaterialTheme.typography.nobinoLarge
+
+
+                                       )
+
+
+
+                                   }
+
+
+
+                               }
+                           }
+
+
+
+
+
+
                            Box( modifier = Modifier
                                .fillMaxSize()
 
@@ -193,7 +322,7 @@ class MainActivity : ComponentActivity() {
 
 
                                {
-                                   SetupNavGraph(navController)
+                                   SetupNavGraph(navController,loginViewModel)
                                  //  ShowContent1()
                                     // ShowLAzy(navController)
                                //ShowItems(navController)
@@ -256,7 +385,7 @@ fun ShowItems(navController:NavHostController)
 
 
     ) {
-        SetupNavGraph(navController = navController)
+      //  SetupNavGraph(navController = navController, loginViewModel = )
 
     }
 
@@ -305,7 +434,7 @@ fun ShowLAzy(navController:NavHostController)
 
 
             item {
-                SetupNavGraph(navController = navController)
+               // SetupNavGraph(navController = navController)
 
 
 

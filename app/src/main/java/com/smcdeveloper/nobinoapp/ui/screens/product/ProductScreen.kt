@@ -43,6 +43,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.navigation.BottomNavigationBar
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.component.LayeredImageBackgroundCard
+import com.smcdeveloper.nobinoapp.ui.component.SeriesCardWithAnimation
 import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoTop
 import com.smcdeveloper.nobinoapp.ui.theme.backgroundDark
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
@@ -53,7 +54,6 @@ import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 fun ProductScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel(),
-  //  tag1:List<String>,
     tag:String,
     categoryName:String,
     categoryTitle:String
@@ -71,8 +71,7 @@ fun ProductScreen(
 
 
 {
-    Log.d("ProductScreen","tag is $tag" )
-    Log.d("ProductScreen","category is $categoryTitle" )
+
 
 
     Product(navController,viewModel,tag,categoryName,categoryTitle)
@@ -133,7 +132,7 @@ fun Product(navController: NavHostController,
         //  viewModel.getProductsBySpecialTag(tag)
         viewModel.setCategoryId(tag)
 
-        Log.d("NobinoApp","ProductScreenIslunched..")
+
 
 
 
@@ -144,13 +143,7 @@ fun Product(navController: NavHostController,
 
     val products = viewModel.getMoviesByCategory(tag=tag,categoryName=categoryName, countries = "", name = "", size = 20).collectAsLazyPagingItems()
 
-   // products.loadState.mediator
 
-
-
-  //  val movies = viewModel.getMoviesByCategory(tag).collectAsLazyPagingItems()
-   // val lazyPagingItems  = viewModel.moviesFlow.collectAsLazyPagingItems()
-   // val items= lazyPagingItems<MovieResult.DataMovie.Item>()
 
 
 
@@ -248,7 +241,7 @@ fun Product(navController: NavHostController,
                 val movieId= movie.id
                 Log.d("category", "Clicked movie: $movieId")
 
-                     if(movie.category.toString() == "SERIES")
+                     if(movie.category.toString() == "SERIES" )
                      {
                          Log.d("Catis","cat is .... ${movie.category.toString()}")
 
@@ -257,9 +250,11 @@ fun Product(navController: NavHostController,
 
                          navController.navigate(Screen.SeriesDetailScreen.withArgs("$movieId"))
                      }
-                     else
+                     else if(movie.category.toString() == "MOVIE")
                      {
+                         Log.d("Catis","cat is .... MOVIE Or Other")
                          Log.d("Catis","cat is .... ${movie.category.toString()}")
+                         Log.d("Catis","cat is .... MovieId$movieId")
                          navController.navigate(Screen.ProductDetails.withArgs("$movieId"))
 
 
@@ -490,8 +485,15 @@ fun DynamicMoviesGrid(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2), // Adjust to your desired grid layout
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp)
+        modifier = modifier.fillMaxSize()
+            .padding(16.dp)
+        ,
+        contentPadding = PaddingValues(16.dp),
+
+        verticalArrangement = Arrangement.spacedBy(32.dp),
+       horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+
     )
     {
         items(
@@ -521,8 +523,8 @@ fun DynamicMoviesGrid(
                 "SERIES" -> {
                 products[index]?.let {
                     SeriesCard(
-                        info = it)
-                       // onClick = { products[index]?.let { movie -> onMovieClick(movie) } })
+                        info = it,
+                        onClick = { products[index]?.let { movie -> onMovieClick(movie) } })
                     Log.d("category","Movies")
                     Log.d("category","Movies")
 
@@ -570,11 +572,12 @@ fun MovieCard(movie: MovieResult.DataMovie.Item, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .width(100.dp)
-            .height(250.dp)
-            .padding(8.dp)
+            .height(200.dp)
+           // .padding(8.dp)
            .clip(RoundedCornerShape(15.dp))
-            //.background(Color.Red, shape = MaterialTheme.shapes.medium)
+           // .background(Color.Red, shape = MaterialTheme.shapes.medium)
             .clickable { onClick() }
+
             //.fillMaxWidth()
     )
     {
@@ -587,7 +590,7 @@ fun MovieCard(movie: MovieResult.DataMovie.Item, onClick: () -> Unit) {
                 .fillMaxSize()
                // .aspectRatio(1f) // Ensures square aspect ratio for images
                 .clip(RoundedCornerShape(15.dp)),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.FillBounds
         )
     //    Spacer(modifier = Modifier.height(8.dp))
 
@@ -719,10 +722,17 @@ fun InfoCard(info: MovieResult.DataMovie.Item, onClick: () -> Unit) {
 }
 
 @Composable
-fun SeriesCard(info: MovieResult.DataMovie.Item)
+fun SeriesCard(info: MovieResult.DataMovie.Item,onClick: () -> Unit)
 {
 
-    LayeredImageBackgroundCard(info)
+ //   LayeredImageBackgroundCard(info)
+    SeriesCardWithAnimation(info)
+    {
+        onClick()
+
+
+
+    }
 
 
 

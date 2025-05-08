@@ -38,6 +38,7 @@ import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
+import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.component.HtmlText
@@ -205,7 +206,7 @@ fun SeriesDetailPage(
 
 
 
-                        ShowProductDetailWithTabs(
+                        ShowSeriesProductDetailWithTabs(
                             productTitle = productData.name,
                             productEnglishTitle = productData.translatedName,
                             productImage = productData.images.firstOrNull()?.src.orEmpty(),
@@ -226,7 +227,8 @@ fun SeriesDetailPage(
 
                             productDetailsViewModel=productDetailsViewModel,
                             productId=productId,
-                            sessions = sessions
+                            sessions = sessions,
+                            tags =productData.tags
 
                         )
                     }
@@ -237,7 +239,7 @@ fun SeriesDetailPage(
 }
 
 @Composable
-fun ShowProductDetailWithTabs(
+fun ShowSeriesProductDetailWithTabs(
     productTitle: String,
     productEnglishTitle: String,
     productImage: String,
@@ -252,7 +254,8 @@ fun ShowProductDetailWithTabs(
 
     productDetailsViewModel: ProductDetailsViewModel,
     productId:Int,
-    sessions: List<MovieResult.DataMovie.Item>
+    sessions: List<MovieResult.DataMovie.Item>,
+    tags: List<ProductModel.MovieInfo.Tag>
 
 
 
@@ -272,7 +275,7 @@ fun ShowProductDetailWithTabs(
     )  {
 
         item {
-            ProductBanner(
+            SeriesProductBanner(
                 productImage = productImage,
                 productTitle = productTitle,
                 productEnglishTitle = productEnglishTitle,
@@ -375,7 +378,7 @@ fun ShowProductDetailWithTabs(
 
 
 @Composable
-fun ProductBanner(
+fun SeriesProductBanner(
     productImage: String,
     productTitle: String,
     productEnglishTitle: String,

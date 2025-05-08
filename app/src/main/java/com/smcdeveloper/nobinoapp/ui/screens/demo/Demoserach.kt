@@ -58,6 +58,7 @@ import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.ui.screens.search.FilterType
 import com.smcdeveloper.nobinoapp.ui.screens.search.ParentModalContent
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoMediumCheckBox
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 import kotlinx.coroutines.launch
 
@@ -92,6 +93,7 @@ fun BasicSearchScreen(viewModel: FilterViewModel, navHostController: NavHostCont
     var isChildVisible by remember { mutableStateOf(false) }
     var selectedFilterType by remember { mutableStateOf<FilterType?>(null) }
     var searchQuery by remember { mutableStateOf("") } // 🔴 Search input
+    var AllCheckBoxesClear by remember { mutableStateOf(false) } // 🔴 Search input
 
 
 
@@ -264,9 +266,12 @@ fun FilterSelectionModal(
     items: List<String>, // 🔴 List of filter options from the server
     selectedItems: Set<String>, // 🔴 Set of selected items
     onItemSelected: (String, Boolean) -> Unit, // 🔴 Selection callback
-    onClose: () -> Unit // 🔴 Close modal callback
+    onClose: () -> Unit, // 🔴 Close modal callback
+    isAllClear:Boolean=false
 ) {
     var searchQuery by remember { mutableStateOf("") }
+
+
 
     // 🔴 Filter the items based on search input
     val filteredItems = items.filter { it.contains(searchQuery, ignoreCase = true) }
@@ -310,9 +315,10 @@ fun FilterSelectionModal(
                     rowItems.forEach { item ->
                         SelectionCheckboxItem(
                             text = item,
-                            isSelected = item in selectedItems,
+                            isSelected =    item in selectedItems,
                             onSelected = { isSelected -> onItemSelected(item, isSelected) },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                           // onClearAll = {isAllClear}
                         )
                     }
                 }
@@ -329,8 +335,11 @@ fun FilterSelectionModal(
 fun SelectionCheckboxItem(
     text: String,
     isSelected: Boolean,
+   // isCleared:Boolean,
     onSelected: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+  //  onClearAll:()->Boolean= { false }
+
 ) {
     Row(
         modifier = modifier
@@ -339,7 +348,7 @@ fun SelectionCheckboxItem(
         horizontalArrangement = Arrangement.Start
     ) {
         Checkbox(
-            checked = isSelected,
+            checked =isSelected,
             onCheckedChange = { onSelected(it) },
             colors = CheckboxDefaults.colors(
                 checkedColor = Color.Red, // 🔴 Turns red when selected
@@ -349,7 +358,9 @@ fun SelectionCheckboxItem(
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
-            color = if (isSelected) Color.Red else MaterialTheme.colorScheme.onSurface
+            color = if (isSelected) Color.Red else MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.nobinoMediumCheckBox
+
         )
     }
 }

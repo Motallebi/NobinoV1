@@ -361,7 +361,7 @@ fun CustomSlider(
 
 
                         contentDescription = "Image",
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.FillBounds,
                         // placeholder = painterResource(id = R.drawable.img),
                         modifier = modifier.height(imageHeight)
 //                            .alpha(if (pagerState.currentPage == page) 1f else 0.5f)

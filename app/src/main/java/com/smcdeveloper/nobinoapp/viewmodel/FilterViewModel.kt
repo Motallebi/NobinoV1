@@ -21,6 +21,33 @@ import javax.inject.Inject
 @HiltViewModel
 class FilterViewModel @Inject constructor(private val filterRepository: FilterRepository) :
     ViewModel() {
+
+    private val _isShowClearIconVisible = MutableStateFlow<Boolean>(false)
+    val isShowClearIconVisible : StateFlow<Boolean> = _isShowClearIconVisible.asStateFlow()
+
+    fun updateIconVisibility(showIcon:Boolean)
+    {
+
+        _isShowClearIconVisible.value=showIcon
+        //  Log.d("log","viewModel login value is"+_isLoging.value)
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     private val _actors = MutableStateFlow<NetworkResult<List<PersonInfo>>>(NetworkResult.Loading())
     val actors: StateFlow<NetworkResult<List<PersonInfo>>> get() = _actors.asStateFlow()
 

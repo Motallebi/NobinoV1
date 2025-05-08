@@ -1,7 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.product
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Icon
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.TextView
@@ -29,13 +28,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -66,7 +60,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -82,6 +75,7 @@ import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.BookMarKRequest
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
+import com.smcdeveloper.nobinoapp.data.model.prducts.ProductTag
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
@@ -90,8 +84,8 @@ import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.util.DigitHelper
+import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
-import kotlinx.coroutines.flow.collectLatest
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -100,7 +94,8 @@ import java.nio.charset.StandardCharsets
 fun ProductDetailPage(
     navController: NavHostController,
     productDetailsViewModel: ProductDetailsViewModel = hiltViewModel(),
-    productId: Int
+    productId: Int,
+    loginViewModel: LoginViewModel
 )
 {
 
@@ -134,6 +129,8 @@ fun ProductDetailPage(
     val products by productDetailsViewModel.product.collectAsState()
     val relatedMovies by productDetailsViewModel.relatedMovies.collectAsState()
     val bookmarked by productDetailsViewModel.isBookmarked.collectAsState()
+    val isUserLogedIn = loginViewModel.isUserLogin.collectAsState()
+
 
     LaunchedEffect(selectedTabIndex) {
         if (selectedTabIndex == 1) {
@@ -215,7 +212,7 @@ fun ProductDetailPage(
                         is NetworkResult.Success -> {
                             val productData = (products as NetworkResult.Success<ProductModel>).data?.data
                             productData?.let { product ->
-                                ShowProductDetailWithTabs(
+                                ShowOtherProductDetailWithTabs(
                                     productTitle = product.name,
                                     productEnglishTitle = product.translatedName,
                                     productImage = product.images.firstOrNull()?.src.orEmpty(),
@@ -229,7 +226,13 @@ fun ProductDetailPage(
                                     product = product, // Pass the entire ProductModel object
                                     productId = productId,
                                     viewModel = productDetailsViewModel,
-                                    bookmark = bookmarked
+                                    bookmark = bookmarked,
+                                    tags =  product.tags,
+                                    isUserLogedIn=isUserLogedIn.value
+
+
+
+
 
 
                                 )
@@ -323,7 +326,7 @@ fun ProductDetailPage(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowProductDetailWithTabs(
+fun ShowOtherProductDetailWithTabs(
     productTitle: String,
     productEnglishTitle: String,
     productImage: String,
@@ -337,7 +340,9 @@ fun ShowProductDetailWithTabs(
     product: ProductModel.MovieInfo,
     viewModel: ProductDetailsViewModel,
     productId:Int,
-    bookmark: Boolean
+    bookmark: Boolean,
+    tags: List<ProductModel.MovieInfo.Tag>,
+    isUserLogedIn:Boolean
 
 
 )
@@ -363,7 +368,10 @@ fun ShowProductDetailWithTabs(
             navController = navController,
             viewModel =viewModel,
             productId = productId,
-            bookmark = bookmark
+            bookmark = bookmark,
+            tags =tags,
+            isUserLogedIn=isUserLogedIn
+
 
 
 
@@ -889,7 +897,7 @@ fun MovieInfoItem(icon: ImageVector?, text: String,showSpacer:Boolean=true) {
 
 
 @Composable
-fun CategoryChip(text: String) {
+fun CategoryChip(text: String="") {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp)) // Rounded shape
@@ -909,13 +917,13 @@ fun CategoryChip(text: String) {
 
 
 @Composable
-fun CategoryChipsRow() {
+fun CategoryChipsRow(title1:String="",title2:String="") {
     Row(
         modifier = Modifier.padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        CategoryChip("جنایی") // Crime
-        CategoryChip("اکشن") // Action
+        CategoryChip(title1) // Crime
+        CategoryChip(title2) // Action
     }
 }
 
@@ -933,7 +941,10 @@ fun ProductBanner(
     viewModel: ProductDetailsViewModel,
   //  episode: MovieResult.DataMovie.Item
     productId:Int,
-    bookmark: Boolean
+    bookmark: Boolean,
+    tags: List<ProductModel.MovieInfo.Tag>,
+    isUserLogedIn:Boolean
+
 
 
 )
@@ -971,17 +982,9 @@ fun ProductBanner(
         )
 
 
-
-
-
-
-
-
-
-
         {
 
-            FloatingActionButtons(navController,viewModel,productId,bookmark)
+            FloatingActionButtons(navController, viewModel, productId, bookmark,isUserLogedIn)
 
 
 
@@ -1012,7 +1015,7 @@ fun ProductBanner(
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top=20.dp)
+                modifier = Modifier.padding(top = 20.dp)
 
             )
 
@@ -1021,11 +1024,24 @@ fun ProductBanner(
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-               modifier = Modifier.padding(top=10.dp)
+                modifier = Modifier.padding(top = 10.dp)
             )
 
 
-            CategoryChipsRow()
+          val productTag= tags.filter {
+                !it.invisible
+
+
+            }
+
+
+
+
+             if(productTag.isNotEmpty())
+                 if(productTag.size>=2 )
+              CategoryChipsRow(productTag[0].name,productTag[1].name)
+
+                // CategoryChipsRow(productTag[0].name,"")
 
 
 
@@ -1037,7 +1053,7 @@ fun ProductBanner(
             Button(
               //  modifier = Modifier.width(150.dp),
                 onClick = {
-                    if (isVideoAvailable && isUserLogin) {
+                    if ((isVideoAvailable && isUserLogin) || isUserLogedIn) {
                         val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
                         Log.d("ProductBanner", "Navigating to video player with URL: $encodedUrl")
                         navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
@@ -1068,7 +1084,7 @@ fun ProductBanner(
 
 
 
-                    contentColor = if (isVideoAvailable && isUserLogin) Color.Red else Color.Gray,
+                    contentColor = if ((isVideoAvailable && isUserLogin) || isUserLogedIn) Color.Red else Color.Gray,
                     containerColor = Color.Red
 
 
@@ -1087,7 +1103,7 @@ fun ProductBanner(
                 )
 
                 Text(
-                    text = if (isVideoAvailable && isUserLogin) stringResource(R.string.PlayMovie) else  stringResource(R.string.LoginFirst),
+                    text = if ((isVideoAvailable && isUserLogin) || isUserLogedIn) stringResource(R.string.PlayMovie) else  stringResource(R.string.LoginFirst),
                    style = MaterialTheme.typography.nobinoLarge
                 )
             }
@@ -1117,7 +1133,7 @@ fun ProductBanner(
 
 
 @Composable
-fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDetailsViewModel,productId: Int,bookmark:Boolean) {
+fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDetailsViewModel,productId: Int,bookmark:Boolean,isUserLogedIn: Boolean) {
 
 
 
@@ -1194,41 +1210,41 @@ fun FloatingActionButtons(navController: NavHostController,viewModel: ProductDet
                         )
                     }
 
-                    else
-                    {
+                    else {
+                        if (isUserLogedIn) {
 
-                        viewModel.saveBookMark(
-                            auth = "Bearer $USER_TOKEN",
+                            viewModel.saveBookMark(
+                                auth = "Bearer $USER_TOKEN",
 
-                            bookmark =   BookMarKRequest(
-
-
-                                productId =productId ,
-                                type="BOOKMARK"
+                                bookmark = BookMarKRequest(
 
 
+                                    productId = productId,
+                                    type = "BOOKMARK"
+
+
+                                )
 
 
                             )
 
 
+                        }
+
+                        else{
+
+                            navController.navigate(Screen.SignUp.route)
 
 
 
 
-                        )
 
 
 
-
-
-
+                        }
 
 
                     }
-
-
-
 
 
                     /* Handle bookmark action */

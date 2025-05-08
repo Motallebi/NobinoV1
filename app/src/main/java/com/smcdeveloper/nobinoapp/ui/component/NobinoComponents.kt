@@ -2002,7 +2002,7 @@ fun LayeredImageBackgroundCard(
 {
     Box(modifier = modifier
         .width(100.dp)
-        .height(200.dp)
+        .height(250.dp)
         .background(color = Color.Black, shape = MaterialTheme.roundedShape.medium)
 
 
@@ -2070,5 +2070,170 @@ fun LayeredImageBackgroundCard(
 }
 
 
+@Composable
+fun SeriesCardWithAnimation(
 
+    info: MovieResult.DataMovie.Item,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+
+
+
+)
+{
+
+
+
+
+
+
+
+
+
+
+
+            Box(
+                modifier = Modifier.width(100.dp)
+                    .height(200.dp)
+                    //  .background(Color.Red)
+                    .offset(y=(-10).dp),
+                contentAlignment = Alignment.TopCenter
+
+
+            )
+            {
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth(0.9f)
+                        .height(200.dp)
+                        .background(color =Color.DarkGray.copy(alpha = 0.8f), shape = RoundedCornerShape(15.dp))
+                        .offset(y=(-10).dp),
+                    contentAlignment = Alignment.TopCenter
+
+
+
+
+
+                )
+                {
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(200.dp)
+                            .background(color =Color.DarkGray.copy(alpha = 0.4f), shape = RoundedCornerShape(15.dp))
+
+
+
+
+
+                    )
+                    {
+                        // Text("test")
+
+
+
+
+                    }
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+            Box(
+
+                modifier = Modifier.width(100.dp)
+                    .height(200.dp)
+                    .clickable { onClick() }
+                   // .background(Color.Red)
+                //   .offset(y=(-10).dp),
+                // contentAlignment = Alignment.TopCenter
+
+
+
+
+
+
+
+
+            )
+            {
+                AsyncImage(
+                    model = IMAGE_BASE_URL+info.images?.get(0)?.src.toString(),
+
+                    contentDescription = "Layer 1",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                        .clip(MaterialTheme.roundedShape.medium)
+
+                )
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
