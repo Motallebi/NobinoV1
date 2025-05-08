@@ -613,6 +613,8 @@ fun setOtpValue() {
     fun fetchUserProfile(auth: String) {
         viewModelScope.launch {
             _userProfile.value = NetworkResult.Loading() // Show loading state
+
+            delay(2000)
             _userProfile.value = repository.getUserProfile(auth) // Fetch data and update state
         }
     }

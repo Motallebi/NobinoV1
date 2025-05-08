@@ -25,6 +25,7 @@ fun AppConfig(
     dataStore: DataStoreViewModel = hiltViewModel()
 )
 {
+    Log.d("net","Appconfig $USER_TOKEN" )
 
     getDataStoreVariables(dataStore)
 
@@ -148,10 +149,10 @@ private fun getDataStoreVariables(dataStore: DataStoreViewModel) {
 
     USER_PHONE = dataStore.getUserPhoneNumber().toString()
    // USER_PASSWORD = dataStore.getUserPassword().toString()
-    USER_TOKEN = dataStore.getUserToken().toString()
+    USER_TOKEN = dataStore.getUserToken() ?:"USER_TOKEN"
     USER_ID = dataStore.getUserId().toString()
     USER_FIRST_NAME = dataStore.getUserFirstName().toString()
     USER_LAST_NAME = (dataStore.getUserLastName()?: "")
     USER_LOGIN_STATUS =dataStore.getUserLoginStatus()?:false
-    USER_PROFILE_ID= dataStore.getUserCurrentProfileId().toString()
+    USER_PROFILE_ID= dataStore.getUserCurrentProfileId() ?: "USER_PROFILE_ID"
 }

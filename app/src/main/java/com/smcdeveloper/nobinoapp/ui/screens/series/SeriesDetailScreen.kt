@@ -264,7 +264,7 @@ fun ShowSeriesProductDetailWithTabs(
 {
 
    // val episodeList = loadEpisodes(relatedMovies)
-    val currentEpisode= sessions[0]
+   // val currentEpisode= sessions[0]
 
 
 

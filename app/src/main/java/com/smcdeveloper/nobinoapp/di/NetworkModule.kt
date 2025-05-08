@@ -75,14 +75,24 @@ object NetworkModule {
 
             if (chain.request().url.toString().startsWith(BASE_URL)) {
 
-                if(USER_TOKEN.isNotEmpty() ) {
+                Log.d("net","user token $USER_TOKEN")
+
+
+                if(USER_TOKEN!="USER_TOKEN") {
+                    Log.d("net","user token step1 $USER_TOKEN")
+                    Log.d("net","user token step1")
+
+
+
+
                     request
                         .addHeader("Authorization","Bearer $USER_TOKEN")
                     Log.d("Network", "user token is: $USER_TOKEN userf profile is $USER_PROFILE_ID")
 
                 }
-                else if(USER_TOKEN.isNotEmpty()&& USER_PROFILE_ID.isNotBlank())
+                else if( USER_PROFILE_ID !="USER_PROFILE_ID")
                 {
+                    Log.d("net","user token step2")
                     request
                         .addHeader("Authorization", "Bearer $USER_TOKEN")
                         .addHeader("Profile-Id", USER_PROFILE_ID)
@@ -90,10 +100,14 @@ object NetworkModule {
 
 
                 }
+                else
+                    Log.d("net","user token step3")
+                  //  request.removeHeader("Authorization")
 
 
 
             }
+
             chain.proceed(request.build())
         }
         .addInterceptor(interceptor())

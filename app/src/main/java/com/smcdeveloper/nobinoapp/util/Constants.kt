@@ -53,13 +53,13 @@ object Constants {
     const val FAVORITE_LIST_TABLE = "favorite_list_table"
     const val DATABASE_NAME = "digikala_db"
     var USER_LANGUAGE = "USER_LANGUAGE"
-    var USER_TOKEN = "USER_TOKEN"
+    var USER_TOKEN ="USER_TOKEN"
     var USER_ID = "USER_ID"
-    var USER_PROFILE_ID = "USER_PROFILE_ID"
+    var USER_PROFILE_ID = ""
 
     var USER_FIRST_NAME = "USER_FIRST_NAME"
     var USER_LAST_NAME = "USER_LAST_NAME"
-    var IMAGE_BASE_URL= "https://vod.nobino.ir/vod/"
+   const val IMAGE_BASE_URL= "https://vod.nobino.ir/vod/"
 
 
 

@@ -11,6 +11,7 @@ abstract class BaseApiResponse2 {
         withContext(Dispatchers.IO) {
             try {
                 val response = apiCall()
+
                 Log.d("SafeApiCall", "Response Code: ${response.code()}, Message: ${response.message()}")
                 if (response.isSuccessful) {
                     Log.d("SAFE_API_CALL", "API call successful. Response: ${response.body()}")
@@ -22,6 +23,7 @@ abstract class BaseApiResponse2 {
                         return@withContext NetworkResult.Error("Response body is null.")
                     }
                 } else {
+
 
                     Log.e("SAFE_API_CALL", "API call failed. Code: ${response.code()}, Message: ${response.message()}")
                     return@withContext NetworkResult.Error("Code: ${response.code()}, Message: ${response.message()}")
