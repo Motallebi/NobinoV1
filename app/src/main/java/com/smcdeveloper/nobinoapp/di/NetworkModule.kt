@@ -78,7 +78,7 @@ object NetworkModule {
                 Log.d("net","user token $USER_TOKEN")
 
 
-                if(USER_TOKEN!="USER_TOKEN") {
+                if(USER_TOKEN!="USER_TOKEN" && USER_TOKEN.length>2) {
                     Log.d("net","user token step1 $USER_TOKEN")
                     Log.d("net","user token step1")
 
