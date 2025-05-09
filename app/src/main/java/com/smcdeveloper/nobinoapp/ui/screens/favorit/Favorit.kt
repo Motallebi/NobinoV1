@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,11 +48,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.favorit.Favorite
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.component.HtmlText
 import com.smcdeveloper.nobinoapp.ui.component.NobinoMainTitleHeader
-
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 
 
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
@@ -176,7 +180,11 @@ fun FavoriteListScreen(viewModel: FavoritesViewModel,navController: NavHostContr
 
 
 
-       NobinoMainTitleHeader("favorits",navController)
+       NobinoMainTitleHeader(stringResource(R.string.favorits),navController,
+           modifier = Modifier.padding(horizontal = 10.dp)
+
+
+           )
 
 ///
 
@@ -286,6 +294,7 @@ fun FavoriteListScreen(viewModel: FavoritesViewModel,navController: NavHostContr
 fun MovieItem(movie: Favorite.FavoriteData.Item,navController: NavHostController,num:String) {
 
     Card(
+        modifier = Modifier.padding(top = 10.dp)
 
     )
 
@@ -297,6 +306,7 @@ fun MovieItem(movie: Favorite.FavoriteData.Item,navController: NavHostController
                 .fillMaxWidth()
                 .background(Color.DarkGray, RoundedCornerShape(4.dp)) // ✅ Card-like look
                 .padding(4.dp)
+                .padding(top = 10.dp)
         )
 
         {
@@ -310,10 +320,15 @@ fun MovieItem(movie: Favorite.FavoriteData.Item,navController: NavHostController
                     .clip(RoundedCornerShape(16.dp))
             )
 
-            Text(num)
 
 
-            Column(modifier = Modifier.weight(1f)) {
+
+            Column(modifier = Modifier.weight(1f)
+                .padding(8.dp)
+
+
+            )
+            {
                 Text(
                     text = movie.name.toString(),
                     color = Color.White,
@@ -365,16 +380,30 @@ fun MovieItem(movie: Favorite.FavoriteData.Item,navController: NavHostController
                 //modifier = Modifier.align(Alignment.Start)
             )
             {
-                Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play", tint = Color.White)
+
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(text = "پخش فیلم", color = Color.White)
+                Text(text = "پخش فیلم", style = MaterialTheme.typography.nobinoLarge
+
+
+                )
+                Icon(painterResource(R.drawable.arrow_right),
+                    contentDescription = "Play", tint = Color.White,
+                    modifier = Modifier.size(32.dp)
+
+
+
+                )
             }
 
 
 
         }
 
-        HtmlText(movie.shortDescription.toString(), textColor = Color.White)
+        HtmlText(movie.shortDescription.toString(), textColor = Color.White,
+            modifier = Modifier.padding(8.dp)
+
+
+        )
 
 
 

@@ -102,6 +102,17 @@ val Typography.nobinoSmall: TextStyle
 
         )
 
+val Typography.nobinosemiSmall: TextStyle
+    @Composable
+    get() = TextStyle(
+        fontFamily = nobino_fonts,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp,
+        color = Color.White,
+
+
+        )
+
 
 
 

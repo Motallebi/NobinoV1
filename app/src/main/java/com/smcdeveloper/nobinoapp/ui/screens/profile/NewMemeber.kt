@@ -75,7 +75,7 @@ fun NewMemberPage(navController: NavHostController) {
         {
 
 
-            NobinoMainTitleHeader("newmember", navController)
+            NobinoMainTitleHeader("newmember", navController, modifier = Modifier)
 
 
 

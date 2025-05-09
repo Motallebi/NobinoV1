@@ -2,11 +2,14 @@ package com.smcdeveloper.nobinoapp.navigation
 
 import android.graphics.drawable.Icon
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -31,26 +34,29 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.get
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoSmall
+import com.smcdeveloper.nobinoapp.ui.theme.nobinosemiSmall
 
 @Composable
 fun BottomNavigationBar(
     navController: NavController,
     onItemClick: (BottomNavItem) -> Unit,
-) {
+)
+
+{
     val items = listOf(
         BottomNavItem(
             name = stringResource(R.string.home),
             route = Screen.Home.route,
             selectedIcon = painterResource(R.drawable.bottom_nav_home_selected),
             deSelectedIcon = painterResource(R.drawable.bottom_nav_home_not_selected),
-
-
             ),
+
         BottomNavItem(
-            name = stringResource(R.string.user_profile),
-            route = Screen.Profile.route,
-            selectedIcon = painterResource(R.drawable.bottom_nav_user_selected),
-            deSelectedIcon = painterResource(R.drawable.bottom_nav_user_not_selected),
+            name = stringResource(R.string.serach),
+            route = Screen.DemoScreen.route,
+            selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
+            deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 
 
             ),
@@ -63,33 +69,41 @@ fun BottomNavigationBar(
 
 
             ),
+
         BottomNavItem(
-            name = stringResource(R.string.serach),
-            route = Screen.DemoScreen.route,
-            selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
-            deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
+            name = stringResource(R.string.favorite_list),
+            route = Screen.Favorite.route,
+            selectedIcon =painterResource(R.drawable.favorit_list_selected),
+                        deSelectedIcon = painterResource(R.drawable.favorit_list)
 
 
             ),
+
+
         BottomNavItem(
+            name = stringResource(R.string.user_profile),
+            route = Screen.Profile.route,
+            selectedIcon = painterResource(R.drawable.bottom_nav_user_selected),
+            deSelectedIcon = painterResource(R.drawable.bottom_nav_user_not_selected),
+
+
+            )
+
+
+
+       /* BottomNavItem(
             name = "test",
             route = Screen.SignUp.route,
             selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
             deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
 
 
-            ),
-        BottomNavItem(
-            name = "Demo",
-            route = Screen.Favorite.route,
-            selectedIcon = painterResource(R.drawable.bottom_nav_serach_selected),
-            deSelectedIcon = painterResource(R.drawable.bottom_nav_serach_not_selected),
+            )*/
 
-
-            ),
 
 
         )
+
 
 
     val backStackEntry = navController.currentBackStackEntryAsState()
@@ -206,11 +220,20 @@ fun BottomNavigationBar(
 
 
                     icon = {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally)
+                        Column(horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(bottom = 10.dp)
+
+
+
+                        )
                         {
+
                             if (selected) {
                                 Icon(
-                                    modifier = Modifier.height(24.dp),
+                                    modifier = Modifier.height(24.dp)
+
+                                    ,
+
                                     painter = item.selectedIcon,
                                     contentDescription = item.name
 
@@ -231,7 +254,7 @@ fun BottomNavigationBar(
                             Text(
                                 text = item.name,
                                 textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.nobinoMedium,
+                                style = MaterialTheme.typography.nobinosemiSmall,
                                 modifier = Modifier.padding(top = 5.dp)
                             )
 

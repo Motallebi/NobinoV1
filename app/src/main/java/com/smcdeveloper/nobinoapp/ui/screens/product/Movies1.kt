@@ -146,7 +146,8 @@ fun  MovieListByTag(movieDisplayData: List<MovieDisplayData>,navController: NavH
                 NobinoSpecialRow(displayData.movieCat.title.toString(), navController =navController,displayData.movieCat,
                    // displayData.movieItems.get(0)?.category.toString()
                     "",
-                    categoryName = ""
+                    categoryName = "",
+                    modifier = Modifier
 
 
                     )
@@ -251,7 +252,8 @@ fun  MovieListByTag1(navController: NavHostController,
                             navController = navController,
                             displayData.movieCat,
                             "",
-                            categoryName = ""
+                            categoryName = "",
+                            modifier = Modifier
                         )
 
                         TagHeader(tag = displayData.movieCat.title ?: "Unknown Category")

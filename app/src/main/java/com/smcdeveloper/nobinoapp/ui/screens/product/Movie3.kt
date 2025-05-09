@@ -127,7 +127,8 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                                 displayData.movieCat,
 
                                 category = "",
-                                categoryName = displayData.movieCat.title.toString()
+                                categoryName = displayData.movieCat.title.toString(),
+                                modifier = Modifier
                             )
 
 

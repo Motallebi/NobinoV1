@@ -1401,7 +1401,8 @@ fun NobinoSpecialRow(
     navController: NavHostController,
     movieCat: MovieCat.MovieCatData,
     category: String,
-    categoryName: String
+    categoryName: String,
+    modifier: Modifier
 )
 {
 
@@ -1504,10 +1505,10 @@ fun NobinoSpecialRow(
 
 @Composable
 
-fun NobinoMainTitleHeader(title:String,navController: NavHostController)
+fun NobinoMainTitleHeader(title:String,navController: NavHostController,modifier: Modifier)
 {
 
-    Row( modifier = Modifier
+    Row( modifier = modifier
         .fillMaxWidth()
         .padding(horizontal = 10.dp)
         ,
@@ -1528,7 +1529,7 @@ fun NobinoMainTitleHeader(title:String,navController: NavHostController)
 
         )
 
-        Icon(painterResource(R.drawable.arrow_left),"",
+        Icon(painterResource(R.drawable.left),"",
             tint = Color.White,
             modifier = Modifier.clickable {
 
@@ -1539,6 +1540,7 @@ fun NobinoMainTitleHeader(title:String,navController: NavHostController)
 
 
             }
+                .size(32.dp)
 
 
 
