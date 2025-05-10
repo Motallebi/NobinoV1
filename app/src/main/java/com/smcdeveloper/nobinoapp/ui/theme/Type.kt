@@ -41,6 +41,18 @@ val Typography.extraBoldNumber : TextStyle
         fontSize = 56.sp,
     )
 
+val  TextStyle2
+@Composable
+get() = TextStyle(
+fontFamily = font_bold,
+fontWeight = FontWeight.Bold,
+fontSize = 56.sp,
+)
+
+
+
+
+
 val Typography.nobinoLarge : TextStyle
     @Composable
     get() = TextStyle(
@@ -81,7 +93,7 @@ val Typography.nobinoMediumLight: TextStyle
         fontFamily = nobino_fonts,
         fontWeight = FontWeight.Bold,
         fontSize =16.sp,
-        color = Color.White.copy(alpha =0.5f),
+        color = Color.Gray
 
 
         )

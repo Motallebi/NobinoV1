@@ -135,6 +135,7 @@ fun OtpValidationScreen(
             when (loginResponse) {
                 is NetworkResult.Success -> {
                     loginResponse.data?.let { user ->
+
                         val token = user.access_token
                         Log.d(NOBINO_LOG_TAG,"Token is $token" )
 

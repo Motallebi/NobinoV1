@@ -26,6 +26,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.product.ProductDetailPage
 import com.smcdeveloper.nobinoapp.ui.screens.product.ProductScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ContactUs
 import com.smcdeveloper.nobinoapp.ui.screens.profile.EditUserInfoPage
+import com.smcdeveloper.nobinoapp.ui.screens.profile.FaqScreen
 import com.smcdeveloper.nobinoapp.ui.screens.profile.NewMemberPage
 import com.smcdeveloper.nobinoapp.ui.screens.profile.PaymentHistoryPage
 import com.smcdeveloper.nobinoapp.ui.screens.profile.PaymentResultScreen
@@ -66,6 +67,13 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
 
 
         }
+
+
+
+
+
+
+
         composable(route = Screen.SignUp.route) {
 
             RegisterScreen(navController = navController)
@@ -144,7 +152,7 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
         }
 
         composable(route = Screen.FAQ.route) {
-            HomeScreen(navController = navController)
+            FaqScreen(navController = navController)
 
 
         }

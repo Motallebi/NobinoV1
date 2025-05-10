@@ -28,6 +28,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
+import com.smcdeveloper.nobinoapp.util.Constants.USER_ID
+import com.smcdeveloper.nobinoapp.util.Constants.USER_PHONE
+import com.smcdeveloper.nobinoapp.util.Constants.USER_PROFILE_ID
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
@@ -55,10 +59,120 @@ fun EditUserInfoPage(navController: NavHostController,
 
     }
 
+         when(userProfile)
+         {
+             is NetworkResult.Success->{
+
+
+                 Column(
+                     modifier = Modifier
+                         .fillMaxSize()
+                         .background(Color(0xFF121212))
+                         .padding(16.dp),
+                     verticalArrangement = Arrangement.spacedBy(16.dp)
+                 ) {
+                     Text(
+                         text = "ویرایش اطلاعات کاربری",
+                         style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White),
+                         modifier = Modifier.align(Alignment.CenterHorizontally)
+                     )
+
+                     Spacer(modifier = Modifier.height(16.dp))
+
+                     if (isLoading) {
+                         CircularProgressIndicator(color = Color.White, modifier = Modifier.align(Alignment.CenterHorizontally))
+                         /* } else if (errorMessage != null) {
+                              Text(text = errorMessage!!, color = Color.Red, modifier = Modifier.align(Alignment.CenterHorizontally))*/
+                     }
+
+                     else {
+                         userProfile?.let {
+                             Box(
+                                 modifier = Modifier
+                                     .fillMaxWidth()
+                                     .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(12.dp))
+                                     .border(2.dp, Color.Gray, RoundedCornerShape(12.dp))
+                                     .padding(16.dp)
+                             )
+                             {
+                                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                     ReadOnlyField(label = "نام کاربری:", value =
+                                     it.data?.profileData?.mobile.toString()
+
+
+                                     )
+                                     EditableFieldWithButtons(label = "شماره موبایل:", initialValue = it.data?.profileData?.mobile.toString()) { newValue ->
+                                         // viewModel.updatePhone(newValue)
+                                     }
+                                     EditableFieldWithButtons(label = "تاریخ تولد:", initialValue = "") { newValue ->
+                                         // viewModel.updateBirthdate(newValue)
+                                     }
+                                     EditableFieldWithButtons(label = "ایمیل:", initialValue = it.data?.profileData?.email.toString()  ) { newValue ->
 
 
 
-    Log.d("user","user profile page"+userProfile.data?.profileData?.mobile.toString())
+
+                                         // viewModel.updateEmail(newValue)
+                                     }
+                                 }
+                             }
+                         }
+                     }
+                 }
+
+
+
+
+
+             }
+
+             is NetworkResult.Loading->{
+                 Box(modifier = Modifier.fillMaxSize(),
+                     contentAlignment = Alignment.Center
+
+
+                     )
+                 {
+                     CircularProgressIndicator(color = Color.Red)
+
+                 }
+
+
+
+
+
+
+             }
+
+             else ->{
+
+
+
+
+             }
+
+
+
+
+
+         }
+
+
+
+
+
+
+
+    Log.d("user","user profile page   "+userProfile.data?.profileData?.mobile.toString())
+    Log.d("user","user profile page    "+userProfile.data?.profileData?.id.toString())
+    Log.d("user","user profile page    "+userProfile.data?.profileData?.firstName.toString())
+    Log.d("user","user profile page    "+userProfile.data?.profileData?.email.toString())
+
+
+
+    Log.d("user","user profile page     "+userProfile.data?.profileData?.username.toString())
+    Log.d("user","user profile page       "+userProfile.data?.toString())
+
 
 
 
@@ -68,53 +182,7 @@ fun EditUserInfoPage(navController: NavHostController,
 
     // val errorMessage by viewModel.errorMessage.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF121212))
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(
-            text = "ویرایش اطلاعات کاربری",
-            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (isLoading) {
-            CircularProgressIndicator(color = Color.White, modifier = Modifier.align(Alignment.CenterHorizontally))
-       /* } else if (errorMessage != null) {
-            Text(text = errorMessage!!, color = Color.Red, modifier = Modifier.align(Alignment.CenterHorizontally))*/
-        }
-
-        else {
-            userProfile?.let {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(12.dp))
-                        .border(2.dp, Color.Gray, RoundedCornerShape(12.dp))
-                        .padding(16.dp)
-                )
-                {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        ReadOnlyField(label = "نام کاربری:", value = it.data?.profileData?.mobile.toString())
-                        EditableFieldWithButtons(label = "شماره موبایل:", initialValue = it.data?.profileData?.mobile.toString()) { newValue ->
-                           // viewModel.updatePhone(newValue)
-                        }
-                        EditableFieldWithButtons(label = "تاریخ تولد:", initialValue = "") { newValue ->
-                           // viewModel.updateBirthdate(newValue)
-                        }
-                        EditableFieldWithButtons(label = "ایمیل:", initialValue = "it.data.profileData.") { newValue ->
-                           // viewModel.updateEmail(newValue)
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 

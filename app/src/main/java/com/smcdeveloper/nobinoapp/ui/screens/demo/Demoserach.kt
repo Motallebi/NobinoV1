@@ -340,7 +340,8 @@ fun SelectionCheckboxItem(
     modifier: Modifier = Modifier,
   //  onClearAll:()->Boolean= { false }
 
-) {
+)
+{
     Row(
         modifier = modifier
             .clickable { onSelected(!isSelected) }

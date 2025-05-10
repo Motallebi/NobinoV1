@@ -147,7 +147,7 @@ private fun getDataStoreVariables(dataStore: DataStoreViewModel) {
    //dataStore.saveUserLanguage(USER_LANGUAGE)
 
 
-    USER_PHONE = dataStore.getUserPhoneNumber().toString()
+    USER_PHONE = DigitHelper.digitByLocate(dataStore.getUserPhoneNumber().toString())
    // USER_PASSWORD = dataStore.getUserPassword().toString()
     USER_TOKEN = dataStore.getUserToken() ?:"USER_TOKEN"
     USER_ID = dataStore.getUserId().toString()

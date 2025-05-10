@@ -4,6 +4,9 @@ package com.smcdeveloper.nobinoapp.ui.component
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.TextView
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,21 +26,27 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,12 +54,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,6 +83,7 @@ import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.Section
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.theme.ageSelectedButton
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
@@ -1426,7 +1440,12 @@ fun NobinoSpecialRow(
 
     {
 
-        Text(title)
+        Text(title,
+            style = MaterialTheme.typography.nobinoMedium
+
+
+
+            )
 
 
         Row(
@@ -1442,7 +1461,7 @@ fun NobinoSpecialRow(
 
             Text(
                 "مشاهده همه",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.nobinoMedium,
 
 
                 modifier = Modifier.clickable {
@@ -1471,8 +1490,10 @@ fun NobinoSpecialRow(
 
                 )
 
-            Icon(painterResource(R.drawable.arrow_left), "",
-                tint = Color.White
+            Icon(painterResource(R.drawable.left), "",
+                tint = Color.White,
+                modifier=modifier.size(32.dp)
+
 
 
 
@@ -1579,6 +1600,105 @@ fun NobinoMainTitleHeader(title:String,navController: NavHostController,modifier
 
 
 }
+
+
+
+
+@Composable
+fun NobinoExpandableCard(
+    title: String,
+    description: String,
+    modifier: Modifier = Modifier,
+    initialExpandedState: Boolean = false,
+) {
+    // Use rememberSaveable to survive configuration changes.
+    var isExpanded by rememberSaveable { mutableStateOf(initialExpandedState) }
+    val cardColor = MaterialTheme.colorScheme.ageSelectedButton // Use MaterialTheme.colorScheme
+    val textColor = contentColorFor(cardColor)  //use contentColorFor
+
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .animateContentSize( // Add animateContentSize for smooth expansion/collapse
+                animationSpec = tween(
+                    durationMillis = 300,  // Set the duration of the animation
+                    easing = LinearEasing // Use a linear easing function
+                )
+            ),
+        shape = MaterialTheme.shapes.medium, // Use MaterialTheme.shapes
+        colors = CardDefaults.cardColors(containerColor = cardColor),
+    ) {
+        Column(
+            modifier = Modifier
+                .clickable { isExpanded = !isExpanded } // Make the entire card clickable
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier.fillMaxWidth()
+            )
+            {
+
+
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall, // Use MaterialTheme.typography
+                    color = textColor,
+                    modifier = Modifier.weight(1f) // Title takes up available space
+                )
+
+                IconButton(onClick = { isExpanded = !isExpanded }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowDropDown,
+                        contentDescription = if (isExpanded) "Collapse" else "Expand",
+                        tint = textColor, //match the text color
+
+                        modifier = Modifier.graphicsLayer {
+                            // Calculate the rotation angle based on isExpanded
+                            rotationZ = if (isExpanded) 180f else 0f
+                            transformOrigin = TransformOrigin.Center // Ensure correct rotation
+                        }
+
+
+
+                    )
+                }
+
+
+
+
+            }
+            if (isExpanded) {
+                Spacer(modifier = Modifier.height(8.dp))
+                HorizontalDivider(
+
+                    modifier.padding(bottom = 10.dp)
+
+
+
+                )
+
+
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium, // Use MaterialTheme.typography
+                    color = textColor,
+                    textAlign = TextAlign.Justify
+                )
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
 
 
 
@@ -1736,7 +1856,11 @@ fun NobinoSpecialRowBySection2(
 
     {
 
-        Text(title)
+        Text(title,
+            style = MaterialTheme.typography.nobinoMedium
+
+
+            )
 
         Row(
             modifier = Modifier,
@@ -1751,6 +1875,9 @@ fun NobinoSpecialRowBySection2(
 
             Text(
                 stringResource(R.string.Show_More),
+                style = MaterialTheme.typography.nobinoMedium,
+
+
                 modifier = Modifier.clickable {
                     Log.d("category", "Nobino Button Category is${category}")
                     //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
@@ -1789,8 +1916,9 @@ fun NobinoSpecialRowBySection2(
 
             )
 
-            Icon(painterResource(R.drawable.arrow_left),"",
-                tint = Color.White
+            Icon(painterResource(R.drawable.left),"",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
 
 
 

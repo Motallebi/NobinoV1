@@ -19,10 +19,6 @@ val lastName: String,
 val email: String,
 @SerializedName("birthDateLong")
 val birthDate: Long,
-
-
-
-
 @SerializedName("id")
 val id: Int,
 @SerializedName("mobile")

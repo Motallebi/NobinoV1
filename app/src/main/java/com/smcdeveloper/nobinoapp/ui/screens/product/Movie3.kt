@@ -62,7 +62,7 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                                 .padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator()
+                            CircularProgressIndicator(color = Color.Red)
                         }
                     }
                 }

@@ -77,7 +77,7 @@ fun GenreSelectionSheet(
         {
 
 
-            var isCheckBoxCleared by remember {mutableStateOf( onClearAll )  }
+            var isCheckBoxCleared by remember {mutableStateOf( isAllClear )  }
 
 
 
@@ -121,9 +121,55 @@ fun GenreSelectionSheet(
 
 
                         rowItems.forEach { item ->
+
+                          /*  if(isAllClear)
+                            {
+
+                                SelectionCheckboxItem(
+                                    text = item.name,
+                                    isSelected = false,
+                                    onSelected = {
+                                            isSelected ->
+
+                                        onClear()
+
+
+
+
+                                        onItemSelected(
+                                            item,
+                                            isSelected
+                                        )
+
+
+
+                                    },
+                                    modifier = Modifier.weight(1f),
+
+
+
+
+
+                                    )
+
+
+
+                            }*/
+
+
+
+
+
+
+
+
+
+
+
+
                             SelectionCheckboxItem(
                                 text = item.name, // 🔴 Show country name
-                                isSelected = if(isCheckBoxCleared) false else item.id.toString() in selectedItemIds, // 🔴 Check by ID
+                                isSelected = if(isAllClear) false else item.id.toString() in selectedItemIds, // 🔴 Check by ID
                                 onSelected = { isSelected ->
 
                                     onClear()
@@ -140,6 +186,20 @@ fun GenreSelectionSheet(
                                 //onClearAll = onClearAll
 
                             )
+                           // isCheckBoxCleared=false
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                         }

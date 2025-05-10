@@ -1059,10 +1059,11 @@ fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel,lo
 
 
                 Icon(
-                    painterResource(R.drawable.arrow_left),
+                    painterResource(R.drawable.left),
 
 
                     tint = Color.White.copy(alpha = 0.3f),
+                    modifier = Modifier.size(32.dp),
 
 
                     contentDescription = ""

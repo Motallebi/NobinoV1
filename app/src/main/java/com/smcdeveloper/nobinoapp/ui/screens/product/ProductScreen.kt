@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -168,8 +169,9 @@ fun Product(navController: NavHostController,
 
         )
 
-        Icon(painterResource(R.drawable.arrow_left),"",
+        Icon(painterResource(R.drawable.left),"",
             tint = Color.White,
+
             modifier = Modifier.clickable {
 
                 navController.navigateUp()
@@ -179,6 +181,7 @@ fun Product(navController: NavHostController,
 
 
             }
+                .size(32.dp)
 
 
 
@@ -200,7 +203,7 @@ fun Product(navController: NavHostController,
 
 
 
-    Text(categoryName)
+  //  Text(categoryName)
 
 
     Box(modifier = Modifier.fillMaxSize()
