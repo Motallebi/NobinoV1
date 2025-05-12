@@ -144,9 +144,9 @@ interface ProfileApiInterface {
 
 
     //@FormUrlEncoded
-    @PATCH("/api/v2/users/user-info/{id}")
+    @PATCH("/api/v2/users/user-info")
     suspend fun updateUserInfo(
-        @Path("id") userId :String,
+       // @Path("id") userId :String,
         @Body updateRequest: UpdateUserProfileRequest
 
 

@@ -4,23 +4,16 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.filter
 import com.smcdeveloper.nobinoapp.data.model.avatar.Avatar
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentHistory
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentRequest
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentResponse
-import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.profile.ActiveUserProfile
 import com.smcdeveloper.nobinoapp.data.model.profile.LoginResponse
 import com.smcdeveloper.nobinoapp.data.model.profile.NewUserProfileRequest
@@ -29,12 +22,8 @@ import com.smcdeveloper.nobinoapp.data.model.profile.UpdateUserProfileRequest
 import com.smcdeveloper.nobinoapp.data.model.profile.UserInfo
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.ProfileRepository
-import com.smcdeveloper.nobinoapp.data.source.PaymentDataSource
-import com.smcdeveloper.nobinoapp.data.source.SearchDataSource1
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ProfileScreenState
 import com.smcdeveloper.nobinoapp.ui.screens.profile.ValidationStatus
-import com.smcdeveloper.nobinoapp.util.AES
-import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.util.DigitHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -46,11 +35,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -75,6 +63,15 @@ class ProfileViewModel @Inject constructor(
     private val _requestId = mutableStateOf<String?>(null)
     val requestId: State<String?> = _requestId
     var status by  mutableStateOf<ValidationStatus>(ValidationStatus.Default)
+
+    private var _userEmail = MutableStateFlow("")
+    private val userEmail:StateFlow<String> =_userEmail.asStateFlow()
+
+
+
+
+
+
 
 
 
@@ -160,6 +157,17 @@ class ProfileViewModel @Inject constructor(
     val userProfile: StateFlow<NetworkResult<UserInfo>> get() = _userProfile.asStateFlow()
 
 
+
+
+
+    private val _message = MutableStateFlow<String?>(null)
+    val message: StateFlow<String?> = _message
+
+
+
+
+
+
     // Store profile details needed to complete creation
     private val _name = mutableStateOf("")
     private val _username = mutableStateOf("")
@@ -198,6 +206,24 @@ private val _validationStatus = MutableStateFlow<ValidationStatus>(ValidationSta
 
     private val _validationEvents = MutableSharedFlow<ValidationStatus>()
     val validationEvents = _validationEvents.asSharedFlow()
+
+
+
+    //Clear message
+    fun clearMessage(){
+        _message.value = null
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     fun triggerError() {
         viewModelScope.launch {
@@ -616,6 +642,7 @@ fun setOtpValue() {
 
             delay(2000)
             _userProfile.value = repository.getUserProfile(auth) // Fetch data and update state
+            _message.value=null
         }
     }
 
@@ -628,12 +655,102 @@ fun setOtpValue() {
 
 
 
-    private fun updateUserInfo(userId: String, updateRequest: UpdateUserProfileRequest) {
+    fun updateUserInfo() {
+
+        val updateRequest =UpdateUserProfileRequest(
+
+            email = userEmail.value
+
+
+
+
+
+
+
+        )
+
+           Log.d("update","user email is $userEmail")
+
+
 
         viewModelScope.launch {
 
+            _userProfile.value = NetworkResult.Loading()
 
-            repository.UpdateUserProfile(userId, updateRequest)
+
+         try{
+            val result= repository.updateUserProfile(updateRequest)
+             val code=result.code
+
+
+
+
+
+
+
+
+
+
+
+             Log.d("update","code is ${result.data?.profileData?.errorCode}")
+             Log.d("update","code is ${result.toString()}")
+             Log.d("update","code is ${result.code}")
+
+             when(code)
+             {
+                 200->{
+                     _userProfile.value=NetworkResult.Success(result.data)
+
+
+                     _message.value="Update Success"
+
+
+                 }
+
+                 else->{
+                     _userProfile.value=NetworkResult.Error("Update Error")
+
+
+                     _message.value="Update Failed $code"
+
+
+
+
+                 }
+
+
+
+             }
+
+
+
+
+
+
+
+         }
+
+         catch (e: IOException)
+         {
+
+             _userProfile.value = NetworkResult.Error("Network error occurred +$e")
+
+         }
+
+            catch (e: Exception)
+            {
+
+                _userProfile.value = NetworkResult.Error("Network error occurred +$e", )
+
+            }
+
+
+
+
+
+
+
+
 
 
         }
@@ -890,19 +1007,19 @@ fun setOtpValue() {
 
     }
 
+    fun updateEmail(email: String) {
+        //_userEmail.value=email
+        _userEmail.value=email
+
+
+        Log.d("update","user email is $email")
+
+        Log.d("update","user email is ${userEmail.value}")
 
 
 
 
-
-
-
-
-
-
-
-
-
+    }
 
 
 }

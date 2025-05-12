@@ -26,7 +26,13 @@ val mobile: String,
 @SerializedName("status")
 val status: String,
 @SerializedName("username")
-val username: String
+val username: String,
+@SerializedName("errorCode")
+val errorCode: String,
+
+
+
+
 
 
 

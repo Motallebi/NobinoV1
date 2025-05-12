@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.profile
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.smcdeveloper.nobinoapp.data.model.profile.UpdateUserProfileRequest
+import com.smcdeveloper.nobinoapp.data.model.profile.UserInfo
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.util.Constants.USER_ID
 import com.smcdeveloper.nobinoapp.util.Constants.USER_PHONE
@@ -35,8 +39,10 @@ import com.smcdeveloper.nobinoapp.util.Constants.USER_PROFILE_ID
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
+import kotlinx.coroutines.launch
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun EditUserInfoPage(navController: NavHostController,
                      viewModel: ProfileViewModel = hiltViewModel(),
@@ -44,11 +50,48 @@ fun EditUserInfoPage(navController: NavHostController,
 
 
 
-) {
+)
+{
     val userProfile by viewModel.userProfile.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
 
-    val userProfileResult by viewModel.userProfile.collectAsState()
+
+
+
+
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val message by viewModel.message.collectAsState()
+
+    var userEmail by remember { mutableStateOf("") }
+    var userPhone by remember { mutableStateOf("") }
+    var userName by remember { mutableStateOf("") }
+    var userLastName by remember { mutableStateOf("") }
+    var userBirthDay by remember { mutableStateOf(0L) }
+
+
+
+
+
+
+
+
+
+    var loading by remember {
+        mutableStateOf(false)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -59,103 +102,351 @@ fun EditUserInfoPage(navController: NavHostController,
 
     }
 
-         when(userProfile)
-         {
-             is NetworkResult.Success->{
+    LaunchedEffect(message) {
 
-
-                 Column(
-                     modifier = Modifier
-                         .fillMaxSize()
-                         .background(Color(0xFF121212))
-                         .padding(16.dp),
-                     verticalArrangement = Arrangement.spacedBy(16.dp)
-                 ) {
-                     Text(
-                         text = "ویرایش اطلاعات کاربری",
-                         style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White),
-                         modifier = Modifier.align(Alignment.CenterHorizontally)
-                     )
-
-                     Spacer(modifier = Modifier.height(16.dp))
-
-                     if (isLoading) {
-                         CircularProgressIndicator(color = Color.White, modifier = Modifier.align(Alignment.CenterHorizontally))
-                         /* } else if (errorMessage != null) {
-                              Text(text = errorMessage!!, color = Color.Red, modifier = Modifier.align(Alignment.CenterHorizontally))*/
-                     }
-
-                     else {
-                         userProfile?.let {
-                             Box(
-                                 modifier = Modifier
-                                     .fillMaxWidth()
-                                     .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(12.dp))
-                                     .border(2.dp, Color.Gray, RoundedCornerShape(12.dp))
-                                     .padding(16.dp)
-                             )
-                             {
-                                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                     ReadOnlyField(label = "نام کاربری:", value =
-                                     it.data?.profileData?.mobile.toString()
-
-
-                                     )
-                                     EditableFieldWithButtons(label = "شماره موبایل:", initialValue = it.data?.profileData?.mobile.toString()) { newValue ->
-                                         // viewModel.updatePhone(newValue)
-                                     }
-                                     EditableFieldWithButtons(label = "تاریخ تولد:", initialValue = "") { newValue ->
-                                         // viewModel.updateBirthdate(newValue)
-                                     }
-                                     EditableFieldWithButtons(label = "ایمیل:", initialValue = it.data?.profileData?.email.toString()  ) { newValue ->
+        message?.let {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(it)
+                viewModel.clearMessage() // clear message after snackbar is shown
+            }
+        }
 
 
 
 
-                                         // viewModel.updateEmail(newValue)
-                                     }
-                                 }
-                             }
-                         }
-                     }
-                 }
-
-
-
-
-
-             }
-
-             is NetworkResult.Loading->{
-                 Box(modifier = Modifier.fillMaxSize(),
-                     contentAlignment = Alignment.Center
-
-
-                     )
-                 {
-                     CircularProgressIndicator(color = Color.Red)
-
-                 }
+    }
 
 
 
 
 
 
-             }
-
-             else ->{
-
-
-
-
-             }
 
 
 
 
 
-         }
+
+
+
+
+
+
+
+
+
+
+
+           when(userProfile)
+           {
+               is NetworkResult.Loading->{
+
+
+                   Box(modifier = Modifier.fillMaxSize())
+                   {
+
+                       CircularProgressIndicator(color = Color.Red)
+
+                   }
+
+
+
+                   loading=true
+
+
+               }
+
+               is NetworkResult.Error->{
+                 //  ShowUserData(userProfile.data!!.profileData,viewModel)
+
+                   loading=false
+
+                   LaunchedEffect(Unit) {
+                       snackbarHostState.showSnackbar("error")
+                   }
+
+
+
+
+
+
+               }
+
+
+
+               is NetworkResult.Success->{
+
+                  // ShowUserData(userProfile.data!!.profileData,viewModel)
+                   userEmail=userProfile.data!!.profileData.email
+                   userPhone=userProfile.data!!.profileData.mobile
+                   userName=userProfile.data!!.profileData.username
+                   userLastName=userProfile.data!!.profileData.lastName
+                   userBirthDay=userProfile.data!!.profileData.birthDate
+
+                   loading=false
+
+
+
+
+
+
+
+
+
+
+
+
+               }
+
+
+
+
+           }
+
+
+    if(!loading)
+    {
+
+
+
+
+        Scaffold(
+
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+
+
+        )
+
+
+        {
+            /*ShowSampleData(
+                userEmail,
+                onUpdateData = {data->userEmail=data},
+                viewModel = viewModel
+
+
+            )*/
+
+
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFF121212))
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            )
+
+
+            {
+                Text(
+                    text = "ویرایش اطلاعات کاربری",
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White),
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+
+
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(12.dp))
+                        .border(2.dp, Color.Gray, RoundedCornerShape(12.dp))
+                        .padding(16.dp)
+                )
+                {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+
+                        ReadOnlyField(label = "نام کاربری:", value =userPhone
+
+
+
+                        )
+
+
+                        EditableFieldWithButtons1(label = "شماره موبایل:", initialValue =userPhone.toString()) { newValue ->
+                            // viewModel.updatePhone(newValue)
+                            //  onProfileUpdte(userProfile)
+
+                        }
+                        EditableFieldWithButtons1(label = "تاریخ تولد:", initialValue = "") { newValue ->
+                            // viewModel.updateBirthdate(newValue)
+                        }
+                        EditableFieldWithButtons1(label = "ایمیل:", initialValue = userEmail.toString()  ) { newValue ->
+
+
+                            viewModel.updateEmail(newValue)
+                            viewModel.updateUserInfo(
+                                //userId = userId,
+
+
+                            )
+
+                        }
+
+
+
+
+
+
+
+                    }
+
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*    ShowUserData2(
+                  userProfile = userInfo.data!!.profileData,
+                  viewModel = viewModel
+
+
+              ) {
+
+
+
+              }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+           /* ShowSampleData(userEmail, viewModel =) {
+                    data->userEmail=data
+
+
+            }*/
+
+           // if(!updateError)
+            //ShowUserData(userProfile.data!!.profileData,viewModel)
+
+
+
+
+
+        }
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -184,6 +475,275 @@ fun EditUserInfoPage(navController: NavHostController,
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+@Composable
+fun ShowSampleData(initialValue:String,onUpdateData:(String)->Unit,viewModel: ProfileViewModel)
+{
+    var text by remember { mutableStateOf(initialValue) }
+    var isEditing by remember { mutableStateOf(false) }
+    var tempText by remember { mutableStateOf(initialValue) } // Store temp value for cancel
+
+    TextField(
+        value = text,
+        onValueChange =
+        {
+          text=it
+          onUpdateData(it)
+        }
+
+
+
+
+    )
+
+    Button(
+        onClick = {
+
+            viewModel.updateEmail(
+               text
+            )
+            viewModel.updateUserInfo()
+
+
+        }
+
+
+    ) {
+
+        Text("UpdateData")
+
+    }
+
+
+
+
+
+}
+
+
+
+@Composable
+fun ShowUserData(userProfile:UserProfile,viewModel: ProfileViewModel)
+{
+
+
+
+
+
+
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF121212))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    )
+
+    {
+        Text(
+            text = "ویرایش اطلاعات کاربری",
+            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+
+
+        userProfile.let {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(12.dp))
+                    .border(2.dp, Color.Gray, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            )
+            {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    it?.username?.let { it1 ->
+                        ReadOnlyField(label = "نام کاربری:", value =
+                        it1
+
+
+                        )
+                    }
+                    EditableFieldWithButtons(label = "شماره موبایل:", initialValue = it!!.mobile.toString()) { newValue ->
+                        // viewModel.updatePhone(newValue)
+                    }
+                    EditableFieldWithButtons(label = "تاریخ تولد:", initialValue = "") { newValue ->
+                        // viewModel.updateBirthdate(newValue)
+                    }
+                    EditableFieldWithButtons(label = "ایمیل:", initialValue = it!!.email.toString()  ) { newValue ->
+
+
+                        viewModel.updateEmail(newValue)
+                        viewModel.updateUserInfo(
+                            //userId = userId,
+
+
+                        )
+
+                    }
+                }
+            }
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+@Composable
+fun ShowUserData2(viewModel: ProfileViewModel,
+
+   userProfile: UserProfile
+
+
+
+
+
+
+)
+{
+
+
+
+
+
+
+
+    var profile by remember { mutableStateOf(userProfile) }
+
+
+
+
+
+
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF121212))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    )
+
+
+    {
+        Text(
+            text = "ویرایش اطلاعات کاربری",
+            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+
+
+
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(12.dp))
+                    .border(2.dp, Color.Gray, RoundedCornerShape(12.dp))
+                    .padding(16.dp)
+            )
+            {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+
+                        ReadOnlyField(label = "نام کاربری:", value =
+                        profile.username
+
+
+                        )
+                    }
+                    EditableFieldWithButtons1(label = "شماره موبایل:", initialValue = profile.mobile.toString()) { newValue ->
+                        // viewModel.updatePhone(newValue)
+                      //  onProfileUpdte(userProfile)
+
+                    }
+                    EditableFieldWithButtons1(label = "تاریخ تولد:", initialValue = "") { newValue ->
+                        // viewModel.updateBirthdate(newValue)
+                    }
+                    EditableFieldWithButtons1(label = "ایمیل:", initialValue = profile.email.toString()  ) { newValue ->
+
+
+                        viewModel.updateEmail(newValue)
+                        viewModel.updateUserInfo(
+                            //userId = userId,
+
+
+                        )
+
+                    }
+                }
+            }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -357,6 +917,23 @@ fun EditableFieldWithButtons(label: String, initialValue: String, onSave: (Strin
     var isEditing by remember { mutableStateOf(false) }
     var tempText by remember { mutableStateOf(initialValue) } // Store temp value for cancel
 
+  //  val userInfoResult by viewModel.userInfo.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+
+
+
+
+
+
+    }
+
+
+
+
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -454,8 +1031,261 @@ fun EditableFieldWithButtons(label: String, initialValue: String, onSave: (Strin
     }
 }
 
+@Composable
+fun EditableFieldWithButtons1(label: String, initialValue:String, onSave: (String) -> Unit)
+{
+    var text by remember { mutableStateOf(initialValue) }
+    var isEditing by remember { mutableStateOf(false) }
+    var tempText by remember { mutableStateOf(initialValue) } // Store temp value for cancel
+
+    //  val userInfoResult by viewModel.userInfo.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
 
 
+
+
+
+
+    }
+
+
+
+
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Label (Outside TextField)
+            Text(
+                modifier = Modifier.weight(0.3f),
+                text = label,
+                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color.White)
+            )
+
+            // Text Field
+            TextField(
+                value = text,
+                onValueChange =
+                {
+                    text=it
+
+                },
+
+
+                readOnly = !isEditing,
+                textStyle = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = if (isEditing) Color.White else Color.Gray
+                ),
+                singleLine = true,
+                trailingIcon = {
+                    if (!isEditing) {
+                        Icon(
+                            painter = painterResource(id = android.R.drawable.ic_menu_edit),
+                            contentDescription = "Edit",
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable {
+                                    tempText = text // Store current value before editing
+                                    isEditing = true
+                                },
+                            tint = Color.Gray
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .weight(0.7f)
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .border(
+                        width = 2.dp,
+                        color = if (isEditing) Color.Red else Color.Transparent,
+                        shape = RoundedCornerShape(25.dp)
+                    )
+                    .background(Color(0xFF333333), shape = RoundedCornerShape(25.dp)),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+        }
+
+        // Buttons (Only Show When Editing)
+        if (isEditing) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                // Cancel Button
+                Button(
+                    onClick = {
+                        text = tempText // Reset text
+                        isEditing = false // Hide buttons
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    border = BorderStroke(2.dp, Color.Red),
+                    shape = RoundedCornerShape(25.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("انصراف", color = Color.Red)
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Save Button
+                Button(
+                    onClick = {
+                        onSave(text) // Save changes
+                        isEditing = false // Hide buttons
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
+                    shape = RoundedCornerShape(25.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("اعمال تغییرات", color = Color.White)
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun EditableFieldWithButtons2(label: String, initialValue:String, onSave: (String) -> Unit)
+{
+    var text by remember { mutableStateOf(initialValue) }
+    var isEditing by remember { mutableStateOf(false) }
+    var tempText by remember { mutableStateOf(initialValue) } // Store temp value for cancel
+
+    //  val userInfoResult by viewModel.userInfo.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+
+
+
+
+
+
+    }
+
+
+
+
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        )
+        {
+            // Label (Outside TextField)
+            Text(
+                modifier = Modifier.weight(0.3f),
+                text = label,
+                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color.White)
+            )
+
+            // Text Field
+            TextField(
+                value = text,
+                onValueChange =
+                {
+                    text=it
+
+                },
+
+
+                readOnly = !isEditing,
+                textStyle = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = if (isEditing) Color.White else Color.Gray
+                ),
+                singleLine = true,
+                trailingIcon = {
+                    if (!isEditing) {
+                        Icon(
+                            painter = painterResource(id = android.R.drawable.ic_menu_edit),
+                            contentDescription = "Edit",
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable {
+                                    tempText = text // Store current value before editing
+                                    isEditing = true
+                                },
+                            tint = Color.Gray
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .weight(0.7f)
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .border(
+                        width = 2.dp,
+                        color = if (isEditing) Color.Red else Color.Transparent,
+                        shape = RoundedCornerShape(25.dp)
+                    )
+                    .background(Color(0xFF333333), shape = RoundedCornerShape(25.dp)),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+        }
+
+        // Buttons (Only Show When Editing)
+        if (isEditing) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                // Cancel Button
+                Button(
+                    onClick = {
+                        text = tempText // Reset text
+                        isEditing = false // Hide buttons
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+                    border = BorderStroke(2.dp, Color.Red),
+                    shape = RoundedCornerShape(25.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("انصراف", color = Color.Red)
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Save Button
+                Button(
+                    onClick = {
+                        onSave(text) // Save changes
+                        isEditing = false // Hide buttons
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
+                    shape = RoundedCornerShape(25.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("اعمال تغییرات", color = Color.White)
+                }
+            }
+        }
+    }
+}
 
 
 

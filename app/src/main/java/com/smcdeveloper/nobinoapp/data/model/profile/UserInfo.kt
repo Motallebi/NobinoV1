@@ -12,6 +12,7 @@ data class UserInfo(
     val success: Boolean,
     @SerializedName("userMessage")
     val userMessage: String
+
 )
 
 {

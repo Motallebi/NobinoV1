@@ -49,12 +49,16 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+
             when {
                 // Show loading state if either slider or movies are still loading
                 sliderState is NetworkResult.Loading ||
                         movieDataState is NetworkResult.Loading ||
                         productState is NetworkResult.Loading ||
                         relatedProductsState is NetworkResult.Loading -> {
+
+
                     item {
                         Box(
                             modifier = Modifier

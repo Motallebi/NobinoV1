@@ -19,7 +19,6 @@ import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.remote.ProfileApiInterface
 import com.smcdeveloper.nobinoapp.data.source.PaymentDataSource
-import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import com.smcdeveloper.nobinoapp.util.DigitHelper
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -151,11 +150,11 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
 
 
-    suspend fun UpdateUserProfile(userid:String,updateRequest:UpdateUserProfileRequest): NetworkResult<UserInfo> =
+    suspend fun updateUserProfile(updateRequest:UpdateUserProfileRequest): NetworkResult<UserInfo> =
 
         safeApiCall {
 
-            api.updateUserInfo(userid,updateRequest)
+            api.updateUserInfo(updateRequest)
 
 
         }
