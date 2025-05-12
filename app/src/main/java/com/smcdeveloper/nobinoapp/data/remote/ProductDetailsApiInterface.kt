@@ -74,7 +74,7 @@ interface ProductDetailsApiInterface {
 
         // @Path("productId") id: Int,
         @Query("tags") tags :List<String> = emptyList(),
-        @Query("category") category :String ="SERIES"
+      //  @Query("category") category :String ="SERIES"
         //@Header("Authorization") auth: String =""
 
 

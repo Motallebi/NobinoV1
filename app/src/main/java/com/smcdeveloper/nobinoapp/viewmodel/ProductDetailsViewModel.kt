@@ -252,7 +252,23 @@ class ProductDetailsViewModel @Inject constructor(
                     Log.d(
                         "ProductDetailsViewModel",
                         "Related movies fetched successfully: ${result.data}"
+
+
                     )
+                    result.data?.movieInfo?.items?.forEach {
+                        Log.d(
+                            "ProductDetailsViewModel",
+                            "Related movies fetched successfully: ${it?.id}"
+
+
+                        )
+
+                    }
+
+
+
+
+
                 }
 
                 is NetworkResult.Error -> {

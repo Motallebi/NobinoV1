@@ -264,16 +264,19 @@ fun ShowPlans(viewModel: SubsCriptionViewModel,
                 items(plans.data!!.subData!!)
                 { plan->
 
+                    val discountAmount= (plan?.price?.discountAmount)?.times((0.1))?.toInt()
+
+
 
 
                     SubscriptionCard3(
 
                         title =plan?.name.toString(),
                         duration =  plan?.description.toString(),
-                        originalPrice =  plan?.price?.totalAmount, // Original price (optional)
-                        discountedPrice = plan?.price?.discountAmount, // Discounted price (mandatory)
+                        originalPrice = if (discountAmount==0)  0 else  (plan?.price?.amount)?.times((0.1))?.toInt(), // Original price (optional)
+                        discountedPrice = if (discountAmount==0) (plan.price.amount)?.times((0.1))?.toInt() else  (plan?.price?.totalAmount)?.times((0.1))?.toInt(),  // Discounted price (mandatory)
                         imagePath = IMAGE_BASE_URL+plan?.logo,
-                        discountPercentage = 80, // Show
+                        discountPercentage = plan?.price?.discount?.value?.toInt(), // Show
 
 
 
@@ -809,7 +812,7 @@ fun SubscriptionCard3(
                     ) {
                         originalPrice?.let {
                             Text(
-                                text =DigitHelper.formatWithCommas(it)+" هزارتومان",
+                                text = if(originalPrice==0) "" else  DigitHelper.formatWithCommas(it)+" هزارتومان",
                                 fontSize = 14.sp,
                                 color = Color.Gray,
                                 textDecoration = TextDecoration.LineThrough

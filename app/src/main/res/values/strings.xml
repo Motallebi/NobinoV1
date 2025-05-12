@@ -15,6 +15,8 @@
     <string name="Description">توضیحات فیلم </string>
     <string name="RelatedMovies">پیشنهاد‌های مرتبط</string>
     <string name="PlayMovie">پخش فیلم</string>
+    <string name="PlayFirstEpisode">پخش قسمت اول</string>
+
     <string name="LoginFirst">ورود و پخش</string>
     <string name="Actors">بازیگران</string>
     <string name="input_phone_please">    لطفا شمماره تلفن همراه خود را وارد نمایید.</string>

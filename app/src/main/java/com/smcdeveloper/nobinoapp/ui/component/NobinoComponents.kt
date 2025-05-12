@@ -88,6 +88,7 @@ import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
 import com.smcdeveloper.nobinoapp.ui.theme.spacing
+import com.smcdeveloper.nobinoapp.util.Constants.DEFAULT_IMAGE_POSETR
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
 
 
@@ -145,6 +146,8 @@ fun HtmlText(html: String, modifier: Modifier = Modifier, textColor: Color = Col
                 text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 movementMethod = LinkMovementMethod.getInstance() // Enables clickable links
                 setTextColor(textColor.toArgb())
+
+
 
 
             }
@@ -789,7 +792,7 @@ fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {
         // Background image
         val imagePath = "https://vod.nobino.ir/vod/" + sliderInfo?.imageHorizontalPath.orEmpty()
         AsyncImage(
-            model = imagePath,
+            model = if(sliderInfo?.imageHorizontalPath!!.isNotEmpty()) imagePath else DEFAULT_IMAGE_POSETR,
             contentDescription = "Movie Poster",
             modifier = Modifier
                 // .fillMaxSize(),
@@ -1026,7 +1029,7 @@ fun MovieCardtestByTag(
             val imagePath = "https://vod.nobino.ir/vod/" + movieInfo.images[0]?.src
 
             AsyncImage(
-                model = imagePath,
+                model = if (movieInfo.images[0]?.src!!.isNotEmpty()) imagePath else DEFAULT_IMAGE_POSETR,
                 contentDescription = "Movie Poster",
                 modifier = Modifier
                     // .fillMaxSize(),

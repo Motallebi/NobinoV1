@@ -11,9 +11,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.Button
+
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +29,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,11 +44,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.component.HtmlText
+import com.smcdeveloper.nobinoapp.ui.theme.ageSelectedButton
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
+import com.smcdeveloper.nobinoapp.ui.theme.productDescription
+import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
+import com.smcdeveloper.nobinoapp.ui.theme.sliderdots
+import com.smcdeveloper.nobinoapp.util.Constants.DEFAULT_IMAGE_POSETR
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
 import kotlinx.coroutines.runBlocking
@@ -95,7 +109,10 @@ fun SeriesDetailPage(
 
     LaunchedEffect(selectedTabIndex) {
         if (selectedTabIndex == 0) {
-            val tag = products.data?.data?.tags?.get(0)?.id
+            val tag = products.data?.data?.tags?.get(1)?.id
+
+
+
             Log.d("ProductDetailPage", "Fetching related movies for ID: $productId")
             Log.d("ProductDetailPage", "Fetching related movies for tag : $tag")
 
@@ -112,7 +129,7 @@ fun SeriesDetailPage(
 
             products.data?.data?.tags?.forEachIndexed { index, tag ->
 
-                if(index>0)
+
 
                 tagList.add(tag.id)
 
@@ -124,7 +141,8 @@ fun SeriesDetailPage(
 
 
 
-            productDetailsViewModel.getRelatedMovies(tagList.subList(1,2)
+         //  productDetailsViewModel.getRelatedMovies(tagList.subList(1,2)
+            productDetailsViewModel.getRelatedMovies(tagList[1] )
 
 
 
@@ -132,7 +150,7 @@ fun SeriesDetailPage(
 
 
 
-            )
+
 
             relatedMovies.data?.movieInfo?.items?.forEach {
 
@@ -294,17 +312,7 @@ fun ShowSeriesProductDetailWithTabs(
 
 
 
-        if (videoUrl.isNullOrEmpty()) {
-            item {
-                Text(
-                    text = "Video is not available for this product.",
-                    color = Color.Red,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
 
-        }
 
         // Tabs
         val tabTitles = listOf("Description", "Episodes","RelatedMovies")
@@ -446,7 +454,7 @@ fun SeriesProductBanner(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Button(
+            Button (
                 onClick = {
                     if (isUserLogin) {
                        // viewModel.getSeriesFirstEpisode(12702,0)
@@ -552,12 +560,31 @@ fun SeriesProductBanner(
                 },
                // enabled = isVideoAvailable && isUserLogin,
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (isVideoAvailable && isUserLogin) Color.Red else Color.Gray
+                    contentColor = if ((isVideoAvailable && isUserLogin) ) Color.Red else Color.Gray,
+                    containerColor = Color.Red
+
+
+                ),
+                shape = MaterialTheme.roundedShape.exlarge
+            )
+
+
+
+            {
+               Icon(
+                    painterResource(R.drawable.play1), "",
+                    modifier = Modifier.size(32.dp),
+                    tint = Color.White
+
+
                 )
-            ) {
+
+
                 Text(
-                    text = if (isVideoAvailable && isUserLogin) "Play Movie" else "Login First",
-                    color = Color.White
+                    text = if (isVideoAvailable && isUserLogin) stringResource(R.string.PlayFirstEpisode) else stringResource(
+                        R.string.LoginFirst
+                    ),
+                    style = MaterialTheme.typography.nobinoLarge
                 )
             }
         }
@@ -690,9 +717,12 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
                             LazyRow {
 
                                 items(movies) { movie ->
+
                                     com.smcdeveloper.nobinoapp.ui.screens.product.RelatedMovieItem(
                                         movie
                                     )
+
+
                                 }
 
                             }
@@ -846,7 +876,10 @@ fun loadEpisodes1(
 @Composable
 fun loadEpisodes(
     relatedMovies: NetworkResult<MovieResult>
-): List<MovieResult.DataMovie.Item> {
+): List<MovieResult.DataMovie.Item>
+
+
+{
     var sessions by remember { mutableStateOf(emptyList<MovieResult.DataMovie.Item>()) }
 
     when (relatedMovies) {
@@ -1144,7 +1177,9 @@ fun Episodes(
         sessions: List<MovieResult.DataMovie.Item>, // List of sessions
         viewModel: ProductDetailsViewModel, // ViewModel reference
         navController: NavHostController
-    ) {
+    )
+
+    {
         var selectedSessionIndex by remember { mutableStateOf(0) } // Tracks the selected session index
 
         // ✅ Observe episodes from ViewModel
@@ -1394,10 +1429,10 @@ fun SessionDropdownMenu(
         episode: MovieResult.DataMovie.Item,
         navController: NavHostController
     ) {
-        Row(
+        Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.sliderdots, shape = RoundedCornerShape(8.dp))
                 .padding(8.dp)
                 .clickable {
 
@@ -1409,18 +1444,37 @@ fun SessionDropdownMenu(
 
             verticalAlignment = Alignment.CenterVertically
         )
+
         {
+
+
+
+
+
+
+
+
             AsyncImage(
-                model = "https://vod.nobino.ir/vod/${episode.images?.firstOrNull()?.src}",
+
+
+
+                model = if(episode.images?.get(1)?.src!!.isNotEmpty()) "https://vod.nobino.ir/vod/${episode.images.get(1)?.src}" else DEFAULT_IMAGE_POSETR,
                 contentDescription = episode.name,
+                contentScale = ContentScale.FillBounds,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(64.dp,100.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column(modifier =
+            Modifier.weight(1f)
+
+            ) {
+
+
+
 
 
                 Text(
@@ -1428,22 +1482,38 @@ fun SessionDropdownMenu(
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.productDescription
+
                 )
-                Text(
+
+
+                HtmlText(
+                    html = episode.shortDescription ?: "No description available",
+                    textColor = MaterialTheme.colorScheme.productDescription
+
+
+                )
+
+
+
+
+
+
+               /* Text(
                     text = episode.shortDescription ?: "No description available",
                     fontSize = 12.sp,
                     color = Color.Gray,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
-                )
+                )*/
             }
 
-            Text(
+            /*Text(
                 text = "${episode.ages} mins",
                 fontSize = 12.sp,
                 color = Color.Gray
-            )
+            )*/
         }
     }
 
@@ -1685,14 +1755,14 @@ fun SessionDropdownMenu(
                     onDismissRequest = { expanded = false },
                     modifier = Modifier
                         .width(with(LocalDensity.current) { boxWidth.toDp() })
-                        .background(Color.Red, shape = RoundedCornerShape(16.dp))
+                        .background(Color.Red, shape = RoundedCornerShape(4.dp))
                 )
                 {
                     sessions.forEachIndexed { index, session ->
                         DropdownMenuItem(
                             content = {
 
-                                androidx.compose.material3.Text(
+                               Text(
                                     //text = session .name.toString(),
                                     text = " فصل   ${index + 1} ",
 

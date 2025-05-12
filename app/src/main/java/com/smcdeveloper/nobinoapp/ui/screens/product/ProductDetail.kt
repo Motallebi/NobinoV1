@@ -134,9 +134,48 @@ fun ProductDetailPage(
 
     LaunchedEffect(selectedTabIndex) {
         if (selectedTabIndex == 1) {
-            val tag = products.data?.data?.tags?.get(0)?.id
+            val tag = products.data?.data?.tags?.get(1)?.id
+            val tagList =products.data?.data?.tags
+          val newTagString =  tagList?.filter {
+                it.id !="32dcb9a6-0b99-42c1-a2a0-f2dd20dbc7fa"
+
+
+
+
+            }
+
+            val newTagString1 =  tagList?.filter {
+                it.id !="32dcb9a6-0b99-42c1-a2a0-f2dd20dbc7fa"
+
+
+
+            }?.map {
+                it.id
+
+            }?.subList(0,2)
+
+
+
+           val tagsForApi:List<String> = listOf(newTagString!![0].id,newTagString[1].id)
+
+
+
+
+
+
+
+
+
             Log.d("ProductDetailPage", "Fetching related movies for tag: $tag")
-            productDetailsViewModel.getRelatedMovies(tags = tag.toString())
+            Log.d("ProductDetailPage", "Fetching related movies for taglist: $newTagString1")
+
+            productDetailsViewModel.getRelatedMovies(tags =newTagString1!! )
+
+
+
+
+
+
         }
     }
 
@@ -442,7 +481,7 @@ fun ShowOtherProductDetailWithTabs(
         // Tab Content
         when (selectedTabIndex) {
             2 -> ProductDescription(description = productDescription)
-            1 -> RelatedTab(relatedMovies = relatedMovies)
+            1 -> RelatedTab(relatedMovies = relatedMovies,productId)
             0 -> ProductDescriptionWithExtras( product = product,navController=navController)
 
 
@@ -658,7 +697,7 @@ fun ProductDescriptionWithExtras(
 
 
 @Composable
-fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
+fun RelatedTab(relatedMovies: NetworkResult<MovieResult>,productId: Int) {
     when (relatedMovies) {
         is NetworkResult.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -671,8 +710,11 @@ fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
             }
         }
         is NetworkResult.Success -> {
-            val movies = relatedMovies.data?.movieInfo?.items.orEmpty().filterNotNull()
-            if (movies.isEmpty()) {
+            val movies = relatedMovies.data?.movieInfo?.items?.filter {
+                it?.id!=productId
+
+            }
+            if (movies!!.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(text = "No related movies available.")
                 }
@@ -684,10 +726,14 @@ fun RelatedTab(relatedMovies: NetworkResult<MovieResult>) {
             Row()
             {
 
-                LazyRow {
+                LazyRow(modifier = Modifier.padding(vertical = 30.dp)) {
 
                     items(movies) { movie ->
-                        RelatedMovieItem(movie)
+
+
+                        if (movie != null) {
+                            RelatedMovieItem(movie)
+                        }
                     }
 
                 }
@@ -742,29 +788,64 @@ fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
     Column(
         modifier = Modifier
             .padding(8.dp)
-            .background(Color.LightGray, RoundedCornerShape(8.dp))
-            .fillMaxWidth()
+            //.background(Color.DarkGray, RoundedCornerShape(16.dp))
+            .size(96.dp,140.dp)
             .clip(RoundedCornerShape(8.dp)),
         horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    )
+
+
+
+
+    {
+
+
         AsyncImage(
-            model = "https://vod.nobino.ir/vod/${movie.images?.firstOrNull()?.src}",
+            model = "https://vod.nobino.ir/vod/${movie.images?.get(1)?.src}",
             contentDescription = movie.name,
+            contentScale = ContentScale.FillBounds ,
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
+                .size(96.dp,120.dp)
+                .clip(RoundedCornerShape(8.dp))
+
+
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
 
-        Text(
-            text = movie.name ?: "Untitled",
-            fontWeight = FontWeight.Bold,
-            fontSize = 14.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center
+
+        Box(modifier = Modifier.fillMaxSize(),
+           //.background(Color.Green),
+            contentAlignment = Alignment.BottomCenter
+
+
         )
+        {
+
+            Text(
+                text = movie.name ?: "Untitled",
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
+            )
+
+
+
+
+        }
+
+
+
+
+
+
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+
+
+
     }
 }
 

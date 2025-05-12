@@ -95,6 +95,9 @@ val ColorScheme.searchIndicatorLine: Color
 
 
 
+val ColorScheme.productDescription: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF9898A0) else Color(0xFF9898A0)
 
 
 

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -57,9 +58,9 @@ fun NobinoTop(navController: NavHostController) {
         navigationIcon = { // ✅ Add an icon at the start
             IconButton(onClick = { /* Handle icon click */ }) {
                 Image (
-                    painterResource(R.drawable.nobino_logo), // Replace with your desired icon
+                    painterResource(R.drawable.logo), // Replace with your desired icon
                     contentDescription = "Menu",
-                   // Modifier.padding(start = 20.dp, end = 20.dp)
+                    Modifier.size(32.dp)
                     //tint = Color.White
                 )
             }
