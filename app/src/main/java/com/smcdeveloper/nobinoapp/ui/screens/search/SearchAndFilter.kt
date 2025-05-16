@@ -57,6 +57,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -255,7 +256,8 @@ fun PerformSearch( performSearch:Boolean,tags:String="",query: String,
 
 
 
-) {
+)
+{
     LaunchedEffect(performSearch) {
         Log.d("search2", "performing search......")
         Log.d("search2", "performing search......")
@@ -284,6 +286,7 @@ fun PerformSearch( performSearch:Boolean,tags:String="",query: String,
 
 
 
+//////////
 
 
 @Composable
@@ -561,6 +564,11 @@ fun BottomSheetSearch(
         is NetworkResult.Success -> {
             Log.d("genres", "✅ Successfully genres ${state.data?.size} genres")
             state.data
+
+
+
+
+
         }
 
         is NetworkResult.Error -> {
@@ -573,6 +581,17 @@ fun BottomSheetSearch(
             emptyList()
         }
     }
+    if (genres != null) {
+        genres.forEach {
+
+            filterViewModel.updateCheckBoxSate(it.translatedName,false)
+
+
+        }
+    }
+
+
+
 
 
     // 🔴 Fetch Country List (Dynamic API Data)
@@ -988,6 +1007,7 @@ fun BottomSheetSearch(
 
 
         {
+
             Column {
                 Row( modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -1040,6 +1060,8 @@ fun BottomSheetSearch(
         // 🔴 Child Bottom Sheet for Specific Filter Selection
           val show = filterViewModel.isShowClearIconVisible.collectAsState()
           Log.d("Filter","FilterViewModel show value ${show.value}")
+        // val checkBoxStates = remember { mutableStateMapOf<String,Boolean>()}
+         val testname = remember { mutableStateOf("") }
 
         FilterBottomSheet (
 
@@ -1052,8 +1074,10 @@ fun BottomSheetSearch(
             onRemoveAllClick = {
 
                // selectedGenreIds.clear()
-                Log.d("Filter","onRemoveClicked")
-                isAllCheckBoxesclear=true
+
+
+
+
 
 
 
@@ -1090,6 +1114,7 @@ fun BottomSheetSearch(
 
 
                 when (selectedFilterType) {
+
                     FilterType.GENRE -> {
 
 
@@ -1103,8 +1128,19 @@ fun BottomSheetSearch(
 
 
 
-
                         if (genres != null) {
+
+                            Log.d("Filter4","selected genres  ${selectedGenreIds.size}")
+
+
+
+
+
+
+
+
+
+
                             val selectedItemIds = remember { mutableSetOf<String>() }
                             Log.d("Filter","selected genres  ${selectedGenreIds.size}")
                             Log.d("Filter","selected genres is empty  ${selectedGenreIds.isEmpty()}")
@@ -1116,12 +1152,32 @@ fun BottomSheetSearch(
                                 onItemSelected = { genre, isSelected ->
 
 
+
+
+
+                                  //  Log.d("Filter","selected genres ${genre.name}   ${checkBoxStates[genre.name]}")
+
+
+
                                     //AddGenre
                                     selectedGenreIds = selectedGenreIds.toMutableSet().apply {
 
+
+
                                         if (isSelected) {
+                                            Log.d("Filter3","isSelected genres  ${genre.translatedName}")
+                                            testname.value="hi"
                                             add(genre.id.toString())
                                             Log.d("Filter1","isSelected genres  ${selectedGenreIds.size}")
+                                            filterViewModel.updateCheckBoxSate(genre.translatedName,true)
+
+
+
+
+                                             Log.d("Filter3","isSelected genres ${genre.translatedName}  ${filterViewModel.getCheckState(genre.translatedName)}")
+                                           // Log.d("Filter2","isSelected genres ${genre.name}  ${checkBoxStates["تریلر"]}")
+
+
                                           //  if(selectedGenreIds.size>=0)
 
                                                 filterViewModel.updateIconVisibility(true)
@@ -1133,10 +1189,19 @@ fun BottomSheetSearch(
 
 
 
-                                        } else {
+                                        }
+                                        else {
+                                            Log.d("Filter3","isSelected genres ${genre.translatedName}  ${filterViewModel.getCheckState(genre.translatedName)}")
+
+
 
                                             remove(genre.id.toString())
+                                            Log.d("Filter3","isSelected genres ${genre.translatedName}  ${filterViewModel.getCheckState(genre.translatedName)}")
+
                                             Log.d("Filter1","isSelected genres  ${selectedGenreIds.size}")
+                                          //  Log.d("Filter1","isSelected genres ${genre.name}  ${checkBoxStates[genre.name]}")
+
+                                          //  filterViewModel.updateCheckBoxSate(genre.name,false)
                                             if(selectedGenreIds.size==1)
                                             {
                                                 filterViewModel.updateIconVisibility(false)
@@ -1146,6 +1211,8 @@ fun BottomSheetSearch(
 
 
                                         }
+                                        Log.d("Filter3","isSelected genres!!! ${genre.translatedName}  ${filterViewModel.getCheckState(genre.translatedName)}")
+
 
 
                                     }
@@ -1208,24 +1275,34 @@ fun BottomSheetSearch(
 
 
 
-                                onClose = { isChildSheetVisible = false },
+                                onClose = {
+                                    isChildSheetVisible = false
+
+                                          },
                                isAllClear = isAllCheckBoxesclear,
                                 onClearAll = isAllCheckBoxesclear,
                                 onClear = {
 
+                                    Log.d("Filter",  "on clear  trailer state is ${filterViewModel.getCheckState("Thriller")}" )
 
                                     Log.d("Filter","OnClear On Genre Clicked" )
                                   //  filterViewModel.updateIconVisibility(true)
                                     showRemoveAllCheckBoxesIcon=true
 
-                                    selectedGenreIds.toMutableSet().clear()
+                                  //  selectedGenreIds.toMutableSet().clear()
 
 
 
-                                }
+                                },
+                                selectedCheckBoxes = filterViewModel.checkBoxStates
 
                             )
                         }
+
+
+                        Log.d("Filter",  "trailer state is ${filterViewModel.getCheckState("Thriller")}" )
+                        Log.d("Filter",  "trailer state is ${testname.value}" )
+
 
                     }
 

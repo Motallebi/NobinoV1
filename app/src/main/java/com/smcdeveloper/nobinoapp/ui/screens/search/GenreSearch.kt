@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.search
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ fun GenreSelectionSheet(
 
     items: List<GenreInfo>,
     selectedItemIds: MutableSet<String>,
+    selectedCheckBoxes:MutableMap<String,Boolean>,
 
     onItemSelected: (GenreInfo, Boolean) -> Unit,
     onClose: () -> Unit,
@@ -54,8 +56,36 @@ fun GenreSelectionSheet(
 )
 
 {
+
+
+    items.forEach {
+
+        Log.d("Filter1", "check Box stattus  ${it.name} is ${selectedCheckBoxes[it.translatedName]}" )
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     var searchQuery by remember { mutableStateOf("") }
     val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
+
+
+
+
+
+
 
 
 
@@ -169,8 +199,13 @@ fun GenreSelectionSheet(
 
                             SelectionCheckboxItem(
                                 text = item.name, // 🔴 Show country name
-                                isSelected = if(isAllClear) false else item.id.toString() in selectedItemIds, // 🔴 Check by ID
+                                isSelected =
+                              //  if((selectedCheckBoxes[item.id]==false)) false  else item.id.toString() in selectedItemIds, // 🔴 Check by ID
+                              if(item.id.toString() in selectedItemIds)  true else selectedCheckBoxes[item.translatedName]!!,
+
+
                                 onSelected = { isSelected ->
+
 
                                     onClear()
 

@@ -35,12 +35,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -441,8 +442,12 @@ fun ShowOtherProductDetailWithTabs(
         val tabTitles = listOf(stringResource(R.string.Description), stringResource(R.string.RelatedMovies))
         TabRow(
             selectedTabIndex = selectedTabIndex,
-            containerColor = Color.Black,
-            contentColor = Color.White,
+            backgroundColor = Color.Black,
+            contentColor = Color.Red,
+            //backgroundColor = Color.Transparent,
+
+
+
            // divider = {},
 
 
@@ -470,9 +475,29 @@ fun ShowOtherProductDetailWithTabs(
                 Tab(
                     selected = selectedTabIndex == index,
                     onClick = { onTabSelected(index) },
-                    text = { Text(text = title) },
+                    text = {
+                        Text(text = title,
+                            style = MaterialTheme.typography.nobinoMedium
+
+                            )
+
+
+                           },
                     selectedContentColor = Color.Red,
                     unselectedContentColor = Color.White
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 )
             }

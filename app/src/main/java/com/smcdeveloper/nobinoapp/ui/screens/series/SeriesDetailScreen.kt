@@ -190,7 +190,9 @@ fun SeriesDetailPage(
 
 
     Scaffold(
-        modifier = Modifier.background(Color.Gray)
+        modifier = Modifier.background(Color.DarkGray),
+        backgroundColor = Color.Black
+
 
     )
 
@@ -249,6 +251,9 @@ fun SeriesDetailPage(
                             tags =productData.tags
 
                         )
+
+
+
                     }
                 }
             }
@@ -289,8 +294,12 @@ fun ShowSeriesProductDetailWithTabs(
     LazyColumn(
 
         modifier = Modifier.background(Color.Black)
+            .fillMaxSize()
 
-    )  {
+
+    )
+
+    {
 
         item {
             SeriesProductBanner(
@@ -315,10 +324,10 @@ fun ShowSeriesProductDetailWithTabs(
 
 
         // Tabs
-        val tabTitles = listOf("Description", "Episodes","RelatedMovies")
+
 
         item {
-
+            val tabTitles = listOf(stringResource(R.string.Description), stringResource(R.string.other_episodes),stringResource(R.string.RelatedMovies))
 
             TabRow(selectedTabIndex = selectedTabIndex,
                 backgroundColor = Color.Transparent,
@@ -326,7 +335,8 @@ fun ShowSeriesProductDetailWithTabs(
 
 
 
-            ) {
+            )
+            {
                 tabTitles.forEachIndexed { index, title ->
                     Tab(
                         selectedContentColor = Color.Red,
@@ -367,6 +377,7 @@ fun ShowSeriesProductDetailWithTabs(
 
                 )
                 2-> RelatedMovies(relatedMovies)
+
             }
 
 
@@ -681,6 +692,9 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
     }
 
 
+
+
+
     @Composable
     fun RelatedMovies(relatedMovies: NetworkResult<MovieResult>) {
 
@@ -711,10 +725,10 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
                     Column() {
 
 
-                        Row()
-                        {
 
-                            LazyRow {
+
+
+                            LazyRow(modifier = Modifier.padding(vertical = 30.dp)) {
 
                                 items(movies) { movie ->
 
@@ -728,7 +742,7 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
                             }
 
 
-                        }
+
 
                         /* Row()
                      {
@@ -764,6 +778,20 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
 
 
     }
+
+
+
+
+@Composable
+fun NewTab()
+{
+
+}
+
+
+
+
+
 
 
     /*
@@ -1031,7 +1059,10 @@ fun Episodes(
         // Show a message if no sessions are found
         Box(
             modifier = Modifier.fillMaxSize(),
+            //    .background(Color.Green),
+
             contentAlignment = Alignment.Center
+
         )
 
         {

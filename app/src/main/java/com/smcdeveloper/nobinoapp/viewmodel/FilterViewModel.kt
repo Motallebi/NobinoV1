@@ -1,7 +1,10 @@
 package com.smcdeveloper.nobinoapp.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smcdeveloper.nobinoapp.data.model.search.Genre
@@ -54,6 +57,36 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
 
     private val _genres = MutableStateFlow<NetworkResult<List<GenreInfo>>>(NetworkResult.Loading())
     val genres: StateFlow<NetworkResult<List<GenreInfo>>> get() = _genres.asStateFlow()
+
+    private val _checkBoxStates =  mutableStateMapOf<String,Boolean>()
+    val checkBoxStates: SnapshotStateMap<String, Boolean> = _checkBoxStates
+
+    fun updateCheckBoxSate(key:String,isChecked:Boolean)
+    {
+
+        _checkBoxStates[key]=isChecked
+
+
+
+
+
+    }
+
+    fun getCheckState(key:String):Boolean
+    {
+        Log.d("Filter3", "ViewModel $key")
+        Log.d("Filter3" , "status is  ${_checkBoxStates["Thriller"]}")
+
+        return _checkBoxStates.getOrDefault(key, false)
+
+
+    }
+
+
+
+
+
+
 
 
     var filterCriteria = mutableStateOf(FilterCriteria())
