@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import com.smcdeveloper.nobinoapp.data.model.search.CountryInfo
 import com.smcdeveloper.nobinoapp.ui.component.ParentFilterBottomSheet
 
 import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
+import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 
 
 @Composable
@@ -35,10 +37,12 @@ fun FilterCountriesSelectionSheet(
     items: List<CountryInfo>,
     selectedItemIds: Set<String>, // 🔴 Store only IDs
     onItemSelected: (CountryInfo, Boolean) -> Unit,
-    onClose: () -> Unit // 🔴 Handle closing bottom sheet
+    onClose: () -> Unit ,// 🔴 Handle closing bottom sheet
+    filterViewModel: FilterViewModel
 ) {
     var searchQuery by remember { mutableStateOf("") }
     val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    val checkboxState by filterViewModel.checkBoxStates.collectAsState()
 
     ParentFilterBottomSheet( isVisible = true, onDismiss = onClose, modifier = Modifier) { // 🔴 Use bottom sheet
         Column(
@@ -89,8 +93,16 @@ fun FilterCountriesSelectionSheet(
                         rowItems.forEach { item ->
                             SelectionCheckboxItem(
                                 text = item.name, // 🔴 Show country name
-                                isSelected = item.id.toString() in selectedItemIds, // 🔴 Check by ID
-                                onSelected = { isSelected -> onItemSelected(item, isSelected) },
+                                isSelected = checkboxState[item.name] ?: false,
+                                //item.id.toString() in selectedItemIds, // 🔴 Check by ID
+                                onSelected = {
+
+
+                                    isSelected -> onItemSelected(item, isSelected)
+                                    filterViewModel.updateCheckBoxState(item.name,isSelected)
+
+
+                                             },
                                 modifier = Modifier.weight(1f)
                             )
                         }

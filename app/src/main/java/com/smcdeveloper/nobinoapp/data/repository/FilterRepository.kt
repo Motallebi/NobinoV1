@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.data.repository
 
+import com.smcdeveloper.nobinoapp.data.model.search.Countries
 import com.smcdeveloper.nobinoapp.data.model.search.Genre
 import com.smcdeveloper.nobinoapp.data.model.search.Person
 import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
@@ -39,7 +40,14 @@ class FilterRepository @Inject constructor(private val api:HomeApiInterface):Bas
         }
 
 
+    suspend fun getCountries():NetworkResult<Countries> =
 
+        safeApiCall {
+
+            api.fetchContries()
+
+
+        }
 
 
 

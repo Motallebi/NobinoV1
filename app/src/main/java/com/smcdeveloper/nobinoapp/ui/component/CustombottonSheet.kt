@@ -60,7 +60,7 @@ fun ParentFilterBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(sheetHeight)
-                    .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                   // .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .pointerInput(Unit) { // 🔴 Prevent clicks from passing through the bottom sheet
                         detectTapGestures { /* Consume Clicks Inside the Sheet */ }
                     }
@@ -190,12 +190,17 @@ fun FilterBottomSheet(
     showIcon:Boolean=true,
     viewmodel:FilterViewModel= hiltViewModel(),
 
+
+
+
+
     //isParentVisible:Boolean,
     // selectedFilterType:FilterType?,
 
 
 
     content: @Composable ColumnScope.() -> Unit,
+
 
 
 
@@ -210,6 +215,7 @@ fun FilterBottomSheet(
 
     var isIconVisble by remember { mutableStateOf( showIcon)  }
     val isIconVisble2 =viewmodel.isShowClearIconVisible.collectAsState()
+
     Log.d("Filter","is icon visible $showIcon ---isIconVisble    $isIconVisble")
 
     if (isVisible) {

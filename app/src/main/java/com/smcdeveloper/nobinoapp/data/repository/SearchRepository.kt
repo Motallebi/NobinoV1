@@ -104,14 +104,7 @@ class SearchRepository @Inject constructor(val api:SearchApi) : BaseApiResponse2
 
 
 
-    suspend fun getCountries():NetworkResult<Countries> =
 
-        safeApiCall {
-
-            api.fetchContries()
-
-
-        }
 
 
 

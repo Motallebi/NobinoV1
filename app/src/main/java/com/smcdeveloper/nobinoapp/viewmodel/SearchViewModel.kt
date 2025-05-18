@@ -87,9 +87,6 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
 
 
-    private val _countries = MutableStateFlow<NetworkResult<Countries>>(NetworkResult.Loading())
-    val contries: StateFlow<NetworkResult<Countries>> get() = _countries.asStateFlow()
-
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -451,14 +448,7 @@ fun getMovieFlow(tags:String):StateFlow<PagingData<MovieResult.DataMovie.Item>>
 
 
 
-    fun fetchCountries() {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val data = repository.getCountries()
-            _countries.value = data
-            _isLoading.value = false
-        }
-    }
+
 
 
 

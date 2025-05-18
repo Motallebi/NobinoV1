@@ -22,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,9 +32,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.smcdeveloper.nobinoapp.data.model.search.GenreInfo
+import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.ParentFilterBottomSheet
 
 import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
+import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 
 
 @Composable
@@ -40,14 +44,16 @@ fun GenreSelectionSheet(
 
     items: List<GenreInfo>,
     selectedItemIds: MutableSet<String>,
-    selectedCheckBoxes:MutableMap<String,Boolean>,
+  //  selectedCheckBoxes:MutableMap<String,Boolean>,
 
     onItemSelected: (GenreInfo, Boolean) -> Unit,
+
     onClose: () -> Unit,
     onClearAll:Boolean,
 
     isAllClear:Boolean,
     onClear:()->Unit,
+    filterViewModel: FilterViewModel
 
 
 
@@ -57,11 +63,29 @@ fun GenreSelectionSheet(
 
 {
 
+   // val genreList  by filterViewModel.genres.collectAsState()
+    val checkboxState by filterViewModel.checkBoxStates.collectAsState()
 
-    items.forEach {
 
-        Log.d("Filter1", "check Box stattus  ${it.name} is ${selectedCheckBoxes[it.translatedName]}" )
 
+
+
+
+
+
+    var genres by remember {
+        mutableStateOf<List<GenreInfo>>(emptyList())
+    }
+
+
+    var loading by remember {
+        mutableStateOf(false)
+    }
+
+
+    LaunchedEffect(Unit) {
+
+       // filterViewModel.fetchGenres()
 
 
     }
@@ -78,8 +102,58 @@ fun GenreSelectionSheet(
 
 
 
-    var searchQuery by remember { mutableStateOf("") }
-    val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
+
+          /*   when(genreList)
+             {
+                 is NetworkResult.Loading->{
+
+                     loading=true
+
+
+                 }
+
+                 is NetworkResult.Error->{
+                     loading=false
+
+
+                 }
+
+                 is NetworkResult.Success->{
+
+                      genres=genreList.data ?: emptyList()
+                      loading=false
+
+
+
+
+
+
+                 }
+
+
+
+
+             }*/
+
+
+
+
+
+
+
+    if(loading)
+    {
+
+    }
+
+    else {
+
+
+
+
+
+        var searchQuery by remember { mutableStateOf("") }
+        val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
 
 
@@ -89,70 +163,98 @@ fun GenreSelectionSheet(
 
 
 
-    ParentFilterBottomSheet (
 
-       // isClear = onClearAll(),
-        isVisible = true,
-        onDismiss = onClose,
-        //onCheckBox = {},
-        modifier = Modifier) { // 🔴 Use bottom sheet
-        Column(
+
+        ParentFilterBottomSheet(
+
+            // isClear = onClearAll(),
+            isVisible = true,
+            onDismiss = onClose,
+            //onCheckBox = {},
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxSize()
-                .background(Color.Blue)
-               // .padding(16.dp)
-        )
-
-        {
-
-
-            var isCheckBoxCleared by remember {mutableStateOf( isAllClear )  }
-
-
-
-            // 🔴 Header with Close Button
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                // Text(text = title, style = MaterialTheme.typography.titleLarge)
-                IconButton(onClick = onClose) { // 🔴 Close bottom sheet
-                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 🔴 Search Bar with Debouncing
-            TextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                placeholder = { Text("جستجو...") }, // "Search..."
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-                },
+        ) { // 🔴 Use bottom sheet
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        shape = RoundedCornerShape(4.dp),
-                        color = MaterialTheme.colorScheme.background
-                    )
+                    .fillMaxSize()
+                    //.background(Color.Blue)
+                // .padding(16.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 🔴 List of Selectable Items (Country Names, but track by ID)
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(filteredItems.chunked(2)) { rowItems ->
-                    Row(modifier = Modifier.fillMaxWidth()) {
+            {
 
 
+             /*   var isCheckBoxCleared by remember { mutableStateOf(isAllClear) }
 
 
-                        rowItems.forEach { item ->
+                    if(isCheckBoxCleared)
+                        filterViewModel.clearAllGenreCheckBoxes(genres)*/
 
-                          /*  if(isAllClear)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // 🔴 Header with Close Button
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // Text(text = title, style = MaterialTheme.typography.titleLarge)
+                    IconButton(onClick = onClose) { // 🔴 Close bottom sheet
+                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 🔴 Search Bar with Debouncing
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = { Text("جستجو...") }, // "Search..."
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            shape = RoundedCornerShape(4.dp),
+                            color = MaterialTheme.colorScheme.background
+                        )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // 🔴 List of Selectable Items (Country Names, but track by ID)
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    items(filteredItems.chunked(2)) { rowItems ->
+                        Row(modifier = Modifier.fillMaxWidth()) {
+
+
+                            rowItems.forEach { item ->
+
+                                /*  if(isAllClear)
                             {
 
                                 SelectionCheckboxItem(
@@ -197,54 +299,61 @@ fun GenreSelectionSheet(
 
 
 
-                            SelectionCheckboxItem(
-                                text = item.name, // 🔴 Show country name
-                                isSelected =
-                              //  if((selectedCheckBoxes[item.id]==false)) false  else item.id.toString() in selectedItemIds, // 🔴 Check by ID
-                              if(item.id.toString() in selectedItemIds)  true else selectedCheckBoxes[item.translatedName]!!,
+                                SelectionCheckboxItem(
+                                    text = item.name, // 🔴 Show country name
+
+                                    isSelected = checkboxState[item.translatedName] ?: false,
+                                    //(item.id.toString() in selectedItemIds) ,
+                                    //checkboxState[item.translatedName]!! ?: false,
+
+                                    //(item.id.toString() in selectedItemIds),
+
+                                        //(item.id.toString() in selectedItemIds),
 
 
-                                onSelected = { isSelected ->
+                                   // selectedCheckBoxes[item.translatedName]!!,
+                                            //if(isAllClear) selectedCheckBoxes[item.translatedName]        (item.id.toString() in selectedItemIds) ,
+                                    //  if((selectedCheckBoxes[item.id]==false)) false  else item.id.toString() in selectedItemIds, // 🔴 Check by ID
+                                  //  if (item.id.toString() in selectedItemIds) true else selectedCheckBoxes[item.translatedName]!!,
 
 
-                                    onClear()
 
+                                    onSelected = { isSelected ->
 
-
-
-                                    onItemSelected(
-                                        item,
-                                        isSelected
-                                    )
-                                },
-                                modifier = Modifier.weight(1f),
-                                //onClearAll = onClearAll
-
-                            )
-                           // isCheckBoxCleared=false
-
-
+                                        filterViewModel.updateCheckBoxState(item.translatedName,isSelected)
+                                        Log.d("check", "on selected Check changed  $isSelected")
+                                        Log.d("check", "on selected Check changed check state ${item.translatedName} ${checkboxState[item.translatedName]!!}")
 
 
 
 
+                                      //  onClear()
 
 
 
 
+                                        onItemSelected(
+                                            item,
+                                            isSelected
+                                        )
+
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    //onClearAll = onClearAll
 
 
+                                )
+                                // isCheckBoxCleared=false
 
 
+                            }
+                            //isCheckBoxCleared = false
 
                         }
-                        isCheckBoxCleared=false
-
                     }
                 }
             }
         }
     }
-
 
 }
