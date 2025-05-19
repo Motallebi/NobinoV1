@@ -641,7 +641,24 @@ fun setOtpValue() {
             _userProfile.value = NetworkResult.Loading() // Show loading state
 
             delay(2000)
-            _userProfile.value = repository.getUserProfile(auth) // Fetch data and update state
+          val response =   repository.getUserProfile(auth) // Fetch data and update state
+            val code = response.code
+
+            when(code)
+            {
+                200->{ _userProfile.value=response    }
+                401->{
+                    _userProfile.value=NetworkResult.Error(message = "Error", code=401)
+
+
+                }
+
+
+            }
+
+
+
+
             _message.value=null
         }
     }

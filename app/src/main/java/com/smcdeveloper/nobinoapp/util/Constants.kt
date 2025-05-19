@@ -13,6 +13,8 @@ object Constants {
     const val SeasonCategory = "MOVIE"
     const val MovieCategory1 = "MOVIE"
     var USER_LOGIN_STATUS= false
+
+
     const val DEFAULT_IMAGE_POSETR="https://vod.nobino.ir/vod/IMAGES/2025-4/13530/13530_1745382041947_IMAGES_BANNER_MOBILE.jpg"
 
 

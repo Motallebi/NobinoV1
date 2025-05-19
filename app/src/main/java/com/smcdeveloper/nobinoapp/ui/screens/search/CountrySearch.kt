@@ -42,7 +42,7 @@ fun FilterCountriesSelectionSheet(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     val filteredItems = items.filter { it.name.contains(searchQuery, ignoreCase = true) }
-    val checkboxState by filterViewModel.checkBoxStates.collectAsState()
+    val checkboxState by filterViewModel.countryCheckBoxStates.collectAsState()
 
     ParentFilterBottomSheet( isVisible = true, onDismiss = onClose, modifier = Modifier) { // 🔴 Use bottom sheet
         Column(
@@ -99,7 +99,7 @@ fun FilterCountriesSelectionSheet(
 
 
                                     isSelected -> onItemSelected(item, isSelected)
-                                    filterViewModel.updateCheckBoxState(item.name,isSelected)
+                                    filterViewModel.updateCountryCheckBoxState(item.name,isSelected)
 
 
                                              },

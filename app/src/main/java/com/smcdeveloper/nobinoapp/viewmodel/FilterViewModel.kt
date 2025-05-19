@@ -3,14 +3,11 @@ package com.smcdeveloper.nobinoapp.viewmodel
 import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smcdeveloper.nobinoapp.data.model.search.Countries
-import com.smcdeveloper.nobinoapp.data.model.search.Genre
 import com.smcdeveloper.nobinoapp.data.model.search.GenreInfo
-import com.smcdeveloper.nobinoapp.data.model.search.Person
 import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.FilterRepository
@@ -29,6 +26,10 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
 
     private val _isShowClearIconVisible = MutableStateFlow<Boolean>(false)
     val isShowClearIconVisible : StateFlow<Boolean> = _isShowClearIconVisible.asStateFlow()
+
+
+    private val _filterType = MutableStateFlow<String>(FilterType.GENRE.name) // "genre", "city", "actor", "director"
+    val filterType: StateFlow<String> = _filterType.asStateFlow()
 
 
 
@@ -87,6 +88,14 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
 
     private val _countryCheckBoxStates = MutableStateFlow<MutableMap<String, Boolean>>(mutableMapOf())
     val countryCheckBoxStates: StateFlow<Map<String, Boolean>> = _countryCheckBoxStates.asStateFlow()
+
+    // Keep track of whether each filter has any checked boxes
+    private val _hasGenreChecked = MutableStateFlow(false)
+    val hasGenreChecked: StateFlow<Boolean> = _hasGenreChecked.asStateFlow()
+
+    private val _hasContryChecked = MutableStateFlow(false)
+    val hasContryChecked: StateFlow<Boolean> = _hasContryChecked.asStateFlow()
+
 
 
 
@@ -259,7 +268,7 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
                     filteredGenres?.forEach {
 
 
-                        updateCheckBoxSate(it.translatedName,false)
+                        updateGenreCheckBoxState(it.translatedName,false)
 
 
                     }
@@ -301,7 +310,7 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
             _countries.value = data
             data.data?.countryInfo?.forEach { countryInfo ->
 
-                updateCheckBoxState(countryInfo.name,false)
+                updateCountryCheckBoxState(countryInfo.name,false)
 
 
             }
@@ -349,6 +358,15 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
 
     }
 
+
+
+
+
+
+
+
+
+
     fun onRemoveAllClick(filterType:FilterType) {
         if (filterType == FilterType.GENRE) {
             Log.d("OnRemoveAll", "Genre Filter Clicked")
@@ -362,6 +380,8 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
 
             }
             _genreCheckBoxStates.value = updatedCheckBoxStates
+            updateClearButtonVisibility()
+            _hasGenreChecked.value = false
         }
 
 
@@ -377,6 +397,8 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
 
             }
             _countryCheckBoxStates.value = updatedCheckBoxStates
+            updateClearButtonVisibility()
+            _hasContryChecked.value = false
         }
 
 
@@ -399,13 +421,53 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
     }
 
 
+    // Set the currently displayed filter
+    fun setCurrentFilter(filter: String) {
+        _filterType.value = filter
+        updateClearButtonVisibility() // Update visibility whenever the filter changes
+
+    }
+
+
+    // Update button visibility
+    private fun updateClearButtonVisibility() {
+        val currentFilterType = _filterType.value
+        Log.d("currentfilter","current filter type is $currentFilterType")
+
+        val isVisible = when (currentFilterType) {
+            FilterType.GENRE.name-> _hasGenreChecked.value
+            FilterType.COUNTRY.name -> _hasContryChecked.value
+           // "actor" -> _actorCheckBoxStates.value.any { it.value }
+          //  "director" -> _directorCheckBoxStates.value.any { it.value }
+            else -> false
+        }
+        _isShowClearIconVisible.value = isVisible
+    }
 
 
 
+    // Update checkbox states and filter type
+    fun updateGenreCheckBoxState(key: String, isChecked: Boolean) {
+        viewModelScope.launch {
+            val currentStates = _genreCheckBoxStates.value.toMutableMap()
+            currentStates[key] = isChecked
+            _genreCheckBoxStates.value = currentStates
+            _filterType.value = FilterType.GENRE.name
+            _hasGenreChecked.value = currentStates.any { it.value } // Update
+            updateClearButtonVisibility()
+        }
+    }
 
-
-
-
+    fun updateCountryCheckBoxState(key: String, isChecked: Boolean) {
+        viewModelScope.launch {
+            val currentStates = _countryCheckBoxStates.value.toMutableMap()
+            currentStates[key] = isChecked
+            _countryCheckBoxStates.value = currentStates
+            _filterType.value = FilterType.COUNTRY.name
+           _hasContryChecked.value = currentStates.any { it.value } // Update
+            updateClearButtonVisibility()
+        }
+    }
 
 
 

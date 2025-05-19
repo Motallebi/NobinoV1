@@ -1117,7 +1117,10 @@ fun BottomSheetSearch(
                 if(selectedFilterType==FilterType.GENRE)
                 {
                     filterViewModel.onRemoveAllClick(FilterType.GENRE)
-                    filterViewModel.updateIconVisibility(false)
+                    filterViewModel.setCurrentFilter(FilterType.GENRE.name)
+
+
+                   // filterViewModel.updateIconVisibility(false)
 
 
 
@@ -1131,7 +1134,8 @@ fun BottomSheetSearch(
                 if(selectedFilterType==FilterType.COUNTRY)
                 {
                     filterViewModel.onRemoveAllClick(FilterType.COUNTRY)
-                    filterViewModel.updateIconVisibility(false)
+                    filterViewModel.setCurrentFilter(FilterType.COUNTRY.name)
+                   // filterViewModel.updateIconVisibility(false)
 
 
 
@@ -1201,6 +1205,8 @@ fun BottomSheetSearch(
                 when (selectedFilterType) {
 
                     FilterType.GENRE -> {
+
+                        filterViewModel.setCurrentFilter(FilterType.GENRE.name)
 
 
 
@@ -1275,7 +1281,7 @@ fun BottomSheetSearch(
 
                                             //  if(selectedGenreIds.size>=0)
 
-                                            filterViewModel.updateIconVisibility(true)
+                                         //   filterViewModel.upc(true)
 
 
 
@@ -1298,7 +1304,7 @@ fun BottomSheetSearch(
 
                                            // filterViewModel.updateCheckBoxSate(genre.translatedName,false)
                                             if(selectedGenreIds.size==1) {
-                                                filterViewModel.updateIconVisibility(false)
+                                               // filterViewModel.updateIconVisibility(false)
 
                                             }
 
@@ -1402,6 +1408,7 @@ fun BottomSheetSearch(
 
 
                     FilterType.COUNTRY -> {
+                        filterViewModel.setCurrentFilter(FilterType.COUNTRY.name)
 
 
                         when (countryListState) {
@@ -1434,7 +1441,7 @@ fun BottomSheetSearch(
                                                 selectedCountryIds.toMutableSet().apply {
                                                     if (isSelected) {
 
-                                                        filterViewModel.updateIconVisibility(true)
+                                                       // filterViewModel.updateIconVisibility(true)
                                                         add(country.id.toString())
                                                     }
 
@@ -1445,7 +1452,7 @@ fun BottomSheetSearch(
                                                     {
 
                                                         if(selectedCountryIds.size==1) {
-                                                            filterViewModel.updateIconVisibility(false)
+                                                          //  filterViewModel.updateIconVisibility(false)
 
                                                         }
                                                         remove(

@@ -64,7 +64,7 @@ fun GenreSelectionSheet(
 {
 
    // val genreList  by filterViewModel.genres.collectAsState()
-    val checkboxState by filterViewModel.checkBoxStates.collectAsState()
+    val checkboxState by filterViewModel.genreCheckBoxStates.collectAsState()
 
 
 
@@ -320,7 +320,7 @@ fun GenreSelectionSheet(
 
                                     onSelected = { isSelected ->
 
-                                        filterViewModel.updateCheckBoxState(item.translatedName,isSelected)
+                                        filterViewModel.updateGenreCheckBoxState(item.translatedName,isSelected)
                                         Log.d("check", "on selected Check changed  $isSelected")
                                         Log.d("check", "on selected Check changed check state ${item.translatedName} ${checkboxState[item.translatedName]!!}")
 
