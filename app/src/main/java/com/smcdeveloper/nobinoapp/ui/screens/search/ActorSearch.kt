@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,28 +37,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 
 
 @Composable
@@ -67,9 +52,12 @@ fun FilterActorsSelectionSheet(
     selectedActorIds: Set<String>,
     onActorSelected: (PersonInfo, Boolean) -> Unit,
     onSearchQueryChanged: (String) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    filterViewModel: FilterViewModel
+
 ) {
     var searchQuery by remember { mutableStateOf("") }
+    val checkboxState by filterViewModel.actorCheckBoxStates.collectAsState()
 
     Column(
         modifier = Modifier
@@ -117,8 +105,17 @@ fun FilterActorsSelectionSheet(
             items(actors) { actor ->
                 ActorGridItem(
                     actor = actor,
-                    isSelected = actor.id.toString() in selectedActorIds.toString(),
-                    onActorSelected = onActorSelected
+                    isSelected = checkboxState[actor.id.toString()] ?: false,
+                    //actor.id.toString() in selectedActorIds.toString(),
+                    onActorSelected =
+                    { _,isSelected->
+
+                        onActorSelected(actor,isSelected)
+
+                        filterViewModel.updateActorCheckBoxState(actor.id.toString(),isSelected)
+                    }
+
+
                 )
             }
         }
@@ -193,6 +190,55 @@ fun ActorGridItem(
             .clickable { onActorSelected(actor, !isSelected) },
         verticalAlignment = Alignment.CenterVertically
     ) {
+
+
+
+        Box()
+        {
+
+            Image(
+                painter = rememberAsyncImagePainter("https://vod.nobino.ir/vod/" + actor.imagePath),
+                contentDescription = actor.name,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        onActorSelected(actor, !isSelected)
+
+                    }
+            )
+            if(isSelected) {
+
+                Image(painterResource(R.drawable.share),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .clickable {
+
+
+                        }
+
+
+                )
+            }
+
+
+
+
+
+
+
+
+        }
+
+        // 🔴 Circular Actor Image
+
+
+
+
+
+
         // 🔴 Actor Name
         Text(
             text = actor.name,
@@ -200,13 +246,6 @@ fun ActorGridItem(
             modifier = Modifier.weight(1f)
         )
 
-        // 🔴 Circular Actor Image
-        Image(
-            painter = rememberAsyncImagePainter("https://vod.nobino.ir/vod/" + actor.imagePath),
-            contentDescription = actor.name,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-        )
+
     }
 }

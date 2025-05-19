@@ -16,9 +16,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.smcdeveloper.nobinoapp.data.model.AudioSubtitle
+import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 
 @Composable
 fun FilterAudioSelectionSheet(
@@ -26,11 +29,13 @@ fun FilterAudioSelectionSheet(
     //  audioSubtitles: List<AudioSubtitle>,
     selectedAudioIds: Set<String>,
     onAudioSelected: (AudioSubtitle, Boolean) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    filterViewModel: FilterViewModel
 
 
 ) {
 
+     val checkBoxState by filterViewModel.audioCheckBoxStates.collectAsState()
 
     Column(
         modifier = Modifier
@@ -58,8 +63,12 @@ fun FilterAudioSelectionSheet(
                     rowItems.forEach { audio ->
                         SelectionCheckboxItem2(
                             text = audio.name, // ✅ Show localized name
-                            isSelected = audio.id in selectedAudioIds, // ✅ Check by ID
+                            isSelected = checkBoxState[audio.id] ?: false,
+
+                            //audio.id in selectedAudioIds, // ✅ Check by ID
                             onSelected = { isSelected ->
+
+                                filterViewModel.updateAudioCheckBoxState(audio.id,isSelected)
                                 onAudioSelected(
                                     audio,
                                     isSelected

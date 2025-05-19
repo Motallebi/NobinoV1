@@ -13,6 +13,7 @@ import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.repository.FilterRepository
 import com.smcdeveloper.nobinoapp.ui.screens.search.FilterCriteria
 import com.smcdeveloper.nobinoapp.ui.screens.search.FilterType
+import com.smcdeveloper.nobinoapp.util.Constants.FILTER_AUDIO_SUBTITLE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -86,6 +87,10 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
     val genreCheckBoxStates: StateFlow<Map<String, Boolean>> = _genreCheckBoxStates.asStateFlow()
 
 
+    private val _actorCheckBoxStates = MutableStateFlow<MutableMap<String, Boolean>>(mutableMapOf())
+    val actorCheckBoxStates: StateFlow<Map<String, Boolean>> = _actorCheckBoxStates.asStateFlow()
+
+
     private val _countryCheckBoxStates = MutableStateFlow<MutableMap<String, Boolean>>(mutableMapOf())
     val countryCheckBoxStates: StateFlow<Map<String, Boolean>> = _countryCheckBoxStates.asStateFlow()
 
@@ -96,6 +101,22 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
     private val _hasContryChecked = MutableStateFlow(false)
     val hasContryChecked: StateFlow<Boolean> = _hasContryChecked.asStateFlow()
 
+
+    private val _hasActorChecked = MutableStateFlow(false)
+    val hasActorChecked: StateFlow<Boolean> = _hasActorChecked.asStateFlow()
+
+    private val _hasAudioChecked = MutableStateFlow(false)
+    val hasAudioChecked: StateFlow<Boolean> = _hasAudioChecked.asStateFlow()
+
+    private val _hasSubtitleChecked = MutableStateFlow(false)
+    val hasSubtitleChecked: StateFlow<Boolean> = _hasSubtitleChecked.asStateFlow()
+
+
+    private val _audioCheckBoxStates = MutableStateFlow<MutableMap<String, Boolean>>(mutableMapOf())
+    val audioCheckBoxStates: StateFlow<Map<String, Boolean>> = _audioCheckBoxStates.asStateFlow()
+
+    private val _subtitleCheckBoxStates = MutableStateFlow<MutableMap<String, Boolean>>(mutableMapOf())
+    val subtitleCheckBoxStates: StateFlow<Map<String, Boolean>> = _subtitleCheckBoxStates.asStateFlow()
 
 
 
@@ -226,7 +247,29 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
 
             // 🔴 Extract `personInfo` list only if API call is successful
             _actors.value = when (data) {
-                is NetworkResult.Success -> NetworkResult.Success(data.data?.personInfo) // ✅ Extract actors
+                is NetworkResult.Success ->
+                {
+
+
+                    _actors.value.data?.forEach {
+
+
+                       updateActorCheckBoxState(it.id.toString(),false)
+
+
+                    }
+
+
+                    NetworkResult.Success(data.data?.personInfo) // ✅ Extract actors
+
+
+
+
+
+
+
+                }
+
 
 
                 is NetworkResult.Error -> NetworkResult.Error(data.message.toString()) // ❌ Handle API error
@@ -402,6 +445,58 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
         }
 
 
+        if (filterType == FilterType.ACTOR) {
+            Log.d("OnRemoveAll", "Genre Filter Clicked")
+            // Get the current list of genres and reset their checkbox states
+            val currentActors = (_actors.value as? NetworkResult.Success)?.data ?: emptyList()
+            val updatedCheckBoxStates = _actorCheckBoxStates.value.toMutableMap()
+            currentActors.forEach { actor ->
+                updatedCheckBoxStates[actor.id.toString()] = false
+                // Log.d("OnRemoveAll", "Genre Filter Clicked ${genre.translatedName}")
+
+
+            }
+            _actorCheckBoxStates.value = updatedCheckBoxStates
+            updateClearButtonVisibility()
+            _hasActorChecked.value = false
+        }
+
+        if (filterType == FilterType.AUDIO) {
+            Log.d("OnRemoveAll", "Genre Filter Clicked")
+            // Get the current list of genres and reset their checkbox states
+            val currentAudio = FILTER_AUDIO_SUBTITLE
+            val updatedCheckBoxStates = _audioCheckBoxStates.value.toMutableMap()
+            currentAudio.forEach { audio ->
+                updatedCheckBoxStates[audio.id.toString()] = false
+                // Log.d("OnRemoveAll", "Genre Filter Clicked ${genre.translatedName}")
+
+
+            }
+            _audioCheckBoxStates.value = updatedCheckBoxStates
+            updateClearButtonVisibility()
+            _hasAudioChecked.value = false
+        }
+
+        if (filterType == FilterType.SUBTITLE) {
+            Log.d("OnRemoveAll", "Genre Filter Clicked")
+            // Get the current list of genres and reset their checkbox states
+            val currentAudio = FILTER_AUDIO_SUBTITLE
+            val updatedCheckBoxStates = _subtitleCheckBoxStates.value.toMutableMap()
+            currentAudio.forEach { subtitle ->
+                updatedCheckBoxStates[subtitle.id.toString()] = false
+                // Log.d("OnRemoveAll", "Genre Filter Clicked ${genre.translatedName}")
+
+
+            }
+            _subtitleCheckBoxStates.value = updatedCheckBoxStates
+            updateClearButtonVisibility()
+            _hasSubtitleChecked.value = false
+        }
+
+
+
+
+
 
 
 
@@ -437,6 +532,10 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
         val isVisible = when (currentFilterType) {
             FilterType.GENRE.name-> _hasGenreChecked.value
             FilterType.COUNTRY.name -> _hasContryChecked.value
+            FilterType.ACTOR.name -> _hasActorChecked.value
+            FilterType.AUDIO.name->_hasAudioChecked.value
+            FilterType.SUBTITLE.name->_hasSubtitleChecked.value
+
            // "actor" -> _actorCheckBoxStates.value.any { it.value }
           //  "director" -> _directorCheckBoxStates.value.any { it.value }
             else -> false
@@ -458,6 +557,28 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
         }
     }
 
+
+
+    fun updateActorCheckBoxState(key: String, isChecked: Boolean) {
+        viewModelScope.launch {
+            val currentStates = _actorCheckBoxStates.value.toMutableMap()
+            currentStates[key] = isChecked
+            _actorCheckBoxStates.value = currentStates
+            _filterType.value = FilterType.ACTOR.name
+            _hasActorChecked.value = currentStates.any { it.value } // Update
+            updateClearButtonVisibility()
+        }
+    }
+
+
+
+
+
+
+
+
+
+
     fun updateCountryCheckBoxState(key: String, isChecked: Boolean) {
         viewModelScope.launch {
             val currentStates = _countryCheckBoxStates.value.toMutableMap()
@@ -468,6 +589,30 @@ class FilterViewModel @Inject constructor(private val filterRepository: FilterRe
             updateClearButtonVisibility()
         }
     }
+
+
+    fun updateAudioCheckBoxState(key: String, isChecked: Boolean) {
+        viewModelScope.launch {
+            val currentStates = _audioCheckBoxStates.value.toMutableMap()
+            currentStates[key] = isChecked
+            _audioCheckBoxStates.value = currentStates
+            _filterType.value = FilterType.AUDIO.name
+            _hasAudioChecked.value = currentStates.any { it.value } // Update
+            updateClearButtonVisibility()
+        }
+    }
+
+    fun updateSubtitleCheckBoxState(key: String, isChecked: Boolean) {
+        viewModelScope.launch {
+            val currentStates = _subtitleCheckBoxStates.value.toMutableMap()
+            currentStates[key] = isChecked
+            _subtitleCheckBoxStates.value = currentStates
+            _filterType.value = FilterType.SUBTITLE.name
+            _hasSubtitleChecked.value = currentStates.any { it.value } // Update
+            updateClearButtonVisibility()
+        }
+    }
+
 
 
 

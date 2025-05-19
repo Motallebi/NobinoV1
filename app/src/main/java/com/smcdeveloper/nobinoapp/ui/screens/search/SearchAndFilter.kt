@@ -390,6 +390,13 @@ fun BottomSheetSearch(
     var firstSearch by remember { mutableStateOf(false) }
     var isAllCheckBoxesclear by remember { mutableStateOf(false) }
     var showRemoveAllCheckBoxesIcon by remember { mutableStateOf(false) }
+    var _selectedYearFrom by remember { mutableStateOf("0") }
+    var _selectedYearto by remember { mutableStateOf("0") }
+    val selectedYears = mutableListOf(_selectedYearFrom,_selectedYearto)
+    var isYearSelectorVisible by remember { mutableStateOf(false) }
+
+
+
 
 
 
@@ -1145,6 +1152,39 @@ fun BottomSheetSearch(
 
 
 
+                if(selectedFilterType==FilterType.ACTOR)
+                {
+                    filterViewModel.onRemoveAllClick(FilterType.ACTOR)
+                    filterViewModel.setCurrentFilter(FilterType.ACTOR.name)
+                    // filterViewModel.updateIconVisibility(false)
+
+
+
+                    Log.d("OnRemoveAll","Genre Filter Clicked")
+                }
+
+                if(selectedFilterType==FilterType.AUDIO)
+                {
+                    filterViewModel.onRemoveAllClick(FilterType.AUDIO)
+                    filterViewModel.setCurrentFilter(FilterType.AUDIO.name)
+                    // filterViewModel.updateIconVisibility(false)
+
+
+
+                    Log.d("OnRemoveAll","Genre Filter Clicked")
+                }
+
+
+                if(selectedFilterType==FilterType.SUBTITLE)
+                {
+                    filterViewModel.onRemoveAllClick(FilterType.SUBTITLE)
+                    filterViewModel.setCurrentFilter(FilterType.SUBTITLE.name)
+                    // filterViewModel.updateIconVisibility(false)
+
+
+
+                    Log.d("OnRemoveAll","Genre Filter Clicked")
+                }
 
 
 
@@ -1157,7 +1197,8 @@ fun BottomSheetSearch(
 
 
 
-               Log.d("OnRemoveAll","OnRemoveAllClcik")
+
+                Log.d("OnRemoveAll","OnRemoveAllClcik")
 
 
 
@@ -1369,8 +1410,9 @@ fun BottomSheetSearch(
 
 
                     FilterType.SUBTITLE -> {
-
+                        filterViewModel.setCurrentFilter(FilterType.SUBTITLE.name)
                         FilterSubtitleSelectionSheet(
+                            filterViewModel = filterViewModel,
                             selectedSubtitleIds = selectedSubtitleIds,
                             onSubtitleSelected = { sub, isSelected ->
                                 selectedSubtitleIds = selectedSubtitleIds.toMutableSet().apply {
@@ -1508,8 +1550,11 @@ fun BottomSheetSearch(
                     FilterType.ACTOR -> {
 
 
+
                         if (actors != null) {
+                            filterViewModel.setCurrentFilter(FilterType.ACTOR.name)
                             FilterActorsSelectionSheet(
+                                filterViewModel = filterViewModel,
                                 title = "انتخاب بازیگر",
                                 actors = actors,
                                 selectedActorIds = selectedActorsIds,
@@ -1550,7 +1595,7 @@ fun BottomSheetSearch(
                     FilterType.YEAR -> {
 
 
-                        YearSelectionSheet(
+                       /* YearSelectionSheet(
                             selectedFromYear = selectedFromYear,
                             selectedToYear = selectedToYear,
                             onYearSelected = { year, isFromYear ->
@@ -1565,15 +1610,73 @@ fun BottomSheetSearch(
                             },
 
                             onClose = { isChildSheetVisible = false }
+                        )*/
+
+
+                        YearSelectionSheet2(
+                            isVisible = isYearSelectorVisible,
+                            data =listOf(1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000) ,
+                            onYearSelected = {selectedItem->
+
+                              if(selectedYears[0]=="0")
+
+                             _selectedYearFrom=selectedItem
+                              else
+                              if(selectedYears[1]=="0")
+                             _selectedYearto=selectedItem
+
+
+
+
+
+                              isYearSelectorVisible=false
+
+
+                              //  selectedYears
+
+
+
+
+
+
+                            },
+                            selectedFromYear = _selectedYearFrom.toInt(),
+
+
+                            onClose = {},
+                            onYearClick = {
+
+
+                                selectedYears[0] =it
+                                selectedYears[1]=it
+                                isYearSelectorVisible=!isYearSelectorVisible
+
+
+
+
+                            },
+                            selectedYears = selectedYears
+
+
+
+
                         )
+
+
+
+
+
+
+
 
 
                     }
 
 
                     FilterType.AUDIO -> {
-
+                        filterViewModel.setCurrentFilter(FilterType.AUDIO.name)
                         FilterAudioSelectionSheet(
+                            filterViewModel = filterViewModel,
                             selectedAudioIds = selectedAudioIds,
                             onAudioSelected = { audio, isSelected ->
                                 selectedAudioIds = selectedAudioIds.toMutableSet().apply {

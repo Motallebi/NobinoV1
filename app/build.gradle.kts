@@ -138,6 +138,7 @@ dependencies {
 
     //animation
     implementation (libs.lottie.compose)
+    implementation ("com.github.SmartToolFactory:Compose-AnimatedList:0.6.1")
 
 
     //swipe refresh
