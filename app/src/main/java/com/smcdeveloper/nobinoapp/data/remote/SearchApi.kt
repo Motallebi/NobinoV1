@@ -31,12 +31,15 @@ interface SearchApi {
     suspend fun getSearchMoviesWithPages(
         @Query("size") size: Int = 10,
         @Query("category") categoris :List<String>? = emptyList(),
-
         @Query("tags") tags: String?= null,
         @Query("offset") offset: Int = 0,
         @Query("countries") countries: String? = null,
         @Query("name") name: String? = null,
-        @Query("persons") persons: String? = null
+        @Query("persons") persons: String? = null,
+        @Query("sounds") sounds: String? = null,
+        @Query("subtitles") subtitles: String? = null
+
+
 
 
     ): Response<MovieResult>

@@ -104,7 +104,9 @@ val ColorScheme.productDescription: Color
 
 
 
-
+val ColorScheme.filterBackGround: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF111111) else Color(0xFF111111)
 
 
 

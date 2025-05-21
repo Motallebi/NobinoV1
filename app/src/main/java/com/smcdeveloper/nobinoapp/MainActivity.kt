@@ -59,9 +59,11 @@ import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.util.AppConfig
 import com.smcdeveloper.nobinoapp.util.ConnectivityObserver
+import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.util.DigitHelper
 import com.smcdeveloper.nobinoapp.util.NetworkConnectivityObserver
 import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
@@ -120,7 +122,9 @@ class MainActivity : ComponentActivity() {
                 AppConfig()
 
 
-               // CompositionLocalProvider(LocalLayoutDirection provides direction)
+
+
+                // CompositionLocalProvider(LocalLayoutDirection provides direction)
                 CompositionLocalProvider(LocalLayoutDirection provides androidx.compose.ui.unit.LayoutDirection.Rtl)
 
                 {
@@ -323,7 +327,15 @@ class MainActivity : ComponentActivity() {
 
                                {
                                    SetupNavGraph(navController,loginViewModel)
-                                 //  ShowContent1()
+
+
+
+
+
+
+
+
+                                   //  ShowContent1()
                                     // ShowLAzy(navController)
                                //ShowItems(navController)
 

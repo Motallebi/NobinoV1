@@ -1,9 +1,12 @@
 package com.smcdeveloper.nobinoapp.ui.screens.search
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -22,16 +26,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.smarttoolfactory.animatedlist.AnimatedInfiniteLazyColumn
+import com.smarttoolfactory.animatedlist.model.AnimationProgress
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -41,6 +55,7 @@ fun YearSelectionSheet(
     selectedFromYear: Int?,
     selectedToYear: Int?,
     onYearSelected: (Int, Boolean) -> Unit,
+   // onYearSelected: (String) -> Unit,
     onClose: () -> Unit
 ) {
     val years = (1990..2025).toList()
@@ -124,7 +139,10 @@ fun YearItem(
     index: Int,
     listState: LazyListState,
     onYearSelected: (Boolean) -> Unit
-) {
+)
+
+
+{
     val centerIndex = listState.firstVisibleItemIndex + 2 // Center the middle item
     val distance = abs(index - centerIndex)
 
@@ -171,3 +189,310 @@ fun YearInputField(label: String, selectedYear: Int?) {
         )
     }
 }
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+@Composable
+fun YearSelection(
+    modifier: Modifier,
+    onYearClick:()->Unit,
+    selectedYear:Int,
+  //  secondYear:Int
+
+   // isVisible: Boolean
+
+
+
+
+
+)
+{
+
+    Text(selectedYear.toString(),
+        modifier.clickable {
+
+            Log.d("year","Clicked")
+            onYearClick()
+
+
+
+        }
+
+
+
+    )
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+@Composable
+fun YearSelectionSheet2(
+    selectedFromYear: Int?=1990,
+    selectedToYear: Int?=2025,
+
+
+   // onYearSelected: (Int, Boolean) -> Unit,
+    onYearSelected: (String) -> Unit,
+    onClose: () -> Unit,
+    data:List<Int>,
+    isVisible:Boolean,
+    onYearClick:(Int)->Unit,
+   // selectedYears :List<String>
+
+
+)
+
+
+
+
+
+{
+
+    var isTimpeickerVisible by remember { mutableStateOf(false) }
+
+
+
+
+    Row(modifier =
+        Modifier.fillMaxWidth()
+            .background(Color.Black),
+        horizontalArrangement = Arrangement.SpaceEvenly
+
+
+    )
+    {
+
+
+
+        Text("از تاریخ"
+
+
+
+
+
+
+        )
+
+
+
+
+
+
+
+
+
+        YearSelection(
+
+            //isVisible = isVisible,
+            modifier = Modifier
+                .background(Color.DarkGray)
+            ,
+
+            selectedYear = selectedFromYear ?:1920,
+            onYearClick = {
+                Log.d("year","Clicked")
+                onYearClick(1)
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        )
+
+
+
+
+
+        Text("تا")
+
+        YearSelection(
+
+            //isVisible = isVisible,
+            modifier = Modifier
+                .background(Color.DarkGray)
+            ,
+            selectedYear = selectedToYear ?:2025,
+            onYearClick = {
+                onYearClick(2)
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        )
+
+
+    }
+
+
+    Log.d("Year","is visible $isVisible" )
+
+  if(isVisible) {
+
+      Box()
+      {
+          val scope = rememberCoroutineScope()
+          val anp1 = AnimationProgress(
+              scale = 5f,
+              color = Color.Blue,
+              itemOffset = 2,
+              itemFraction = 3f,
+              globalItemIndex = 3,
+              itemIndex = 0,
+              distanceToSelector = 5f
+          )
+
+
+
+          AnimatedInfiniteLazyColumn(
+
+              items = data,
+              visibleItemCount = 7,
+              inactiveColor = Color.Black,
+              activeColor = Color.Red,
+              selectorIndex = 3,
+              inactiveItemPercent = 40,
+              itemScaleRange = 1,
+              itemContent = { anp, index, item, height, lazyListState ->
+
+
+                  val color = anp.color
+                  val scale = anp.scale
+                  // val color = animationProgress.color
+                  //
+                  // val scale = animationProgress.scale
+
+                  Box(
+                      modifier = Modifier
+                          .scale(scale)
+                          .background(color, RoundedCornerShape(20.dp))
+                          .size(width = 400.dp, height = 80.dp)
+                          .clickable(
+                              interactionSource = remember {
+                                  MutableInteractionSource()
+
+                              },
+                              indication = null
+                          ) {
+                              onYearSelected(
+
+                                  data[index].toString()
+
+
+                              )
+
+                              Log.d("anim", "animated: $item")
+                              scope.launch {
+                                  lazyListState.animateScrollBy(anp.distanceToSelector)
+
+                              }
+                          },
+
+
+                      contentAlignment = Alignment.Center
+                  ) {
+
+                      Text(
+                          data[index].toString(),
+                          color = Color.White,
+                          fontSize = 50.sp,
+                          fontWeight = FontWeight.Bold
+                      )
+
+
+                  }
+              }
+          )
+
+
+      }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

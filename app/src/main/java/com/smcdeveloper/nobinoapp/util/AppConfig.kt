@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.collectLatest
 fun AppConfig(
     profileViewModel: ProfileViewModel = hiltViewModel(),
     dataStore: DataStoreViewModel = hiltViewModel()
+
+
 )
 {
     Log.d("net","Appconfig $USER_TOKEN" )
@@ -69,10 +71,18 @@ fun AppConfig(
 
                 is NetworkResult.Error ->
                 {
+                   if(loginResponse.code==401)
+                   {
+                       Log.d("user","Error")
 
-                    Log.d("user","Error")
+                       USER_LOGIN_STATUS =false
+                       dataStore.saveUserToken("")
 
-                    USER_LOGIN_STATUS =false
+
+
+                   }
+
+
 
 
 

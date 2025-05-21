@@ -46,6 +46,7 @@ import java.nio.charset.StandardCharsets
 @Composable
 fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewModel) {
 
+
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route
@@ -110,7 +111,11 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
 
         }
 
-        composable(route = Screen.Home.route) {
+        composable(route =
+
+        Screen.Home.route
+
+        ) {
             Log.d("navhost","Home Screen")
             HomeScreen(navController = navController)
 

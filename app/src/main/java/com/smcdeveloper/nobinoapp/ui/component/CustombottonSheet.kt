@@ -18,11 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.ui.theme.disabledButtonColor
+import com.smcdeveloper.nobinoapp.ui.theme.filterBackGround
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 
@@ -32,7 +34,7 @@ fun ParentFilterBottomSheet(
 
     isVisible: Boolean,
     onDismiss: () -> Unit,
-    sheetHeight: Dp = 400.dp, // Default height
+    sheetHeight: Dp = 500.dp, // Default height
     navigationBarHeight: Dp = 80.dp, // Adjust based on bottom navigation bar height
     modifier: Modifier,
 
@@ -52,7 +54,7 @@ fun ParentFilterBottomSheet(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.8f)) // 🔴 Dims background when sheet is open
+                //.background(MaterialTheme.colorScheme.filterBackGround) // 🔴 Dims background when sheet is open
                 .clickable(onClick = onDismiss), // 🔴 Click outside to dismiss
             contentAlignment = Alignment.BottomCenter
         ) {
@@ -60,7 +62,7 @@ fun ParentFilterBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(sheetHeight)
-                    .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                   // .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f), shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .pointerInput(Unit) { // 🔴 Prevent clicks from passing through the bottom sheet
                         detectTapGestures { /* Consume Clicks Inside the Sheet */ }
                     }
@@ -100,7 +102,7 @@ fun MainFilterScreen(
 
     isVisible: Boolean,
     onDismiss: () -> Unit,
-    sheetHeight: Dp = 400.dp, // Default height
+    sheetHeight: Dp = 500.dp, // Default height
     navigationBarHeight: Dp = 80.dp, // Adjust based on bottom navigation bar height
     modifier: Modifier,
 
@@ -117,7 +119,7 @@ fun MainFilterScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.8f)) // 🔴 Dims background when sheet is open
+                .background(MaterialTheme.colorScheme.filterBackGround.copy(alpha = 0.8f)) // 🔴 Dims background when sheet is open
                 .clickable(onClick = onDismiss), // 🔴 Click outside to dismiss
             contentAlignment = Alignment.BottomCenter
         ) {
@@ -125,7 +127,7 @@ fun MainFilterScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(sheetHeight)
-                    .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .background(MaterialTheme.colorScheme.filterBackGround.copy(alpha = 0.8f), shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .pointerInput(Unit) { // 🔴 Prevent clicks from passing through the bottom sheet
                         detectTapGestures { /* Consume Clicks Inside the Sheet */ }
                     }
@@ -182,7 +184,7 @@ fun FilterBottomSheet(
     onCloseParanetSheetClick:()->Unit,
     isVisible: Boolean,
     onDismiss: () -> Unit,
-    sheetHeight: Dp = 400.dp, // Default height
+    sheetHeight: Dp = 500.dp, // Default height
     navigationBarHeight: Dp = 80.dp, // Adjust based on bottom navigation bar height
     modifier: Modifier,
     onRemoveAllClick:()->Unit,
@@ -190,12 +192,17 @@ fun FilterBottomSheet(
     showIcon:Boolean=true,
     viewmodel:FilterViewModel= hiltViewModel(),
 
+
+
+
+
     //isParentVisible:Boolean,
     // selectedFilterType:FilterType?,
 
 
 
     content: @Composable ColumnScope.() -> Unit,
+
 
 
 
@@ -210,13 +217,14 @@ fun FilterBottomSheet(
 
     var isIconVisble by remember { mutableStateOf( showIcon)  }
     val isIconVisble2 =viewmodel.isShowClearIconVisible.collectAsState()
+
     Log.d("Filter","is icon visible $showIcon ---isIconVisble    $isIconVisble")
 
     if (isVisible) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.8f)) // 🔴 Dims background when sheet is open
+                //.background(color = Color.Black) // 🔴 Dims background when sheet is open
                 .clickable(onClick = onDismiss), // 🔴 Click outside to dismiss
             contentAlignment = Alignment.BottomCenter
         ) {
@@ -224,7 +232,7 @@ fun FilterBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(sheetHeight)
-                    .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .background(color =MaterialTheme.colorScheme.filterBackGround, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .pointerInput(Unit) { // 🔴 Prevent clicks from passing through the bottom sheet
                         detectTapGestures { /* Consume Clicks Inside the Sheet */ }
                     }
@@ -239,7 +247,7 @@ fun FilterBottomSheet(
 
                     Row(Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceAround
+                        horizontalArrangement = Arrangement.SpaceEvenly
 
 
 
@@ -251,13 +259,21 @@ fun FilterBottomSheet(
                     {
                         IconButton(onClick ={
 
+
                             onCloseParanetSheetClick()
                             Log.d("sheet","Close click....")
 
 
 
 
-                        }) {
+                        },
+                            modifier = Modifier.weight(1f)
+
+
+
+
+
+                        ) {
                             Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
                         }
 
@@ -265,34 +281,53 @@ fun FilterBottomSheet(
                         Text(
                             text = title ?: "",
                             style = MaterialTheme.typography.nobinoLarge,
+                            modifier = Modifier.weight(1f),
+
+                            textAlign = TextAlign.Center
+
 
                             )
 
-                        if(isIconVisble2.value) {
+                        Box(Modifier.weight(1f),
 
-                            IconButton(
-
-                                onClick = {
+                            contentAlignment = Alignment.CenterEnd
 
 
-                                    onRemoveAllClick()
+                        )
+                        {
+
+                            if(isIconVisble2.value) {
+
+                                IconButton(
+
+                                    onClick = {
 
 
-                                },
-
-                                )
-                            {
-                                Icon(
-                                    painterResource(R.drawable.trash), contentDescription = "Close",
-                                    modifier = Modifier.size(32.dp),
-                                    tint = MaterialTheme.colorScheme.disabledButtonColor
+                                        onRemoveAllClick()
 
 
-                                )
+                                    },
+
+                                    )
+                                {
+                                    Icon(
+                                        painterResource(R.drawable.trash), contentDescription = "Close",
+                                        modifier = Modifier.size(32.dp),
+                                        tint = MaterialTheme.colorScheme.disabledButtonColor
+
+
+                                    )
+
+                                }
 
                             }
 
                         }
+
+
+
+
+
 
 
 

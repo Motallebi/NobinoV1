@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.ui.screens.demo
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -344,16 +345,43 @@ fun SelectionCheckboxItem(
 {
     Row(
         modifier = modifier
-            .clickable { onSelected(!isSelected) }
+               // onSelected(!isSelected)
+            .clickable { }
             .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+
     ) {
         Checkbox(
             checked =isSelected,
-            onCheckedChange = { onSelected(it) },
+            onCheckedChange = onSelected,
+
+            /*{
+                Log.d("check", "Check changed $it")
+                onSelected(it)
+
+
+
+
+                Log.d("check", "Check changed $it")
+
+
+
+                              },*/
+
+
+
+
             colors = CheckboxDefaults.colors(
-                checkedColor = Color.Red, // 🔴 Turns red when selected
-                uncheckedColor = MaterialTheme.colorScheme.onSurfaceVariant
+
+                //checkedBorderColor = Color.Red,
+               // uncheckedBorderColor = Color.White,
+                // checkedColor =MaterialTheme.colorScheme.onSurfaceVariant, // 🔴 Turns red when selected
+
+                uncheckedColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                checkmarkColor = Color.Red
+
+
             )
         )
         Spacer(modifier = Modifier.width(8.dp))

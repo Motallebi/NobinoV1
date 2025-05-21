@@ -13,6 +13,31 @@ object Constants {
     const val SeasonCategory = "MOVIE"
     const val MovieCategory1 = "MOVIE"
     var USER_LOGIN_STATUS= false
+
+     val FILTER_AUDIO_SUBTITLE=
+        listOf(
+            AudioSubtitle(id = "FARSI", value = "FARSI", name = "فارسی"),
+            AudioSubtitle(id = "ENGLISH", value = "ENGLISH", name = "انگلیسی"),
+            AudioSubtitle(id = "ARABIC", value = "ARABIC", name = "عربی"),
+            AudioSubtitle(id = "FRENCH", value = "FRENCH", name = "فرانسه"),
+            AudioSubtitle(id = "TURKISH", value = "TURKISH", name = "ترکیه"),
+            AudioSubtitle(id = "RUSSIAN", value = "RUSSIAN", name = "روسیه"),
+            AudioSubtitle(id = "SPANISH", value = "SPANISH", name = "اسپانیا"),
+            AudioSubtitle(id = "KOREAN", value = "KOREAN", name = "کره"),
+            AudioSubtitle(id = "GERMANY", value = "GERMANY", name = "آلمان"),
+            AudioSubtitle(id = "INDIAN", value = "INDIAN", name = "هند"),
+            AudioSubtitle(id = "JAPANESE", value = "JAPANESE", name = "ژاپن"),
+            AudioSubtitle(id = "CHINESE", value = "CHINESE", name = "چینی"),
+            AudioSubtitle(id = "ITALIAN", value = "ITALIAN", name = "ایتالیایی"),
+            AudioSubtitle(id = "NORWEGIAN", value = "NORWEGIAN", name = "نروژی")
+        )
+
+
+
+
+
+
+
     const val DEFAULT_IMAGE_POSETR="https://vod.nobino.ir/vod/IMAGES/2025-4/13530/13530_1745382041947_IMAGES_BANNER_MOBILE.jpg"
 
 
