@@ -348,7 +348,9 @@ fun SelectionCheckboxItem(
                // onSelected(!isSelected)
             .clickable { }
             .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+
     ) {
         Checkbox(
             checked =isSelected,
@@ -371,8 +373,15 @@ fun SelectionCheckboxItem(
 
 
             colors = CheckboxDefaults.colors(
-                checkedColor = Color.Red, // 🔴 Turns red when selected
-                uncheckedColor = MaterialTheme.colorScheme.onSurfaceVariant
+
+                //checkedBorderColor = Color.Red,
+               // uncheckedBorderColor = Color.White,
+                // checkedColor =MaterialTheme.colorScheme.onSurfaceVariant, // 🔴 Turns red when selected
+
+                uncheckedColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                checkmarkColor = Color.Red
+
+
             )
         )
         Spacer(modifier = Modifier.width(8.dp))

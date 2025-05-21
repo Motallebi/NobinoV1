@@ -30,7 +30,8 @@ class SearchRepository @Inject constructor(val api:SearchApi) : BaseApiResponse2
 
             ),
             pagingSourceFactory = {
-                SearchDataSource1( api = api,
+                SearchDataSource1(
+                    api = api,
                     tagName = "",
                     categoryName = listOf("MOVIE,SERIES"),
                     name=query
@@ -39,6 +40,34 @@ class SearchRepository @Inject constructor(val api:SearchApi) : BaseApiResponse2
 
 
 
+
+                )
+            }
+        ).flow
+    }
+
+
+
+
+
+    fun searchProduct1(query: String): Flow<PagingData<MovieResult.DataMovie.Item>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10,
+                initialLoadSize = 10
+
+
+            ),
+            pagingSourceFactory = {
+                SearchDataSource(
+                    repository = this,
+                    tagName = "",
+                    categoryName = listOf("SERIES,MOVIE,COURSE,CERTIFICATED_COURSE"),
+                    countries = "",
+                    name = " ",
+                    subtitle = "",
+                    sounds = "",
+                    persons ="",
+                    size = 18
 
                 )
             }
@@ -66,11 +95,17 @@ class SearchRepository @Inject constructor(val api:SearchApi) : BaseApiResponse2
 
 
 
+    suspend fun fetchMovies(
+        tag: String?,
+        categoty:List<String>?,
+        size: Int,
+        offset: Int,
+        countries:String?,
+        name:String?,
+        persons:String?,
+        sounds:String?,
+        subtitle:String?
 
-
-
-
-    suspend fun fetchMovies(tag: String?,categoty:List<String>?, size: Int,offset: Int,countries:String?,name:String?,persons:String?
 
 
 
@@ -79,10 +114,20 @@ class SearchRepository @Inject constructor(val api:SearchApi) : BaseApiResponse2
         val result = safeApiCall {
 
 
-            api.getSearchMoviesWithPages(tags = tag,
-                categoris = categoty, size = size, offset = offset, countries = countries,
+            api.getSearchMoviesWithPages(
+
+                tags = tag,
+                categoris = categoty,
+                size = size,
+                offset = offset,
+                countries = countries,
                 name = name,
-                persons = persons
+                persons = persons,
+                sounds = sounds ,
+                subtitles = subtitle ,
+
+
+
 
 
 

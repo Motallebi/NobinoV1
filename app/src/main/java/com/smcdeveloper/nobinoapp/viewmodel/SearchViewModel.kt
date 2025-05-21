@@ -61,7 +61,7 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
 
 
 
-            repository.searchProduct(query = query).cachedIn(viewModelScope).collect {
+            repository.searchProduct1(query = query).cachedIn(viewModelScope).collect {
                 _searchedProducts.value = it
             }
         }
@@ -102,8 +102,34 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
     val searchParams: StateFlow<SearchParams> = _searchParams
 
 
-    fun updateSearchParams(query:String , tag: String, category: List<String>, countries: String,persons:String) {
-        _searchParams.value = SearchParams(query, tag, listOf("MOVIE","SERIES"), countries,persons)
+    fun updateSearchParams(
+        query:String ,
+        tag: String,
+        category: List<String>,
+        countries: String,
+        persons:String,
+        sounds:String,
+        subtitle:String
+
+
+    ) {
+        Log.d("search", "updating search params")
+        Log.d("search", "actors are $tag")
+
+
+        _searchParams.value = SearchParams(
+            query,
+            tag,
+            listOf("SERIES,MOVIE,COURSE,CERTIFICATED_COURSE"),
+            countries,
+            persons,
+            sounds,
+            subtitle
+
+
+
+
+        )
 
     }
 
@@ -138,6 +164,8 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                             categoryName = listOf("SERIES,MOVIE,COURSE,CERTIFICATED_COURSE"),
                             countries = params.countries,
                             name = " ",
+                            subtitle = params.subtitle,
+                            sounds = params.sounds,
                             persons = params.persons,
                             size = 18
 
@@ -177,6 +205,8 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
                             tagName = params.tag,
                             categoryName = params.category,
                             countries = params.countries,
+                            subtitle = params.subtitle,
+                            sounds =params.sounds,
                             name = params.query,
                             size = 10
 

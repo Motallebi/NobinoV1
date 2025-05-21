@@ -200,9 +200,9 @@ fun YearInputField(label: String, selectedYear: Int?) {
 @Composable
 fun YearSelection(
     modifier: Modifier,
-    onYearClick:(String)->Unit,
-    firstYear:Int,
-    secondYear:Int
+    onYearClick:()->Unit,
+    selectedYear:Int,
+  //  secondYear:Int
 
    // isVisible: Boolean
 
@@ -213,30 +213,23 @@ fun YearSelection(
 )
 {
 
-    Text(firstYear.toString(),
+    Text(selectedYear.toString(),
         modifier.clickable {
 
-
-            onYearClick("0")
-
+            Log.d("year","Clicked")
+            onYearClick()
 
 
 
         }
 
+
+
     )
 
-    Text(secondYear.toString(),
-        modifier.clickable {
-
-
-            onYearClick("0")
 
 
 
-        }
-
-    )
 
 
 
@@ -260,8 +253,8 @@ fun YearSelectionSheet2(
     onClose: () -> Unit,
     data:List<Int>,
     isVisible:Boolean,
-    onYearClick:(String)->Unit,
-    selectedYears :List<String>
+    onYearClick:(Int)->Unit,
+   // selectedYears :List<String>
 
 
 )
@@ -279,25 +272,62 @@ fun YearSelectionSheet2(
 
     Row(modifier =
         Modifier.fillMaxWidth()
-            .background(Color.LightGray),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .background(Color.Black),
+        horizontalArrangement = Arrangement.SpaceEvenly
 
 
     )
     {
 
 
+
+        Text("از تاریخ"
+
+
+
+
+
+
+        )
+
+
+
+
+
+
+
+
+
         YearSelection(
+
             //isVisible = isVisible,
-            modifier = Modifier,
+            modifier = Modifier
+                .background(Color.DarkGray)
+            ,
+
+            selectedYear = selectedFromYear ?:1920,
+            onYearClick = {
+                Log.d("year","Clicked")
+                onYearClick(1)
+
+            }
 
 
 
 
 
-            onYearClick = onYearClick,
-            firstYear =  selectedYears[0].toInt() ?: 0,
-            secondYear = selectedYears[1].toInt()?: 0
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -311,9 +341,18 @@ fun YearSelectionSheet2(
 
 
 
-        Text(
-            selectedYears[0].toString(),
-            modifier = Modifier.clickable {
+
+        Text("تا")
+
+        YearSelection(
+
+            //isVisible = isVisible,
+            modifier = Modifier
+                .background(Color.DarkGray)
+            ,
+            selectedYear = selectedToYear ?:2025,
+            onYearClick = {
+                onYearClick(2)
 
 
             }
@@ -322,17 +361,16 @@ fun YearSelectionSheet2(
 
 
 
+
+
+
+
+
+
+
+
+
         )
-        Text(selectedToYear.toString(),
-
-        modifier = Modifier.clickable {
-
-
-        }
-
-        )
-
-
 
 
     }

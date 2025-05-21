@@ -9,18 +9,29 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.AudioSubtitle
+import com.smcdeveloper.nobinoapp.ui.theme.ageSelectedButton
+import com.smcdeveloper.nobinoapp.util.Constants.FILTER_AUDIO_SUBTITLE
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 
 @Composable
@@ -35,7 +46,10 @@ fun FilterAudioSelectionSheet(
 
 ) {
 
+
      val checkBoxState by filterViewModel.audioCheckBoxStates.collectAsState()
+    var searchQuery by remember { mutableStateOf("") }
+    val filteredItems = FILTER_AUDIO_SUBTITLE.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
     Column(
         modifier = Modifier
@@ -43,21 +57,55 @@ fun FilterAudioSelectionSheet(
             .padding(16.dp)
     ) {
         // 🔴 Header with Close Button
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = title, style = MaterialTheme.typography.titleLarge)
-            IconButton(onClick = onClose) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-            }
-        }
+
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        TextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            placeholder = { Text("جستجو...") }, // "Search..."
+            leadingIcon = {
+                Icon(painterResource(R.drawable.bottom_nav_serach_not_selected), contentDescription = "Search")
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+
+            shape = RoundedCornerShape(32.dp),
+            colors = TextFieldDefaults.colors(
+
+                focusedIndicatorColor = Color.Transparent,
+                focusedContainerColor = MaterialTheme.colorScheme.ageSelectedButton,
+                unfocusedContainerColor = MaterialTheme.colorScheme.ageSelectedButton,
+                unfocusedIndicatorColor = Color.Transparent
+
+
+
+
+
+
+
+
+            )
+
+
+
+        )
+
+
+
+
+
+
+
+
+
+
+
+
         // 🔴 List of Selectable Audio Options
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(audioOptions.chunked(2)) { rowItems ->
+            items(filteredItems.chunked(2)) { rowItems ->
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     rowItems.forEach { audio ->

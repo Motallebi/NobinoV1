@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
@@ -27,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
+import com.smcdeveloper.nobinoapp.ui.theme.ageSelectedButton
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 
 
@@ -65,15 +68,7 @@ fun FilterActorsSelectionSheet(
             .padding(16.dp)
     ) {
         // 🔴 Header with Close Button
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = title, style = MaterialTheme.typography.titleLarge)
-            IconButton(onClick = onClose) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-            }
-        }
+
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -86,12 +81,35 @@ fun FilterActorsSelectionSheet(
             },
             placeholder = { Text("جستجو بازیگر...") }, // "Search Actor..."
             leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search"
-                )
+                Icon(painterResource(R.drawable.bottom_nav_serach_not_selected), contentDescription = "Search")
+
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(32.dp),
+
+            colors = TextFieldDefaults.colors(
+
+                focusedIndicatorColor = Color.Transparent,
+                focusedContainerColor = MaterialTheme.colorScheme.ageSelectedButton,
+                unfocusedContainerColor = MaterialTheme.colorScheme.ageSelectedButton,
+                unfocusedIndicatorColor = Color.Transparent
+
+
+
+
+
+
+
+
+            )
+
+
+
+
+
+
+
+
         )
 
         Spacer(modifier = Modifier.height(8.dp))

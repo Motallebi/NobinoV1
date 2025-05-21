@@ -21,6 +21,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,12 +32,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.data.model.search.GenreInfo
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.ParentFilterBottomSheet
 
 import com.smcdeveloper.nobinoapp.ui.screens.demo.SelectionCheckboxItem
+import com.smcdeveloper.nobinoapp.ui.theme.ageSelectedButton
+import com.smcdeveloper.nobinoapp.ui.theme.filterBackGround
 import com.smcdeveloper.nobinoapp.viewmodel.FilterViewModel
 
 
@@ -172,7 +178,10 @@ fun GenreSelectionSheet(
             onDismiss = onClose,
             //onCheckBox = {},
             modifier = Modifier
-        ) { // 🔴 Use bottom sheet
+        )
+
+
+        { // 🔴 Use bottom sheet
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -216,15 +225,6 @@ fun GenreSelectionSheet(
 
 
                 // 🔴 Header with Close Button
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    // Text(text = title, style = MaterialTheme.typography.titleLarge)
-                    IconButton(onClick = onClose) { // 🔴 Close bottom sheet
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
-                    }
-                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -234,14 +234,30 @@ fun GenreSelectionSheet(
                     onValueChange = { searchQuery = it },
                     placeholder = { Text("جستجو...") }, // "Search..."
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+                        Icon(painterResource(R.drawable.bottom_nav_serach_not_selected), contentDescription = "Search")
                     },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            shape = RoundedCornerShape(4.dp),
-                            color = MaterialTheme.colorScheme.background
-                        )
+                        .fillMaxWidth(),
+
+                    shape = RoundedCornerShape(32.dp),
+                    colors = TextFieldDefaults.colors(
+
+                        focusedIndicatorColor = Color.Transparent,
+                        focusedContainerColor = MaterialTheme.colorScheme.ageSelectedButton,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.ageSelectedButton,
+                        unfocusedIndicatorColor = Color.Transparent
+
+
+
+
+
+
+
+
+                    )
+
+
+
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
