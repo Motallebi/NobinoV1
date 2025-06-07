@@ -166,7 +166,7 @@ suspend fun getUserProfile(auth:String) :NetworkResult<UserInfo> {
 
         safeApiCall {
 
-            api.makeNewProfile(auth = auth ,profileRequest )
+            api.makeNewProfile(profileRequest )
 
 
 

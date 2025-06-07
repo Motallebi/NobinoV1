@@ -68,14 +68,7 @@ fun EditUserInfoPage(navController: NavHostController,
     var userName by remember { mutableStateOf("") }
     var userLastName by remember { mutableStateOf("") }
     var userBirthDay by remember { mutableStateOf(0L) }
-
-
-
-
-
-
-
-
+    var showProfileEdit by remember { mutableStateOf(false) }
 
     var loading by remember {
         mutableStateOf(false)
@@ -154,16 +147,34 @@ fun EditUserInfoPage(navController: NavHostController,
                    loading=true
 
 
+
                }
 
                is NetworkResult.Error->{
                  //  ShowUserData(userProfile.data!!.profileData,viewModel)
 
                    loading=false
+                   val code=  userProfile.code
+                   if (code==401)
 
-                   LaunchedEffect(Unit) {
-                       snackbarHostState.showSnackbar("error")
+                   {
+
+                       LaunchedEffect(Unit) {
+                           snackbarHostState.showSnackbar("ابتدا وارد شوید")
+
+
+
+
+                       }
+
+
+
+
+
+
                    }
+
+
 
 
 
@@ -182,6 +193,7 @@ fun EditUserInfoPage(navController: NavHostController,
                    userName=userProfile.data!!.profileData.username
                    userLastName=userProfile.data!!.profileData.lastName
                    userBirthDay=userProfile.data!!.profileData.birthDate
+                   showProfileEdit=true
 
                    loading=false
 
@@ -228,160 +240,89 @@ fun EditUserInfoPage(navController: NavHostController,
             )*/
 
 
+            if (showProfileEdit) {
 
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFF121212))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            )
-
-
-            {
-                Text(
-                    text = "ویرایش اطلاعات کاربری",
-                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-
-
-
-
-                Box(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(12.dp))
-                        .border(2.dp, Color.Gray, RoundedCornerShape(12.dp))
-                        .padding(16.dp)
+                        .fillMaxSize()
+                        .background(Color(0xFF121212))
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 )
+
+
                 {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        text = "ویرایش اطلاعات کاربری",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        ),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
 
-                        ReadOnlyField(label = "نام کاربری:", value =userPhone
-
-
-
-                        )
-
-
-                        EditableFieldWithButtons1(label = "شماره موبایل:", initialValue =userPhone.toString()) { newValue ->
-                            // viewModel.updatePhone(newValue)
-                            //  onProfileUpdte(userProfile)
-
-                        }
-                        EditableFieldWithButtons1(label = "تاریخ تولد:", initialValue = "") { newValue ->
-                            // viewModel.updateBirthdate(newValue)
-                        }
-                        EditableFieldWithButtons1(label = "ایمیل:", initialValue = userEmail.toString()  ) { newValue ->
+                    Spacer(modifier = Modifier.height(16.dp))
 
 
-                            viewModel.updateEmail(newValue)
-                            viewModel.updateUserInfo(
-                                //userId = userId,
+
+
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(12.dp))
+                            .border(2.dp, Color.Gray, RoundedCornerShape(12.dp))
+                            .padding(16.dp)
+                    )
+                    {
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+
+                            ReadOnlyField(
+                                label = "نام کاربری:", value = userPhone
 
 
                             )
 
+
+                            EditableFieldWithButtons1(
+                                label = "شماره موبایل:",
+                                initialValue =
+                                userPhone.toString()
+                            ) { newValue ->
+                                // viewModel.updatePhone(newValue)
+                                //  onProfileUpdte(userProfile)
+
+                            }
+                            EditableFieldWithButtons1(
+                                label = "تاریخ تولد:",
+                                initialValue = ""
+                            ) { newValue ->
+                                // viewModel.updateBirthdate(newValue)
+                            }
+                            EditableFieldWithButtons1(
+                                label = "ایمیل:",
+                                initialValue = userEmail.toString()
+                            ) { newValue ->
+
+
+                                viewModel.updateEmail(newValue)
+                                viewModel.updateUserInfo(
+                                    //userId = userId,
+
+
+                                )
+
+                            }
+
+
                         }
 
-
-
-
-
-
-
                     }
-
                 }
-            }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*    ShowUserData2(
+                /*    ShowUserData2(
                   userProfile = userInfo.data!!.profileData,
                   viewModel = viewModel
 
@@ -393,33 +334,31 @@ fun EditUserInfoPage(navController: NavHostController,
               }*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-           /* ShowSampleData(userEmail, viewModel =) {
+                /* ShowSampleData(userEmail, viewModel =) {
                     data->userEmail=data
 
 
             }*/
 
-           // if(!updateError)
-            //ShowUserData(userProfile.data!!.profileData,viewModel)
+                // if(!updateError)
+                //ShowUserData(userProfile.data!!.profileData,viewModel)
+
+
+            }
+
+            else{
+                Box()
+                {
+
+
+                }
 
 
 
 
+            }
 
         }
-
-
 
 
 

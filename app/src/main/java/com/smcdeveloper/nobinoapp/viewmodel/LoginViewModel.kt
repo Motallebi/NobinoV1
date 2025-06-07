@@ -2,6 +2,7 @@ package com.smcdeveloper.nobinoapp.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +19,7 @@ class LoginViewModel @Inject constructor():ViewModel() {
     {
 
         _isUserLogin.value=isloging
+        USER_LOGIN_STATUS=isloging
       //  Log.d("log","viewModel login value is"+_isLoging.value)
 
 

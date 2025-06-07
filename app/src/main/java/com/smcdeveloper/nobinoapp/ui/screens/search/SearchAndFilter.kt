@@ -345,7 +345,7 @@ fun BottomSheetSearch(
     var selectedCategories by remember { mutableStateOf(setOf("MOVIE,SERIES")) }
     var selectedCountryIds by remember { mutableStateOf(setOf<String>()) }
 
-    var selectedGenreIds  by remember { mutableStateOf(setOf<String>()) }
+    var selectedGenreIds  by remember { mutableStateOf(setOf<String>(tags)) }
 
 
 

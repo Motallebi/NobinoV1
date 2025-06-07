@@ -163,7 +163,7 @@ interface ProfileApiInterface {
     //@FormUrlEncoded
     @POST("/api/profile")
     suspend fun makeNewProfile(
-        @Header("Authorization") auth: String ="",
+       // @Header("Authorization") auth: String ="",
         @Body addNewProfile: NewUserProfileRequest
 
 

@@ -23,6 +23,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
@@ -39,6 +42,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,9 +84,11 @@ import com.smcdeveloper.nobinoapp.ui.theme.divider
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMediumLight
+import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProfileViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -701,9 +708,12 @@ fun ProfileItem1(title: String, onClick: () -> Unit) {
 
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel,loginViewModel: LoginViewModel) {
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     val profileItems = mapOf(
         stringResource(id = R.string.edit_profile) to Screen.EditProfile,
@@ -717,165 +727,177 @@ fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel,lo
 
 
 
+   Scaffold(
+       snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+       backgroundColor = Color.Black
 
 
+   ) {
 
 
+       LazyColumn(
+           modifier = Modifier
+               .fillMaxSize()
+               .padding(16.dp)
+       )
 
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    )
+       {
 
 
-    {
+           item {
 
-        item {
 
+               ProfileItem2 (
+                   title = stringResource(R.string.edit_profile),
+                   icon = painterResource(R.drawable.edit_profile)
 
-                ProfileItem2 (
-                    title = stringResource(R.string.edit_profile),
-                    icon = painterResource(R.drawable.edit_profile)
 
+               )
+               {
+                   if(USER_LOGIN_STATUS) {
+                       navController.navigate(Screen.EditProfile.route)
+                       {
+                           launchSingleTop = true
+                       }
+                   }
 
-                )
-                {
-                    navController.navigate(Screen.EditProfile.route)
-                    {
-                        launchSingleTop = true
-                    }
+                   else
+                   {
+                       coroutineScope.launch {
+                           snackbarHostState.showSnackbar("ابتدا وارد شوید")
 
+                       }
 
-                }
 
-        }
+                   }
 
 
+               }
 
-        item {
+           }
 
 
-            ProfileItem2 (
-                title = stringResource(R.string.buy_subscription),
-                icon = painterResource(R.drawable.buy_subscription)
 
+           item {
 
-            )
-            {
-                navController.navigate(Screen.BuySubscription.route)
-                {
-                    launchSingleTop = true
-                }
 
+               ProfileItem2 (
+                   title = stringResource(R.string.buy_subscription),
+                   icon = painterResource(R.drawable.buy_subscription)
 
-            }
 
-        }
-        item {
+               )
+               {
+                   navController.navigate(Screen.BuySubscription.route)
+                   {
+                       launchSingleTop = true
+                   }
 
 
-            ProfileItem2 (
-                title = stringResource(R.string.payment_history),
-                icon = painterResource(R.drawable.payment_history)
+               }
 
+           }
+           item {
 
-            )
-            {
-                navController.navigate(Screen.PaymentHistory.route)
-                {
-                    launchSingleTop = true
-                }
 
+               ProfileItem2 (
+                   title = stringResource(R.string.payment_history),
+                   icon = painterResource(R.drawable.payment_history)
 
-            }
 
-        }
+               )
+               {
+                   navController.navigate(Screen.PaymentHistory.route)
+                   {
+                       launchSingleTop = true
+                   }
 
-        item {
 
+               }
 
-            ProfileItem2 (
-                title = stringResource(R.string.faq),
-                icon = painterResource(R.drawable.faq)
+           }
 
+           item {
 
-            )
-            {
-                navController.navigate(Screen.FAQ.route)
-                {
-                    launchSingleTop = true
-                }
 
+               ProfileItem2 (
+                   title = stringResource(R.string.faq),
+                   icon = painterResource(R.drawable.faq)
 
-            }
 
-        }
+               )
+               {
+                   navController.navigate(Screen.FAQ.route)
+                   {
+                       launchSingleTop = true
+                   }
 
-        item {
 
+               }
 
-            ProfileItem2 (
-                title = stringResource(R.string.terms_conditions),
-                icon = painterResource(R.drawable.terms)
+           }
 
+           item {
 
-            )
-            {
-                navController.navigate(Screen.TermsAndConditions.route)
-                {
-                    launchSingleTop = true
-                }
 
+               ProfileItem2 (
+                   title = stringResource(R.string.terms_conditions),
+                   icon = painterResource(R.drawable.terms)
 
-            }
 
-        }
+               )
+               {
+                   navController.navigate(Screen.TermsAndConditions.route)
+                   {
+                       launchSingleTop = true
+                   }
 
-        item {
 
+               }
 
-            ProfileItem2 (
-                title = stringResource(R.string.terms_conditions),
-                icon = painterResource(R.drawable.terms)
+           }
 
+           item {
 
-            )
-            {
-                navController.navigate(Screen.TermsAndConditions.route)
-                {
-                    launchSingleTop = true
-                }
 
+               ProfileItem2 (
+                   title = stringResource(R.string.terms_conditions),
+                   icon = painterResource(R.drawable.terms)
 
-            }
 
-        }
+               )
+               {
+                   navController.navigate(Screen.TermsAndConditions.route)
+                   {
+                       launchSingleTop = true
+                   }
 
 
-        item {
+               }
 
+           }
 
-            ProfileItem2 (
-                title = stringResource(R.string.contact_us),
-                icon = painterResource(R.drawable.contact_us)
 
+           item {
 
-            )
-            {
-                navController.navigate(Screen.ContactUs.route)
-                {
-                    launchSingleTop = true
-                }
 
+               ProfileItem2 (
+                   title = stringResource(R.string.contact_us),
+                   icon = painterResource(R.drawable.contact_us)
 
-            }
 
-        }
+               )
+               {
+                   navController.navigate(Screen.ContactUs.route)
+                   {
+                       launchSingleTop = true
+                   }
 
 
+               }
 
+           }
 
 
 
@@ -907,25 +929,39 @@ fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel,lo
 
 
 
-            item {
-                ProfileItem(stringResource(id = R.string.logout))
-                {
 
 
-                    dataStore.saveUserToken("")
-                    dataStore.saveUserFirstName("")
-                    dataStore.saveUserPhone("")
-                    dataStore.saveUserLastName("")
-                    dataStore.saveUserLoginStatus(false)
-                    loginViewModel.updateLoging(false)
 
+           item {
+               ProfileItem(stringResource(id = R.string.logout))
+               {
 
 
-                }
+                   dataStore.saveUserToken("")
+                   dataStore.saveUserFirstName("")
+                   dataStore.saveUserPhone("")
+                   dataStore.saveUserLastName("")
+                   dataStore.saveUserLoginStatus(false)
+                   loginViewModel.updateLoging(false)
 
 
-            }
-        }
+
+               }
+
+
+           }
+       }
+
+
+
+
+   }
+
+
+
+
+
+
     }
 
 
@@ -979,26 +1015,9 @@ fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel,lo
                     //color = Color.White
                 )
 
-                Icon(
-                    painterResource(R.drawable.arrow_left),
-
-
-                    tint = Color.White.copy(alpha = 0.3f),
-
-
-                    contentDescription = ""
-                )
-
-
             }
 
-            Spacer(
-                Modifier
-                    .height(1.dp)
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.divider)
 
-            )
 
 
         }
