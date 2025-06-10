@@ -144,6 +144,9 @@ dependencies {
     //swipe refresh
     implementation(libs.accompanist.swiperefresh)
 
+   // implementation(libs.androidx.material3.carousel) // Or the latest stable version
+
+
 
 
 

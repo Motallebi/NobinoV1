@@ -892,8 +892,8 @@ fun SearchBarWithBadge(filterCount: Int, onBadgeClick: () -> Unit) {
             onValueChange = {},
             placeholder = { Text("Search...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
             modifier = Modifier.weight(1f),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
+            colors = TextFieldDefaults.colors(
+               // containerColor = Color.Transparent,
                 focusedTextColor = MaterialTheme.colorScheme.onSurface,
                 cursorColor = MaterialTheme.colorScheme.primary
             )
@@ -973,7 +973,7 @@ fun TopBarWithBadge(filterCount: Int) {
                 .weight(1f)
                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
             singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 focusedTextColor = Color.Black,
                 //backgroundColor = Color.Transparent,
                 cursorColor = Color.Black,
@@ -1057,7 +1057,7 @@ fun SearchBar() {
             .padding(16.dp)
             .background(Color.White, shape = RoundedCornerShape(8.dp)),
         singleLine = true,
-        colors = TextFieldDefaults.textFieldColors(
+        colors = TextFieldDefaults.colors(
             focusedTextColor = Color.Black,
              // = Color.Transparent,
             cursorColor = Color.Black,

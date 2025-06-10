@@ -1044,6 +1044,7 @@ fun Episodes(
     navController: NavHostController,
     sessions: List<MovieResult.DataMovie.Item>
 
+
 ) {
 
 
@@ -1069,6 +1070,22 @@ fun Episodes(
             Text(text = "No sessions available.")
         }
     } else {
+
+       sessions.forEach  {
+          Log.d("SessionData", "Session ${it.name.toString()}")
+      }
+
+
+
+
+
+
+
+
+
+
+
+
         // Display sessions with a dropdown and list of episodes
 
         /*

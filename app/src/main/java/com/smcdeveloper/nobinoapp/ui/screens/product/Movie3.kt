@@ -10,7 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +26,10 @@ import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRow
 import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider1
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider2
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider3
 import com.smcdeveloper.nobinoapp.ui.screens.home.SliderItemByTags
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 
@@ -158,7 +163,19 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
                             item {
+
+                                val lazyListState = rememberLazyListState()
+
+
+
+
+
+
+
+
                                 LazyRow(
+                                    state = lazyListState,
+
                                     modifier = Modifier.fillMaxWidth()
                                         .padding(16.dp),
                                     contentPadding = PaddingValues(16.dp),
@@ -166,7 +183,24 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
                                 ) {
-                                    items(displayData.movieItems) { datamovie ->
+
+
+
+                                    itemsIndexed(
+
+                                        displayData.movieItems,
+
+
+                                    )
+
+                                    {
+
+                                     index, datamovie ->
+
+
+
+
+
                                         datamovie?.let {
                                             SliderItemByTags(it,navController)
                                         }
@@ -184,7 +218,21 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
                         // LazyRow for movie items
-                        item {
+                       if(index!=3) {
+                           item {
+                               NobinoSectionSlider3(
+                                   movieList = displayData.movieItems,
+                                   // navController=navController,
+
+
+                               )
+
+
+                           }
+
+                       }
+
+                      /*  item {
                             LazyRow(
                                 modifier = Modifier.fillMaxWidth()
                                     .padding(16.dp),
@@ -194,12 +242,15 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
                             ) {
                                 items(displayData.movieItems) { datamovie ->
+
+
+
                                     datamovie?.let {
                                         SliderItemByTags(it,navController)
                                     }
                                 }
                             }
-                        }
+                        }*/
                     }
                 }
             }

@@ -408,6 +408,24 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     fun getSeriesEpisodes4(seriesId: Int, seriesNum: Int) {
         viewModelScope.launch {
             try {

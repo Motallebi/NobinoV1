@@ -378,9 +378,9 @@ fun PhoneInputField(
                 .background(Color.Black, RoundedCornerShape(8.dp)),
             // .padding(horizontal = 16.dp),
             singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
+            colors = TextFieldDefaults.colors(
                 focusedTextColor = Color.White,
-                containerColor = Color.Black,
+             //   containerColor = Color.Black,
                 focusedIndicatorColor = Color.Red,
                 unfocusedIndicatorColor = Color.Gray
             ),
