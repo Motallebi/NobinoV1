@@ -86,7 +86,7 @@ fun SeriesDetailPage(
 
 
 
-    var selectedTabIndex by remember { mutableStateOf(0) }
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
 
 
@@ -1051,7 +1051,12 @@ fun Episodes(
   //  val sessions = loadEpisodes(relatedMovies)
 
 
+       LaunchedEffect(Unit) {
 
+           productDetailsViewModel.getSeriesLastSessionEpisodes(productId)
+
+
+       }
 
 
 
@@ -1071,9 +1076,48 @@ fun Episodes(
         }
     } else {
 
+
+       val currentEpisodes by productDetailsViewModel.lastSessionepisodes.collectAsState()
+
+        when(currentEpisodes){
+
+            is NetworkResult.Success ->{
+
+                EpisodesWithDropdown3(
+                    productId = productId,
+                    sessions = sessions,
+                    viewModel = productDetailsViewModel,
+                    navController = navController
+
+                    // onSessionSelected = onSessionSelected
+                )
+
+              //  currentEpisodes.data?.let{ ShowEpisodes(it,navController) }
+
+
+
+
+            }
+
+            is NetworkResult.Loading ->{}
+
+            is NetworkResult.Error ->{}
+
+
+
+
+
+
+        }
+
+
+
+
        sessions.forEach  {
           Log.d("SessionData", "Session ${it.name.toString()}")
       }
+
+
 
 
 
@@ -1100,14 +1144,7 @@ fun Episodes(
 
 
 
-        EpisodesWithDropdown3(
-            productId = productId,
-            sessions = sessions,
-            viewModel = productDetailsViewModel,
-            navController = navController
 
-            // onSessionSelected = onSessionSelected
-        )
 
 
     }
@@ -1231,12 +1268,13 @@ fun Episodes(
         var selectedSessionIndex by remember { mutableStateOf(0) } // Tracks the selected session index
 
         // ✅ Observe episodes from ViewModel
-        val episodes by viewModel.episodes1.collectAsState()
+      // val episodes by viewModel.episodes1.collectAsState()
+       val episodes by viewModel.lastSessionepisodes.collectAsState()
 
-        episodes.data?.forEach {
+       /* episodes.data?.forEach {
             Log.d("episode", "episodes ${it.name}")
 
-        }
+        }*/
 
         Log.d("episode", "episodes ")
 
@@ -1252,7 +1290,9 @@ fun Episodes(
                     selectedSessionIndex = selectedSessionIndex,
                     onSessionSelected = { index ->
                         selectedSessionIndex = index // Update selected session
-                        viewModel.getSeriesEpisodes4(productId, index) // Fetch episodes
+
+                       // if(sessions.size!=index)
+                        viewModel.getSeriesEpisodes5(productId, index) // Fetch episodes
                     }
                 )
 
@@ -1268,19 +1308,62 @@ fun Episodes(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             )
             {
+                episodes.data?.movieInfo?.items?.forEach {
 
-                episodes.data?.forEach { episode ->
+                    EpisodeItem(it!!,navController)
+
+                }
+
+
+
+              /*  episodes.data?.forEach { episode ->
 
 
                     EpisodeItem(episode, navController)
 
 
-                }
+                }*/
 
 
             }
         }
     }
+
+
+
+
+@Composable
+fun ShowEpisodes(episodes:MovieResult,navController: NavHostController)
+{
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    )
+    {
+
+        episodes.movieInfo?.items?.forEach { episode ->
+
+
+            if (episode != null) {
+                EpisodeItem(episode, navController)
+            }
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+}
+
+
 
 
     @Composable

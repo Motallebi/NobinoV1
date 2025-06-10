@@ -37,6 +37,14 @@ class ProductDetailsViewModel @Inject constructor(
     private val _episodes = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
     val episodes: StateFlow<NetworkResult<MovieResult>> get() = _episodes.asStateFlow()
 
+    private val _lastSessionepisodes = MutableStateFlow<NetworkResult<MovieResult>>(NetworkResult.Loading())
+    val lastSessionepisodes: StateFlow<NetworkResult<MovieResult>> get() = _lastSessionepisodes.asStateFlow()
+
+
+
+
+
+
 
     private val _episodes1 = MutableStateFlow<NetworkResult<List<MovieResult.DataMovie.Item>>>(NetworkResult.Loading())
     val episodes1: StateFlow<NetworkResult<List<MovieResult.DataMovie.Item>>> get() = _episodes1.asStateFlow()
@@ -418,6 +426,45 @@ class ProductDetailsViewModel @Inject constructor(
 
 
 
+fun getSeriesLastSessionEpisodes(productId: Int)
+{
+    viewModelScope.launch {
+
+        _lastSessionepisodes.value=NetworkResult.Loading()
+
+         val result= repository.getSeriesEpisodes(productId)
+         val totalItemSize= result.data?.movieInfo?.items?.size ?: 1
+
+       val item=  result.data?.movieInfo?.items?.get(totalItemSize-1)
+        val relatedId= item?.id
+
+         val data= repository.getSeriesEpisodes(relatedId!!)
+
+
+        data.data?.movieInfo?.items?.forEach  {
+            Log.d("SessionData", "Session ${it?.name.toString()}")
+        }
+
+        _lastSessionepisodes.value=NetworkResult.Success(data.data)
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+}
+
+
 
 
 
@@ -434,6 +481,14 @@ class ProductDetailsViewModel @Inject constructor(
 
                 // First API call to get series episodes
                 val result = repository.getSeriesEpisodes(seriesId)
+                val totalItemSize= result.data?.movieInfo?.items?.size ?: 1
+
+
+
+
+
+
+
                 Log.d("series", "Total episodes: ${result.data?.movieInfo?.total}")
 
                 Log.d("series", "series is: ${seriesId} series num ${seriesNum}")
@@ -451,20 +506,104 @@ class ProductDetailsViewModel @Inject constructor(
 
                 // Second API call to get episodes
                 val movieResult = repository.getSeriesEpisodes(firstItemId)
+                val currentEpisodes=
                 Log.d("series", "Movie result retrieved successfully")
 
                 val episodeList = movieResult.data?.movieInfo?.items?.filterNotNull().orEmpty()
 
 
 
+
                 // ✅ Store only the list of episodes, not the whole response
                 _episodes1.value = NetworkResult.Success(episodeList)
+
+
+
             } catch (e: Exception) {
                 Log.e("series", "Error: ${e.message}")
                 _episodes1.value = NetworkResult.Error(e.message ?: "Unknown error")
             }
         }
     }
+
+
+
+
+
+    fun getSeriesEpisodes5(seriesId: Int, sessionNum: Int) {
+        viewModelScope.launch {
+            try {
+                Log.d("series", "Product ID is $seriesId")
+                _episodes1.value = NetworkResult.Loading()
+
+                // First API call to get series episodes
+                val result = repository.getSeriesEpisodes(seriesId)
+                val totalItemSize= result.data?.movieInfo?.items?.size ?: 1
+
+
+                val item=  result.data?.movieInfo?.items?.get(sessionNum)
+                val relatedId= item?.id
+
+                val data= repository.getSeriesEpisodes(relatedId!!)
+
+
+
+
+
+
+
+
+
+
+                Log.d("series", "Total episodes: ${result.data?.movieInfo?.total}")
+
+              //  Log.d("series", "series is: ${seriesId} series num ${seriesNum}")
+
+
+                // Extract the session ID
+               // val firstItemId = result.data?.movieInfo?.items?.getOrNull(seriesNum)?.id
+                if (relatedId == null) {
+                    Log.e("series", "No items found in series")
+                    _episodes1.value = NetworkResult.Error("No items found in series")
+                    return@launch
+                }
+
+                Log.d("series", "First item ID: $relatedId")
+
+                // Second API call to get episodes
+                val movieResult = repository.getSeriesEpisodes(relatedId)
+                val currentEpisodes=
+                    Log.d("series", "Movie result retrieved successfully")
+
+             //   val episodeList = movieResult.data?.movieInfo?.items?.filterNotNull().orEmpty()
+
+
+
+
+                // ✅ Store only the list of episodes, not the whole response
+             //   _episodes1.value = NetworkResult.Success(episodeList)
+                _lastSessionepisodes.value=NetworkResult.Success(movieResult.data)
+
+
+            } catch (e: Exception) {
+                Log.e("series", "Error: ${e.message}")
+                _episodes1.value = NetworkResult.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
