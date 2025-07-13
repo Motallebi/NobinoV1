@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +38,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.get
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoExLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.primaryContainerLight
 import com.smcdeveloper.nobinoapp.ui.theme.selectedBottomBar
@@ -146,6 +149,9 @@ fun NobinoTop(navController: NavHostController) {
 
         },
 
+
+
+
        /* colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.onBackground,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -161,6 +167,174 @@ fun NobinoTop(navController: NavHostController) {
 
 
 }
+
+
+
+
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NobinoTop1(navController: NavHostController) {
+    var selectedTab by remember { mutableStateOf("نوینو") }
+
+    //val colors = MaterialTheme.colorScheme // Get the theme colors
+
+
+    TopAppBar(
+
+
+        title = {},
+
+
+        navigationIcon = { // ✅ Add an icon at the start
+            IconButton(onClick = { /* Handle icon click */ }) {
+                Image (
+                    painterResource(R.drawable.logo), // Replace with your desired icon
+                    contentDescription = "Menu",
+                    Modifier.size(32.dp)
+                    //tint = Color.White
+                )
+            }
+        },
+
+
+
+
+
+
+
+
+
+        actions = {
+            Spacer(modifier = Modifier.width(60.dp)) // ✅ Add spacing to avoid overlap
+
+
+            LazyRow (
+                modifier = Modifier.fillMaxWidth()
+
+                ,
+
+                horizontalArrangement = Arrangement.spacedBy(40.dp),
+                verticalAlignment = Alignment.CenterVertically
+
+            )
+
+            {
+                val tabs = listOf("نوبینو", "فیلم", "سریال", "آموزش", "کودک")
+                 items(tabs.size)
+                 {
+                     index->
+
+                     val style = MaterialTheme.typography.nobinoExLarge
+
+
+
+
+                     AppBarItem(
+
+
+                         label = tabs[index],
+                         //  style = if (index==1) MaterialTheme.typography.nobinoLarge else MaterialTheme.typography.titleSmall,
+                         isSelected = tabs[index] == selectedTab,
+                         style = if (index == 0) style else MaterialTheme.typography.nobinoLarge,
+
+                         //isBold = index == 0, // ✅ First tab is bold
+                         //fontSize = if (index == 0) 20.sp else 16.sp, // ✅ First tab is larger
+
+                         onClick = {
+                             val route = when (tabs[index]) {
+                                 "نوینو" -> Screen.Home.route
+                                 "فیلم" -> Screen.Movies.route
+                                 "سریال" -> Screen.Series.route
+                                 "آموزش" -> Screen.Training.route
+                                 "کودک" -> Screen.Kids.route
+                                 else -> Screen.Home.route
+                             }
+                             // Check if the selected tab is already active
+
+
+
+
+
+
+
+
+
+                             if (selectedTab != tabs[index]) {
+                                 selectedTab = tabs[index]
+                                 navController.navigate(route) {
+                                     launchSingleTop = true
+                                     popUpTo(navController.graph.findStartDestination().id) {
+                                         saveState = true
+                                     }
+                                     restoreState = true
+                                 }
+                             }
+                         }
+
+
+                         //  restoreState = true
+
+
+                     )
+
+
+
+
+
+
+
+
+
+
+
+                 }
+
+
+
+
+
+                }
+
+
+
+        },
+
+
+
+
+        /* colors = TopAppBarDefaults.topAppBarColors(
+             containerColor = MaterialTheme.colorScheme.onBackground,
+             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+             titleContentColor = MaterialTheme.colorScheme.error
+
+
+
+
+         ),*/
+
+
+    )
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

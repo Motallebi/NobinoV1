@@ -57,6 +57,7 @@ import com.smcdeveloper.nobinoapp.ui.component.NobinoGradientCard
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection2
 import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider3
 
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
@@ -160,6 +161,16 @@ fun SectionListScreen3(
                         onSectionClick = onMovieClick,
                         navController =
                     )*/
+
+
+
+
+
+
+
+
+
+
                 }
             }
         }
@@ -217,7 +228,9 @@ fun SectionItemWithMovies(
     movies: List<MovieResult.DataMovie.Item?>?,
     onMovieClick: (Int) -> Unit,
     navController: NavHostController
-) {
+)
+
+{
     Column(modifier = Modifier.padding(16.dp)) {
         // Section Title
         Text(text = sectionTitle, style = MaterialTheme.typography.titleSmall)
@@ -249,6 +262,31 @@ fun SectionItemWithMovies(
 
 
 
+@Composable
+fun SectionItemWithMoviesNewSlider(
+    sectionTitle: String,
+    movies: List<MovieResult.DataMovie.Item?>?,
+    onMovieClick: (Int) -> Unit,
+    navController: NavHostController
+)
+{
+    Column(modifier = Modifier.padding(16.dp)) {
+        // Section Title
+        // Text(text = sectionTitle, style = MaterialTheme.typography.titleSmall)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Movies LazyRow
+        NobinoSectionSlider3(movies!!,navController)
+
+
+    }
+}
+
+
+
+
+
 
 
 
@@ -276,7 +314,14 @@ fun SectionItemWithMovies1(
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Sample" , style = MaterialTheme.typography.nobinoLarge)
         Text(section.title , style = MaterialTheme.typography.nobinoLarge)
-        NobinoSpecialRowBySection(section.title,navController,section,"")
+        NobinoSpecialRowBySection(
+            section.title,
+            navController,
+            section,"",
+            modifier = Modifier
+
+
+        )
         Row(
             modifier = Modifier
               //  .fillMaxWidth()
@@ -586,7 +631,7 @@ fun SectionListScreen(
 
                // item{ Text("SLIDER") }
 
-                item { CustomSlider(modifier = Modifier, sliderList = sliderState.data?.data)  }
+                item { CustomSlider(modifier = Modifier, sliderList = sliderState.data?.sliderData,navController=navController)  }
 
              //   item{  AnimatedImageSlider(sliderState.data!!.data)}
 
@@ -604,20 +649,40 @@ fun SectionListScreen(
 
 
 
-                    NobinoSpecialRowBySection2(title = sectionTitle,navController=navController,tags=sectionTags, category ="SERIES" )
+                    NobinoSpecialRowBySection2(
+                        title = sectionTitle,
+                        navController=navController,
+                        tags=sectionTags,
+                        category ="SERIES",
+                        modifier = Modifier
+                    )
 
 
 
 
 
 
-                    SectionItemWithMovies(
+                  /*  SectionItemWithMovies(
                         sectionTitle = sectionTitle,
                         movies = movies,
                         onMovieClick = onMovieClick,
                         navController = navController
 
+                    )*/
+                    SectionItemWithMoviesNewSlider(
+
+                        sectionTitle = sectionTitle,
+                        movies = movies,
+                        onMovieClick = onMovieClick,
+                        navController = navController
+
+
+
                     )
+
+
+
+
                 }
             }
         }

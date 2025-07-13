@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Slider(
     @SerializedName("data")
-    val `data`: List<Sliderinfo?>?,
+    val sliderData: List<Sliderinfo?>?,
     @SerializedName("message")
     val message: String?,
     @SerializedName("status")

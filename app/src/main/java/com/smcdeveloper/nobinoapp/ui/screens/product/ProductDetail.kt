@@ -613,7 +613,7 @@ fun ProductDescriptionWithExtras(
 
         // Row with icons and labels
 
-            Row(
+           /* Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
@@ -629,7 +629,7 @@ fun ProductDescriptionWithExtras(
                         )
                     }
                 }
-            }
+            }*/
 
 
         // Spacer
@@ -640,7 +640,8 @@ fun ProductDescriptionWithExtras(
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp)
-            ) {
+            )
+            {
                 items(product.images) { screenshot ->
                     AsyncImage(
                         model ="https://vod.nobino.ir/vod/${screenshot.src}",
@@ -665,6 +666,7 @@ fun ProductDescriptionWithExtras(
             )
             {
                 items(product.actors) { actor ->
+
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         AsyncImage(
                             model = "https://vod.nobino.ir/vod/${actor.imagePath}",
@@ -695,6 +697,43 @@ fun ProductDescriptionWithExtras(
                         )
                     }
                 }
+
+
+                items(product.directors) { director ->
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        AsyncImage(
+                            model = "https://vod.nobino.ir/vod/${director.imagePath}",
+                            contentDescription = director.name,
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(CircleShape)
+                                .background(Color.LightGray)
+                                .clickable {
+
+                                    navController.navigate(Screen.Actors.withArgs(director.id))
+
+                                    // navController.navigate(Screen.Actors.route)
+
+
+                                },
+                            contentScale = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = director.name,
+                            style = MaterialTheme.typography.nobinoMedium,
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color.White
+
+                        )
+                    }
+                }
+
+
+
             }
 
     }

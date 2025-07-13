@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.Button
@@ -52,6 +53,7 @@ import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.component.HtmlText
 import com.smcdeveloper.nobinoapp.ui.theme.ageSelectedButton
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.ui.theme.productDescription
 import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
 import com.smcdeveloper.nobinoapp.ui.theme.sliderdots
@@ -248,7 +250,8 @@ fun SeriesDetailPage(
                             productDetailsViewModel=productDetailsViewModel,
                             productId=productId,
                             sessions = sessions,
-                            tags =productData.tags
+                            tags =productData.tags,
+                            product = productData
 
                         )
 
@@ -263,6 +266,7 @@ fun SeriesDetailPage(
 
 @Composable
 fun ShowSeriesProductDetailWithTabs(
+    product: ProductModel.MovieInfo,
     productTitle: String,
     productEnglishTitle: String,
     productImage: String,
@@ -357,7 +361,12 @@ fun ShowSeriesProductDetailWithTabs(
 
 
 
-                0 -> ProductDescription(description = productDescription)
+                0 -> ProductDescription(description = productDescription, product =product,
+                    navController
+
+
+
+                )
                 1 -> Episodes(
                     productDetailsViewModel = productDetailsViewModel,
                     productId = productId,
@@ -604,11 +613,151 @@ fun SeriesProductBanner(
 
 
 @Composable
-fun ProductDescription(description: String) {
+fun ProductDescription(
+    description: String,
+    product:ProductModel.MovieInfo,
+    navController: NavHostController
+
+
+
+) {
     Column(modifier = Modifier.padding(16.dp)) {
 
 
         HtmlText(description, textColor = Color.White)
+
+
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp)
+        )
+        {
+            items(product.images) { screenshot ->
+                AsyncImage(
+                    model ="https://vod.nobino.ir/vod/${screenshot.src}",
+                    contentDescription = "Screenshot",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+
+
+        // Spacer
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Circular Images with Labels (LazyRow or LazyGrid)
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp)
+        )
+        {
+            items(product.actors) { actor ->
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    AsyncImage(
+                        model = "https://vod.nobino.ir/vod/${actor.imagePath}",
+                        contentDescription = actor.name,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .background(Color.LightGray)
+                            .clickable {
+
+                                navController.navigate(Screen.Actors.withArgs(actor.id))
+
+                                // navController.navigate(Screen.Actors.route)
+
+
+                            },
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    androidx.compose.material3.Text(
+                        text = actor.name,
+                        style = MaterialTheme.typography.nobinoMedium,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.White
+
+                    )
+                }
+            }
+
+
+            items(product.directors) { director ->
+
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    AsyncImage(
+                        model = "https://vod.nobino.ir/vod/${director.imagePath}",
+                        contentDescription = director.name,
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .background(Color.LightGray)
+                            .clickable {
+
+                                navController.navigate(Screen.Actors.withArgs(director.id))
+
+                                // navController.navigate(Screen.Actors.route)
+
+
+                            },
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    androidx.compose.material3.Text(
+                        text = director.name,
+                        style = MaterialTheme.typography.nobinoMedium,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.White
+
+                    )
+                }
+            }
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
@@ -1304,8 +1453,11 @@ fun Episodes(
 
             // ✅ Show episodes for the selected session
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
+                    .padding(horizontal = 20.dp)
+                ,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
+
             )
             {
                 episodes.data?.movieInfo?.items?.forEach {
@@ -1560,7 +1712,7 @@ fun SessionDropdownMenu(
         episode: MovieResult.DataMovie.Item,
         navController: NavHostController
     ) {
-        Row (
+        androidx.compose.material3.Card  (
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.sliderdots, shape = RoundedCornerShape(8.dp))
@@ -1573,72 +1725,115 @@ fun SessionDropdownMenu(
                 },
 
 
-            verticalAlignment = Alignment.CenterVertically
+            //
         )
 
         {
 
+            Row(modifier = Modifier.fillMaxSize()
+             //   .background(Color.Green),
+               // verticalAlignment = Alignment.CenterVertically
 
 
-
-
-
-
-
-            AsyncImage(
-
-
-
-                model = if(episode.images?.get(1)?.src!!.isNotEmpty()) "https://vod.nobino.ir/vod/${episode.images.get(1)?.src}" else DEFAULT_IMAGE_POSETR,
-                contentDescription = episode.name,
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .size(64.dp,100.dp)
-                    .clip(RoundedCornerShape(8.dp))
             )
+            {
 
-            Spacer(modifier = Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
 
-            Column(modifier =
-            Modifier.weight(1f)
+                        .height(140.dp)
 
-            ) {
+                        .width(120.dp)
+                      //  .background(Color.Yellow)
 
-
-
-
-
-                Text(
-                    text = episode.name ?: "Untitled Episode",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.productDescription
-
-                )
-
-
-                HtmlText(
-                    html = episode.shortDescription ?: "No description available",
-                    textColor = MaterialTheme.colorScheme.productDescription
 
 
                 )
+                {
+                    AsyncImage(
+
+
+
+                        model = if(episode.images?.get(0)?.src!!.isNotEmpty()) "https://vod.nobino.ir/vod/${episode.images.get(1)?.src}" else DEFAULT_IMAGE_POSETR,
+                        contentDescription = episode.name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            // .size(64.dp,100.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Column (modifier =
+                Modifier
+                  //  .background(Color.Red)
+
+                ) {
 
 
 
 
 
 
-               /* Text(
-                    text = episode.shortDescription ?: "No description available",
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )*/
+                    val input =  episode.name ?: "Untitled Episode"
+                    val regex = Regex("فصل.*")
+
+                    val match = regex.find(input)
+                    val result = match?.value
+
+
+                    Text(
+                        text = result ?: "Untitled Episode",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.productDescription
+
+                    )
+
+
+                    HtmlText(
+                        html = episode.shortDescription ?: "No description available",
+                        textColor = MaterialTheme.colorScheme.productDescription
+
+
+                    )
+
+
+
+
+
+
+                    /* Text(
+                         text = episode.shortDescription ?: "No description available",
+                         fontSize = 12.sp,
+                         color = Color.Gray,
+                         maxLines = 2,
+                         overflow = TextOverflow.Ellipsis
+                     )*/
+                }
+
+
+
+
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             /*Text(
                 text = "${episode.ages} mins",

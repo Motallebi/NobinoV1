@@ -13,8 +13,10 @@ object Constants {
     const val SeriesCategory = "MOVIE"
     const val SeasonCategory = "MOVIE"
     const val MovieCategory1 = "MOVIE"
-    const val IMAGE_WITDTH=217
-    const val IMAGE_HIGHT=260
+    const val IMAGE_WITDTH=156
+        //217
+    const val IMAGE_HIGHT=217
+        //260
 
 
 

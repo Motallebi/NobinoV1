@@ -3,6 +3,9 @@ package com.smcdeveloper.nobinoapp.ui.component
 
 import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.view.Gravity
+import android.view.View
+import android.view.View.TEXT_DIRECTION_RTL
 import android.widget.TextView
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
@@ -16,7 +19,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -86,6 +88,7 @@ import com.smcdeveloper.nobinoapp.navigation.Screen
 import com.smcdeveloper.nobinoapp.ui.theme.ageSelectedButton
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoSmall
 import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
 import com.smcdeveloper.nobinoapp.ui.theme.spacing
 import com.smcdeveloper.nobinoapp.util.Constants.DEFAULT_IMAGE_POSETR
@@ -140,12 +143,26 @@ fun NobinoText() {
 
 @Composable
 fun HtmlText(html: String, modifier: Modifier = Modifier, textColor: Color = Color.Black) {
+
+   val Description= HtmlCompat.FROM_HTML_MODE_LEGACY.toString()
+
+
     AndroidView(
+        modifier = modifier.fillMaxWidth(),
         factory = { context ->
             TextView(context).apply {
                 text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    //.subSequence(0,100)
+
+
                 movementMethod = LinkMovementMethod.getInstance() // Enables clickable links
                 setTextColor(textColor.toArgb())
+                gravity=Gravity.START
+                textDirection= TEXT_DIRECTION_RTL
+                maxWidth=20
+
+
+
 
 
 
@@ -153,9 +170,13 @@ fun HtmlText(html: String, modifier: Modifier = Modifier, textColor: Color = Col
             }
         },
         update = { textView ->
-            textView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+          textView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+              //.subSequence(0,50)
+
+
+
         },
-        modifier = modifier
+
     )
 }
 
@@ -571,7 +592,7 @@ fun MovieCard1(sliderInfo: Slider.Sliderinfo?) {
 
 @Composable
 fun NobinoGradientCard(
-    text: String,
+    text: String?="null",
 
     ) {
     val gradientBrush = Brush.horizontalGradient(
@@ -605,30 +626,31 @@ fun NobinoGradientCard(
         //contentPadding = ButtonDefaults.ContentPadding
     )
     {
-        Box(
-            modifier = Modifier
-                .background(brush = gradientBrush)
-                //.wrapContentSize()
-                .fillMaxSize()
+         if(text!="null") {
+             Box(
+                 modifier = Modifier
+                     .background(brush = gradientBrush)
+                     //.wrapContentSize()
+                     .fillMaxSize()
 
-                .height(50.dp),
+                     .height(50.dp),
 
-            contentAlignment = Alignment.Center
+                 contentAlignment = Alignment.Center
 
-            )
-        {
-            Text(
-                style = MaterialTheme.typography.nobinoMedium,
-                //  textAlign = TextAlign.Center,
+             )
+             {
+                 Text(
+                     style = MaterialTheme.typography.nobinoMedium,
+                     //  textAlign = TextAlign.Center,
 
-                text = text,
-                color = Color.Black,
-              //  overflow = TextOverflow.Ellipsis
+                     text =  "IMDB $text",
+                     color = Color.Black,
+                     //  overflow = TextOverflow.Ellipsis
 
 
-            )
-        }
-
+                 )
+             }
+         }
 
     }
 
@@ -1026,7 +1048,17 @@ fun MovieCardtestByTag(
 
     {
         if (!movieInfo.images.isNullOrEmpty() && movieInfo.images[0]?.src != null) {
-            val imagePath = "https://vod.nobino.ir/vod/" + movieInfo.images[0]?.src
+
+         val imageSrc=   movieInfo.images.filter {
+
+                it?.imageType=="BANNER_MOBILE"
+
+            }
+
+
+
+            val imagePath = "https://vod.nobino.ir/vod/" + imageSrc[0]?.src.toString()
+
 
             AsyncImage(
                 model = if (movieInfo.images[0]?.src!!.isNotEmpty()) imagePath else DEFAULT_IMAGE_POSETR,
@@ -1424,11 +1456,12 @@ fun NobinoSpecialRow(
 {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
-            .padding(horizontal = 10.dp)
-            .background(MaterialTheme.colorScheme.background),
+          //  .padding(horizontal = 10.dp)
+           .background(MaterialTheme.colorScheme.background),
+         //   .background(Color.Green),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
 
@@ -1444,7 +1477,7 @@ fun NobinoSpecialRow(
     {
 
         Text(title,
-            style = MaterialTheme.typography.nobinoMedium
+            style = MaterialTheme.typography.nobinoSmall
 
 
 
@@ -1464,7 +1497,7 @@ fun NobinoSpecialRow(
 
             Text(
                 "مشاهده همه",
-                style = MaterialTheme.typography.nobinoMedium,
+                style = MaterialTheme.typography.nobinoSmall,
 
 
                 modifier = Modifier.clickable {
@@ -1726,12 +1759,13 @@ fun NobinoSpecialRowBySection(
     title: String,
     navController: NavHostController,
     Section: Section.Data,
-    category: String
+    category: String,
+    modifier: Modifier
 ) {
 
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
             .background(MaterialTheme.colorScheme.background),
@@ -1748,7 +1782,7 @@ fun NobinoSpecialRowBySection(
 
 
         TextField("مشاهده همه", {},
-            modifier = Modifier.clickable {
+            modifier = modifier.clickable {
                 Log.d("category", "Nobino Button Category is${category}")
                 //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
 
@@ -1836,7 +1870,8 @@ fun NobinoSpecialRowBySection2(
     title: String,
     navController: NavHostController,
     tags: List<String>,
-    category: String
+    category: String,
+    modifier: Modifier
 ) {
 
     Log.d("categoty", "category is $category")
@@ -1845,7 +1880,7 @@ fun NobinoSpecialRowBySection2(
     // Log.d("categoty","tags are ${section.tags.toString()}")
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
             .padding(horizontal = 10.dp)
@@ -1860,13 +1895,13 @@ fun NobinoSpecialRowBySection2(
     {
 
         Text(title,
-            style = MaterialTheme.typography.nobinoMedium
+            style = MaterialTheme.typography.nobinoSmall
 
 
             )
 
         Row(
-            modifier = Modifier,
+            modifier = modifier,
 
             verticalAlignment = Alignment.CenterVertically
 
@@ -1878,10 +1913,10 @@ fun NobinoSpecialRowBySection2(
 
             Text(
                 stringResource(R.string.Show_More),
-                style = MaterialTheme.typography.nobinoMedium,
+                style = MaterialTheme.typography.nobinoSmall,
 
 
-                modifier = Modifier.clickable {
+                modifier = modifier.clickable {
                     Log.d("category", "Nobino Button Category is${category}")
                     //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
 
@@ -1921,7 +1956,7 @@ fun NobinoSpecialRowBySection2(
 
             Icon(painterResource(R.drawable.left),"",
                 tint = Color.White,
-                modifier = Modifier.size(32.dp)
+                modifier = modifier.size(32.dp)
 
 
 
@@ -2306,8 +2341,11 @@ fun SeriesCardWithAnimation(
 
             )
             {
+                val imageData  = if(info.images!!.isNotEmpty()) info.images.get(0)?.src.toString() else DEFAULT_IMAGE_POSETR
                 AsyncImage(
-                    model = IMAGE_BASE_URL+info.images?.get(0)?.src.toString(),
+
+
+                    model = IMAGE_BASE_URL+imageData,
 
                     contentDescription = "Layer 1",
                     contentScale = ContentScale.Crop,

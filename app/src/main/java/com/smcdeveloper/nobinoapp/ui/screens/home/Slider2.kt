@@ -71,6 +71,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -90,7 +91,12 @@ import coil3.size.Scale
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
+import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.component.FeatureIconsRow
+import com.smcdeveloper.nobinoapp.ui.component.NobinoGradientCard
+import com.smcdeveloper.nobinoapp.ui.theme.nobinoSmall
 import com.smcdeveloper.nobinoapp.ui.theme.sliderdots
+import com.smcdeveloper.nobinoapp.util.Constants.DEFAULT_IMAGE_POSETR
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_HIGHT
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_WITDTH
@@ -259,15 +265,19 @@ fun CustomSlider(
     pagerPaddingValues: PaddingValues = PaddingValues(horizontal = 90.dp),
     imageCornerRadius: Dp = 20.dp,
     imageHeight: Dp = 260.dp,
-    unselectedSize: Dp = 15.dp,
-    selectedSize: Dp = 25.dp,
+    unselectedSize: Dp = 10.dp,
+    selectedSize: Dp = 30.dp,
     animationDuration: Int = 300,
     selectedColor: Color = Color.White,
     unselectedColor: Color = MaterialTheme.colorScheme.sliderdots,
+    navController: NavHostController
 ) {
 
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { sliderList!!.size })
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { sliderList!!.size-4})
     val scope = rememberCoroutineScope()
+
+
+
 
 
     LaunchedEffect(Unit) {
@@ -317,6 +327,9 @@ fun CustomSlider(
             )
 
             { page ->
+
+                Log.d("Slider",sliderList.toString())
+
                 val pageOffset =
                     (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
 
@@ -355,6 +368,109 @@ fun CustomSlider(
 
 //                            .alpha(if (pagerState.currentPage == page) 1f else 0.5f)
                     )
+
+                    Box(Modifier.fillMaxSize()
+                        .clickable {
+
+                            if(sliderList?.get(page)?.product?.category.toString() != "SERIES") {
+
+                                navController.navigate(
+                                    Screen.ProductDetails.withArgs(
+                                        sliderList?.get(page)?.product?.id.toString()
+
+
+                                    )
+                                )
+                            }
+                            else if (sliderList?.get(page)?.product?.category.toString() == "SERIES")
+                            {
+                                navController.navigate(
+                                    Screen.SeriesDetailScreen.withArgs(
+                                        sliderList?.get(page)?.product?.id.toString())
+
+                                )
+
+                            }
+
+
+
+
+
+
+                        }
+
+
+
+
+
+
+
+
+
+                        ,
+                        contentAlignment = Alignment.BottomCenter
+
+
+                    )
+                    {
+                        Column (
+
+                           modifier.height(80.dp)
+                               .fillMaxWidth()
+                             //  .background(Color.Yellow)
+
+
+                        )
+                        {
+                         Row(
+                             modifier.padding(start = 10.dp)
+
+
+                         )
+                         {
+
+
+                             Text(
+                                 sliderList?.get(page)?.product?.name.toString(),
+                                 style = MaterialTheme.typography.nobinoSmall
+
+
+
+
+                             )
+
+
+                            // Text(sliderList?.get(page)?.product?.id.toString())
+
+
+                         }
+
+                         Row()
+                         {
+
+                             NobinoGradientCard(sliderList?.get(page)?.product?.imdbRating.toString())
+                            // Text(sliderList?.get(page)?.product?.name.toString())
+                             FeatureIconsRow(isKeyboardAvailable = true, isMicAvailable = true)
+
+                         }
+
+
+
+
+                        }
+
+
+
+
+
+
+                    }
+
+
+
+
+
+
                 }
             }
 
@@ -390,7 +506,7 @@ fun CustomSlider(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp))
             {
 
-                repeat(sliderList!!.size) { index ->
+                repeat(sliderList!!.size-5) { index ->
                     val selectedPage = pagerState.currentPage
                     val isSelected = index == selectedPage
 
@@ -749,20 +865,21 @@ fun Dp.toPx(density: Density): Float {
 
 @Composable
 fun NobinoSectionSlider3(
-    movieList: List<MovieResult.DataMovie.Item?>
+    movieList: List<MovieResult.DataMovie.Item?>,
+    navController: NavHostController
 
 
 ) {
     val lazyListState = rememberLazyListState()
     val density = LocalDensity.current // <--- Capture LocalDensity here!
 
-    Column(
+    /*Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF1A1A1A))
             .padding(vertical = 24.dp)
-    )
-    {
+    )*/
+
         LazyRow(
 
             state = lazyListState,
@@ -846,9 +963,10 @@ fun NobinoSectionSlider3(
 
 
                 MoviePosterCardWithDarknessAndScale(
-                    movie = movie!!,
+                    movie =movie!!,
                     scale = animatedScale,
-                    darknessAlpha = animatedDarknessAlpha
+                    darknessAlpha = animatedDarknessAlpha,
+                    navController = navController
                 )
 
 
@@ -863,7 +981,7 @@ fun NobinoSectionSlider3(
         Spacer(modifier = Modifier.height(32.dp))
 
 
-    }
+
 
 }
 
@@ -968,8 +1086,57 @@ fun MoviePosterCard(movie: MovieResult.DataMovie.Item, scale: Float) {
 
 
 @Composable
-fun MoviePosterCardWithDarknessAndScale(movie: MovieResult.DataMovie.Item, scale: Float, darknessAlpha: Float) {
-    val data = movie.images?.get(0)?.src.toString()
+fun MoviePosterCardWithDarknessAndScale(
+    movie: MovieResult.DataMovie.Item,
+    scale: Float, darknessAlpha: Float,
+    navController: NavHostController,
+
+) {
+   var imageSrc = emptyList<MovieResult. DataMovie. Item. Image?>()
+   var imagePath =""
+
+    if(movie.images!!.isNotEmpty()) {
+
+         imageSrc = movie.images.filter {
+
+            it?.imageType == "POSTER"
+
+        }
+        imagePath= imageSrc[0]?.src.toString()
+
+    }
+    else
+    {
+        imagePath= DEFAULT_IMAGE_POSETR
+
+
+    }
+
+
+
+
+
+
+       Log.d("filterImage","images source is ${imageSrc}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+       // val data = movie.images?.get(0)?.src.toString()
+     //  val imageData  = if(movie.images.isNotEmpty()) imagePath else DEFAULT_IMAGE_POSETR
+
+
+
+
     Card(
         modifier = Modifier
             .width(IMAGE_WITDTH.dp) // Fixed width for each card, adjusted to fit content and leave space
@@ -988,10 +1155,15 @@ fun MoviePosterCardWithDarknessAndScale(movie: MovieResult.DataMovie.Item, scale
             modifier = Modifier.fillMaxSize()
         )
         {
+
+
+
+
+
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .crossfade(true)
-                    .data(IMAGE_BASE_URL + data)
+                    .data(IMAGE_BASE_URL + imagePath)
                     .build(),
 
 
@@ -1018,9 +1190,59 @@ fun MoviePosterCardWithDarknessAndScale(movie: MovieResult.DataMovie.Item, scale
             val overlayAlpha = 1.0f - darknessAlpha
 
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
+                    .clickable {
+
+                        if(movie.category.toString() != "SERIES") {
+
+                            navController.navigate(
+                                Screen.ProductDetails.withArgs(
+                                    movie.id.toString()
+
+
+                                )
+                            )
+                        }
+                        else if (movie.category.toString() == "SERIES")
+                        {
+                            navController.navigate(
+                                Screen.SeriesDetailScreen.withArgs(
+                                    movie.id.toString())
+
+                            )
+
+                        }
+
+
+
+
+
+
+
+
+
+
+
+                    }
+
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = overlayAlpha))
+                    .background(Color.Black.copy(alpha = overlayAlpha)
+
+
+
+
+
+
+
+
+
+
+
+                    )
+
+
+
             )
 
 
