@@ -150,7 +150,7 @@ fun SectionListScreen(
 
 
                 //item{  AnimatedImageSlider(sliderResult.data!!.data) }
-                item{  CustomSlider(modifier = Modifier,sliderResult.data?.data) }
+                item{  CustomSlider(modifier = Modifier,sliderResult.data?.sliderData, navController = navController) }
 
 
 
@@ -180,7 +180,8 @@ fun SectionListScreen(
                        title =  sectionTitle,
                         navController = navController,
                         tags = taglist,
-                        category = ""
+                        category = "",
+                        modifier = Modifier
 
 
                         )

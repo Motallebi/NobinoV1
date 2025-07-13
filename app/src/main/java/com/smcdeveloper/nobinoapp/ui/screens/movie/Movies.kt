@@ -54,6 +54,7 @@ import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection2
 import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider3
 import com.smcdeveloper.nobinoapp.ui.screens.series.SliderItemByTags
 
 
@@ -181,7 +182,7 @@ fun SectionListScreen(
 
 
 
-                val sliderData = (sliderResult as? NetworkResult.Success)?.data?.data
+                val sliderData = (sliderResult as? NetworkResult.Success)?.data?.sliderData
 
                 item {
 
@@ -189,9 +190,9 @@ fun SectionListScreen(
                     if (sliderData != null) {
                        // Log.d("slider", "not null" + sliderState.data?.data.toString())
 
-                        CustomSlider(modifier = Modifier,sliderData)
+                        CustomSlider(modifier = Modifier,sliderData, navController = navController)
 
-                        // AnimatedImageSlider(sliderData)
+                       // AnimatedImageSlider(sliderData)
                         Log.d("slider", "not null")
                     }
 
@@ -216,15 +217,30 @@ fun SectionListScreen(
                         title = sectionTitle,
                        navController= navController,
                         tags = sectionTags,
-                        category = "MOVIE")
+                        category = "MOVIE",
+                        modifier = Modifier
+                        )
 
 
-                    SectionItemWithMovies(
+                   /* SectionItemWithMovies(
+                        sectionTitle = sectionTitle,
+                        movies = movies,
+                        onMovieClick = onMovieClick,
+                        navController = navController
+                    )*/
+
+
+                    SectionItemWithMoviesNewSlider(
                         sectionTitle = sectionTitle,
                         movies = movies,
                         onMovieClick = onMovieClick,
                         navController = navController
                     )
+
+
+
+
+
                 }
             }
         }
@@ -238,7 +254,8 @@ fun SectionItemWithMovies(
     movies: List<MovieResult.DataMovie.Item?>?,
     onMovieClick: (Int) -> Unit,
     navController: NavHostController
-) {
+)
+{
     Column(modifier = Modifier.padding(16.dp)) {
         // Section Title
        // Text(text = sectionTitle, style = MaterialTheme.typography.titleSmall)
@@ -263,7 +280,9 @@ fun SectionItemWithMovies(
 
             items(movies.orEmpty().filterNotNull()) { movie ->
                 // MovieItem(movie = movie, onClick = { onMovieClick(movie.id ?: 0) })
-                SliderItemByTags(movie, navController = navController)
+               // SliderItemByTags(movie, navController = navController)
+               // NobinoSectionSlider3()
+
             }
 
 
@@ -271,6 +290,34 @@ fun SectionItemWithMovies(
         }
     }
 }
+
+
+
+@Composable
+fun SectionItemWithMoviesNewSlider(
+    sectionTitle: String,
+    movies: List<MovieResult.DataMovie.Item?>?,
+    onMovieClick: (Int) -> Unit,
+    navController: NavHostController
+)
+{
+    Column(modifier = Modifier.padding(16.dp)) {
+        // Section Title
+        // Text(text = sectionTitle, style = MaterialTheme.typography.titleSmall)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Movies LazyRow
+         NobinoSectionSlider3(movies!!,navController)
+
+
+    }
+}
+
+
+
+
+
 
 
 

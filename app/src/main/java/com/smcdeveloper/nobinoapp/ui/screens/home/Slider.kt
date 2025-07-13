@@ -74,7 +74,7 @@ fun GetSlider(viewModel: HomeViewModel = hiltViewModel())
             )
         }
         is NetworkResult.Success -> {
-            val sliderInfo = (sliderState as NetworkResult.Success).data?.data
+            val sliderInfo = (sliderState as NetworkResult.Success).data?.sliderData
             SliderList(sliderInfo ?: emptyList())
         }
     }

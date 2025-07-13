@@ -2,15 +2,18 @@ package com.smcdeveloper.nobinoapp.ui.screens.product
 
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +28,12 @@ import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRow
 import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider1
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider2
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider3
 import com.smcdeveloper.nobinoapp.ui.screens.home.SliderItemByTags
+import com.smcdeveloper.nobinoapp.ui.screens.movie.AnimatedImageSlider
 import com.smcdeveloper.nobinoapp.viewmodel.HomeViewModel
 
 @Composable
@@ -101,7 +109,7 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
 
-                    val sliderData = (sliderState as NetworkResult.Success).data?.data
+                    val sliderData = (sliderState as NetworkResult.Success).data?.sliderData
 
                     val movies = (movieDataState as NetworkResult.Success).data ?: emptyList()
 
@@ -115,8 +123,8 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                     item {
                         if (sliderData != null) {
 
-                          // AnimatedImageSlider(sliderData)
-                            CustomSlider(modifier = Modifier,sliderData,)
+                         // AnimatedImageSlider(sliderData)
+                           CustomSlider(modifier = Modifier,sliderData,navController=navController)
 
 
                         }
@@ -125,15 +133,24 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                     // Show movies after the slider
                     movies.forEachIndexed { index, displayData ->
                         item {
-                            NobinoSpecialRow(
-                                displayData.movieCat.title.toString(),
-                                navController = navController,
-                                displayData.movieCat,
+                            Row(modifier = Modifier.fillMaxWidth()
+                           //    .background(Color.Red)
+                                .padding(start = 25.dp)
 
-                                category = "",
-                                categoryName = displayData.movieCat.title.toString(),
-                                modifier = Modifier
-                            )
+                            ){
+                                NobinoSpecialRow(
+                                    displayData.movieCat.title.toString(),
+                                    navController = navController,
+                                    displayData.movieCat,
+
+                                    category = "",
+                                    categoryName = displayData.movieCat.title.toString(),
+                                    modifier = Modifier
+                                )
+
+
+                            }
+
 
 
                         }
@@ -158,20 +175,61 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
                             item {
+
+                              //  val lazyListState = rememberLazyListState()
+
+
+
+
+
+
+
+/*
                                 LazyRow(
+                                  //  state = lazyListState,
+
                                     modifier = Modifier.fillMaxWidth()
                                         .padding(16.dp),
                                     contentPadding = PaddingValues(16.dp),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
 
 
-                                ) {
-                                    items(displayData.movieItems) { datamovie ->
+                                )*/
+
+
+
+                                        NobinoSectionSlider3(displayData.movieItems,navController)
+
+
+
+
+
+
+                                   /* itemsIndexed(
+
+                                        displayData.movieItems,
+
+
+                                    )*/
+
+                                   /* {
+
+                                     index, datamovie ->
+
+
+
+
+
                                         datamovie?.let {
-                                            SliderItemByTags(it,navController)
+                                           SliderItemByTags(it,navController)
+                                          //
+
+
+
+
                                         }
-                                    }
-                                }
+                                    }*/
+
                             }
 
 
@@ -184,7 +242,21 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
                         // LazyRow for movie items
-                        item {
+                       if(index!=3) {
+                           item {
+                               NobinoSectionSlider3(
+                                   movieList = displayData.movieItems,
+                                    navController=navController,
+
+
+                               )
+
+
+                           }
+
+                       }
+
+                      /*  item {
                             LazyRow(
                                 modifier = Modifier.fillMaxWidth()
                                     .padding(16.dp),
@@ -194,12 +266,15 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
                             ) {
                                 items(displayData.movieItems) { datamovie ->
+
+
+
                                     datamovie?.let {
                                         SliderItemByTags(it,navController)
                                     }
                                 }
                             }
-                        }
+                        }*/
                     }
                 }
             }

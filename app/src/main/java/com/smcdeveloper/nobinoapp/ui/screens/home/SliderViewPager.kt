@@ -60,7 +60,7 @@ fun ImageSlider(viewModel: HomeViewModel = hiltViewModel() )
     when (sliderResult) {
 
         is NetworkResult.Success-> {
-            val sliderInfo = (sliderResult as NetworkResult.Success<Slider>).data?.data
+            val sliderInfo = (sliderResult as NetworkResult.Success<Slider>).data?.sliderData
           sliderList = sliderInfo as List<Slider.Sliderinfo>
 
             loading = false

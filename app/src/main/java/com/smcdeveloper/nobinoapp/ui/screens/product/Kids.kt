@@ -127,13 +127,13 @@ fun KidsMovieScreen(viewModel: KidsViewModel, navController: NavHostController,t
 
                 {
 
-                    Log.d("slider","movie3"+sliderState.data?.data.toString())
+                    Log.d("slider","movie3"+sliderState.data?.sliderData.toString())
                     //   Log.d("slider2","movie3"+delimiterState.data?.imageData?.leftImageLink)
 
 
 
 
-                    val sliderData = (sliderState as NetworkResult.Success).data?.data
+                    val sliderData = (sliderState as NetworkResult.Success).data?.sliderData
 
                     val movies = (movieDataState as NetworkResult.Success).data ?: emptyList()
 

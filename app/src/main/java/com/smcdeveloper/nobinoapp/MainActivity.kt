@@ -60,6 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoTop1
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.util.AppConfig
 import com.smcdeveloper.nobinoapp.util.ConnectivityObserver
@@ -200,7 +201,7 @@ class MainActivity : ComponentActivity() {
 
                             )
 
-                               NobinoTop(navController)
+                               NobinoTop1(navController)
 
 
                         },

@@ -62,6 +62,20 @@ val Typography.nobinoLarge : TextStyle
         color = Color.White
     )
 
+
+val Typography.nobinoExLarge : TextStyle
+    @Composable
+    get() = TextStyle(
+        fontFamily = nobino_fonts,
+        fontWeight = FontWeight.Bold,
+        fontSize =32.sp,
+        color = Color.White
+    )
+
+
+
+
+
 val Typography.nobinoMedium: TextStyle
     @Composable
     get() = TextStyle(
@@ -72,6 +86,24 @@ val Typography.nobinoMedium: TextStyle
 
 
     )
+
+
+
+
+
+
+
+
+val Typography.nobinoSmall1: TextStyle
+    @Composable
+    get() = TextStyle(
+        fontFamily = nobino_fonts,
+        fontWeight = FontWeight.Bold,
+        fontSize =16.sp,
+        color = Color.White,
+
+
+        )
 
 
 val Typography.nobinoMediumCheckBox: TextStyle

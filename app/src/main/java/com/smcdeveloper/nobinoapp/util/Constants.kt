@@ -1,5 +1,6 @@
 package com.smcdeveloper.nobinoapp.util
 
+import androidx.compose.ui.unit.dp
 import com.smcdeveloper.nobinoapp.data.model.AudioSubtitle
 
 object Constants {
@@ -12,6 +13,13 @@ object Constants {
     const val SeriesCategory = "MOVIE"
     const val SeasonCategory = "MOVIE"
     const val MovieCategory1 = "MOVIE"
+    const val IMAGE_WITDTH=156
+        //217
+    const val IMAGE_HIGHT=217
+        //260
+
+
+
     var USER_LOGIN_STATUS= false
 
      val FILTER_AUDIO_SUBTITLE=

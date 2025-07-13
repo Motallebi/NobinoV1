@@ -2589,8 +2589,8 @@ LaunchedEffect(Unit) {
                         modifier = Modifier
                             .fillMaxWidth(0.7f)
                             .background(Color.DarkGray, shape = RoundedCornerShape(24.dp)),
-                        colors = TextFieldDefaults.textFieldColors(
-                            containerColor = Color.Transparent,
+                        colors = TextFieldDefaults.colors(
+                           // containerColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
                         ),
@@ -2755,8 +2755,8 @@ LaunchedEffect(Unit) {
                             modifier = Modifier
                                 .fillMaxWidth(0.7f)
                                 .background(Color.DarkGray, shape = RoundedCornerShape(24.dp)),
-                            colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.Transparent,
+                            colors = TextFieldDefaults.colors(
+                               // containerColor = Color.Transparent,
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent
                             ),
@@ -2930,8 +2930,8 @@ LaunchedEffect(Unit) {
                             modifier = Modifier
                                 .fillMaxWidth(0.7f)
                                 .background(Color.DarkGray, shape = RoundedCornerShape(24.dp)),
-                            colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.Transparent,
+                            colors = TextFieldDefaults.colors(
+                              //  containerColor = Color.Transparent,
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent
                             ),
