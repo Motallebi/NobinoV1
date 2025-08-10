@@ -188,6 +188,7 @@ class MainActivity : ComponentActivity() {
                                        || currentRoute.toString().startsWith("favorite")
                                        || currentRoute.toString().startsWith("VideoPlayer_Screen")
                                        || currentRoute.toString().startsWith("Demo_Screen")
+                                       || currentRoute.toString().startsWith("splash_screen")
 
 
 

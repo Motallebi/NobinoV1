@@ -51,6 +51,7 @@ fun NewMemberPage(navController: NavHostController) {
     val selectedAgeGroup = remember { mutableStateOf(ageGroupOptions[1]) }
     val expanded = remember { mutableStateOf(false) }
     var activeButton by remember { mutableStateOf(false) }
+    var userName by remember { mutableStateOf("") }
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -90,6 +91,20 @@ fun NewMemberPage(navController: NavHostController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             // Instruction Text
+
+            TextField(
+               userName,
+                onValueChange = {
+                    userName=it
+
+                },
+
+
+
+
+            )
+
+
             Text(
                 text = "لطفا بازه سنی خود را جهت تماشای فیلم انتخاب کنید",
                 style = TextStyle(
@@ -117,6 +132,8 @@ fun NewMemberPage(navController: NavHostController) {
             {
 
                 Column() {
+
+
 
 
                     CustomComboBoxRTL2(ageGroupOptions) {
@@ -156,7 +173,13 @@ fun NewMemberPage(navController: NavHostController) {
                     Button(
                         onClick = {
 
-                            navController.navigate(Screen.NewMemberSelection.route)
+                            navController.navigate(
+                                Screen.NewMemberSelection.route
+
+
+
+
+                            )
 
 
                         },

@@ -270,7 +270,8 @@ fun CustomSlider(
     animationDuration: Int = 300,
     selectedColor: Color = Color.White,
     unselectedColor: Color = MaterialTheme.colorScheme.sliderdots,
-    navController: NavHostController
+    navController: NavHostController,
+    isClickble:Boolean=true
 ) {
 
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { sliderList!!.size-4})
@@ -371,35 +372,32 @@ fun CustomSlider(
 
                     Box(Modifier.fillMaxSize()
                         .clickable {
+                            if (isClickble) {
 
-                            if(sliderList?.get(page)?.product?.category.toString() != "SERIES") {
 
-                                navController.navigate(
-                                    Screen.ProductDetails.withArgs(
-                                        sliderList?.get(page)?.product?.id.toString()
+                                if (sliderList?.get(page)?.product?.category.toString() != "SERIES") {
 
+                                    navController.navigate(
+                                        Screen.ProductDetails.withArgs(
+                                            sliderList?.get(page)?.product?.id.toString()
+
+
+                                        )
+                                    )
+                                } else if (sliderList?.get(page)?.product?.category.toString() == "SERIES") {
+                                    navController.navigate(
+                                        Screen.SeriesDetailScreen.withArgs(
+                                            sliderList?.get(page)?.product?.id.toString()
+                                        )
 
                                     )
-                                )
-                            }
-                            else if (sliderList?.get(page)?.product?.category.toString() == "SERIES")
-                            {
-                                navController.navigate(
-                                    Screen.SeriesDetailScreen.withArgs(
-                                        sliderList?.get(page)?.product?.id.toString())
 
-                                )
+                                }
+
 
                             }
-
-
-
-
-
 
                         }
-
-
 
 
 

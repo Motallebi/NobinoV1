@@ -2,8 +2,10 @@ package com.smcdeveloper.nobinoapp.di
 
 import android.util.Log
 import com.smcdeveloper.nobinoapp.util.Constants.BASE_URL
+import com.smcdeveloper.nobinoapp.util.Constants.IS_TOKEN_VALID
 import com.smcdeveloper.nobinoapp.util.Constants.PURCHASE_URL
 import com.smcdeveloper.nobinoapp.util.Constants.TIMEOUT_IN_SECOND
+import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
 import com.smcdeveloper.nobinoapp.util.Constants.USER_PROFILE_ID
 import com.smcdeveloper.nobinoapp.util.Constants.USER_TOKEN
 import dagger.Module
@@ -78,7 +80,7 @@ object NetworkModule {
                 Log.d("net","user token $USER_TOKEN")
 
 
-                if(USER_TOKEN!="USER_TOKEN" && USER_TOKEN.length>2) {
+                if(USER_TOKEN!="USER_TOKEN" && USER_TOKEN.length>2 && USER_LOGIN_STATUS) {
                     Log.d("net","user token step1 $USER_TOKEN")
                     Log.d("net","user token step1")
 

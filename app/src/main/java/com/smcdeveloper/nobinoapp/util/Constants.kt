@@ -88,6 +88,7 @@ object Constants {
     const val DATABASE_NAME = "digikala_db"
     var USER_LANGUAGE = "USER_LANGUAGE"
     var USER_TOKEN ="USER_TOKEN"
+    var IS_TOKEN_VALID=false
     var USER_ID = "USER_ID"
     var USER_PROFILE_ID = ""
 

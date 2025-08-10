@@ -332,23 +332,46 @@ fun SpecialRow(imageUrls: List<String?>) {
 
 
 @Composable
-fun ImageCard(imagePath: String,modifier: Modifier) {
+fun ImageCard1(imagePath: String,modifier: Modifier) {
     Card(
         modifier = modifier
             .aspectRatio(1.6f) // Keep aspect ratio for card shape
             .clip(RoundedCornerShape(16.dp)),
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
+       // colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+    )
+    {
         AsyncImage(
             model = IMAGE_BASE_URL+imagePath ,
            // painter = painterResource(id = imageRes),
             contentDescription = "Grid Image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+
+
         )
     }
 }
+
+
+
+@Composable
+fun ImageCard(imagePath: String,modifier: Modifier) {
+
+
+        AsyncImage(
+            model = IMAGE_BASE_URL+imagePath ,
+            // painter = painterResource(id = imageRes),
+            contentDescription = "Grid Image",
+
+            contentScale = ContentScale.Crop,
+            modifier = modifier.aspectRatio(1.6f)
+        )
+
+}
+
+
+
+
+
 
 
 @Composable

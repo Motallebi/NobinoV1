@@ -124,7 +124,7 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                         if (sliderData != null) {
 
                          // AnimatedImageSlider(sliderData)
-                           CustomSlider(modifier = Modifier,sliderData,navController=navController)
+                           CustomSlider(modifier = Modifier,sliderData,navController=navController, isClickble = false)
 
 
                         }

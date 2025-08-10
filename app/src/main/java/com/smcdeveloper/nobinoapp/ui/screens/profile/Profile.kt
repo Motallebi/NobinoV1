@@ -309,6 +309,8 @@ fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel,
                   profileData= profile.data!!
                   Log.d("active", profileData.toString())
                  Log.d("active", profileData[0].name.toString())
+                  Log.d("active", loginstate.value.toString())
+                  Log.d("active", USER_LOGIN_STATUS.toString())
 
 
               }
@@ -351,7 +353,7 @@ fun ProfileSection(navController: NavHostController,viewModel: ProfileViewModel,
         // Existing Profiles
         Row(verticalAlignment = Alignment.CenterVertically) {
 
-            if (loginstate.value)
+            if (USER_LOGIN_STATUS)
             {
 
                 if (profileData.size == 3) {
@@ -749,7 +751,7 @@ fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel,lo
 
 
                ProfileItem2 (
-                   title = stringResource(R.string.edit_profile),
+                   title = if(USER_LOGIN_STATUS)  stringResource(R.string.edit_profile) else "Login/Register",
                    icon = painterResource(R.drawable.edit_profile)
 
 
@@ -764,10 +766,14 @@ fun ProfileScreen1(navController: NavController,dataStore: DataStoreViewModel,lo
 
                    else
                    {
-                       coroutineScope.launch {
+
+                       navController.navigate(Screen.SignUp.route)
+
+
+                     /*  coroutineScope.launch {
                            snackbarHostState.showSnackbar("ابتدا وارد شوید")
 
-                       }
+                       }*/
 
 
                    }
