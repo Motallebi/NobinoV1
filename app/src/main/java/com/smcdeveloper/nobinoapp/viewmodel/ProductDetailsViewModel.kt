@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smcdeveloper.nobinoapp.data.datastore.DataStoreRepository
+import com.smcdeveloper.nobinoapp.data.model.advertise.Advertise
 import com.smcdeveloper.nobinoapp.data.model.prducts.BookMarKRequest
 import com.smcdeveloper.nobinoapp.data.model.prducts.BookMark
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
@@ -41,6 +42,14 @@ class ProductDetailsViewModel @Inject constructor(
     val lastSessionepisodes: StateFlow<NetworkResult<MovieResult>> get() = _lastSessionepisodes.asStateFlow()
 
 
+    private val _productAdv=MutableStateFlow<NetworkResult<Advertise>>(NetworkResult.Loading())
+    val productAdv: StateFlow<NetworkResult<Advertise>>  = _productAdv.asStateFlow()
+
+
+
+
+
+
 
 
 
@@ -64,6 +73,32 @@ class ProductDetailsViewModel @Inject constructor(
 
     private val _isUserLoging = MutableStateFlow(false)
     val isUserLoging : StateFlow<Boolean> = _isUserLoging.asStateFlow()
+
+
+    fun getProductAdv(productId: Int)
+    {
+        viewModelScope.launch {
+
+
+            _productAdv.value=NetworkResult.Loading()
+
+             _productAdv.value=repository.getProductAdv(productId)
+
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+    }
 
 
 

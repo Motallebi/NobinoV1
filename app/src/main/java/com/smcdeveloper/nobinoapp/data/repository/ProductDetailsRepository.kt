@@ -1,18 +1,15 @@
 package com.smcdeveloper.nobinoapp.data.repository
 
 import android.util.Log
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.smcdeveloper.nobinoapp.data.model.advertise.Advertise
 import com.smcdeveloper.nobinoapp.data.model.prducts.BookMarKRequest
 import com.smcdeveloper.nobinoapp.data.model.prducts.BookMark
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.search.Actor
-import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
 import com.smcdeveloper.nobinoapp.data.remote.BaseApiResponse2
-import com.smcdeveloper.nobinoapp.data.remote.GeneralBaseApiResponse
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.data.remote.ProductDetailsApiInterface
-import com.smcdeveloper.nobinoapp.viewmodel.DataStoreViewModel
 import javax.inject.Inject
 
 class ProductDetailsRepository @Inject constructor(
@@ -71,6 +68,22 @@ class ProductDetailsRepository @Inject constructor(
 
 
        }
+
+    suspend fun getProductAdv(productId: Int):NetworkResult<Advertise> =
+        safeApiCall {
+
+            api.getProductAdv(productId)
+
+
+
+        }
+
+
+
+
+
+
+
 
 
 

@@ -52,6 +52,8 @@ fun AppConfig(
                     Log.d("user","Success")
 
                     USER_LOGIN_STATUS=true
+                    dataStore.saveUserLoginStatus(true)
+
 
 
 

@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
 import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -512,7 +513,19 @@ fun SeriesProductBanner(
                                     {
                                         val encodedUrl = URLEncoder.encode(link, StandardCharsets.UTF_8.toString())
                                         Log.d("ProductBanner", "Navigating to video player with URL: $encodedUrl")
-                                        navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
+                                        //navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
+                                        navController.navigate(Screen.VideoPlayerScreen.withArgs(
+                                            //link.toString(),
+                                            encodedUrl,
+
+                                            firstEpisode.data?.data?.id.toString()
+
+
+                                        )
+
+
+                                        )
+
 
                                     }
 
@@ -1754,7 +1767,7 @@ fun SessionDropdownMenu(
 
 
 
-                        model = if(episode.images?.get(0)?.src!!.isNotEmpty()) "https://vod.nobino.ir/vod/${episode.images.get(1)?.src}" else DEFAULT_IMAGE_POSETR,
+                        model = if(episode.images?.get(0)?.src!!.isNotEmpty()) "https://vod.nobino.ir/vod/${episode.images.get(0)?.src}" else DEFAULT_IMAGE_POSETR,
                         contentDescription = episode.name,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier

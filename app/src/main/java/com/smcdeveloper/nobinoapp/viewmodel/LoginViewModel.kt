@@ -18,8 +18,9 @@ class LoginViewModel @Inject constructor():ViewModel() {
     fun updateLoging(isloging:Boolean)
     {
 
-        _isUserLogin.value=isloging
+       _isUserLogin.value=isloging
         USER_LOGIN_STATUS=isloging
+
       //  Log.d("log","viewModel login value is"+_isLoging.value)
 
 

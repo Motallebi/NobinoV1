@@ -111,7 +111,7 @@ fun BottomNavigationBar(
 
     var showBottomBar = backStackEntry.value?.destination?.route in items.map { it.route }
 
-    val videoScreen = "VideoPlayer_Screen/{videoUrl}"
+    val videoScreen = "VideoPlayer_Screen/{videoUrl}/{productId}"
     val bottomBarRoutes = setOf<String>(
         Screen.ContactUs.route,
         Screen.EditProfile.route,
