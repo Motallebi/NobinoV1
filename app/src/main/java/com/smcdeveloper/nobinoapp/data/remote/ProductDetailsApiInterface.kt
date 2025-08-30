@@ -1,23 +1,17 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
-import android.util.Log
-import com.smcdeveloper.nobinoapp.data.model.ResponseResultWithList
-import com.smcdeveloper.nobinoapp.data.model.ResponseResultWithSingleObject
+import com.smcdeveloper.nobinoapp.data.model.advertise.Advertise
 import com.smcdeveloper.nobinoapp.data.model.prducts.BookMarKRequest
 import com.smcdeveloper.nobinoapp.data.model.prducts.BookMark
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieCat
 import com.smcdeveloper.nobinoapp.data.model.prducts.MovieResult
 import com.smcdeveloper.nobinoapp.data.model.prducts.ProductModel
 import com.smcdeveloper.nobinoapp.data.model.search.Actor
-import com.smcdeveloper.nobinoapp.data.model.search.Person
-import com.smcdeveloper.nobinoapp.data.model.search.PersonInfo
 import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -163,7 +157,22 @@ interface ProductDetailsApiInterface {
 
 
 
+
+
+
+
+    @GET("api/v2/advertisements/random")
+    suspend fun getProductAdv(
+        @Query("productId") id: Int) :Response<Advertise>
+
+
+
+
+
+
 }
+
+
 
 
 

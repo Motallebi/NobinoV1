@@ -1199,9 +1199,19 @@ fun ProductBanner(
               //  modifier = Modifier.width(150.dp),
                 onClick = {
                     if ((isVideoAvailable && isUserLogin) || isUserLogedIn) {
+
                         val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
                         Log.d("ProductBanner", "Navigating to video player with URL: $encodedUrl")
-                        navController.navigate(Screen.VideoPlayerScreen.withArgs(encodedUrl))
+
+                        navController.navigate(Screen.VideoPlayerScreen.withArgs(
+                            encodedUrl,
+                            productId.toString()
+
+
+
+                        ))
+
+                       // navController.navigate(Screen.VideoPlayerScreen.route+"/$encodedUrl+/$productId")
                     }
 
                     else{

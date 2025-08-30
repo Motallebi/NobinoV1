@@ -6,6 +6,7 @@ import RegisterScreen
 import SubscriptionSelectionPage
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -579,9 +580,15 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
 
 
 
-        composable(route = Screen.VideoPlayerScreen.route + "/{videoUrl}",
+        composable(route = Screen.VideoPlayerScreen.route + "/{videoUrl}/{productId}",
             arguments = listOf(
                 navArgument("videoUrl")
+                {
+                    type = NavType.StringType
+
+                },
+
+                  navArgument("productId")
                 {
                     type = NavType.StringType
 
@@ -595,9 +602,16 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
         {
 
             val videoUrl = it.arguments?.getString("videoUrl").toString()
+            val productId = it.arguments?.getString("productId").toString()
             val videoUrlDecode = URLDecoder.decode(videoUrl, StandardCharsets.UTF_8.toString())
+            Log.d("ProductBanner", "Navigating to video player with ORIGINAL_URL: $videoUrl")
+            Log.d("ProductBanner", "Navigating to video player with DECODED_URL: $videoUrlDecode")
 
-            VideoPlay(videoUrl=videoUrlDecode)
+
+
+            VideoPlay(videoUrl=videoUrlDecode, productId = productId)
+          //  VideoPlay(videoUrl=videoUrl, productId = productId)
+
 
 
         }

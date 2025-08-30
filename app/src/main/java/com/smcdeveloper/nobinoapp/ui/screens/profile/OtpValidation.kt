@@ -144,6 +144,7 @@ fun OtpValidationScreen(
 
                         if (token.isNotBlank()) {
                             dataStoreViewModel.saveUserToken(token)
+                            dataStoreViewModel.saveUserLoginStatus(true)
                           navController.navigate(Screen.Home.route)
                             loginViewModel.updateLoging(true)
                             //navController.popBackStack()

@@ -81,6 +81,7 @@ object NetworkModule {
 
 
                 if(USER_TOKEN!="USER_TOKEN" && USER_TOKEN.length>2 && USER_LOGIN_STATUS) {
+
                     Log.d("net","user token step1 $USER_TOKEN")
                     Log.d("net","user token step1")
 
