@@ -36,16 +36,21 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayerViewModel @Inject constructor( val repository: ProductDetailsRepository, @ApplicationContext private val appContext: Context): ViewModel()  {
+class PlayerViewModel @Inject constructor(
+    val repository: ProductDetailsRepository,
+    @ApplicationContext private val appContext: Context
+) : ViewModel() {
 
     private val _playerUiModel = MutableStateFlow(PlayerUiModel())
     val playerUiModel: StateFlow<PlayerUiModel> = _playerUiModel.asStateFlow()
 
 
-
-
     private val _currentVideoUri = MutableStateFlow<NetworkResult<String>>(NetworkResult.Loading())
-    val currentVideoUri: StateFlow<NetworkResult<String>>  = _currentVideoUri.asStateFlow()
+    val currentVideoUri: StateFlow<NetworkResult<String>> = _currentVideoUri.asStateFlow()
+
+    private val _currentVideoUri1 = MutableStateFlow<String>("")
+    val currentVideoUri1: StateFlow<String> = _currentVideoUri1.asStateFlow()
+
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -63,21 +68,13 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
     private var subtitleTracksMap: Map<SubtitleTrack, ExoPlayerTrack?> = emptyMap()
 
 
-
-
-
     private class ExoPlayerTrack(
         val trackGroup: TrackGroup,
         val trackIndexInGroup: Int,
     )
 
 
-
-
-
-
-
-    private val playerEventListener:Player.Listener = object :Player.Listener{
+    private val playerEventListener: Player.Listener = object : Player.Listener {
 
         override fun onVideoSizeChanged(videoSize: VideoSize) {
             super.onVideoSizeChanged(videoSize)
@@ -91,29 +88,19 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
             }
 
 
-
-
-
-
-
-
-
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
             val state = when (playbackState) {
 
 
-
-
                 Player.STATE_BUFFERING -> PlaybackState.BUFFERING
-                Player.STATE_READY ->
-                {
-                    if(exoPlayer.playWhenReady)
-                    {
+                Player.STATE_READY -> {
+                    if (exoPlayer.playWhenReady) {
+
+
                         PlaybackState.PLAYING
-                    }
-                    else
+                    } else
                         PlaybackState.PAUSED
 
 
@@ -125,8 +112,7 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
                     if (exoPlayer.playerError != null) {
                         PlaybackState.ERROR
 
-                    }
-                    else
+                    } else
                         PlaybackState.IDLE
 
 
@@ -135,72 +121,44 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
                 else -> PlaybackState.IDLE
 
 
-
-
-
-
-
-
             }
-            _playerUiModel.value=_playerUiModel.value.copy(playbackState = state)
+            _playerUiModel.value = _playerUiModel.value.copy(playbackState = state)
 
-            when(playbackState)
-            {
-                Player.STATE_READY->{
+            when (playbackState) {
+                Player.STATE_READY -> {
 
                     startTrackingPlayBackPosition()
 
 
-
-
                 }
 
-                else->
-                {
+                else -> {
                     stopTrackingPlayBackPosition()
 
                 }
 
 
-
-
-
             }
-
-
-
-
-
-
-
 
 
         }
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
-             if(isPlaying)
-             {
-                 _playerUiModel.value=_playerUiModel.value.copy(
+            if (isPlaying) {
+                _playerUiModel.value = _playerUiModel.value.copy(
 
-                     playbackState = PlaybackState.PLAYING
+                    playbackState = PlaybackState.PLAYING
 
-                 )
-
+                )
 
 
-             }
-
-            else if(exoPlayer.playbackState==Player.STATE_READY)
-             {
-                 _playerUiModel.value=_playerUiModel.value.copy(
-                     playbackState = PlaybackState.PAUSED)
+            } else if (exoPlayer.playbackState == Player.STATE_READY) {
+                _playerUiModel.value = _playerUiModel.value.copy(
+                    playbackState = PlaybackState.PAUSED
+                )
 
 
-
-
-             }
-
-
+            }
 
 
         }
@@ -234,65 +192,39 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
 
 
 
-               tracks.groups.forEach{
+            tracks.groups.forEach {
 
-                   when(it.type)
-                   {
-                       C.TRACK_TYPE_AUDIO->{
+                when (it.type) {
+                    C.TRACK_TYPE_AUDIO -> {
 
-                          newAudioTracks.putAll(extractAudioTracks(it))
-
-
-                       }
-                       C.TRACK_TYPE_VIDEO->{
-
-                         newVideoTracks.putAll(extractVideoTracks(it))
+                        newAudioTracks.putAll(extractAudioTracks(it))
 
 
+                    }
+
+                    C.TRACK_TYPE_VIDEO -> {
+
+                        newVideoTracks.putAll(extractVideoTracks(it))
 
 
+                    }
 
 
+                    C.TRACK_TYPE_TEXT -> {
+
+                        newSubtitleTracks.putAll(extractSubtitleTracks(it))
 
 
-
-                       }
-
-
-                       C.TRACK_TYPE_TEXT->{
-
-                         newSubtitleTracks.putAll(extractSubtitleTracks(it))
+                    }
 
 
+                    else -> {}
 
 
-
-                       }
-
+                }
 
 
-
-
-
-
-                       else->{}
-
-
-
-
-
-
-
-
-
-                   }
-
-
-
-
-
-
-               }
+            }
 
 
             videoTracksMap = newVideoTracks
@@ -316,24 +248,13 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
                         SpeedTrack(1.5f)
 
 
+                    )
                 )
-            )
 
             )
 
 
-
-
-
-
-
-                    }
-
-
-
-
-
-
+        }
 
 
     }
@@ -404,6 +325,7 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
             track == VideoTrack.AUTO -> {
                 selectedVideoTrack = track
             }
+
             else -> {
                 val exoVideoTrack = videoTracksMap[track]
                 if (exoVideoTrack != null) {
@@ -427,9 +349,9 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
 
     private fun setPlaybackSpeed(speed: Float) {
 
-        Log.d("VideoPlayer","setPlaybackSpeed $speed")
+        Log.d("VideoPlayer", "setPlaybackSpeed $speed")
 
-        exoPlayer.playbackParameters= PlaybackParameters(speed)
+        exoPlayer.playbackParameters = PlaybackParameters(speed)
         _playerUiModel.value = _playerUiModel.value.copy(
             trackSelectionUiModel = _playerUiModel.value.trackSelectionUiModel?.copy(
                 selectedSpeedTrack = SpeedTrack(speed)
@@ -437,19 +359,7 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
         )
 
 
-
-
-
-
-
     }
-
-
-
-
-
-
-
 
 
     private fun setAudioTrack(track: AudioTrack) {
@@ -458,9 +368,10 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
             .clearOverridesOfType(C.TRACK_TYPE_AUDIO)
             .setTrackTypeDisabled(C.TRACK_TYPE_AUDIO, trackDisabled)
         when {
-            track === AudioTrack.AUTO || track === AudioTrack.NONE-> {
+            track === AudioTrack.AUTO || track === AudioTrack.NONE -> {
                 selectedAudioTrack = track
             }
+
             else -> {
                 val exoAudioTrack = audioTracksMap[track]
                 if (exoAudioTrack != null) {
@@ -488,9 +399,10 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
             .clearOverridesOfType(C.TRACK_TYPE_TEXT)
             .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, trackDisabled)
         when {
-            track === SubtitleTrack.AUTO || track === SubtitleTrack.NONE-> {
+            track === SubtitleTrack.AUTO || track === SubtitleTrack.NONE -> {
                 selectedSubtitleTrack = track
             }
+
             else -> {
                 val exoSubtitleTrack = subtitleTracksMap[track]
                 if (exoSubtitleTrack != null) {
@@ -513,263 +425,196 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     private val exoPlayer = buildExoPlayer().apply {
         addListener(playerEventListener)
-
-
-
 
 
     }
 
     private fun buildExoPlayer(): ExoPlayer {
 
-     return   ExoPlayer.Builder(appContext).apply {
-
-
-
-
-
-
+        return ExoPlayer.Builder(appContext).apply {
 
 
         }.build()
 
 
+    }
 
 
-
+    fun makeLog() {
+        Log.d("VideoPlayer", "makeLog")
 
     }
 
 
-    fun makeLog()
-    {
-        Log.d("VideoPlayer","makeLog")
-
-    }
-
-
-
-    fun setStreamUrl(streamUrl: String)
-    {
-        val mediaItem =MediaItem.Builder().apply {
+    fun setStreamUrl(streamUrl: String) {
+        val mediaItem = MediaItem.Builder().apply {
 
             setUri(Uri.parse(streamUrl))
-
 
 
         }
         exoPlayer.setMediaItem(mediaItem.build())
 
 
-
-
-
     }
 
-    fun setSurface(surface: Surface)
-    {
+    fun setSurface(surface: Surface) {
 
         exoPlayer.setVideoSurface(surface)
 
 
-
     }
 
-    fun clearSurface()
-    {
+    fun clearSurface() {
         exoPlayer.setVideoSurface(null)
 
 
-
-
     }
 
 
-    fun startPlayback()
-    {
-
+    fun startPlayback() {
 
 
         exoPlayer.prepare()
-        exoPlayer.playWhenReady=true
-
-
-
-
-
+        exoPlayer.playWhenReady = true
 
 
     }
 
 
-
-
-
-
-
-
-
-
-
-    suspend fun getAdsLink(productId: Int) {
+    private suspend fun getAdsLink1(productId: Int) {
 
         val result = repository.getProductAdv(productId)
-        val link=result.data?.advertie?.fileUrl.toString().toUri()
-        Log.d("VideoPlayer", "Playing Ad → url=$link")
-        _currentVideoUri.value =NetworkResult.Success(link.toString())
-       // return link
+        Log.d("VideoPlayer", "getsAdd → ${result.data?.advertie.toString()}")
 
+
+        val link = result.data?.advertie?.fileUrl
+        if (link == null) {
+
+            _currentVideoUri.value = NetworkResult.Error("ERROR")
+        }
+
+
+        Log.d("VideoPlayer", "Playing Ad → url=$link")
+        _currentVideoUri.value = NetworkResult.Success(link.toString())
+        _currentVideoUri1.value = link.toString()
+
+
+        // return link
 
 
     }
+
+    private fun getAdsLink(productId: Int) {
+        // Launch a new coroutine to handle the async work
+        viewModelScope.launch {
+            _currentVideoUri.value = NetworkResult.Loading() // Set to loading at the start
+
+            val result = repository.getProductAdv(productId)
+
+            // Update the state based on the result
+            if (result is NetworkResult.Success) {
+                val link = result.data?.advertie?.fileUrl
+                if (link == null) {
+                    _currentVideoUri.value = NetworkResult.Error("ERROR: Link is null")
+                } else {
+                    _currentVideoUri.value = NetworkResult.Success(link)
+                }
+            } else if (result is NetworkResult.Error) {
+                _currentVideoUri.value = NetworkResult.Error(result.message!!)
+            }
+        }
+    }
+
 
     private suspend fun getVideoLink(productId: Int) {
 
 
-
         val result = repository.getProductDetails(productId)
 
-        val link= result.data?.data?.videoLink
+
+        val link = result.data?.data?.videoLink
 
 
         Log.d("VideoPlayer", "Video Link→ url=$link")
         Log.d("VideoPlayer", "product id → url=$productId")
 
-        _currentVideoUri.value =NetworkResult.Success(link.toString())
-        _playerUiModel.value=playerUiModel.value.copy(
-            videoTitle = result.data?.data?.name.toString())
-
-
-
+        _currentVideoUri.value = NetworkResult.Success(link.toString())
+        _playerUiModel.value = playerUiModel.value.copy(
+            videoTitle = result.data?.data?.name.toString()
+        )
 
 
     }
 
 
     fun loadContent(productId: Int) {
-      //  _isLoading.value=true
+        //  _isLoading.value=true
         viewModelScope.launch {
 
-         getVideoLink(productId)
-          //  _videoState.value = VideoState.Loading
+            getVideoLink(productId)
+            //  _videoState.value = VideoState.Loading
 
         }
-     //   _isLoading.value=false
+        //   _isLoading.value=false
 
 
     }
 
 
     fun startAd(productId: Int) {
-        viewModelScope.launch {
+        getAdsLink(productId)
+       /* viewModelScope.launch {
             //_currentVideoUri.value =
-                getAdsLink(productId)
-            Log.d("VideoPlayer", "Playing Ad → url=$_currentVideoUri.value ")
+            getAdsLink(productId)
+            Log.d("VideoPlayer", "Playing Ad → url=${_currentVideoUri.value}")
 
-            var totalAddTime=12
+            var totalAddTime = 12
             var timeLeft = 12
-            var timePass=0
-            while (totalAddTime-timePass > 7) {
-                _videoState.value = VideoState.PlayingAd(
-                    remainingTime = 5-timePass,
-                    skippable = false
-                )
-                delay(1000)
-                timePass++
+            var timePass = 0
+            while (totalAddTime - timePass > 7) {
+
+
             }
 
-            // Skippable state
-            _videoState.value = VideoState.PlayingAd(
-                remainingTime = totalAddTime-timePass,
-                skippable = true
-            )
-
-            // Auto skip after countdown
-            if(isAdSkipped.value)
-                loadContent(productId)
-            else if(autoSkipAdd.value)
-                loadContent(productId)
-        }
+        }*/
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    fun stopPlayBack()
-    {
+    fun stopPlayBack() {
 
         exoPlayer.stop()
-        Log.d("VideoPlayer","StopPlayBack")
+        Log.d("VideoPlayer", "StopPlayBack")
 
 
     }
 
 
-
-    fun showPlayControls()
-    {
-        _playerUiModel.value=playerUiModel.value.copy(playerControlsVisible = true)
-
+    fun showPlayControls() {
+        _playerUiModel.value = playerUiModel.value.copy(playerControlsVisible = true)
 
 
     }
 
 
-    fun hidePlayControls()
-    {
-        _playerUiModel.value=playerUiModel.value.copy(playerControlsVisible = false)
+    fun hidePlayControls() {
+        _playerUiModel.value = playerUiModel.value.copy(playerControlsVisible = false)
 
 
     }
 
 
-    fun enterFullScreen()
-    {
-        _playerUiModel.value=playerUiModel.value.copy(isFullScreen = true)
-
-
+    fun enterFullScreen() {
+        _playerUiModel.value = playerUiModel.value.copy(isFullScreen = true)
 
 
     }
 
 
-    fun exitFullScreen()
-    {
-        _playerUiModel.value=playerUiModel.value.copy(isFullScreen = false)
-
-
+    fun exitFullScreen() {
+        _playerUiModel.value = playerUiModel.value.copy(isFullScreen = false)
 
 
     }
@@ -787,92 +632,47 @@ class PlayerViewModel @Inject constructor( val repository: ProductDetailsReposit
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     override fun onCleared() {
         super.onCleared()
         exoPlayer.release()
-        Log.d("VideoPlayer","Re" +
-                "leasePlayBack")
+        Log.d(
+            "VideoPlayer", "Re" +
+                    "leasePlayBack"
+        )
     }
 
-fun handleAction(action: Action)
-{
-    when(action)
-    {
-        is AttachSurface -> {
-            exoPlayer.setVideoSurface(action.surface)
+    fun handleAction(action: Action) {
+        when (action) {
+            is AttachSurface -> {
+                exoPlayer.setVideoSurface(action.surface)
 
 
-        }
-        DetachSurface ->
-        {
-            exoPlayer.setVideoSurface(null)
+            }
+
+            DetachSurface -> {
+                exoPlayer.setVideoSurface(null)
 
 
-        }
-        is FastForward -> {
+            }
 
-            exoPlayer.seekTo(exoPlayer.currentPosition+action.amountInMs)
+            is FastForward -> {
 
-        }
+                exoPlayer.seekTo(exoPlayer.currentPosition + action.amountInMs)
 
-
-        is Init -> {
-
-           // setUri(Uri.parse(streamUrl))
-            val mediaItem =MediaItem.Builder().setUri(Uri.parse(action.streamUrl)).build()
-            exoPlayer.setMediaItem(mediaItem)
+            }
 
 
+            is Init -> {
+                _playerUiModel.value.copy(
+                    isAddPlaying = true
 
+                )
+                Log.d("VideoPlayer", "Init ${action.streamUrl}")
 
-        }
-
-
-
-        Pause -> {
-            exoPlayer.pause()
-
-
-
-        }
-        Resume -> {
-            exoPlayer.play()
-
-
-        }
-        is Rewind -> {
-            exoPlayer.seekTo(exoPlayer.currentPosition-action.amountInMs)
-
-
-
-        }
-        is Seek -> {
-            exoPlayer.seekTo(action.targetInMs)
-
-
-
-        }
-        is Start -> {
-
-            exoPlayer.prepare()
-            exoPlayer.play()
-            action.positionInMs?.let {
-                exoPlayer.seekTo(it)
-
+                // setUri(Uri.parse(streamUrl))
+                val mediaItem =
+                    MediaItem.Builder().setUri(Uri.parse(action.streamUrl)).build()
+                exoPlayer.setMediaItem(mediaItem)
 
 
             }
@@ -880,107 +680,115 @@ fun handleAction(action: Action)
 
 
 
-        }
-        Stop -> {
-            exoPlayer.stop()
+
+
+
+            Pause -> {
+                exoPlayer.pause()
+
+
+            }
+
+            Resume -> {
+                exoPlayer.play()
+
+
+            }
+
+            is Rewind -> {
+                exoPlayer.seekTo(exoPlayer.currentPosition - action.amountInMs)
+
+
+            }
+
+            is Seek -> {
+                exoPlayer.seekTo(action.targetInMs)
+
+
+            }
+
+            is Start -> {
+
+                exoPlayer.prepare()
+                exoPlayer.play()
+                action.positionInMs?.let {
+                    exoPlayer.seekTo(it)
+
+
+                }
+
+
+            }
+
+            Stop -> {
+                exoPlayer.stop()
+
+
+            }
+
+            is PlayingAd -> {
+
+                // val mediaItem =MediaItem.Builder().setUri(Uri.parse(action.streamUrl)).build()
+                // exoPlayer.setMediaItem(mediaItem)
+
+
+            }
+
+            is SetAudioTrack -> {
+                setAudioTrack(action.track)
+
+            }
+
+            is SetSubtitleTrack -> {
+                setSubtitleTrack(action.track)
+
+            }
+
+            is SetVideoTrack -> {
+                setVideoTrack(action.track)
+
+
+            }
+
+            is SetPlaybackSpeed -> {
+
+                setPlaybackSpeed(action.speed)
+
+
+            }
 
 
         }
-
-        is PlayingAd -> {
-
-           // val mediaItem =MediaItem.Builder().setUri(Uri.parse(action.streamUrl)).build()
-           // exoPlayer.setMediaItem(mediaItem)
-
-
-
-
-        }
-
-        is SetAudioTrack -> {
-            setAudioTrack(action.track)
-
-        }
-        is SetSubtitleTrack -> {
-            setSubtitleTrack(action.track)
-
-        }
-        is SetVideoTrack -> {
-            setVideoTrack(action.track)
-
-
-        }
-
-        is SetPlaybackSpeed->
-        {
-
-            setPlaybackSpeed(action.speed)
-
-
-
-
-
-
-        }
-
 
 
     }
 
+    private fun startTrackingPlayBackPosition() {
 
 
+        positionTrackingJob = playerCoroutineScope.launch {
+            while (true) {
+                val newTimelineUiModel = buildTimelineUiModel()
+                _playerUiModel.value = _playerUiModel.value.copy(
+                    timelineUiModel = newTimelineUiModel
 
 
+                )
+                delay(1000L)
 
 
-
-
-
-}
-
-private fun startTrackingPlayBackPosition()
-{
-
-
-    positionTrackingJob=playerCoroutineScope.launch {
-        while (true)
-        {
-          val newTimelineUiModel =buildTimelineUiModel()
-            _playerUiModel.value=_playerUiModel.value.copy(
-                timelineUiModel = newTimelineUiModel
-
-
-            )
-          delay(1000L)
-
-
-
-
-
+            }
 
 
         }
 
 
-
-
-
-
-
-
-
     }
-
-
-
-
-
-}
 
     private fun buildTimelineUiModel(): TimelineUiModel? {
 
         val duration = exoPlayer.contentDuration
-        if(duration== C.TIME_UNSET) return null
+        if (duration == C.TIME_UNSET) return null
         val currentPosition = exoPlayer.currentPosition
         val bufferedPosition = exoPlayer.contentBufferedPosition
 
@@ -991,47 +799,15 @@ private fun startTrackingPlayBackPosition()
         )
 
 
+    }
 
-
+    private fun stopTrackingPlayBackPosition() {
+        buildTimelineUiModel()
+        positionTrackingJob?.cancel()
+        positionTrackingJob = null
 
 
     }
-
-    private fun stopTrackingPlayBackPosition()
-{
-        buildTimelineUiModel()
-        positionTrackingJob?.cancel()
-        positionTrackingJob=null
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

@@ -10,6 +10,7 @@ data class PlayerUiModel(
     val timelineUiModel:TimelineUiModel?=null,
     val trackSelectionUiModel: TrackSelectionUiModel?=null,
     val isTrackSelectorVisible: Boolean = false,
+    val isAddPlaying:Boolean=false,
 
 
 
@@ -60,7 +61,7 @@ enum class PlaybackState {
 
 
 
-    IDLE, PLAYING, PAUSED, BUFFERING, COMPLETED, ERROR
+    IDLE, PLAYING, PAUSED, BUFFERING, COMPLETED, ERROR,ADDPLAYING
 }
 
 

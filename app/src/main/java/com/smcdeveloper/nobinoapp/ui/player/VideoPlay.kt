@@ -270,9 +270,118 @@ fun VideoPlay2(videoUrl:String,productId:String)
 fun VideoPlay(videoUrl:String,productId:String)
 {
      VideoPlayerScreen(productId)
+     //  VideoScreen(productId)
 
 
 }
+
+
+
+@Composable
+fun VideoScreen(productId: String) {
+    val viewModel: PlayerViewModel = hiltViewModel()
+    val videoUri by viewModel.currentVideoUri.collectAsState()
+    val videoUri1 by viewModel.currentVideoUri1.collectAsState()
+
+    val lifeCycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    val context = LocalContext.current
+    val activity = context as? Activity
+
+
+
+
+
+
+
+
+    when (videoUri) {
+
+
+        is NetworkResult.Error -> {
+            Log.d("VideoPlayer1", "VideoPlay Error")
+
+        }
+
+        is NetworkResult.Loading -> {
+            Log.d("VideoPlayer1", "VideoPlay current link is... Loading")
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            )
+            {
+            }
+
+
+        }
+
+        is NetworkResult.Success -> {
+            Log.d("VideoPlayer1", "VideoPlay current link is...Success :${videoUri.data}")
+
+
+        }
+
+
+    }
+    DisposableEffect(lifeCycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_CREATE -> {
+
+                    viewModel.startAd(productId.toInt())
+
+
+
+                  //   viewModel.loadContent(productId.toInt())
+
+                    //  viewModel.setStreamUrl(videoUri.toString())
+                    Log.d("VideoPlayer", "created")
+                    // playerViewModel.handleAction(Start())
+
+
+
+                }
+
+                Lifecycle.Event.ON_START -> {
+                    //  viewModel.startPlayback()
+
+
+
+
+
+                    Log.d("VideoPlayer", "Start")
+                    Log.d(
+                        "VideoPlayer",
+                        "current link is:" + viewModel.currentVideoUri.value.toString()
+                    )
+
+
+                    //   playerViewModel.handleAction(action =Start())
+
+                }
+
+                //  Lifecycle.Event.ON_PAUSE -> exoPlayer.pause()
+                // Lifecycle.Event.ON_RESUME -> exoPlayer.play()
+                Lifecycle.Event.ON_STOP -> viewModel.stopPlayBack()
+                Lifecycle.Event.ON_DESTROY -> {}
+                else -> {}
+            }
+        }
+        lifeCycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifeCycleOwner.lifecycle.removeObserver(observer)
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
+
+
+
+
+
+}
+
+
+
 
 @Composable
 fun VideoPlayerScreen(productId: String) {
@@ -287,14 +396,23 @@ fun VideoPlayerScreen(productId: String) {
     when(videoUri)
     {
         is NetworkResult.Error -> {
-
+            Log.d("VideoPlayer1", "VideoPlay Error")
 
         }
         is NetworkResult.Loading ->{
-
+            Log.d("VideoPlayer1", "VideoPlay current link is... Loading")
+            Box(modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center)
+            {
+                CircularProgressIndicator()
+            }
 
         }
         is NetworkResult.Success -> {
+
+            val link = (videoUri as NetworkResult.Success).data
+
+            Log.d("VideoPlayer1", "VideoPlay current link is...Success :${videoUri.data}")
 
 
 
@@ -305,8 +423,14 @@ fun VideoPlayerScreen(productId: String) {
 
 
            // viewModel.setStreamUrl(videoUri.data.toString())
-            viewModel.handleAction(Init(videoUri.data.toString()))
+          //  viewModel.handleAction(Init(videoUri.data.toString()))
+         //   viewModel.handleAction(Init(videoUri.data.toString()))
+            viewModel.handleAction(Init(link.toString()))
+
+
+
             viewModel.handleAction(Start())
+
            // viewModel.startPlayback()
             Surface() {
                 Box(
@@ -444,8 +568,12 @@ fun VideoPlayerScreen(productId: String) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_CREATE -> {
+                    viewModel.startAd(productId.toInt())
 
-                     viewModel.loadContent(productId.toInt())
+
+
+
+                    // viewModel.loadContent(productId.toInt())
 
                    //  viewModel.setStreamUrl(videoUri.toString())
                     Log.d("VideoPlayer", "created")

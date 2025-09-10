@@ -158,9 +158,10 @@ fun VideoPlayer(
      {
 
          AndroidExternalSurface(modifier =
-         modifier.aspectRatio(playerUiModel.videoAspectRatio)
+         modifier
+             .aspectRatio(playerUiModel.videoAspectRatio)
              .clickable {
-              /*   if(!isOverLayClicked){
+                 /*   if(!isOverLayClicked){
                      playerViewModel.showPlayControls()
                      isOverLayClicked=true
                  }
@@ -168,9 +169,9 @@ fun VideoPlayer(
                  {
                      playerViewModel.hidePlayControls()
                  }*/
-               // playerViewModel.showPlayControls()
+                 // playerViewModel.showPlayControls()
                  playerViewModel.makeLog()
-               //  Log.d("VideoPlayer","clicked")
+                 //  Log.d("VideoPlayer","clicked")
 
              }
 
@@ -314,7 +315,8 @@ fun VideoPlayer1(
     {
 
         AndroidExternalSurface(modifier =
-        modifier.aspectRatio(playerUiModel.videoAspectRatio)
+        modifier
+            .aspectRatio(playerUiModel.videoAspectRatio)
             .clickable {
                 /*   if(!isOverLayClicked){
                        playerViewModel.showPlayControls()
@@ -324,7 +326,7 @@ fun VideoPlayer1(
                    {
                        playerViewModel.hidePlayControls()
                    }*/
-                 playerViewModel.showPlayControls()
+                playerViewModel.showPlayControls()
                 playerViewModel.makeLog()
                 //  Log.d("VideoPlayer","clicked")
 
@@ -455,7 +457,8 @@ fun PlaybackControls(
 
     Box(
 
-        modifier = modifier.background(Color(0xA0000000))
+        modifier = modifier
+            .background(Color(0xA0000000))
             .padding(8.dp)
 
     )
@@ -636,20 +639,8 @@ fun PlaybackControls(
 
                     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    PlaybackState.ADDPLAYING -> {
+                    }
 
                 }
 
@@ -799,7 +790,9 @@ fun TimeBar(
 ) {
 
     AndroidView(
-        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
         factory = { context ->
             DefaultTimeBar(context).apply {
                 setScrubberColor(0xFFFF0000.toInt())
@@ -921,7 +914,9 @@ fun VideoOverlay(
 
         if (playerUiModel.playerControlsVisible) {
             PlaybackControls(
-                modifier = Modifier.matchParentSize().clickable(onClick = onControlsClicked),
+                modifier = Modifier
+                    .matchParentSize()
+                    .clickable(onClick = onControlsClicked),
                     /*onClick ={
                        // playerViewModel.makeLog()
                       //  playerViewModel.hidePlayControls()
@@ -977,28 +972,36 @@ fun TrackSelector(
                 Column {
                     Text(
                         text = "Video Tracks",
-                        modifier = Modifier.clickable {
-                            currentTrackState = TrackState.VIDEO
-                        }.padding(horizontal = 16.dp, vertical = 8.dp)
+                        modifier = Modifier
+                            .clickable {
+                                currentTrackState = TrackState.VIDEO
+                            }
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                     Text(
                         text = "Audio Tracks",
-                        modifier = Modifier.clickable {
-                            currentTrackState = TrackState.AUDIO
-                        }.padding(horizontal = 16.dp, vertical = 8.dp)
+                        modifier = Modifier
+                            .clickable {
+                                currentTrackState = TrackState.AUDIO
+                            }
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                     Text(
                         text = "Subtitle Tracks",
-                        modifier = Modifier.clickable {
-                            currentTrackState = TrackState.SUBTITLE
-                        }.padding(horizontal = 16.dp, vertical = 8.dp)
+                        modifier = Modifier
+                            .clickable {
+                                currentTrackState = TrackState.SUBTITLE
+                            }
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
 
                     Text(
                         text = "SPEED",
-                        modifier = Modifier.clickable {
-                            currentTrackState = TrackState.SPEED
-                        }.padding(horizontal = 16.dp, vertical = 8.dp)
+                        modifier = Modifier
+                            .clickable {
+                                currentTrackState = TrackState.SPEED
+                            }
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
 
 
@@ -1018,10 +1021,12 @@ fun TrackSelector(
                 Column {
                     trackSelectionUiModel.videoTracks.forEach { videoTrack ->
                         Text(
-                            modifier = Modifier.clickable {
-                                onVideoTrackSelected(videoTrack)
-                                onDismiss()
-                            }.padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier
+                                .clickable {
+                                    onVideoTrackSelected(videoTrack)
+                                    onDismiss()
+                                }
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                             text = videoTrack.displayName,
                             color = if (videoTrack === trackSelectionUiModel.selectedVideoTrack) {
                                 Color.Yellow
@@ -1043,10 +1048,12 @@ fun TrackSelector(
                 Column {
                     trackSelectionUiModel.audioTracks.forEach { audioTrack ->
                         Text(
-                            modifier = Modifier.clickable {
-                                onAudioTrackSelected(audioTrack)
-                                onDismiss()
-                            }.padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier
+                                .clickable {
+                                    onAudioTrackSelected(audioTrack)
+                                    onDismiss()
+                                }
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                             text = audioTrack.displayName,
                             color = if (audioTrack === trackSelectionUiModel.selectedAudioTrack) {
                                 Color.Yellow
@@ -1070,10 +1077,12 @@ fun TrackSelector(
                 Column {
                     trackSelectionUiModel.subtitleTracks.forEach { subtitleTrack ->
                         Text(
-                            modifier = Modifier.clickable {
-                                onSubtitleTrackSelected(subtitleTrack)
-                                onDismiss()
-                            }.padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier
+                                .clickable {
+                                    onSubtitleTrackSelected(subtitleTrack)
+                                    onDismiss()
+                                }
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                             text = subtitleTrack.displayName,
                             color = if (subtitleTrack === trackSelectionUiModel.selectedSubtitleTrack) {
                                 Color.Yellow
@@ -1107,10 +1116,12 @@ fun TrackSelector(
                 Column {
                     trackSelectionUiModel.speedTracks.forEach { speedTrack ->
                         Text(
-                            modifier = Modifier.clickable {
-                                onPlayBackSpeedSelected(speedTrack.videoPlayBackSpeed)
-                                onDismiss()
-                            }.padding(horizontal = 16.dp, vertical = 8.dp),
+                            modifier = Modifier
+                                .clickable {
+                                    onPlayBackSpeedSelected(speedTrack.videoPlayBackSpeed)
+                                    onDismiss()
+                                }
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                             text = speedTrack.displayName,
                             color = if (speedTrack === trackSelectionUiModel.selectedSpeedTrack) {
                                 Color.Yellow
@@ -1159,7 +1170,9 @@ fun PlaybackButton(
     onClick: () -> Unit = {},
 ) {
     Image(
-        modifier = Modifier.size(32.dp).clickable(onClick = onClick),
+        modifier = Modifier
+            .size(32.dp)
+            .clickable(onClick = onClick),
         contentDescription = description,
         painter = painterResource(resourceId)
     )
