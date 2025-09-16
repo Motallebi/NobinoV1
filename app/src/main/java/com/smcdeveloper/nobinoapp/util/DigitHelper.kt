@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.util
 
 import android.annotation.SuppressLint
+import java.util.Locale
 
 object DigitHelper {
 
@@ -37,6 +38,55 @@ object DigitHelper {
         }
         return result
     }
+
+
+    fun formatMsToString(timeInMs: Long): String {
+        var secondsRemaining = timeInMs / 1000
+        val hours = secondsRemaining / 3600
+        secondsRemaining -= hours * 3600
+        val minutes = secondsRemaining / 60
+        secondsRemaining -= minutes * 60
+        val seconds = secondsRemaining
+        if(hours>0)
+            return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
+        else if(minutes>0)
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+        else if( seconds>0)
+            return String.format(Locale.getDefault(), "%02d", seconds)
+        else
+        {
+            return ""
+
+        }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     fun digitByLocateFaToEn(englishStr: String): String {

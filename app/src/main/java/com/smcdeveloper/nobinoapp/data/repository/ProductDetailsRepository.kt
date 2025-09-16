@@ -69,7 +69,7 @@ class ProductDetailsRepository @Inject constructor(
 
        }
 
-    suspend fun getProductAdv(productId: Int):NetworkResult<Advertise> =
+    suspend fun getProductAdv1(productId: Int):NetworkResult<Advertise> =
         safeApiCall {
 
             api.getProductAdv(productId)
@@ -79,20 +79,8 @@ class ProductDetailsRepository @Inject constructor(
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     suspend fun getProductDetails(productId: Int): NetworkResult<ProductModel> {
-       // Log.d("getProductDetails", "Fetching product details for productId: $productId, auth: $auth")
+        // Log.d("getProductDetails", "Fetching product details for productId: $productId, auth: $auth")
 
         val result = safeApiCall(
             apiCall = { api.getProductDetailInfoWithoutAuth(productId) },
@@ -109,6 +97,40 @@ class ProductDetailsRepository @Inject constructor(
             }
             is NetworkResult.Error -> {
                 Log.e("getProductDetails", "API call failed. Error: ${result.message}")
+            }
+        }
+
+        return result
+    }
+
+
+
+
+
+
+
+
+
+
+
+    suspend fun getProductAdv(productId: Int): NetworkResult<Advertise> {
+       // Log.d("getProductDetails", "Fetching product details for productId: $productId, auth: $auth")
+
+        val result = safeApiCall(
+            apiCall = { api.getProductAdv(productId) },
+            //  parseResponse = { it?.data }
+        )
+
+        // Log the result state
+        when (result) {
+            is NetworkResult.Loading -> {
+                Log.d("videoadv", "API call is in Loading state.")
+            }
+            is NetworkResult.Success -> {
+                Log.d("videoadv", "API call succeeded. Data: ${result.data}")
+            }
+            is NetworkResult.Error -> {
+                Log.e("videoadv", "API call failed. Error: ${result.message}")
             }
         }
 

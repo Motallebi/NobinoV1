@@ -23,6 +23,11 @@
     <string name="Show_More">مشاهده همه</string>
     <string name="favorite_list">لیست من</string>
     <string name="other_episodes">سایر قسمت‌ها</string>
+    <string name="video_quality">کیفیت پخش</string>
+    <string name="audio_tarcks">انتخاب صوت</string>
+    <string name="select_speed">سرعت پخش</string>
+
+
 
 
 

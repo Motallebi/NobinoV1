@@ -44,6 +44,8 @@ class ProductDetailsViewModel @Inject constructor(
 
     private val _productAdv=MutableStateFlow<NetworkResult<Advertise>>(NetworkResult.Loading())
     val productAdv: StateFlow<NetworkResult<Advertise>>  = _productAdv.asStateFlow()
+    val _episodeIds =MutableStateFlow<List<Int>>(emptyList())
+    val episodeIds: StateFlow<List<Int>> = _episodeIds.asStateFlow()
 
 
 
@@ -75,30 +77,37 @@ class ProductDetailsViewModel @Inject constructor(
     val isUserLoging : StateFlow<Boolean> = _isUserLoging.asStateFlow()
 
 
-    fun getProductAdv(productId: Int)
-    {
+    fun getProductAdv(productId: Int) {
         viewModelScope.launch {
 
 
-            _productAdv.value=NetworkResult.Loading()
+            _productAdv.value = NetworkResult.Loading()
 
-             _productAdv.value=repository.getProductAdv(productId)
-
-
-
-
-
-
+            _productAdv.value = repository.getProductAdv(productId)
 
 
         }
 
-
-
-
-
-
     }
+
+fun saveEpisodeIds(episodeId:Int) {
+    val currentList = _episodeIds.value.toMutableList()
+    currentList.add(episodeId)
+    _episodeIds.value = currentList
+
+}
+
+fun getEpisodeIds():List<Int>
+{
+    return _episodeIds.value
+
+
+}
+
+
+
+
+
 
 
 
@@ -473,14 +482,27 @@ fun getSeriesLastSessionEpisodes(productId: Int)
        val item=  result.data?.movieInfo?.items?.get(totalItemSize-1)
         val relatedId= item?.id
 
-         val data= repository.getSeriesEpisodes(relatedId!!)
+        if (relatedId!=null)
+        {
+
+            val data= repository.getSeriesEpisodes(relatedId)
+            if(data.code==403)
+            {
+                _lastSessionepisodes.value=NetworkResult.Error(data.message.toString())
+                return@launch
+
+            }
+            data.data?.movieInfo?.items?.forEach  {
+                Log.d("SessionData", "Session ${it?.name.toString()}")
+            }
+
+            _lastSessionepisodes.value=NetworkResult.Success(data.data)
 
 
-        data.data?.movieInfo?.items?.forEach  {
-            Log.d("SessionData", "Session ${it?.name.toString()}")
-        }
 
-        _lastSessionepisodes.value=NetworkResult.Success(data.data)
+}
+
+
 
 
 

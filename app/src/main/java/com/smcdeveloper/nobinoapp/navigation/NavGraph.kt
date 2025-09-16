@@ -6,7 +6,6 @@ import RegisterScreen
 import SubscriptionSelectionPage
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,7 +16,7 @@ import com.smcdeveloper.nobinoapp.ui.screens.Actors.ActorScreen
 import com.smcdeveloper.nobinoapp.ui.screens.bs.BoxScreen
 import com.smcdeveloper.nobinoapp.ui.screens.categories.Categories
 import com.smcdeveloper.nobinoapp.ui.screens.search.BottomSheetSearch
-import com.smcdeveloper.nobinoapp.ui.screens.demo.VideoPlay
+import com.smcdeveloper.nobinoapp.ui.player.VideoPlay
 import com.smcdeveloper.nobinoapp.ui.screens.favorit.FavoriteScreen
 import com.smcdeveloper.nobinoapp.ui.screens.home.HomeScreen
 import com.smcdeveloper.nobinoapp.ui.screens.home.KidsScreen
@@ -609,7 +608,8 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
 
 
 
-            VideoPlay(videoUrl=videoUrlDecode, productId = productId)
+         //   VideoPlay(videoUrl=videoUrlDecode, productId = productId)
+            VideoPlay(productId = productId)
           //  VideoPlay(videoUrl=videoUrl, productId = productId)
 
 
