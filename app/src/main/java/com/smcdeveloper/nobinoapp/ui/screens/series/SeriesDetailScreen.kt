@@ -44,6 +44,7 @@ import androidx.core.net.toUri
 import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.navOptions
 import coil3.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.smcdeveloper.nobinoapp.R
@@ -222,6 +223,16 @@ fun SeriesDetailPage(
                     Log.d("ProductDetailPage", products.data?.data.toString())
                     Log.d("ProductDetailPage","video link......"+ products.data?.data?.videoLink.toString())
 
+                  /*  episodes.data?.movieInfo?.items?.forEach {movie->
+
+                        Log.d("ProductDetailPage", "Product details add episode. ${movie?.id}" )
+                        productDetailsViewModel.saveEpisodeIds(movie?.id!!)
+
+
+
+
+                    }*/
+
 
 
                     val sessions= loadEpisodes(episodes)
@@ -386,7 +397,7 @@ fun ShowSeriesProductDetailWithTabs(
 
 
                 )
-                2-> RelatedMovies(relatedMovies)
+                2-> RelatedSeries(relatedMovies,navController)
 
             }
 
@@ -814,7 +825,11 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
 }*/
 
     @Composable
-    fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
+    fun RelatedSeriesItem1(
+        movie: MovieResult.DataMovie.Item,
+        onItemClick: () -> Unit={}
+
+    ) {
 
         val imageUrl = "https://vod.nobino.ir/vod/${movie.images?.firstOrNull()?.src}"
         Log.d("related", "image url is" + imageUrl)
@@ -836,6 +851,7 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
+                    .clickable { onItemClick() }
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -855,10 +871,101 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
 
 
 
+@Composable
+fun RelatedSeriesItem(
+    movie: MovieResult.DataMovie.Item,
+    onItemClick: () -> Unit={},
+
+
+
+    ) {
+    Column(
+        modifier = Modifier
+            .padding(8.dp)
+            //.background(Color.DarkGray, RoundedCornerShape(16.dp))
+            .size(96.dp,140.dp)
+            .clip(RoundedCornerShape(8.dp)),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+
+
+
+
+    {
+
+
+        AsyncImage(
+            model = "https://vod.nobino.ir/vod/${movie.images?.get(1)?.src}",
+            contentDescription = movie.name,
+            contentScale = ContentScale.FillBounds ,
+            modifier = Modifier
+                .size(96.dp,120.dp)
+                .clip(RoundedCornerShape(8.dp))
+
+
+        )
+
+
+
+        Box(modifier = Modifier.fillMaxSize()
+            .clickable {
+                onItemClick()
+
+            }
+            ,
+            //.background(Color.Green),
+            contentAlignment = Alignment.BottomCenter
+
+
+
+        )
+        {
+
+            androidx.compose.material3.Text(
+                text = movie.name ?: "Untitled",
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
+            )
+
+
+
+
+        }
+
+
+
+
+
+
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+
+
+
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
     @Composable
-    fun RelatedMovies(relatedMovies: NetworkResult<MovieResult>) {
+    fun RelatedSeries(relatedMovies: NetworkResult<MovieResult>,
+          navController: NavHostController,
+         onItemClick: () -> Unit={},
+
+
+    ) {
 
         when (relatedMovies) {
             is NetworkResult.Loading -> {
@@ -894,8 +1001,29 @@ fun Episodes(relatedMovies: NetworkResult<MovieResult>) {
 
                                 items(movies) { movie ->
 
-                                    com.smcdeveloper.nobinoapp.ui.screens.product.RelatedMovieItem(
-                                        movie
+                                RelatedSeriesItem(
+                                        movie,
+                                        onItemClick = {
+                                            Log.d("related1", "related tab id.....")
+
+                                            navController.navigate(Screen.SeriesDetailScreen.withArgs(
+                                                //link.toString(),
+
+                                                  movie.id.toString()
+
+
+
+                                            ), navOptions = navOptions {
+                                               popUpTo(Screen.Series.route)
+                                                launchSingleTop = true
+
+                                            })
+
+
+
+                                        }
+
+
                                     )
 
 

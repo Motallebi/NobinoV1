@@ -27,10 +27,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.launch
 
 import javax.inject.Inject
@@ -45,8 +47,9 @@ class PlayerViewModel @Inject constructor(
     val playerUiModel: StateFlow<PlayerUiModel> = _playerUiModel.asStateFlow()
 
 
-    private val _currentVideoUri = MutableStateFlow<NetworkResult<String>>(NetworkResult.Loading())
-    val currentVideoUri: StateFlow<NetworkResult<String>> = _currentVideoUri.asStateFlow()
+    private val _currentVideoUris =
+        MutableStateFlow<NetworkResult<List<String>>>(NetworkResult.Loading())
+    val currentVideoUris: StateFlow<NetworkResult<List<String>>> = _currentVideoUris.asStateFlow()
 
     private val _currentVideoUri1 = MutableStateFlow<String>("")
     val currentVideoUri1: StateFlow<String> = _currentVideoUri1.asStateFlow()
@@ -90,6 +93,24 @@ class PlayerViewModel @Inject constructor(
 
         }
 
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+
+
+            if( exoPlayer.currentMediaItemIndex==1)
+            {
+                _playerUiModel.value = _playerUiModel.value.copy(
+                    isAddPlaying = false
+                )
+
+            }
+
+
+        }
+
+
+
+
+
         override fun onPlaybackStateChanged(playbackState: Int) {
             val state = when (playbackState) {
 
@@ -97,6 +118,10 @@ class PlayerViewModel @Inject constructor(
                 Player.STATE_BUFFERING -> PlaybackState.BUFFERING
                 Player.STATE_READY -> {
                     if (exoPlayer.playWhenReady) {
+
+
+
+
 
 
                         PlaybackState.PLAYING
@@ -347,6 +372,29 @@ class PlayerViewModel @Inject constructor(
         )
     }
 
+
+    private fun skipPlayingAdd()
+
+    {
+      val skip = playerUiModel.value.timelineUiModel?.currentPositionInMs
+
+
+
+       if(skip!! > 5000L) {
+           _playerUiModel.value = _playerUiModel.value.copy(
+               isAddPlaying = false
+
+
+           )
+
+           exoPlayer.seekToNextMediaItem()
+       }
+
+
+    }
+
+
+
     private fun setPlaybackSpeed(speed: Float) {
 
         Log.d("VideoPlayer", "setPlaybackSpeed $speed")
@@ -486,6 +534,7 @@ class PlayerViewModel @Inject constructor(
 
     private suspend fun getAdsLink1(productId: Int) {
 
+
         val result = repository.getProductAdv(productId)
         Log.d("VideoPlayer", "getsAdd → ${result.data?.advertie.toString()}")
 
@@ -493,43 +542,36 @@ class PlayerViewModel @Inject constructor(
         val link = result.data?.advertie?.fileUrl
         if (link == null) {
 
-            _currentVideoUri.value = NetworkResult.Error("ERROR")
+            _currentVideoUris.value = NetworkResult.Error("ERROR")
         }
 
 
         Log.d("VideoPlayer", "Playing Ad → url=$link")
-        _currentVideoUri.value = NetworkResult.Success(link.toString())
-        _currentVideoUri1.value = link.toString()
 
-
-        // return link
+        _currentVideoUris
 
 
     }
 
-    private fun getAdsLink(productId: Int) {
-        // Launch a new coroutine to handle the async work
-        viewModelScope.launch {
-            _currentVideoUri.value = NetworkResult.Loading() // Set to loading at the start
 
-            val result = repository.getProductAdv(productId)
+    // _currentVideoUri1.value = link.toString()
 
-            // Update the state based on the result
-            if (result is NetworkResult.Success) {
-                val link = result.data?.advertie?.fileUrl
-                if (link == null) {
-                    _currentVideoUri.value = NetworkResult.Error("ERROR: Link is null")
-                } else {
-                    _currentVideoUri.value = NetworkResult.Success(link)
-                }
-            } else if (result is NetworkResult.Error) {
-                _currentVideoUri.value = NetworkResult.Error(result.message!!)
-            }
-        }
+
+    // return link
+
+
+    private suspend fun getAdsLink(productId: Int): String {
+        Log.d("VideoPlayer2", "ads Video Link→ url=")
+        val result = repository.getProductAdv(productId)
+        val link = result.data?.advertie?.fileUrl
+        Log.d("VideoPlayer2", "ads Video Link→ url=$link")
+        return link!!
+
+
     }
 
 
-    private suspend fun getVideoLink(productId: Int) {
+    private suspend fun getVideoLink(productId: Int): String {
 
 
         val result = repository.getProductDetails(productId)
@@ -541,13 +583,70 @@ class PlayerViewModel @Inject constructor(
         Log.d("VideoPlayer", "Video Link→ url=$link")
         Log.d("VideoPlayer", "product id → url=$productId")
 
-        _currentVideoUri.value = NetworkResult.Success(link.toString())
+        //_currentVideoUri.value = NetworkResult.Success(link.toString())
         _playerUiModel.value = playerUiModel.value.copy(
             videoTitle = result.data?.data?.name.toString()
         )
+        return link!!
 
 
     }
+
+    fun getAllLinks(productId: Int){
+
+        viewModelScope.launch {
+            try {
+                // Set the initial state to Loading
+                _currentVideoUris.value = NetworkResult.Loading()
+
+                // Launch concurrent coroutines using async.
+                val deferredAd = async { getAdsLink(productId) }
+                val deferredContent = async { getVideoLink(productId) }
+
+                // Await both results. This suspends the current coroutine until both are done.
+                val ad = deferredAd.await()
+                val content = deferredContent.await()
+
+                // Combine the results into a single list of URIs.
+                val combinedList = listOf(ad, content)
+
+                // Update the StateFlow with the successful result.
+                _currentVideoUris.value =NetworkResult.Success(combinedList)
+
+            } catch (e: Exception) {
+                // Handle any network or parsing errors by updating the state to Error.
+                _currentVideoUris.value = NetworkResult.Error("Failed to fetch videos: ${e.message}")
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
 
 
     fun loadContent(productId: Int) {
@@ -565,7 +664,7 @@ class PlayerViewModel @Inject constructor(
 
 
     fun startAd(productId: Int) {
-        getAdsLink(productId)
+     //   getAdsLink(productId)
        /* viewModelScope.launch {
             //_currentVideoUri.value =
             getAdsLink(productId)
@@ -663,16 +762,18 @@ class PlayerViewModel @Inject constructor(
 
 
             is Init -> {
-                _playerUiModel.value.copy(
-                    isAddPlaying = true
 
-                )
-                Log.d("VideoPlayer", "Init ${action.streamUrl}")
+                Log.d("VideoPlayer", "Init ${action.streamUrls}")
 
                 // setUri(Uri.parse(streamUrl))
-                val mediaItem =
-                    MediaItem.Builder().setUri(Uri.parse(action.streamUrl)).build()
-                exoPlayer.setMediaItem(mediaItem)
+
+                val mediaItems =
+                 listOf(   MediaItem.Builder().setUri(Uri.parse(action.streamUrls[0])).build(),
+                          MediaItem.Builder().setUri(Uri.parse(action.streamUrls[1])).build()
+
+
+                 )
+                exoPlayer.setMediaItems(mediaItems)
 
 
             }
@@ -757,7 +858,12 @@ class PlayerViewModel @Inject constructor(
 
             }
 
+            SkipAdd -> {
 
+              skipPlayingAdd()
+
+
+            }
         }
 
 

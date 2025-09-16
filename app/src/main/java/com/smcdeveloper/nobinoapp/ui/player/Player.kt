@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +38,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -48,6 +53,7 @@ import androidx.media3.ui.TimeBar
 import com.smcdeveloper.nobinoapp.R
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoMedium
 import com.smcdeveloper.nobinoapp.util.DigitHelper
+import com.smcdeveloper.nobinoapp.util.DigitHelper.formatMsToString
 
 
 @Composable
@@ -56,14 +62,10 @@ fun VideoPlayer(
     playerViewModel: PlayerViewModel
 
 
-
-
-
-)
-{
+) {
     var isOverLayClicked by remember { mutableStateOf(false) }
-    Log.d("VideoPlayer","created.......")
-    Log.d("VideoPlayer","created.......$isOverLayClicked")
+    Log.d("VideoPlayer", "created.......")
+    Log.d("VideoPlayer", "created.......$isOverLayClicked")
     val context = LocalContext.current
     val activity = context as? Activity
     val playerUiModel by playerViewModel.playerUiModel.collectAsState()
@@ -78,27 +80,25 @@ fun VideoPlayer(
     DisposableEffect(lifeCycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_CREATE->
-                {
+                Lifecycle.Event.ON_CREATE -> {
 
 
-
-
-
-                   Log.d("VideoPlayer","created")
-                   // playerViewModel.handleAction(Start())
-                  //  playerViewModel.startPlayback()
+                    Log.d("VideoPlayer", "created")
+                    // playerViewModel.handleAction(Start())
+                    //  playerViewModel.startPlayback()
 
 
                 }
 
-                Lifecycle.Event.ON_START->
-                {
-                    Log.d("VideoPlayer","Start")
-                    Log.d("VideoPlayer","current link is:"+playerViewModel.currentVideoUri.value.toString())
+                Lifecycle.Event.ON_START -> {
+                    Log.d("VideoPlayer", "Start")
+                    Log.d(
+                        "VideoPlayer",
+                        "current link is:" + playerViewModel.currentVideoUris.value.toString()
+                    )
 
 
-                 //   playerViewModel.handleAction(action =Start())
+                    //   playerViewModel.handleAction(action =Start())
 
                 }
 
@@ -116,30 +116,20 @@ fun VideoPlayer(
         }
     }
 
-    LaunchedEffect(playerViewModel.currentVideoUri) {
+    LaunchedEffect(playerViewModel.currentVideoUris) {
 
         playerViewModel.startPlayback()
-
-
 
 
         val window = activity?.window
         val windowInsetsController =
             WindowCompat.getInsetsController(window!!, window.decorView)
 
-        if(playerUiModel.isFullScreen) {
+        if (playerUiModel.isFullScreen) {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
 
         }
-
-
-
-
-
-
-
-
 
 
     }
@@ -154,115 +144,82 @@ fun VideoPlayer(
 
 
 
-     Box()
-     {
+    Box()
+    {
 
-         AndroidExternalSurface(modifier =
-         modifier
-             .aspectRatio(playerUiModel.videoAspectRatio)
-             .clickable {
-                 /*   if(!isOverLayClicked){
-                     playerViewModel.showPlayControls()
-                     isOverLayClicked=true
-                 }
-                 else
-                 {
-                     playerViewModel.hidePlayControls()
-                 }*/
-                 // playerViewModel.showPlayControls()
-                 playerViewModel.makeLog()
-                 //  Log.d("VideoPlayer","clicked")
+        AndroidExternalSurface(modifier =
+        modifier
+            .aspectRatio(playerUiModel.videoAspectRatio)
+            .clickable {
+                /*   if(!isOverLayClicked){
+                    playerViewModel.showPlayControls()
+                    isOverLayClicked=true
+                }
+                else
+                {
+                    playerViewModel.hidePlayControls()
+                }*/
+                // playerViewModel.showPlayControls()
+                playerViewModel.makeLog()
+                //  Log.d("VideoPlayer","clicked")
 
-             }
+            }
 
-         ) {
-             onSurface { surface,_, _ ->
-                 //playerViewModel.setSurface(surface)
-                 playerViewModel.handleAction(AttachSurface(surface))
+        ) {
+            onSurface { surface, _, _ ->
+                //playerViewModel.setSurface(surface)
+                playerViewModel.handleAction(AttachSurface(surface))
 
 
-                 surface.onDestroyed {
+                surface.onDestroyed {
                     // playerViewModel.clearSurface()
-                     playerViewModel.handleAction(DetachSurface)
+                    playerViewModel.handleAction(DetachSurface)
 
 
+                }
 
 
-
-                 }
-
+            }
 
 
+        }
 
-             }
-
-
-
-
-
-
-
-
-
-
-
-         }
-
-         VideoOverlay(
-             modifier = Modifier.matchParentSize(),
-             playerViewModel = playerViewModel,
-             onCollapseClicked = {
-                 //playerViewModel.exitFullScreen()
-                                 },
-             onExpandClicked = {
-               //  playerViewModel.enterFullScreen()
+        VideoOverlay(
+            modifier = Modifier.matchParentSize(),
+            playerViewModel = playerViewModel,
+            onCollapseClicked = {
+                //playerViewModel.exitFullScreen()
+            },
+            onExpandClicked = {
+                //  playerViewModel.enterFullScreen()
 
 
-             },
-             onControlsClicked = {
+            },
+            onControlsClicked = {
 
-                 playerViewModel.hidePlayControls()
-
-
-
-             },
-             onSettingsClicked = {},
-             onAction = {
-                 playerViewModel.handleAction(it)
+                playerViewModel.hidePlayControls()
 
 
-             }
+            },
+            onSettingsClicked = {
+                playerViewModel.openTrackSelector()
 
 
+            },
+            onAction = {
+                playerViewModel.handleAction(it)
 
 
+            }
 
 
-         )
+        )
 
 
-
-
-
-
-
-
-     }
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
 }
-
 
 
 @Composable
@@ -271,15 +228,11 @@ fun VideoPlayer1(
     playerViewModel: PlayerViewModel
 
 
-
-
-
-)
-{
+) {
     val playerUiModel by playerViewModel.playerUiModel.collectAsState()
     var isOverLayClicked by remember { mutableStateOf(false) }
-    Log.d("VideoPlayer","created.......")
-    Log.d("VideoPlayer","created.......$isOverLayClicked")
+    Log.d("VideoPlayer", "created.......")
+    Log.d("VideoPlayer", "created.......$isOverLayClicked")
 
 
 
@@ -333,7 +286,7 @@ fun VideoPlayer1(
             }
 
         ) {
-            onSurface { surface,_, _ ->
+            onSurface { surface, _, _ ->
                 //playerViewModel.setSurface(surface)
                 playerViewModel.handleAction(AttachSurface(surface))
 
@@ -343,24 +296,10 @@ fun VideoPlayer1(
                     playerViewModel.handleAction(DetachSurface)
 
 
-
-
-
                 }
 
 
-
-
             }
-
-
-
-
-
-
-
-
-
 
 
         }
@@ -381,11 +320,9 @@ fun VideoPlayer1(
                 playerViewModel.hidePlayControls()
 
 
-
             },
             onSettingsClicked = {
                 playerViewModel.openTrackSelector()
-
 
 
             },
@@ -396,47 +333,13 @@ fun VideoPlayer1(
             }
 
 
-
-
-
-
         )
-
-
-
-
-
-
 
 
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @Composable
@@ -450,9 +353,7 @@ fun PlaybackControls(
     onAction: (Action) -> Unit,
 
 
-)
-
-{
+    ) {
 
 
     Box(
@@ -471,176 +372,45 @@ fun PlaybackControls(
         )
 
 
-
-
-
-
         {
 
-            PlaybackButton(
-                R.drawable.settings,
-                description = "Open track selector"
-            ) {
-                onSettingsClicked()
-            }
+
+            if (playerUiModel.playbackState.isReady()) {
+                if (playerUiModel.isAddPlaying) {
 
 
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.BottomEnd
 
 
-            if(playerUiModel.playbackState.isReady()) {
-                PlaybackButton(
-                    R.drawable.rewind,
-                    description = "rewind",
-                    onClick = {
-                        onAction(Rewind(15_000))
+                    )
+                    {
+
+                        AddControl(
+                            modifier = Modifier.align(Alignment.BottomStart),
+                            playerUiModel = playerUiModel,
 
 
+                            )
+                        {
 
-                    }
-                )
-
-                PlaybackButton(
-                    R.drawable.fastforward,
-                    description = "fastforward",
-                    onClick = {
-                        onAction(FastForward(15_000))
-
-
-
-
+                            onAction(SkipAdd)
+                        }
 
                     }
 
 
-                )
-            }
+                    /*PlaybackButton(
+                        R.drawable.edit_profile,
+                        description = "skip",
+                        onClick = {
+                            onAction(SkipAdd)
 
 
-                when(playerUiModel.playbackState)
-                {
-                    PlaybackState.IDLE->{
+                        }
+                    )*/
 
-
-                        PlaybackButton(
-                            R.drawable.playx,
-                            description = "play",
-                            onClick = {
-                                onAction(Start())
-
-                            }
-
-
-
-
-
-
-
-
-
-
-
-
-                        )
-
-
-                    }
-                    PlaybackState.PLAYING->{
-
-
-                        PlaybackButton(
-                            R.drawable.pause,
-                            description = "pause",
-                            onClick ={
-                                onAction(Pause)
-
-
-
-                            }
-
-
-                        )
-
-
-
-
-
-                    }
-                    PlaybackState.PAUSED->{
-
-
-                        PlaybackButton(
-                            R.drawable.playx,
-                            description = "play",
-                            onClick = {
-                                onAction(Start())
-
-
-
-                            }
-
-
-
-
-                        )
-
-
-
-
-
-                    }
-                    PlaybackState.BUFFERING->{
-
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(32.dp),
-                            color = Color.White
-                        )
-
-
-                    }
-                    PlaybackState.COMPLETED->{
-                        PlaybackButton(
-                            R.drawable.replay,
-                            description = "replay",
-                            onClick = {}
-
-
-
-
-                        )
-
-
-
-
-                    }
-                    PlaybackState.ERROR->{
-                        PlaybackButton(
-                            R.drawable.error,
-                            description = "replay",
-                            onClick = {}
-
-
-
-
-                        )
-
-                        PlaybackButton(
-                            R.drawable.replay,
-                            description = "retry",
-                            onClick = {}
-
-
-
-
-                        )
-
-
-
-
-
-                    }
-
-                    PlaybackState.ADDPLAYING -> {
-                    }
 
                 }
 
@@ -650,31 +420,138 @@ fun PlaybackControls(
 
 
 
+                PlaybackButtonWithText(time = "15",
+                    R.drawable.fastforward_icon,
+                    description = "rewind",
+                    onClick = {
+                        onAction(FastForward(15_000))
 
 
+                    }
+                )
+
+            }
 
 
+            when (playerUiModel.playbackState) {
+                PlaybackState.IDLE -> {
 
 
+                    PlaybackButton(
+                        resourceId = R.drawable.playx,
+                        description = "play",
+                        onClick = {
+                            onAction(Start())
+
+                        }
 
 
+                    )
 
 
+                }
+
+                PlaybackState.PLAYING -> {
 
 
+                    PlaybackButton(
+                        resourceId = R.drawable.pause,
+                        description = "pause",
+                        onClick = {
+                            onAction(Pause)
 
 
+                        }
 
 
+                    )
 
+
+                }
+
+                PlaybackState.PAUSED -> {
+
+
+                    PlaybackButton(
+                        resourceId = R.drawable.playx,
+                        description = "play",
+                        onClick = {
+                            onAction(Start())
+
+
+                        }
+
+
+                    )
+
+
+                }
+
+                PlaybackState.BUFFERING -> {
+
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(32.dp),
+                        color = Color.Red
+                    )
+
+
+                }
+
+                PlaybackState.COMPLETED -> {
+                    PlaybackButton(
+                        resourceId = R.drawable.replay,
+                        description = "replay",
+                        onClick = {}
+
+
+                    )
+
+
+                }
+
+                PlaybackState.ERROR -> {
+                    PlaybackButton(
+                        resourceId = R.drawable.error,
+                        description = "replay",
+                        onClick = {}
+
+
+                    )
+
+                    PlaybackButton(
+                        resourceId = R.drawable.replay,
+                        description = "retry",
+                        onClick = {}
+
+
+                    )
+
+
+                }
+
+                PlaybackState.ADDPLAYING -> {
+                }
+
+            }
+
+            if(playerUiModel.playbackState.isReady()) {
+
+                PlaybackButtonWithText(time = "15",
+                    R.drawable.rewind_icon,
+                    description = "fastforward",
+                    onClick = {
+                        onAction(Rewind(15_000))
+
+
+                    }
+
+
+                )
+            }
 
         }
 
-
-
-
-
-            playerUiModel.timelineUiModel?.let { timeBar->
+            playerUiModel.timelineUiModel?.let { timeBar ->
 
                 Column(
                     modifier = Modifier.align(Alignment.BottomEnd)
@@ -682,8 +559,11 @@ fun PlaybackControls(
 
 
                 )
+
+
+
+
                 {
-                    PlayBackPosition(timeBar.currentPositionInMs,timeBar.durationInMs)
                     TimeBar(
                         currentPositionInMs = timeBar.currentPositionInMs,
                         contentDurationInMs = timeBar.durationInMs,
@@ -696,84 +576,49 @@ fun PlaybackControls(
                         }
 
 
-
-
-
+                    )
+                    Row(
+                       modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
 
                     )
+                    {
+                        PlaybackButton(
+                            size = 24.dp,
+                            resourceId = R.drawable.settings,
+                            description = "Open track selector"
+                        )
+                        {
+                            onSettingsClicked()
+                        }
+
+
+                        PlayBackPosition(timeBar.currentPositionInMs, timeBar.durationInMs)
+
+                    }
+
+
+
+
+
+
 
                 }
-
 
 
             }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
     }
 
 
 
-
-
-
-
-
-
-
-
-
-
-}
-
 @Composable
-fun PlayAdd()
-{
-
-
-
-
-
-
-
+fun PlayAdd() {
 
 
 }
-
-
-
-
 
 
 @OptIn(UnstableApi::class)
@@ -785,9 +630,7 @@ fun TimeBar(
     onSeek: (Float) -> Unit,
 
 
-
-
-) {
+    ) {
 
     AndroidView(
         modifier = Modifier
@@ -798,7 +641,6 @@ fun TimeBar(
                 setScrubberColor(0xFFFF0000.toInt())
                 setPlayedColor(0xCCFF0000.toInt())
                 setBufferedColor(0x77FF0000.toInt())
-
 
 
             }
@@ -821,12 +663,10 @@ fun TimeBar(
                         onSeek(position.toFloat())
 
 
-
                     }
 
 
                 }
-
 
 
                 )
@@ -836,54 +676,35 @@ fun TimeBar(
                 setBufferedPosition(bufferedPositionInMs)
 
 
-
             }
-
-
-
-
 
 
         }
 
 
-
-
     )
-
-
-
-
-
-
 
 
 }
 
 @Composable
 fun PlayBackPosition(
-    contentDurationInMs: Long ,
+    contentDurationInMs: Long,
     currentPositionInMs: Long,
 
 
-
-
-
-
-) {
+    ) {
 
     Text(
-        "${DigitHelper.formatMsToString(currentPositionInMs)}|${DigitHelper.formatMsToString(contentDurationInMs)}",
+        "${DigitHelper.digitByLocate(formatMsToString(currentPositionInMs))} / ${
+            DigitHelper.digitByLocate(formatMsToString(
+                contentDurationInMs)
+            )
+        }",
         style = MaterialTheme.typography.nobinoMedium
 
 
-
     )
-
-
-
-
-
 
 
 }
@@ -897,36 +718,54 @@ fun VideoOverlay(
     onControlsClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
     onAction: (Action) -> Unit,
-)
-
-{
+) {
     val playerUiModel by playerViewModel.playerUiModel.collectAsState()
 
     Box(
-        modifier = modifier
+        modifier =modifier,
+       //contentAlignment = Alignment.Center
+
+
     )
     {
-        Text(
-            text = playerUiModel.videoTitle,
-            //  modifier = Modifier.clickable {  }
+        if(playerUiModel.playerControlsVisible) {
+            Text(
+                text = playerUiModel.videoTitle,
+                modifier = Modifier.align(Alignment.BottomEnd)
+                    .padding(bottom = 48.dp)
+                    .padding(horizontal = 16.dp)
+                //  modifier = Modifier.clickable {  }
 
-        )
+            )
+        }
+
+    }
+
+
+
+    Box(
+        modifier = modifier
+
+
+
+
+    )
+    {
+
 
         if (playerUiModel.playerControlsVisible) {
             PlaybackControls(
                 modifier = Modifier
                     .matchParentSize()
                     .clickable(onClick = onControlsClicked),
-                    /*onClick ={
-                       // playerViewModel.makeLog()
-                      //  playerViewModel.hidePlayControls()
+               /* onClick ={
+                   // playerViewModel.makeLog()
+                    playerViewModel.hidePlayControls()
 
 
 
-                    }*/
-                    //onControlsClicked
-
-
+                },*/
+                //onControlsClicked
 
 
                 isFullScreen = playerUiModel.isFullScreen,
@@ -941,13 +780,11 @@ fun VideoOverlay(
 
 
 
-
-
     }
 }
 
 private enum class TrackState {
-    VIDEO, AUDIO, SUBTITLE, LIST,SPEED
+    VIDEO, AUDIO, SUBTITLE, LIST, SPEED
 }
 
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
@@ -963,15 +800,16 @@ fun TrackSelector(
     var currentTrackState by remember { mutableStateOf(TrackState.LIST) }
     ModalBottomSheet(
         onDismissRequest = onDismiss,
+        modifier = Modifier.fillMaxWidth(0.3f)
+
     )
     {
         when (currentTrackState) {
-            TrackState.LIST ->
-            {
+            TrackState.LIST -> {
 
                 Column {
                     Text(
-                        text = "Video Tracks",
+                        text = stringResource(R.string.video_quality),
                         modifier = Modifier
                             .clickable {
                                 currentTrackState = TrackState.VIDEO
@@ -979,7 +817,7 @@ fun TrackSelector(
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                     Text(
-                        text = "Audio Tracks",
+                        text = stringResource(R.string.audio_tarcks),
                         modifier = Modifier
                             .clickable {
                                 currentTrackState = TrackState.AUDIO
@@ -996,7 +834,7 @@ fun TrackSelector(
                     )
 
                     Text(
-                        text = "SPEED",
+                        text = stringResource(R.string.select_speed),
                         modifier = Modifier
                             .clickable {
                                 currentTrackState = TrackState.SPEED
@@ -1008,14 +846,8 @@ fun TrackSelector(
                 }
 
 
-
-
-
-
-
-
-
             }
+
             TrackState.VIDEO -> {
 
                 Column {
@@ -1038,12 +870,8 @@ fun TrackSelector(
                 }
 
 
-
-
-
-
-
             }
+
             TrackState.AUDIO -> {
                 Column {
                     trackSelectionUiModel.audioTracks.forEach { audioTrack ->
@@ -1065,14 +893,9 @@ fun TrackSelector(
                 }
 
 
-
-
-
-
-
             }
-            TrackState.SUBTITLE ->
-            {
+
+            TrackState.SUBTITLE -> {
 
                 Column {
                     trackSelectionUiModel.subtitleTracks.forEach { subtitleTrack ->
@@ -1094,22 +917,7 @@ fun TrackSelector(
                 }
 
 
-
-
-
-
-
-
-
-
-
-
             }
-
-
-
-
-
 
 
             TrackState.SPEED -> {
@@ -1133,25 +941,28 @@ fun TrackSelector(
                 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
             }
         }
 
 
     }
 
+}
+
+
+@Composable
+fun PlaybackButton(size: Dp = 64.dp,
+                   @DrawableRes resourceId: Int,
+                   description: String,
+                   onClick: () -> Unit = {},
+) {
+    Image(
+        modifier = Modifier
+            .size(size)
+            .clickable(onClick = onClick),
+        contentDescription = description,
+        painter = painterResource(resourceId)
+    )
 }
 
 
@@ -1163,17 +974,115 @@ fun TrackSelector(
 
 
 
+
 @Composable
-fun PlaybackButton(
+fun PlaybackButtonWithText(
+    time: String,
+
     @DrawableRes resourceId: Int,
     description: String,
     onClick: () -> Unit = {},
 ) {
-    Image(
-        modifier = Modifier
-            .size(32.dp)
-            .clickable(onClick = onClick),
-        contentDescription = description,
-        painter = painterResource(resourceId)
+    Box(
+        modifier = Modifier.size(64.dp),
+        contentAlignment = Alignment.Center
+
+
     )
+    {
+        Text(
+            time,
+            fontSize = 10.sp
+
+
+        )
+
+        Image(
+            modifier = Modifier
+                .size(48.dp)
+                .clickable(onClick = onClick)
+                .align(Alignment.Center),
+
+
+            contentDescription = description,
+            painter = painterResource(resourceId)
+        )
+
+
+    }
+
+
+}
+
+
+@Composable
+fun AddControl(
+    modifier: Modifier,
+    playerUiModel: PlayerUiModel,
+    onClick: () -> Unit,
+
+) {
+    // val uiModel by viewModel.playerUiModel.collectAsState()
+    val currentTime =playerUiModel.timelineUiModel?.currentPositionInMs!!
+    val addPlayingTime= playerUiModel.timelineUiModel.durationInMs
+    val remainingAddTime=addPlayingTime-currentTime
+    val addSkipTime= 5000-currentTime
+
+    val currentTimeInString= DigitHelper.formatMsToString(currentTime)
+    val addSkipTimeInString= DigitHelper.digitByLocate(formatMsToString(addSkipTime))
+    val remainingAddTimeInString= DigitHelper.formatMsToString(remainingAddTime)
+
+
+    Box(
+        modifier = modifier
+            // .fillMaxSize()
+            .padding(bottom = 40.dp)
+            .padding(start = 20.dp),
+
+        // contentAlignment = Alignment.BottomEnd
+
+
+    )
+    {
+        Row()
+        {
+            Button(
+                onClick = {
+
+                    onClick()
+
+
+                },
+                // modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),
+                enabled = playerUiModel.isAddPlaying
+            ) {
+                Text(
+                    style = MaterialTheme.typography.nobinoMedium,
+                    text =  if(currentTime<4000)
+                        " $addSkipTimeInString  تا نمایش "
+                    else
+
+                        " رد کردن آکهی"
+
+
+
+
+
+
+
+
+                )
+
+
+
+
+            }
+
+
+        }
+
+
+    }
+
+
 }

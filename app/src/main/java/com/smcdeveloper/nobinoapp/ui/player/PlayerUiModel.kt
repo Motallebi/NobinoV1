@@ -1,5 +1,7 @@
 package com.smcdeveloper.nobinoapp.ui.player
 
+import com.smcdeveloper.nobinoapp.util.DigitHelper
+
 data class PlayerUiModel(
     val videoTitle: String="",
     val streamUrl: String="",
@@ -10,7 +12,8 @@ data class PlayerUiModel(
     val timelineUiModel:TimelineUiModel?=null,
     val trackSelectionUiModel: TrackSelectionUiModel?=null,
     val isTrackSelectorVisible: Boolean = false,
-    val isAddPlaying:Boolean=false,
+    val isAddPlaying:Boolean=true,
+    val isAddSkippable:Boolean=false,
 
 
 
@@ -75,7 +78,10 @@ data class VideoTrack(
         get() {
             return when (this) {
                 AUTO -> "Auto"
-                else -> "$width $height"
+
+
+
+                else -> showTrackQuality(width)
             }
         }
 
@@ -103,6 +109,31 @@ data class SpeedTrack(
 }
 
 
+fun showTrackQuality(width:Int):String
+{
+  var result=""
+  result = when(width)
+    {
+        1920->"FULL HD"
+        1280->"HD"
+        854->"480P"
+        640->"SD"
+        426->"240P"
+        720->"SD"
+        else->"Auto"
+
+
+
+
+
+    }
+    return DigitHelper.digitByLocate(result)
+
+
+
+
+
+}
 
 
 

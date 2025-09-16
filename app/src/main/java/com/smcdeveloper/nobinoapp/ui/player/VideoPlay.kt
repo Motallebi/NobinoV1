@@ -267,7 +267,7 @@ fun VideoPlay2(videoUrl:String,productId:String)
 
 
 @Composable
-fun VideoPlay(videoUrl:String,productId:String)
+fun VideoPlay(videoUrl:String="",productId:String)
 {
      VideoPlayerScreen(productId)
      //  VideoScreen(productId)
@@ -280,7 +280,7 @@ fun VideoPlay(videoUrl:String,productId:String)
 @Composable
 fun VideoScreen(productId: String) {
     val viewModel: PlayerViewModel = hiltViewModel()
-    val videoUri by viewModel.currentVideoUri.collectAsState()
+    val videoUri by viewModel.currentVideoUris.collectAsState()
     val videoUri1 by viewModel.currentVideoUri1.collectAsState()
 
     val lifeCycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
@@ -327,7 +327,9 @@ fun VideoScreen(productId: String) {
             when (event) {
                 Lifecycle.Event.ON_CREATE -> {
 
-                    viewModel.startAd(productId.toInt())
+                  //  viewModel.startAd(productId.toInt())
+                      viewModel.getAllLinks(productId = productId.toInt())
+
 
 
 
@@ -351,7 +353,7 @@ fun VideoScreen(productId: String) {
                     Log.d("VideoPlayer", "Start")
                     Log.d(
                         "VideoPlayer",
-                        "current link is:" + viewModel.currentVideoUri.value.toString()
+                        "current link is:" + viewModel.currentVideoUris.value.toString()
                     )
 
 
@@ -386,8 +388,10 @@ fun VideoScreen(productId: String) {
 @Composable
 fun VideoPlayerScreen(productId: String) {
     val viewModel: PlayerViewModel = hiltViewModel()
+    val productViewModel: ProductDetailsViewModel = hiltViewModel()
     val playerUiModel by viewModel.playerUiModel.collectAsState()
-    val videoUri by viewModel.currentVideoUri.collectAsState()
+    val videoUri by viewModel.currentVideoUris.collectAsState()
+    val episodes by productViewModel.episodeIds.collectAsState()
     val lifeCycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val context = LocalContext.current
     val activity = context as? Activity
@@ -410,7 +414,10 @@ fun VideoPlayerScreen(productId: String) {
         }
         is NetworkResult.Success -> {
 
-            val link = (videoUri as NetworkResult.Success).data
+            Log.d("VideoPlayer1", "VideoPlay current link is...Success Episodes :${episodes.toString()}")
+
+
+            val link = videoUri.data!!
 
             Log.d("VideoPlayer1", "VideoPlay current link is...Success :${videoUri.data}")
 
@@ -425,7 +432,7 @@ fun VideoPlayerScreen(productId: String) {
            // viewModel.setStreamUrl(videoUri.data.toString())
           //  viewModel.handleAction(Init(videoUri.data.toString()))
          //   viewModel.handleAction(Init(videoUri.data.toString()))
-            viewModel.handleAction(Init(link.toString()))
+            viewModel.handleAction(Init(link))
 
 
 
@@ -568,7 +575,8 @@ fun VideoPlayerScreen(productId: String) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_CREATE -> {
-                    viewModel.startAd(productId.toInt())
+                  //  viewModel.startAd(productId.toInt())
+                    viewModel.getAllLinks(productId.toInt())
 
 
 
@@ -593,7 +601,7 @@ fun VideoPlayerScreen(productId: String) {
                     Log.d("VideoPlayer", "Start")
                     Log.d(
                         "VideoPlayer",
-                        "current link is:" + viewModel.currentVideoUri.value.toString()
+                        "current link is:" + viewModel.currentVideoUris.value.toString()
                     )
 
 
@@ -617,7 +625,7 @@ fun VideoPlayerScreen(productId: String) {
 
 
 
-    LaunchedEffect(viewModel.currentVideoUri) {
+    LaunchedEffect(viewModel.currentVideoUris) {
 
 
 
@@ -649,7 +657,7 @@ fun VideoPlayerScreen(productId: String) {
         val viewModel: PlayerViewModel = hiltViewModel()
 
         val context = LocalContext.current
-        val videoUri by viewModel.currentVideoUri.collectAsState()
+        val videoUri by viewModel.currentVideoUris.collectAsState()
         val isLoading by viewModel.isLoading.collectAsState()
         val playerUiModel by viewModel.playerUiModel.collectAsState()
         val videoUri1 =

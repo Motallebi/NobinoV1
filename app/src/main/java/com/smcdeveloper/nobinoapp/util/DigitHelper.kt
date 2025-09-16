@@ -47,7 +47,21 @@ object DigitHelper {
         val minutes = secondsRemaining / 60
         secondsRemaining -= minutes * 60
         val seconds = secondsRemaining
-        return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
+        if(hours>0)
+            return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
+        else if(minutes>0)
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+        else if( seconds>0)
+            return String.format(Locale.getDefault(), "%02d", seconds)
+        else
+        {
+            return ""
+
+        }
+
+
+
+
     }
 
 

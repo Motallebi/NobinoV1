@@ -506,7 +506,7 @@ fun ShowOtherProductDetailWithTabs(
         // Tab Content
         when (selectedTabIndex) {
             2 -> ProductDescription(description = productDescription)
-            1 -> RelatedTab(relatedMovies = relatedMovies,productId)
+            1 -> RelatedTab(relatedMovies = relatedMovies,productId,navController=navController)
             0 -> ProductDescriptionWithExtras( product = product,navController=navController)
 
 
@@ -761,7 +761,9 @@ fun ProductDescriptionWithExtras(
 
 
 @Composable
-fun RelatedTab(relatedMovies: NetworkResult<MovieResult>,productId: Int) {
+fun RelatedTab(relatedMovies: NetworkResult<MovieResult>,productId: Int,isSeries:Boolean=false,
+                navController:NavHostController
+) {
     when (relatedMovies) {
         is NetworkResult.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -796,13 +798,22 @@ fun RelatedTab(relatedMovies: NetworkResult<MovieResult>,productId: Int) {
 
 
                         if (movie != null) {
-                            RelatedMovieItem(movie)
-                        }
+                            RelatedMovieItem(movie,
+                                onItemClick = {
+                                    navController.navigate(
+                                        Screen.ProductDetails.withArgs(
+
+                                            movie.id.toString()
+                                        )
+                                    )
+
+
+                                })
                     }
 
                 }
 
-
+                }
 
             }
 
@@ -848,7 +859,15 @@ fun RelatedTab(relatedMovies: NetworkResult<MovieResult>,productId: Int) {
 }
 
 @Composable
-fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
+fun RelatedMovieItem(
+    movie: MovieResult.DataMovie.Item,
+    onItemClick: () -> Unit={},
+
+
+
+)
+
+{
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -877,9 +896,15 @@ fun RelatedMovieItem(movie: MovieResult.DataMovie.Item) {
 
 
 
-        Box(modifier = Modifier.fillMaxSize(),
+        Box(modifier = Modifier.fillMaxSize()
+            .clickable {
+                onItemClick()
+
+            }
+            ,
            //.background(Color.Green),
             contentAlignment = Alignment.BottomCenter
+
 
 
         )

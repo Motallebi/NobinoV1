@@ -608,7 +608,8 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
 
 
 
-            VideoPlay(videoUrl=videoUrlDecode, productId = productId)
+         //   VideoPlay(videoUrl=videoUrlDecode, productId = productId)
+            VideoPlay(productId = productId)
           //  VideoPlay(videoUrl=videoUrl, productId = productId)
 
 
