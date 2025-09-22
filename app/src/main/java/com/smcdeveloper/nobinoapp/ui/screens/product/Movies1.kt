@@ -147,7 +147,7 @@ fun  MovieListByTag(movieDisplayData: List<MovieDisplayData>,navController: NavH
                    // displayData.movieItems.get(0)?.category.toString()
                     "",
                     categoryName = "",
-                    modifier = Modifier
+                    //modifier = Modifier
 
 
                     )
@@ -253,7 +253,7 @@ fun  MovieListByTag1(navController: NavHostController,
                             displayData.movieCat,
                             "",
                             categoryName = "",
-                            modifier = Modifier
+                            //modifier = Modifier
                         )
 
                         TagHeader(tag = displayData.movieCat.title ?: "Unknown Category")

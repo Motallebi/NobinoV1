@@ -181,7 +181,9 @@ fun SectionListScreen(
                         navController = navController,
                         tags = taglist,
                         category = "",
-                        modifier = Modifier
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 10.dp)
+                        ,
 
 
                         )
@@ -209,15 +211,15 @@ fun SectionItemWithMovies(
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         // Section Title
-        Text(text = sectionTitle, style = MaterialTheme.typography.titleSmall)
+     //   Text(text = sectionTitle, style = MaterialTheme.typography.titleSmall)
 
-        Spacer(modifier = Modifier.height(8.dp))
+      //  Spacer(modifier = Modifier.height(8.dp))
 
         // Movies LazyRow
         LazyRow(
 
-            modifier = Modifier.fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth(),
+               // .padding(16.dp),
             contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
 

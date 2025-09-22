@@ -148,55 +148,6 @@ fun Product(navController: NavHostController,
 
 
 
-    Row( modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 10.dp)
-        ,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-
-
-
-    )
-
-    {
-        Text(categoryTitle,
-            style = MaterialTheme.typography.nobinoLarge,
-            modifier = Modifier.padding(top = 5.dp)
-               // .background(Color.Red)
-
-
-
-        )
-
-        Icon(painterResource(R.drawable.left),"",
-            tint = Color.White,
-
-            modifier = Modifier.clickable {
-
-                navController.navigateUp()
-
-
-
-
-
-            }
-                .size(32.dp)
-
-
-
-
-
-        )
-
-
-
-
-
-
-
-
-    }
 
 
 
@@ -208,17 +159,73 @@ fun Product(navController: NavHostController,
 
     Box(modifier = Modifier.fillMaxSize()
        // .wrapContentSize(unbounded = true)
-       // .background(Color.Red)
-        .padding(top = 60.dp)
+     //   .background(Color.Yellow)
+        .padding(top = 10.dp)
         .height(700.dp)
         .background(MaterialTheme.colorScheme.primary)
         ,
 
-        contentAlignment = Alignment.TopStart
+      //  contentAlignment = Alignment.TopStart
 
 
     )
     {
+
+
+        Row( modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 30.dp)
+           // .background(Color.Red)
+            ,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+
+
+
+        )
+
+        {
+            Text(categoryTitle,
+                style = MaterialTheme.typography.nobinoLarge,
+                modifier = Modifier.padding(top = 5.dp)
+                // .background(Color.Red)
+
+
+
+            )
+
+            Icon(painterResource(R.drawable.left),"",
+                tint = Color.White,
+
+                modifier = Modifier.clickable {
+
+                    navController.navigateUp()
+
+
+
+
+
+                }
+                    .size(32.dp)
+
+
+
+
+
+            )
+
+
+
+
+
+
+
+
+        }
+
+
+
+
       //  Text("Product Screen..........")
 
 
@@ -237,6 +244,7 @@ fun Product(navController: NavHostController,
 
         DynamicMoviesGrid(
             products = products,
+            modifier = Modifier.padding(top = 20.dp),
 
             onMovieClick = { movie->
                 Log.d("category", "Clicked movie: ${movie.name}")

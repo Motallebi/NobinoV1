@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
@@ -56,7 +57,13 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+
+            //.padding(horizontal = 30.dp),
+          //  contentPadding = PaddingValues(10.dp)
+
+        ) {
 
 
             when {
@@ -124,7 +131,11 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                         if (sliderData != null) {
 
                          // AnimatedImageSlider(sliderData)
-                           CustomSlider(modifier = Modifier,sliderData,navController=navController, isClickble = false)
+                           CustomSlider(
+                               modifier = Modifier,
+                               sliderList = sliderData,
+                               navController=navController,
+                               isClickble = false)
 
 
                         }
@@ -132,12 +143,19 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
                     // Show movies after the slider
                     movies.forEachIndexed { index, displayData ->
-                        item {
-                            Row(modifier = Modifier.fillMaxWidth()
-                           //    .background(Color.Red)
-                                .padding(start = 25.dp)
 
-                            ){
+                        item {
+                            Row(modifier = Modifier.fillMaxWidth(),
+                              //.background(Color.Red),
+                           //   .padding(horizontal = 5.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                             //   horizontalArrangement = Arrangement.Center
+
+                            )
+
+
+                            {
+                               // Text("test")
                                 NobinoSpecialRow(
                                     displayData.movieCat.title.toString(),
                                     navController = navController,
@@ -145,7 +163,9 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
                                     category = "",
                                     categoryName = displayData.movieCat.title.toString(),
-                                    modifier = Modifier
+                                   // modifier = Modifier
+                                    //modifier = Modifier.padding(horizontal = 10.dp)
+                                       // .fillMaxWidth()
                                 )
 
 
@@ -153,7 +173,11 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
 
+
+
+
                         }
+
 
                         if (index == 3) {
 

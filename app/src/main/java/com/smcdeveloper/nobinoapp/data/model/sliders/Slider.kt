@@ -45,11 +45,11 @@ data class Slider(
             @SerializedName("imdbLastUpdateTime")
             val imdbLastUpdateTime: Long?,
             @SerializedName("imdbRating")
-            val imdbRating: Double?,
+            val imdbRating: Double=0.0,
             @SerializedName("longDescription")
             val longDescription: String?,
             @SerializedName("name")
-            val name: String?,
+            val name: String="",
             @SerializedName("owner")
             val owner: Owner?,
             @SerializedName("productionYear")

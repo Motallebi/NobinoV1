@@ -415,7 +415,7 @@ fun CustomSlider(
 
                            modifier.height(80.dp)
                                .fillMaxWidth()
-                             //  .background(Color.Yellow)
+                              //.background(Color.Yellow)
 
 
                         )
@@ -429,7 +429,7 @@ fun CustomSlider(
 
 
                              Text(
-                                 sliderList?.get(page)?.product?.name.toString(),
+                                text =  sliderList?.get(page)?.product?.name ?:"" ,
                                  style = MaterialTheme.typography.nobinoSmall
 
 
@@ -443,10 +443,16 @@ fun CustomSlider(
 
                          }
 
-                         Row()
-                         {
+                         Row(
+                             Modifier.fillMaxWidth(),
+                             verticalAlignment = Alignment.CenterVertically,
+                             horizontalArrangement = Arrangement.End
 
-                             NobinoGradientCard(sliderList?.get(page)?.product?.imdbRating.toString())
+
+                         )
+                         {
+                            if(sliderList?.get(page)?.product?.imdbRating!=null)
+                             NobinoGradientCard(sliderList[page]?.product?.imdbRating.toString())
                             // Text(sliderList?.get(page)?.product?.name.toString())
                              FeatureIconsRow(isKeyboardAvailable = true, isMicAvailable = true)
 
@@ -868,8 +874,8 @@ fun NobinoSectionSlider3(
 
 
 ) {
-    val lazyListState = rememberLazyListState()
-    val density = LocalDensity.current // <--- Capture LocalDensity here!
+      val lazyListState = rememberLazyListState()
+      val density = LocalDensity.current // <--- Capture LocalDensity here!
 
     /*Column(
         modifier = Modifier
@@ -883,6 +889,8 @@ fun NobinoSectionSlider3(
             state = lazyListState,
             modifier = Modifier
                 .fillMaxWidth()
+                //.background(Color.Blue)
+                //.padding(vertical = 10.dp)
                 .height(IMAGE_HIGHT.dp), // Height for the row items
             contentPadding = PaddingValues(horizontal = 24.dp), // Padding around the content
             horizontalArrangement = Arrangement.spacedBy(16.dp) // Space between items
@@ -976,7 +984,7 @@ fun NobinoSectionSlider3(
 
 
         }
-        Spacer(modifier = Modifier.height(32.dp))
+       // Spacer(modifier = Modifier.height(32.dp))
 
 
 
@@ -1224,6 +1232,7 @@ fun MoviePosterCardWithDarknessAndScale(
 
                     }
 
+
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = overlayAlpha)
 
@@ -1237,11 +1246,47 @@ fun MoviePosterCardWithDarknessAndScale(
 
 
 
-                    )
+
+
+                    ),
+                contentAlignment = Alignment.BottomCenter
 
 
 
             )
+            {
+
+
+                Column(modifier = Modifier.fillMaxWidth()
+
+
+                ) {
+                    Text(
+                        movie.name.toString(),
+                        style = MaterialTheme.typography.nobinoSmall,
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 10.dp)
+
+                    )
+
+                    // Text("89898")
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .background(Color.Black.copy(alpha = 0.3f)),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+
+                    )
+                    {
+                        if (movie.imdbRating != "")
+                            NobinoGradientCard(movie.imdbRating.toString())
+                        FeatureIconsRow(isKeyboardAvailable = true, isMicAvailable = true)
+                    }
+                }
+
+
+
+            }
 
 
         }

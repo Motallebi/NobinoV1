@@ -53,7 +53,7 @@ data class MovieResult(
             @SerializedName("imdbCode")
             val imdbCode: String?=null,
             @SerializedName("imdbRating")
-            val imdbRating: String?=null,
+            val imdbRating: String="",
             @SerializedName("videoLink")
             val videoLink: String?=null,
             @SerializedName("longDescription")

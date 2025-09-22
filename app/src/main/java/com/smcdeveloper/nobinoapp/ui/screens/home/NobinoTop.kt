@@ -1,6 +1,7 @@
 package com.smcdeveloper.nobinoapp.ui.screens.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -83,6 +84,7 @@ fun NobinoTop(navController: NavHostController) {
 
             Row(
                 modifier = Modifier.fillMaxWidth()
+                    .background(Color.Green)
 
                 ,
 
@@ -212,9 +214,11 @@ fun NobinoTop1(navController: NavHostController) {
 
 
             LazyRow (
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                   // .background(Color.Green),
 
-                ,
+
+
 
                 horizontalArrangement = Arrangement.spacedBy(40.dp),
                 verticalAlignment = Alignment.CenterVertically

@@ -617,7 +617,7 @@ fun GetSliderByTag5(viewModel: HomeViewModel = hiltViewModel(),
                         movieCat = tag,
                         category = movies.get(0).category.toString(),
                         categoryName = "",
-                        modifier = Modifier
+                        //modifier = Modifier
 
 
 
@@ -930,7 +930,7 @@ fun MovieTagItem(tag: MovieCat.MovieCatData,
                     movieCat = tag,
                     category = movies.get(0).category.toString(),
                     categoryName = "",
-                    modifier = Modifier
+                    //modifier = Modifier
 
 
 

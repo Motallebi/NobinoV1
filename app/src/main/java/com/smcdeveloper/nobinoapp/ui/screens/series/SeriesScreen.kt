@@ -654,7 +654,9 @@ fun SectionListScreen(
                         navController=navController,
                         tags=sectionTags,
                         category ="SERIES",
-                        modifier = Modifier
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                           // .background(Color.Cyan)
                     )
 
 
