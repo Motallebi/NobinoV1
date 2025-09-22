@@ -218,7 +218,8 @@ fun SectionListScreen(
                        navController= navController,
                         tags = sectionTags,
                         category = "MOVIE",
-                        modifier = Modifier
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 20.dp)
                         )
 
 

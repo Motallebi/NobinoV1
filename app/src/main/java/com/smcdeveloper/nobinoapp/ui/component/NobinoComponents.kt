@@ -4,7 +4,6 @@ package com.smcdeveloper.nobinoapp.ui.component
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.Gravity
-import android.view.View
 import android.view.View.TEXT_DIRECTION_RTL
 import android.widget.TextView
 import androidx.compose.animation.animateContentSize
@@ -26,6 +25,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -592,7 +593,7 @@ fun MovieCard1(sliderInfo: Slider.Sliderinfo?) {
 
 @Composable
 fun NobinoGradientCard(
-    text: String?="null",
+    text: String="",
 
     ) {
     val gradientBrush = Brush.horizontalGradient(
@@ -602,38 +603,44 @@ fun NobinoGradientCard(
         )
     )
 
-    Card(
+
+
+    Box(
 
         modifier = Modifier
-            .width(110.dp)
-            .height(40.dp)
-            .padding(horizontal = 6.dp,
-                vertical = 6.dp
 
-            ),
-           // .background(brush = gradientBrush),
+
+           .background(brush = gradientBrush, shape = MaterialTheme.roundedShape.medium)
+            .wrapContentSize()
+            .padding(5.dp),
 
 
 
-        shape = MaterialTheme.roundedShape.large,
+
+      //  shape = MaterialTheme.roundedShape.large,
 
 
 
-        colors = CardDefaults.cardColors(
+       /* colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,// Transparent to show gradien
 
-        ),
+        ),*/
         //contentPadding = ButtonDefaults.ContentPadding
+        contentAlignment = Alignment.Center
     )
+
+
     {
-         if(text!="null") {
+
+
+
              Box(
                  modifier = Modifier
                      .background(brush = gradientBrush)
-                     //.wrapContentSize()
-                     .fillMaxSize()
+                    .wrapContentSize(),
+                     //.fillMaxSize()
 
-                     .height(50.dp),
+                    // .height(50.dp),
 
                  contentAlignment = Alignment.Center
 
@@ -643,14 +650,14 @@ fun NobinoGradientCard(
                      style = MaterialTheme.typography.nobinoMedium,
                      //  textAlign = TextAlign.Center,
 
-                     text =  "IMDB $text",
+                     text = if(text!="") "IMDB $text" else "",
                      color = Color.Black,
                      //  overflow = TextOverflow.Ellipsis
 
 
                  )
              }
-         }
+
 
     }
 
@@ -1189,11 +1196,12 @@ fun MovieCardtestByTag(
 fun FeatureIconsRow(isMicAvailable: Boolean, isKeyboardAvailable: Boolean) {
     Row(
         modifier = Modifier
-            //.fillMaxWidth()
-           // .background(Color.Cyan)
+           // .fillMaxWidth()
+          //  .background(Color.Cyan)
             .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    )
+    {
         if (isMicAvailable) {
             Icon(
                 painter = painterResource(id = R.drawable.mic), // Replace with actual mic icon
@@ -1205,7 +1213,7 @@ fun FeatureIconsRow(isMicAvailable: Boolean, isKeyboardAvailable: Boolean) {
 
         if (isKeyboardAvailable) {
             Icon(
-                painter = painterResource(id = R.drawable.sub), // Replace with actual keyboard icon
+                painter = painterResource(id = R.drawable.keyboard), // Replace with actual keyboard icon
                 contentDescription = "Keyboard",
                 tint = Color.White,
                 modifier = Modifier.size(18.dp)
@@ -1451,16 +1459,16 @@ fun NobinoSpecialRow(
     movieCat: MovieCat.MovieCatData,
     category: String,
     categoryName: String,
-    modifier: Modifier
+ //   modifier: Modifier
 )
 {
 
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
-          //  .padding(horizontal = 10.dp)
-           .background(MaterialTheme.colorScheme.background),
+            .padding(start =25.dp, end = 10.dp)
+          .background(MaterialTheme.colorScheme.background),
          //   .background(Color.Green),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -1477,7 +1485,9 @@ fun NobinoSpecialRow(
     {
 
         Text(title,
-            style = MaterialTheme.typography.nobinoSmall
+            style = MaterialTheme.typography.nobinoSmall,
+            modifier = Modifier.padding(start = 10.dp)
+
 
 
 
@@ -1485,9 +1495,17 @@ fun NobinoSpecialRow(
 
 
         Row(
-            modifier = Modifier,
+            modifier = Modifier
+              // .background(Color.Red)
+              //  .padding(start = 20.dp)
 
-            verticalAlignment = Alignment.CenterVertically
+            ,
+
+            verticalAlignment = Alignment.CenterVertically,
+
+            //horizontalArrangement = Arrangement.SpaceBetween
+
+
 
 
 
@@ -1521,14 +1539,16 @@ fun NobinoSpecialRow(
                     //  navController.navigate(Screen.DemoScreen.route)
 
 
-                },
+                }
+                    .padding(start = 10.dp)
+                ,
 
 
                 )
 
             Icon(painterResource(R.drawable.left), "",
                 tint = Color.White,
-                modifier=modifier.size(32.dp)
+                modifier=Modifier.size(32.dp)
 
 
 
@@ -1880,10 +1900,11 @@ fun NobinoSpecialRowBySection2(
     // Log.d("categoty","tags are ${section.tags.toString()}")
 
     Row(
+
         modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp)
-            .padding(horizontal = 10.dp)
+            //.fillMaxWidth()
+           // .padding(top = 10.dp)
+            .padding(start = 30.dp)
             .background(MaterialTheme.colorScheme.background),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -1901,7 +1922,7 @@ fun NobinoSpecialRowBySection2(
             )
 
         Row(
-            modifier = modifier,
+            modifier = Modifier,
 
             verticalAlignment = Alignment.CenterVertically
 
@@ -1916,7 +1937,7 @@ fun NobinoSpecialRowBySection2(
                 style = MaterialTheme.typography.nobinoSmall,
 
 
-                modifier = modifier.clickable {
+                modifier = Modifier.clickable {
                     Log.d("category", "Nobino Button Category is${category}")
                     //Log.d("test1","tag data is : "+movieCat.tags?.get(0).toString())
 
@@ -1956,7 +1977,7 @@ fun NobinoSpecialRowBySection2(
 
             Icon(painterResource(R.drawable.left),"",
                 tint = Color.White,
-                modifier = modifier.size(32.dp)
+                modifier = Modifier.size(32.dp)
 
 
 

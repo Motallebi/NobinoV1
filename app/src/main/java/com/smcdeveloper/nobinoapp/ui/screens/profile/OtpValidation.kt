@@ -290,23 +290,30 @@ fun OtpValidationScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
 
-            // Instructions
-            Text(
-                text = "لطفاً کد ارسال شده به شماره  را وارد نمایید",
-                color = Color.Gray,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 32.dp)
             )
+            {
+                // Instructions
+                Text(
+                    text = "لطفاً کد ارسال شده به    ${DigitHelper.digitByLocate(
+                        dataStoreViewModel.getUserPhoneNumber().toString())}   را وارد نمایید",
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 32.dp)
+                )
 
-            Text(
-                text = DigitHelper.digitByLocate("09128248661"),
-                color = Color.Gray,
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 32.dp)
-            )
+
+
+
+
+
+
+            }
+
+
 
 
 
