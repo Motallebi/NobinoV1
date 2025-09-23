@@ -53,6 +53,7 @@ import com.smcdeveloper.nobinoapp.data.model.sliders.Slider
 import com.smcdeveloper.nobinoapp.data.remote.NetworkResult
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection2
 import com.smcdeveloper.nobinoapp.ui.screens.home.CustomSlider
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider3
 import com.smcdeveloper.nobinoapp.ui.screens.series.SliderItemByTags
 
 
@@ -210,13 +211,16 @@ fun SectionItemWithMovies(
     navController: NavHostController
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
+
+        NobinoSectionSlider3(movies!!, navController = navController)
+
         // Section Title
      //   Text(text = sectionTitle, style = MaterialTheme.typography.titleSmall)
 
       //  Spacer(modifier = Modifier.height(8.dp))
 
         // Movies LazyRow
-        LazyRow(
+      /*  LazyRow(
 
             modifier = Modifier.fillMaxWidth(),
                // .padding(16.dp),
@@ -231,11 +235,12 @@ fun SectionItemWithMovies(
             items(movies.orEmpty().filterNotNull()) { movie ->
                 // MovieItem(movie = movie, onClick = { onMovieClick(movie.id ?: 0) })
                 SliderItemByTags(movie, navController = navController)
+               // NobinoSectionSlider3()
             }
 
 
 
-        }
+        }*/
     }
 }
 

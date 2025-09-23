@@ -47,160 +47,156 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
 
-    LaunchedEffect(true) {
-        viewModel.fetchAllDataforKids(tags)
+    LaunchedEffect(Unit) {
+        //viewModel.fetchAllDataforKids(tags)
+        viewModel.fetchAllMovieData(tags)
         viewModel.resetBackground()
     }
 
 
     // GetSlider()
 
+      Box(
+          modifier = Modifier
+              .fillMaxSize(),
+           //   .background(Color.White),
+          contentAlignment = Alignment.Center
+      )
+
+      {
 
 
-        LazyColumn(modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
+          LazyColumn(
+             // modifier = Modifier.fillMaxSize(),
+           //   verticalArrangement = Arrangement.Center,
+            //  horizontalAlignment = Alignment.CenterHorizontally,
 
-            //.padding(horizontal = 30.dp),
-          //  contentPadding = PaddingValues(10.dp)
+              //.padding(horizontal = 30.dp),
+              //  contentPadding = PaddingValues(10.dp)
 
-        ) {
-
-
-            when {
-                // Show loading state if either slider or movies are still loading
-                sliderState is NetworkResult.Loading ||
-                        movieDataState is NetworkResult.Loading ||
-                        productState is NetworkResult.Loading ||
-                        relatedProductsState is NetworkResult.Loading -> {
+          ) {
 
 
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(color = Color.Red)
-                        }
-                    }
-                }
+              when {
+                  // Show loading state if either slider or movies are still loading
+                  sliderState is NetworkResult.Loading ||
+                          movieDataState is NetworkResult.Loading ||
+                          productState is NetworkResult.Loading ||
+                          relatedProductsState is NetworkResult.Loading -> {
 
 
+                      item {
+                          Box(
+                              modifier = Modifier
+                                  .fillMaxSize()
+                                  .padding(16.dp),
+                                //  .background(Color.Yellow),
+
+                              contentAlignment = Alignment.Center
+                          ) {
+                              CircularProgressIndicator(color = Color.Red)
+                          }
+                      }
+                  }
 
 
+                  // Show error state if either request fails
+                  sliderState is NetworkResult.Error ||
+                          movieDataState is NetworkResult.Error ||
+                          productState is NetworkResult.Error ||
+                          relatedProductsState is NetworkResult.Error -> {
+                      item {
+                          Box(
+                              modifier = Modifier
+                                  .fillMaxSize()
+                                  .padding(16.dp),
+                              contentAlignment = Alignment.Center
+                          ) {
+                              Text("Failed to load data. Please try again.", color = Color.Red)
+                          }
+                      }
+                  }
 
-                // Show error state if either request fails
-                sliderState is NetworkResult.Error ||
-                        movieDataState is NetworkResult.Error ||
-                        productState is NetworkResult.Error ||
-                        relatedProductsState is NetworkResult.Error -> {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Failed to load data. Please try again.", color = Color.Red)
-                        }
-                    }
-                }
-
-                // Show UI when both slider and movie data are ready
-                sliderState is NetworkResult.Success &&
-                        movieDataState is NetworkResult.Success &&
-                        productState is NetworkResult.Success &&
-                        relatedProductsState is NetworkResult.Success -> {
-
+                  // Show UI when both slider and movie data are ready
+                  sliderState is NetworkResult.Success &&
+                          movieDataState is NetworkResult.Success &&
+                          productState is NetworkResult.Success &&
+                          relatedProductsState is NetworkResult.Success -> {
 
 
+                      val sliderData = (sliderState as NetworkResult.Success).data?.sliderData
 
-                    val sliderData = (sliderState as NetworkResult.Success).data?.sliderData
+                      val movies = (movieDataState as NetworkResult.Success).data ?: emptyList()
 
-                    val movies = (movieDataState as NetworkResult.Success).data ?: emptyList()
+                      val relatedProducts =
+                          (relatedProductsState as NetworkResult.Success).data?.movieInfo?.items
+                              ?: emptyList()
 
-                    val relatedProducts =
-                        (relatedProductsState as NetworkResult.Success).data?.movieInfo?.items
-                            ?: emptyList()
-
-                    // Show the slider only once
-
-
-                    item {
-                        if (sliderData != null) {
-
-                         // AnimatedImageSlider(sliderData)
-                           CustomSlider(
-                               modifier = Modifier,
-                               sliderList = sliderData,
-                               navController=navController,
-                               isClickble = false)
+                      // Show the slider only once
 
 
-                        }
-                    }
+                      item {
+                          if (sliderData != null) {
 
-                    // Show movies after the slider
-                    movies.forEachIndexed { index, displayData ->
-
-                        item {
-                            Row(modifier = Modifier.fillMaxWidth(),
-                              //.background(Color.Red),
-                           //   .padding(horizontal = 5.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                             //   horizontalArrangement = Arrangement.Center
-
-                            )
+                              // AnimatedImageSlider(sliderData)
+                              CustomSlider(
+                                  modifier = Modifier,
+                                  sliderList = sliderData,
+                                  navController = navController,
+                                  isClickble = false
+                              )
 
 
-                            {
-                               // Text("test")
-                                NobinoSpecialRow(
-                                    displayData.movieCat.title.toString(),
-                                    navController = navController,
-                                    displayData.movieCat,
+                          }
+                      }
 
-                                    category = "",
-                                    categoryName = displayData.movieCat.title.toString(),
-                                   // modifier = Modifier
-                                    //modifier = Modifier.padding(horizontal = 10.dp)
-                                       // .fillMaxWidth()
-                                )
+                      // Show movies after the slider
+                      movies.forEachIndexed { index, displayData ->
 
+                          item {
+                              Row(
+                                  modifier = Modifier.fillMaxWidth(),
+                                  //.background(Color.Red),
+                                  //   .padding(horizontal = 5.dp),
+                                  verticalAlignment = Alignment.CenterVertically,
+                                  //   horizontalArrangement = Arrangement.Center
 
-                            }
-
+                              )
 
 
+                              {
+                                  // Text("test")
+                                  NobinoSpecialRow(
+                                      displayData.movieCat.title.toString(),
+                                      navController = navController,
+                                      displayData.movieCat,
+
+                                      category = "",
+                                      categoryName = displayData.movieCat.title.toString(),
+                                      // modifier = Modifier
+                                      //modifier = Modifier.padding(horizontal = 10.dp)
+                                      // .fillMaxWidth()
+                                  )
 
 
-
-                        }
-
-
-                        if (index == 3) {
+                              }
 
 
-                            val size = relatedProducts.size
-
-                            val images = listOf(
-                                productState.data?.bannerData?.get(0)?.imagePath.toString(),
-
-                                relatedProducts.get(size - 1)?.images?.get(0)?.src.toString(),
-                                relatedProducts.get(size - 2)?.images?.get(0)?.src.toString(),
-
-                                )
+                          }
 
 
+                          if (index == 3) {
 
 
+                              val size = relatedProducts.size
 
+                              val images = listOf(
+                                  productState.data?.bannerData?.get(0)?.imagePath.toString(),
 
+                                  relatedProducts.get(size - 1)?.images?.get(0)?.src.toString(),
+                                  relatedProducts.get(size - 2)?.images?.get(0)?.src.toString(),
 
-                            item {
-
-                              //  val lazyListState = rememberLazyListState()
+                                  )
 
 
 
@@ -208,7 +204,12 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
 
-/*
+                              item {
+
+                                  //  val lazyListState = rememberLazyListState()
+
+
+                                  /*
                                 LazyRow(
                                   //  state = lazyListState,
 
@@ -222,21 +223,17 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
 
 
 
-                                        NobinoSectionSlider3(displayData.movieItems,navController)
+                                  NobinoSectionSlider3(displayData.movieItems, navController)
 
 
-
-
-
-
-                                   /* itemsIndexed(
+                                  /* itemsIndexed(
 
                                         displayData.movieItems,
 
 
                                     )*/
 
-                                   /* {
+                                  /* {
 
                                      index, datamovie ->
 
@@ -254,33 +251,33 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                                         }
                                     }*/
 
-                            }
+                              }
 
 
 
 
-                            item { SpecialRow(images.toList()) }
+                              item { SpecialRow(images.toList()) }
 
 
-                        }
+                          }
 
 
-                        // LazyRow for movie items
-                       if(index!=3) {
-                           item {
-                               NobinoSectionSlider3(
-                                   movieList = displayData.movieItems,
-                                    navController=navController,
+                          // LazyRow for movie items
+                          if (index != 3) {
+                              item {
+                                  NobinoSectionSlider3(
+                                      movieList = displayData.movieItems,
+                                      navController = navController,
 
 
-                               )
+                                      )
 
 
-                           }
+                              }
 
-                       }
+                          }
 
-                      /*  item {
+                          /*  item {
                             LazyRow(
                                 modifier = Modifier.fillMaxWidth()
                                     .padding(16.dp),
@@ -299,12 +296,12 @@ fun MovieScreenHome(viewModel: HomeViewModel, navController: NavHostController, 
                                 }
                             }
                         }*/
-                    }
-                }
-            }
-        }
+                      }
+                  }
+              }
+          }
 
-
+      }
 
 
 

@@ -22,6 +22,7 @@ import com.smcdeveloper.nobinoapp.util.Constants.NOBINO_LOG_TAG1
 import com.smcdeveloper.nobinoapp.util.MovieDisplayData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
@@ -186,6 +188,18 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
     private val _moviesFlow1 =
         MutableStateFlow<PagingData<MovieResult.DataMovie.Item>>(PagingData.empty())
     val moviesFlow1: StateFlow<PagingData<MovieResult.DataMovie.Item>> = _moviesFlow1.asStateFlow()
+    private var hasFetchedData = false
+
+
+
+
+
+
+
+
+
+
+
 
 
     // Expose the Flow of PagingData
@@ -496,6 +510,32 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
 
 
 
+
+
+    fun fetchAllMovieData(tagIds: List<Int>) {
+
+        if (hasFetchedData) {
+            Log.d("ProductViewModel", "Data already fetched. Skipping API call.")
+            return
+        }
+
+        hasFetchedData = true
+
+        fetchAllDataforKids(tagIds)
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
     fun fetchAllDataforKids(tagIds: List<Int>) {
 
 
@@ -528,6 +568,7 @@ class HomeViewModel @Inject constructor(private val repository: HomeRepository):
                 val productResponse = productFlow.await()
 
                 _slider2.emit(sliderResponse)
+
                 _movieDisplayData2.emit(moviesResponse)
 
 

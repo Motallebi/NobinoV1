@@ -35,6 +35,7 @@ import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRow
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySection2
 import com.smcdeveloper.nobinoapp.ui.component.NobinoSpecialRowBySectionForKids
 import com.smcdeveloper.nobinoapp.ui.screens.home.AnimatedImageSlider
+import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoSectionSlider3
 import com.smcdeveloper.nobinoapp.ui.screens.home.SliderItemByTags
 import com.smcdeveloper.nobinoapp.ui.theme.kidsPageColor
 import com.smcdeveloper.nobinoapp.util.Constants.IMAGE_BASE_URL
@@ -209,20 +210,24 @@ fun KidsMovieScreen(viewModel: KidsViewModel, navController: NavHostController,t
 
 
                             item {
-                                LazyRow(modifier = Modifier.fillMaxWidth()
+                                /*LazyRow(modifier = Modifier.fillMaxWidth()
                                     .padding(16.dp),
                                     contentPadding = PaddingValues(16.dp),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
 
 
 
-                                ) {
+                                ) */
+
+
+                                NobinoSectionSlider3(displayData.movieItems,navController)
+                                /*{
                                     items(displayData.movieItems) { datamovie ->
                                         datamovie?.let {
                                             SliderItemByTags(it,navController)
                                         }
                                     }
-                                }
+                                }*/
                             }
 
 
@@ -252,7 +257,8 @@ fun KidsMovieScreen(viewModel: KidsViewModel, navController: NavHostController,t
 
                         // LazyRow for movie items
                         item {
-                            LazyRow(modifier = Modifier.fillMaxWidth()
+                            NobinoSectionSlider3(displayData.movieItems,navController)
+                           /* LazyRow(modifier = Modifier.fillMaxWidth()
                                 .padding(16.dp),
                                 contentPadding = PaddingValues(16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -265,7 +271,7 @@ fun KidsMovieScreen(viewModel: KidsViewModel, navController: NavHostController,t
                                         SliderItemByTags(it,navController)
                                     }
                                 }
-                            }
+                            }*/
                         }
                     }
                 }

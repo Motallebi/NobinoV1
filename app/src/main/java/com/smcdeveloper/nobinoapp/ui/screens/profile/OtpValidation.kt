@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -174,6 +175,8 @@ fun OtpValidationScreen(
 
     LaunchedEffect(Unit) {
 
+      loginViewModel.setLoginTimer()
+
 
       profileViewModel.profileState.collectLatest { response->
 
@@ -247,6 +250,8 @@ fun OtpValidationScreen(
 
     // Force layout to LTR
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+      val timer by  loginViewModel.loginTimer.collectAsState()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -479,6 +484,19 @@ fun OtpValidationScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Edit Phone Number Option
+
+            Row()
+            {
+                Text(text = stringResource(R.string.reminding_time_string))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(DigitHelper.formatMsToString(timer*1000))
+
+
+            }
+
+
+
+
             TextButton(
                 onClick = {
 
@@ -667,7 +685,7 @@ private fun NobinoValidationText(
             .padding(8.dp)
             .border(
                 width = 2.dp,
-                color =color,
+                color = color,
                 /* color = if(otpValues[i].isNotEmpty() && )
 
                 color = when() {

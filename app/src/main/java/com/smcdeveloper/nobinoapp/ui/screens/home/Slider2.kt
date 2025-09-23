@@ -1260,28 +1260,79 @@ fun MoviePosterCardWithDarknessAndScale(
                 Column(modifier = Modifier.fillMaxWidth()
 
 
-                ) {
-                    Text(
-                        movie.name.toString(),
-                        style = MaterialTheme.typography.nobinoSmall,
-                        color = Color.White,
-                        modifier = Modifier.padding(start = 10.dp)
+                )
 
-                    )
 
-                    // Text("89898")
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .background(Color.Black.copy(alpha = 0.3f)),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
+                {
+                    if (movie.imdbRating == "") {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .background(Color.Black.copy(alpha = 0.3f)),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
 
-                    )
-                    {
-                        if (movie.imdbRating != "")
+                        )
+                        {
+                            Text(
+                                movie.name.toString(),
+                                style = MaterialTheme.typography.nobinoSmall,
+                                color = Color.White,
+                                modifier = Modifier.padding(start = 10.dp)
+
+                            )
+                            FeatureIconsRow(isKeyboardAvailable = true, isMicAvailable = true)
+
+
+                        }
+
+
+                    } else {
+                        Text(
+                            movie.name.toString(),
+                            style = MaterialTheme.typography.nobinoSmall,
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 10.dp)
+
+                        )
+
+                        // Text("89898")
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .background(Color.Black.copy(alpha = 0.3f)),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+
+                        )
+                        {
                             NobinoGradientCard(movie.imdbRating.toString())
-                        FeatureIconsRow(isKeyboardAvailable = true, isMicAvailable = true)
+                            FeatureIconsRow(isKeyboardAvailable = true, isMicAvailable = true)
+
+
+                        }
+
+
                     }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 }
 
 
@@ -1291,7 +1342,7 @@ fun MoviePosterCardWithDarknessAndScale(
 
         }
     }
-}
+
 
 
 

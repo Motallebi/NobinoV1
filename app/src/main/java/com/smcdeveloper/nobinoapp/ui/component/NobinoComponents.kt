@@ -593,9 +593,10 @@ fun MovieCard1(sliderInfo: Slider.Sliderinfo?) {
 
 @Composable
 fun NobinoGradientCard(
-    text: String="",
+    text: String=""
 
-    ) {
+    )
+{
     val gradientBrush = Brush.horizontalGradient(
         colors = listOf(
             Color(0xFFCA9507),
@@ -604,15 +605,14 @@ fun NobinoGradientCard(
     )
 
 
-
-    Box(
+    /*Box(
 
         modifier = Modifier
 
 
-           .background(brush = gradientBrush, shape = MaterialTheme.roundedShape.medium)
-            .wrapContentSize()
-            .padding(5.dp),
+           .background(brush = gradientBrush, shape = MaterialTheme.roundedShape.large)
+           // .wrapContentSize()
+           .padding(5.dp),
 
 
 
@@ -621,48 +621,53 @@ fun NobinoGradientCard(
 
 
 
-       /* colors = CardDefaults.cardColors(
+       *//* colors = CardDefaults.cardColors(
             containerColor = Color.Transparent,// Transparent to show gradien
 
-        ),*/
+        ),*//*
         //contentPadding = ButtonDefaults.ContentPadding
-        contentAlignment = Alignment.Center
+      //  contentAlignment = Alignment.Center
+    )*/
+
+
+
+
+
+    Box(
+        modifier = Modifier
+            .background(brush = gradientBrush, shape = MaterialTheme.roundedShape.medium)
+            .padding(5.dp),
+
+        // .wrapContentSize(),
+        //.fillMaxSize()
+
+        // .height(50.dp),
+
+      //  contentAlignment = Alignment.Center
+
     )
-
-
     {
+        Text(
+            style = MaterialTheme.typography.nobinoMedium,
+            //  textAlign = TextAlign.Center,
+
+            text = if (text != "") "IMDB $text" else "",
+            color = Color.Black,
+            // textAlign = TextAlign.Center
+
+            //  overflow = TextOverflow.Ellipsis
 
 
-
-             Box(
-                 modifier = Modifier
-                     .background(brush = gradientBrush)
-                    .wrapContentSize(),
-                     //.fillMaxSize()
-
-                    // .height(50.dp),
-
-                 contentAlignment = Alignment.Center
-
-             )
-             {
-                 Text(
-                     style = MaterialTheme.typography.nobinoMedium,
-                     //  textAlign = TextAlign.Center,
-
-                     text = if(text!="") "IMDB $text" else "",
-                     color = Color.Black,
-                     //  overflow = TextOverflow.Ellipsis
-
-
-                 )
-             }
-
-
+        )
     }
 
+
+
+}
+
+
     @Composable
-    fun MovieCard1(sliderInfo: Slider.Sliderinfo?) {
+    fun MovieCard4(sliderInfo: Slider.Sliderinfo?) {
         Box(
 
             modifier = Modifier
@@ -795,7 +800,7 @@ fun NobinoGradientCard(
     }
 
 
-}
+
 
 @Composable
 fun MovieCardtest(sliderInfo: Slider.Sliderinfo?) {

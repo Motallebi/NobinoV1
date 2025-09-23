@@ -60,6 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.smcdeveloper.nobinoapp.navigation.Screen
+import com.smcdeveloper.nobinoapp.ui.component.ChangeStatusBarColor
 import com.smcdeveloper.nobinoapp.ui.screens.home.NobinoTop1
 import com.smcdeveloper.nobinoapp.ui.theme.nobinoLarge
 import com.smcdeveloper.nobinoapp.util.AppConfig
@@ -113,6 +114,7 @@ class MainActivity : ComponentActivity() {
 
 
             AppTheme {
+                ChangeStatusBarColor()
 
                 val status by connectivityObserver.observe().collectAsState(
                     initial = ConnectivityObserver.Status.Available
