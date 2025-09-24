@@ -667,7 +667,11 @@ fun BottomSheetSearch(
 
         }
 
-        tagsForApi = selectedGenreIds.joinToString(",")
+        val cleanedTags = selectedGenreIds.filter { it.isNotBlank() }
+         tagsForApi = cleanedTags.joinToString(",")
+
+
+
 
 
 
@@ -1538,7 +1542,9 @@ fun BottomSheetSearch(
 
 
 
-                                        } else {
+                                        }
+
+                                        else {
                                            // filterViewModel.updateCheckBoxSate(genre.translatedName,false)
                                             Log.d("Filter"," filter view model selcted is false selected genres ${genre.name}   ${filterViewModel.getCheckState(genre.translatedName)}")
 

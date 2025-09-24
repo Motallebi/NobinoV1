@@ -61,6 +61,7 @@ import com.smcdeveloper.nobinoapp.ui.theme.roundedShape
 import com.smcdeveloper.nobinoapp.ui.theme.sliderdots
 import com.smcdeveloper.nobinoapp.util.Constants.DEFAULT_IMAGE_POSETR
 import com.smcdeveloper.nobinoapp.util.Constants.USER_LOGIN_STATUS
+import com.smcdeveloper.nobinoapp.viewmodel.LoginViewModel
 import com.smcdeveloper.nobinoapp.viewmodel.ProductDetailsViewModel
 import kotlinx.coroutines.runBlocking
 import java.net.URLEncoder
@@ -69,7 +70,8 @@ import java.nio.charset.StandardCharsets
 fun SeriesDetailPage(
     navController: NavHostController,
     productDetailsViewModel: ProductDetailsViewModel = hiltViewModel(),
-    productId: Int
+    productId: Int,
+    loginViewModel: LoginViewModel
 )
 {
     val systemUiController = rememberSystemUiController()
@@ -105,6 +107,8 @@ fun SeriesDetailPage(
     // Observe states
     val products by productDetailsViewModel.product.collectAsState()
     val relatedMovies by productDetailsViewModel.relatedMovies.collectAsState()
+    val bookmarked by productDetailsViewModel.isBookmarked.collectAsState()
+    val isUserLogedIn = loginViewModel.isUserLogin.collectAsState()
 
 
 
@@ -263,7 +267,9 @@ fun SeriesDetailPage(
                             productId=productId,
                             sessions = sessions,
                             tags =productData.tags,
-                            product = productData
+                            product = productData,
+                            bookmark = bookmarked,
+                            isUserLogedIn=isUserLogedIn.value
 
                         )
 
@@ -294,7 +300,9 @@ fun ShowSeriesProductDetailWithTabs(
     productDetailsViewModel: ProductDetailsViewModel,
     productId:Int,
     sessions: List<MovieResult.DataMovie.Item>,
-    tags: List<ProductModel.MovieInfo.Tag>
+    tags: List<ProductModel.MovieInfo.Tag>,
+    bookmark: Boolean,
+    isUserLogedIn:Boolean
 
 
 
@@ -327,7 +335,13 @@ fun ShowSeriesProductDetailWithTabs(
                 navController = navController,
               //  episode = currentEpisode,
                 productId = productId,
-                viewModel = productDetailsViewModel
+                viewModel = productDetailsViewModel,
+                isUserLogedIn=isUserLogedIn,
+                bookmark = bookmark,
+                tags = tags,
+                category = product.category,
+                categoryID = 1
+
 
             )
 
@@ -427,7 +441,12 @@ fun SeriesProductBanner(
     navController: NavHostController,
    // episode: MovieResult.DataMovie.Item?,
     viewModel: ProductDetailsViewModel,
-   productId:Int
+   productId:Int,
+    bookmark: Boolean,
+    isUserLogedIn:Boolean,
+    tags: List<ProductModel.MovieInfo.Tag>,
+    category:String,
+    categoryID:Int
 
 
 )
@@ -467,6 +486,10 @@ fun SeriesProductBanner(
                 .padding(16.dp),
             verticalArrangement = Arrangement.Bottom
         ) {
+            FloatingActionButtons(navController,viewModel,productId,bookmark,isUserLogedIn)
+
+
+
             Text(
                 text = "$productTitle ($productEnglishTitle)",
                 color = Color.White,
@@ -485,6 +508,46 @@ fun SeriesProductBanner(
 
 
             Spacer(modifier = Modifier.height(8.dp))
+
+            val productTag = tags.filter {
+                !it.invisible
+
+
+            }
+
+
+            if (productTag.isNotEmpty())
+                if (productTag.size >= 2)
+                    com.smcdeveloper.nobinoapp.ui.screens.product.CategoryChipsRow(
+                        productTag[0].name,
+                        productTag[1].name,
+                        onTag1Click = {
+
+                            navController.navigate(Screen.DemoScreen.route + "/?tags=${productTag[0].id}?categoryName=${category}?categoryId=${categoryID}")
+
+
+                        },
+                        onTag2Click = {
+
+                            navController.navigate(
+                                Screen.DemoScreen.route + "/?tags=${productTag[1].id}?categoryName=${category}?categoryId=${categoryID}"
+                            )
+                        }
+                    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             Button (
                 onClick = {

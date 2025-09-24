@@ -411,7 +411,9 @@ fun ShowOtherProductDetailWithTabs(
             productId = productId,
             bookmark = bookmark,
             tags =tags,
-            isUserLogedIn=isUserLogedIn
+            isUserLogedIn=isUserLogedIn,
+            category = product.category,
+            categoryID = 1
 
 
 
@@ -1068,13 +1070,19 @@ fun MovieInfoItem(icon: ImageVector?, text: String,showSpacer:Boolean=true) {
 
 
 @Composable
-fun CategoryChip(text: String="") {
+fun CategoryChip(text: String="",
+                 onTagClick: () -> Unit
+
+
+) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(20.dp)) // Rounded shape
             .background(Color.DarkGray) // Background color
             .padding(horizontal = 12.dp, vertical = 6.dp)
-    ) {
+            .clickable { onTagClick() }
+    )
+    {
         Text(
             text = text,
             color = Color.White,
@@ -1088,13 +1096,25 @@ fun CategoryChip(text: String="") {
 
 
 @Composable
-fun CategoryChipsRow(title1:String="",title2:String="") {
+fun CategoryChipsRow(title1:String="",
+                     title2:String="",
+                     onTag1Click: () -> Unit,
+                     onTag2Click: () -> Unit
+
+) {
     Row(
         modifier = Modifier.padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        CategoryChip(title1) // Crime
-        CategoryChip(title2) // Action
+        CategoryChip(title1)
+        {
+            onTag1Click()
+        }// Crime
+        CategoryChip(title2)
+        {
+            onTag2Click()
+
+        }// Action
     }
 }
 
@@ -1114,7 +1134,10 @@ fun ProductBanner(
     productId:Int,
     bookmark: Boolean,
     tags: List<ProductModel.MovieInfo.Tag>,
-    isUserLogedIn:Boolean
+    isUserLogedIn:Boolean,
+    category:String,
+    categoryID:Int
+
 
 
 
@@ -1139,9 +1162,7 @@ fun ProductBanner(
         AsyncImage(
             model = "https://vod.nobino.ir/vod/$productImage",
             contentDescription = productTitle,
-            modifier = Modifier.fillMaxSize()
-
-            ,
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
 
@@ -1149,15 +1170,14 @@ fun ProductBanner(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .padding(top = 50.dp)
-            ,
+                .padding(top = 50.dp),
             verticalArrangement = Arrangement.Top
         )
 
 
         {
 
-            FloatingActionButtons(navController, viewModel, productId, bookmark,isUserLogedIn)
+            FloatingActionButtons(navController, viewModel, productId, bookmark, isUserLogedIn)
 
 
 
@@ -1201,7 +1221,7 @@ fun ProductBanner(
             )
 
 
-          val productTag= tags.filter {
+            val productTag = tags.filter {
                 !it.invisible
 
 
@@ -1210,61 +1230,65 @@ fun ProductBanner(
 
 
 
-             if(productTag.isNotEmpty())
-                 if(productTag.size>=2 )
-              CategoryChipsRow(productTag[0].name,productTag[1].name)
+            if (productTag.isNotEmpty())
+                if (productTag.size >= 2)
+                    CategoryChipsRow(
+                        productTag[0].name,
+                        productTag[1].name,
+                        onTag1Click = {
 
-                // CategoryChipsRow(productTag[0].name,"")
+                            navController.navigate(Screen.DemoScreen.route + "/?tags=${productTag[0].id}?categoryName=${category}?categoryId=${categoryID}")
 
 
+                        },
+                        onTag2Click = {
 
-           // Text("SAmple.. ${episode.name}")
+                            navController.navigate(
+                                Screen.DemoScreen.route + "/?tags=${productTag[1].id}?categoryName=${category}?categoryId=${categoryID}"
+                            )
+                        }
+                    )
+
+
+            // CategoryChipsRow(productTag[0].name,"")
+
+
+            // Text("SAmple.. ${episode.name}")
 
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
-              //  modifier = Modifier.width(150.dp),
+                //  modifier = Modifier.width(150.dp),
                 onClick = {
                     if ((isVideoAvailable && isUserLogin) || isUserLogedIn) {
 
-                        val encodedUrl = URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
+                        val encodedUrl =
+                            URLEncoder.encode(videoUrl, StandardCharsets.UTF_8.toString())
                         Log.d("ProductBanner", "Navigating to video player with URL: $encodedUrl")
 
-                        navController.navigate(Screen.VideoPlayerScreen.withArgs(
-                            encodedUrl,
-                            productId.toString()
+                        navController.navigate(
+                            Screen.VideoPlayerScreen.withArgs(
+                                encodedUrl,
+                                productId.toString()
 
 
+                            )
+                        )
 
-                        ))
-
-                       // navController.navigate(Screen.VideoPlayerScreen.route+"/$encodedUrl+/$productId")
-                    }
-
-                    else{
-
-
+                        // navController.navigate(Screen.VideoPlayerScreen.route+"/$encodedUrl+/$productId")
+                    } else {
 
 
                         navController.navigate(Screen.SignUp.route)
 
 
-
                     }
-
-
-
-
-
-
-
 
 
                 },
                 // enabled = isVideoAvailable && isUserLogin,
                 colors = ButtonDefaults.buttonColors(
-
 
 
                     contentColor = if ((isVideoAvailable && isUserLogin) || isUserLogedIn) Color.Red else Color.Gray,
@@ -1277,17 +1301,19 @@ fun ProductBanner(
 
             )
             {
-               Icon(painterResource(R.drawable.play1),"",
-                  modifier = Modifier.size(32.dp),
+                Icon(
+                    painterResource(R.drawable.play1), "",
+                    modifier = Modifier.size(32.dp),
                     tint = Color.White
-
 
 
                 )
 
                 Text(
-                    text = if ((isVideoAvailable && isUserLogin) || isUserLogedIn) stringResource(R.string.PlayMovie) else  stringResource(R.string.LoginFirst),
-                   style = MaterialTheme.typography.nobinoLarge
+                    text = if ((isVideoAvailable && isUserLogin) || isUserLogedIn) stringResource(R.string.PlayMovie) else stringResource(
+                        R.string.LoginFirst
+                    ),
+                    style = MaterialTheme.typography.nobinoLarge
                 )
             }
         }

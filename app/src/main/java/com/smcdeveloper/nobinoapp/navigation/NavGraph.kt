@@ -525,7 +525,8 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
                SeriesDetailPage(
                     navController = navController,
 
-                    productId = productId
+                    productId = productId,
+                   loginViewModel = loginViewModel
 
 
                 )

@@ -115,8 +115,8 @@ fun CategoryScreen(
                                     Log.d("category","categoryname is....."+category.name)
 
 
-
-                               /* navController.navigate(
+/*
+                                navController.navigate(
                                     Screen.Product.withArgs(
                                         category.tags[0],
                                       category.name.toString(),
@@ -124,7 +124,6 @@ fun CategoryScreen(
 
                                     ))*/
 
-                                navController.navigate(Screen.DemoScreen.route +"/?tags=${category.tags[0]}?categoryName=${category.name}?categoryId=${category.id}"              )
 
 
 
@@ -229,14 +228,14 @@ fun CategoryItemCard(category: ProductCategories.ProductCategoryData, onClick: (
 
 
 
-        Text(
+      /*  Text(
             text = category.name.toString(),
             color = Color.White,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(8.dp)
-        )
+        )*/
     }
 }
 
