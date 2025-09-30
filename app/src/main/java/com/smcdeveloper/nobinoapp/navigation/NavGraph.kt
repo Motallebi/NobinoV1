@@ -208,7 +208,7 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
 
 
         composable(
-            route = "${Screen.DemoScreen.route}/?tags={tags}?categoryName={categoryName}?categoryId={categoryId}",
+            route = "${Screen.DemoScreen.route}/?tags={tags}?categoryName={categoryName}?categoryId={categoryId}?sourceRequest={sourceRequest}",
             arguments = listOf(
                 navArgument("tags")
 
@@ -228,7 +228,12 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
                     type =NavType.IntType
 
                 },
+                navArgument("sourceRequest")
 
+                {
+                    type =NavType.StringType
+
+                },
 
 
 
@@ -244,11 +249,23 @@ fun SetupNavGraph(navController: NavHostController,loginViewModel: LoginViewMode
         { backStackEntry->
 
             val tags = backStackEntry.arguments?.getString("tags") ?: ""
+
+
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
-            val categoryId = backStackEntry.arguments?.getInt("categoryName") ?: 1
+            val categoryId = backStackEntry.arguments?.getInt("categoryId") ?: 1
+            val sourceRequest = backStackEntry.arguments?.getString("sourceRequest") ?: ""
 
 
-            BottomSheetSearch(navController = navController, tags = tags, categoryName = categoryName, categoryId = categoryId)
+            BottomSheetSearch(
+                navController = navController,
+                tags = tags,
+                categoryName = categoryName,
+                categoryId = categoryId,
+                sourceRequest = sourceRequest
+
+
+
+            )
 
         }
 

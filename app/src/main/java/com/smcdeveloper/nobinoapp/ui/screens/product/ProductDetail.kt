@@ -1237,14 +1237,14 @@ fun ProductBanner(
                         productTag[1].name,
                         onTag1Click = {
 
-                            navController.navigate(Screen.DemoScreen.route + "/?tags=${productTag[0].id}?categoryName=${category}?categoryId=${categoryID}")
+                            navController.navigate(Screen.DemoScreen.route + "/?tags=${productTag[0].id}?categoryName=${productTag[0].name}?categoryId=${categoryID}?sourceRequest=${"OUT"}")
 
 
                         },
                         onTag2Click = {
 
                             navController.navigate(
-                                Screen.DemoScreen.route + "/?tags=${productTag[1].id}?categoryName=${category}?categoryId=${categoryID}"
+                                Screen.DemoScreen.route + "/?tags=${productTag[1].id}?categoryName=${productTag[1].name}?categoryId=${categoryID}?sourceRequest=${"OUT"}"
                             )
                         }
                     )

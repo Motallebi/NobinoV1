@@ -111,7 +111,15 @@ fun CategoryScreen(
                         { category->
                             CategoryItemCard (category = category, onClick =
                             {
-                              //  onCategoryClick(category)
+
+                      navController.navigate(Screen.DemoScreen.route +"/?tags=${category.tags[0]}?categoryName=${category.name}?categoryId=${category.id}?sourceRequest=${"OUT"}")
+
+
+
+
+
+
+                                //  onCategoryClick(category)
                                     Log.d("category","categoryname is....."+category.name)
 
 

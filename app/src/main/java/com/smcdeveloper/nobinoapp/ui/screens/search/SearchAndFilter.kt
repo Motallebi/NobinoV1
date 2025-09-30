@@ -306,7 +306,8 @@ fun BottomSheetSearch(
     searchViewModel: SearchViewModel = hiltViewModel(),
     tags:String="",
     categoryName:String="",
-    categoryId:Int=1
+    categoryId:Int=1,
+    sourceRequest:String=""
 
 
 
@@ -318,6 +319,7 @@ fun BottomSheetSearch(
 {
     var scrollToIndex: (suspend (Int) -> Unit)? by remember { mutableStateOf(null) }
     val searchScope = rememberCoroutineScope()
+    var performSearchFromOutside by remember { mutableStateOf(sourceRequest) }
 
 
 
@@ -342,7 +344,7 @@ fun BottomSheetSearch(
     // 🔴 Selected Filters State
     var selectedTags by remember { mutableStateOf(setOf<String>()) }
 
-    var selectedCategories by remember { mutableStateOf(setOf("MOVIE,SERIES")) }
+    var selectedCategories by remember { mutableStateOf(setOf("MOVIE,SERIES,COURSE,CERTIFICATED_COURSE")) }
     var selectedCountryIds by remember { mutableStateOf(setOf<String>()) }
 
     var selectedGenreIds  by remember { mutableStateOf(setOf<String>(tags)) }
@@ -628,6 +630,7 @@ fun BottomSheetSearch(
 
     // 🔴 Build Query Parameters When Filters Change
     LaunchedEffect(
+       // Unit
 
          appliedFilters
        // selectedGenreIds,
@@ -655,6 +658,7 @@ fun BottomSheetSearch(
     {
 
         Log.d("SearchLaunched","Performing Search......")
+        Log.d("SearchLaunched","Performing Search......Source is $sourceRequest")
 
 
 
@@ -666,6 +670,43 @@ fun BottomSheetSearch(
 
 
         }
+
+
+
+
+
+       if(performSearchFromOutside=="OUT")
+        {
+
+            Log.d("SearchLaunched","Performing Search......outside")
+
+
+        appliedFilters = appliedFilters.toMutableList().apply {
+
+                add( Filter(
+                    filterName =categoryName ,
+                    filterType =FilterType.GENRE ,
+                    filterId ="" ,
+                    filterTagid =tags
+
+
+                ))
+            performSearchFromOutside=""
+
+        }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
         val cleanedTags = selectedGenreIds.filter { it.isNotBlank() }
          tagsForApi = cleanedTags.joinToString(",")

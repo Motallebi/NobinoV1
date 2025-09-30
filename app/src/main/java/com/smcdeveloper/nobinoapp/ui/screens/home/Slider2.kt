@@ -1105,7 +1105,7 @@ fun MoviePosterCardWithDarknessAndScale(
 
          imageSrc = movie.images.filter {
 
-            it?.imageType == "POSTER"
+            it?.imageType == "BANNER_MOBILE"
 
         }
         imagePath= imageSrc[0]?.src.toString()
