@@ -1,5 +1,7 @@
 package com.smcdeveloper.nobinoapp.data.remote
 
+import android.os.Build
+import com.smcdeveloper.nobinoapp.BuildConfig
 import com.smcdeveloper.nobinoapp.data.model.avatar.Avatar
 import com.smcdeveloper.nobinoapp.data.model.favorit.Favorite
 import com.smcdeveloper.nobinoapp.data.model.payment.PaymentHistory
@@ -41,7 +43,7 @@ interface ProfileApiInterface {
     suspend fun getOtp(
         @Field("client_id") clientId: String="nobino-direct",
         @Field("grant_type") grantType: String="password",
-        @Field("client_secret") clientSecret: String="wbUe9HHhsuv0QtPxJxdzGEkOrNG0w6ab",
+        @Field("client_secret") clientSecret: String= BuildConfig.NOBINO_CLIENT_SECRET_KEY,
         @Field("mobile") mobile: String
     ): Response<LoginResponse>
 
@@ -52,7 +54,7 @@ interface ProfileApiInterface {
     suspend fun validateOtp(
         @Field("client_id") clientId: String="nobino-direct",
         @Field("grant_type") grantType: String="password",
-        @Field("client_secret") clientSecret: String="wbUe9HHhsuv0QtPxJxdzGEkOrNG0w6ab",
+        @Field("client_secret") clientSecret: String=BuildConfig.NOBINO_CLIENT_SECRET_KEY,
         @Field("mobile") mobile: String,
         @Field("ref_number") refNumber: String,
         @Field("otp") otp: String,
@@ -69,7 +71,7 @@ interface ProfileApiInterface {
     suspend fun getValidationToken(
         @Field("client_id") clientId: String="nobino-direct",
         @Field("grant_type") grantType: String="password",
-        @Field("client_secret") clientSecret: String="wbUe9HHhsuv0QtPxJxdzGEkOrNG0w6ab",
+        @Field("client_secret") clientSecret: String=BuildConfig.NOBINO_CLIENT_SECRET_KEY,
         @Field("mobile") mobile: String,
         @Field("ref_number") ref_number: String,
         @Field("otp") otp: String,

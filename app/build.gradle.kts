@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -11,10 +13,22 @@ plugins {
 }
 
 
+val properties = Properties()
+ properties.load(project.rootProject.file("local.properties").inputStream())
+
+
+
+
+
 
 android {
     namespace = "com.smcdeveloper.nobinoapp"
     compileSdk = 34
+
+
+
+
+
 
     defaultConfig {
         applicationId = "com.smcdeveloper.nobinoapp"
@@ -24,6 +38,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            type = "String",
+            name = "NOBINO_CLIENT_SECRET_KEY",
+            value = properties.getProperty("NOBINO_CLIENT_SECRET_KEY") ?: "\"default_value\""
+
+
+        )
+
+
+
+
     }
 
     buildTypes {
@@ -44,6 +69,7 @@ android {
     }
     buildFeatures {
         compose = true
+        android.buildFeatures.buildConfig= true
     }
 }
 
